@@ -1,8 +1,8 @@
-import Head from 'next/head'
-import Image from 'next/image'
-import Button from '../components/Button';
+import Head from "next/head";
+import Image from "next/image";
+import Button from "../src/components/Button";
 
-import styles from '../styles/Home.module.css'
+import styles from "../styles/Home.module.css";
 
 export default function Home() {
   return (
@@ -14,7 +14,7 @@ export default function Home() {
       </Head>
 
       <main className={styles.main}>
-        <Button/>
+        <Button />
       </main>
 
       <footer className={styles.footer}>
@@ -23,12 +23,12 @@ export default function Home() {
           target="_blank"
           rel="noopener noreferrer"
         >
-          Powered by{' '}
+          Powered by{" "}
           <span className={styles.logo}>
             <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
           </span>
         </a>
       </footer>
     </div>
-  )
+  );
 }
