@@ -5,30 +5,30 @@ import {useDispatch} from "react-redux";
 import {updatePage} from "../store/reducers/navigation";
 import {useEffect} from "react";
 
-const Index = () => {
+const User = () => {
     const dispatch = useDispatch();
 
     useEffect(()=>{
         dispatch(updatePage(
-            { name: 'Dashboard', href: '/', current: true }
+            { name: 'User', href: '/user', current: true }
         ));
     })
 
     return (
         <div className={styles.container}>
             <Head>
-                <title>Saso App | Dashboard</title>
+                <title>Saso App | User</title>
                 <meta name="description" content="Saso Application" />
                 <link rel="icon" href="/favicon.ico" />
             </Head>
             <Navbar/>
             <main className={styles.main}>
                 <p>
-                    I'm Dashboard page
+                    I'm user page
                 </p>
             </main>
         </div>
     );
 };
 
-export default Index;
+export default User;

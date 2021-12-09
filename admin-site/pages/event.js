@@ -5,30 +5,30 @@ import {useDispatch} from "react-redux";
 import {updatePage} from "../store/reducers/navigation";
 import {useEffect} from "react";
 
-const Index = () => {
+const Event = () => {
     const dispatch = useDispatch();
 
     useEffect(()=>{
         dispatch(updatePage(
-            { name: 'Dashboard', href: '/', current: true }
+            { name: 'Event', href: '/event', current: true }
         ));
     })
 
     return (
         <div className={styles.container}>
             <Head>
-                <title>Saso App | Dashboard</title>
+                <title>Saso App | Event</title>
                 <meta name="description" content="Saso Application" />
                 <link rel="icon" href="/favicon.ico" />
             </Head>
             <Navbar/>
             <main className={styles.main}>
                 <p>
-                    I'm Dashboard page
+                    I'm event
                 </p>
             </main>
         </div>
     );
 };
 
-export default Index;
+export default Event;
