@@ -2,7 +2,7 @@
 import { Fragment } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { BellIcon, MenuIcon, XIcon } from '@heroicons/react/outline'
-import Link from 'next/link'
+import Link from 'next/link';
 import {useSelector} from 'react-redux';
 
 function classNames(...classes) {
@@ -11,7 +11,7 @@ function classNames(...classes) {
 
 export default function Navbar() {
     const navigation = useSelector((state) => state.nav.navigation);
-
+    
     return (
         <Disclosure as="nav" className="bg-gray-800">
             {({ open }) => (

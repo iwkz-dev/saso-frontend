@@ -10,7 +10,7 @@ const Login = () => {
                 <meta name="description" content="Saso Application Login" />
                 <link rel="icon" href="/favicon.ico" />
             </Head>
-            <main className="min-h-full flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+            <main className="relative z-10 flex-auto flex items-center justify-center text-sm text-center text-gray-600 py-16 px-4 sm:px-6 lg:px-8">
                 <LoginForm/>
             </main>
         </div>

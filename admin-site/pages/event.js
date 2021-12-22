@@ -1,11 +1,10 @@
-"use strict"
-
 import Head from 'next/head'
 import Navbar from "../src/components/Navbar/Navbar";
-import styles from '../styles/home.module.scss'
+import styles from '../styles/Home.module.scss'
 import {useDispatch} from "react-redux";
 import {updatePage} from "../store/reducers/navigation";
 import {useEffect} from "react";
+import Footer from "../src/components/Footer/Footer";
 
 const Event = () => {
     const dispatch = useDispatch();
@@ -26,9 +25,10 @@ const Event = () => {
             <Navbar/>
             <main className={styles.main}>
                 <p>
-                    I{`&apos`}m event
+                    test
                 </p>
             </main>
+            <Footer/>
         </div>
     );
 };

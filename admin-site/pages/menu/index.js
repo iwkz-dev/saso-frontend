@@ -1,12 +1,13 @@
 import Head from 'next/head'
-import Navbar from "../src/components/Navbar/Navbar";
-import MenuTables from "../src/components/Tables/MenuTables";
-import styles from '../styles/home.module.scss';
+import Navbar from "../../src/components/Navbar/Navbar";
+import MenuTables from "../../src/components/Tables/MenuTables";
+import styles from '../../styles/Home.module.scss';
 import {useDispatch} from "react-redux";
-import {updatePage} from "../store/reducers/navigation";
+import {updatePage} from "../../store/reducers/navigation";
 import {useEffect} from "react";
+import Footer from "../../src/components/Footer/Footer";
 
-const Menu = () => {
+const Index = () => {
     const dispatch = useDispatch();
 
     useEffect(()=>{
@@ -23,11 +24,12 @@ const Menu = () => {
                 <link rel="icon" href="/favicon.ico" />
             </Head>
             <Navbar/>
-            <main className={styles.main}>
+            <main className={`${styles.main} w-full mx-20`}>
                 <MenuTables/>
             </main>
+            <Footer/>
         </div>
     );
 };
 
-export default Menu;
+export default Index;

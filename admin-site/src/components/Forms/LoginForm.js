@@ -5,7 +5,7 @@ const LoginForm = () => {
         <div className="max-w-md w-full space-y-8">
             <div>
                 <h2 className="mt-6 text-center text-3xl text-gray-900">
-                    Login to SASO App
+                    SASO App
                 </h2>
             </div>
             <form className="mt-8 space-y-6" action="#" method="POST">
