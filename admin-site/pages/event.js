@@ -1,3 +1,5 @@
+"use strict"
+
 import Head from 'next/head'
 import Navbar from "../src/components/Navbar/Navbar";
 import styles from '../styles/home.module.scss'
@@ -24,7 +26,7 @@ const Event = () => {
             <Navbar/>
             <main className={styles.main}>
                 <p>
-                    I'm event
+                    I{`&apos`}m event
                 </p>
             </main>
         </div>

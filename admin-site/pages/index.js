@@ -24,7 +24,7 @@ const Index = () => {
             <Navbar/>
             <main className={styles.main}>
                 <p>
-                    I'm Dashboard page
+                    Welcome to SASO APP
                 </p>
             </main>
         </div>

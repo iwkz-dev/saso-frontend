@@ -1,6 +1,6 @@
 import Head from 'next/head'
 import Navbar from "../src/components/Navbar/Navbar";
-import styles from '../styles/home.module.scss'
+import styles from '../styles/home.module.scss';
 import {useDispatch} from "react-redux";
 import {updatePage} from "../store/reducers/navigation";
 import {useEffect} from "react";
@@ -24,7 +24,7 @@ const User = () => {
             <Navbar/>
             <main className={styles.main}>
                 <p>
-                    I'm user page
+                    {"I'm user page"}
                 </p>
             </main>
         </div>
