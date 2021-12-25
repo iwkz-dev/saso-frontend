@@ -1,5 +1,5 @@
 import React from "react";
-import CardCollection from "../src/components/CardCollection/CardCollection";
+import CardCollection from "../components/CardCollection/CardCollection";
 
 const cart = () => {
   return (

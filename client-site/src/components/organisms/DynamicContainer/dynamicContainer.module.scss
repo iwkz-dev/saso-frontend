@@ -1,0 +1,16 @@
+@import "../../../styles/custom.scss";
+.dynamicContainer {
+  display: flex;
+  flex-direction: column;
+  @include breakpoint("s") {
+    flex-direction: row;
+  }
+  .firstBlock {
+    width: 100%;
+    @include breakpoint("s") {
+      width: 60%;
+    }
+  }
+  .secondlBlock {
+  }
+}
