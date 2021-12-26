@@ -2,7 +2,7 @@ import Head from 'next/head'
 import Navbar from "../src/components/Navbar/Navbar";
 import styles from '../styles/Home.module.scss';
 import {useDispatch} from "react-redux";
-import {updatePage} from "../store/reducers/navigation";
+import {updatePage} from "../src/store/reducers/navigation";
 import {useEffect} from "react";
 import Footer from "../src/components/Footer/Footer";
 
