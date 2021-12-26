@@ -2,15 +2,38 @@
 .dynamicContainer {
   display: flex;
   flex-direction: column;
-  @include breakpoint("s") {
-    flex-direction: row;
-  }
   .firstBlock {
     width: 100%;
-    @include breakpoint("s") {
-      width: 60%;
+    .firstInnerContainer {
     }
   }
-  .secondlBlock {
+  .secondBlock {
+    .secondInnerBlock {
+    }
+  }
+}
+
+@include breakpoint("m") {
+  .dynamicContainer {
+    display: flex;
+    flex-direction: row;
+    .firstBlock {
+      width: 100%;
+      .firstInnerContainer {
+        max-width: 1024px;
+        margin: 0 auto;
+      }
+    }
+    .secondBlock {
+      min-width: 344px;
+      .secondInnerBlock {
+        background-color: hotpink;
+        position: absolute;
+        top: 64px;
+        right: 0;
+        width: 344px;
+        height: 100vh;
+      }
+    }
   }
 }
