@@ -2,6 +2,7 @@
 .dynamicContainer {
   display: flex;
   flex-direction: column;
+  width: 100vw;
   .firstBlock {
     width: 100%;
     .firstInnerContainer {
@@ -9,11 +10,28 @@
   }
   .secondBlock {
     .secondInnerBlock {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 100vh;
+      width: 100vw;
+      background-color: rebeccapurple;
+      display: none;
     }
+    .active {
+      display: block;
+    }
+  }
+  .cartButton {
+    position: fixed;
+    bottom: 0px;
+    left: 0;
+    width: 100vw;
   }
 }
 
-@include breakpoint("m") {
+@include tablet {
   .dynamicContainer {
     display: flex;
     flex-direction: row;
@@ -31,8 +49,10 @@
         position: absolute;
         top: 64px;
         right: 0;
+        left: unset;
         width: 344px;
         height: 100vh;
+        display: block;
       }
     }
   }

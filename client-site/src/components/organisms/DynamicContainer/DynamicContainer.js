@@ -1,7 +1,48 @@
-import React, { ReactElement, useState, useCallback, useEffect } from "react"
+import React, { useState, useCallback, useEffect } from "react"
 import styles from "./dynamicContainer.module.scss"
 import Tabs from "../../molecules/Tabs/Tabs"
 import Cart from "../../molecules/Cart/Cart"
+import { Button } from "@mui/material"
+const DynamicContainer = () => {
+  const isBreakpoint = useMediaQuery(parseInt(styles.breakpointTablet))
+  const [mobileActive, setMobileActive] = useState(false)
+  useEffect(() => {
+    setMobileActive(false)
+  }, [isBreakpoint])
+  return (
+    <div className={styles.dynamicContainer}>
+      <div className={styles.firstBlock}>
+        <div className={styles.firstInnerContainer}>
+          <Tabs />
+        </div>
+      </div>
+      <div className={styles.secondBlock}>
+        <div
+          className={`${styles.secondInnerBlock} ${
+            mobileActive && styles.active
+          }`}
+        >
+          {/* switch mobile and desktop cart below, left is mobile
+            or
+            switch container class which will hide on mobile
+          */}
+          <Cart />
+        </div>
+      </div>
+      {isBreakpoint && (
+        <Button
+          variant="contained"
+          className={styles.cartButton}
+          onClick={() => setMobileActive(true)}
+        >
+          Cart
+        </Button>
+      )}
+    </div>
+  )
+}
+
+export default DynamicContainer
 
 const useMediaQuery = width => {
   const [targetReached, setTargetReached] = useState(true)
@@ -16,34 +57,15 @@ const useMediaQuery = width => {
 
   useEffect(() => {
     const media = window.matchMedia(`(max-width: ${width - 1}px)`)
-    media.addListener(updateTarget)
+    media.addEventListener("change", updateTarget)
 
     // Check on mount (callback is not called until a change occurs)
     if (!media.matches) {
       setTargetReached(false)
     }
 
-    return () => media.removeListener(updateTarget)
+    return () => media.removeEventListener("change", updateTarget)
   }, [])
 
   return targetReached
 }
-const DynamicContainer = () => {
-  const isBreakpoint = useMediaQuery(parseInt(styles.breakpointXS))
-  return (
-    <div className={styles.dynamicContainer}>
-      <div className={styles.firstBlock}>
-        <div className={styles.firstInnerContainer}>
-          <Tabs />
-        </div>
-      </div>
-      <div className={styles.secondBlock}>
-        <div className={styles.secondInnerBlock}>
-          <Cart />
-        </div>
-      </div>
-    </div>
-  )
-}
-
-export default DynamicContainer

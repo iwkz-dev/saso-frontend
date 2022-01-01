@@ -1,4 +1,5 @@
 // min or max
+$breakpointTablet: 788;
 $media-direction: min; // min / max — default is min (mobile first)
 
 // Breakpoints
@@ -7,11 +8,12 @@ $media-direction: min; // min / max — default is min (mobile first)
 $breakpoints: (
   "default": "",
   "xs": 480px,
-  "s": 667px,
+  "s": $breakpointTablet + 0px,
   "m": 1024px,
   "l": 1280px,
   "xl": 1680px,
 );
+$breakpointS: 500px;
 
 @mixin breakpoint($breakpoint, $direction: $media-direction) {
   // Es wird gecheckt ob der Wert in der Sass Map vorhanden ist
@@ -31,4 +33,20 @@ $breakpoints: (
       @content;
     }
   }
+}
+
+@mixin desktop() {
+  @include breakpoint("m") {
+    @content;
+  }
+}
+
+@mixin tablet() {
+  @include breakpoint("s") {
+    @content;
+  }
+}
+
+:export {
+  breakpointTablet: $breakpointTablet;
 }
