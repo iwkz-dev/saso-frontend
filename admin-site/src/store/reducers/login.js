@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
-import {submitLogin} from "../../helpers/submitLogin";
+import {submitLogin} from "../../helpers/auth";
 
 export const loginSlice = createSlice({
     name: 'login',

@@ -1,9 +1,18 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {useDispatch} from "react-redux";
 import {textFieldChangeHandler, formSubmitHandler} from "../../store/reducers/login";
+import {isAuth} from "../../helpers/auth";
+import Router from "next/router";
 
 const LoginForm = () => {
     const dispatch = useDispatch();
+
+    useEffect(()=>{
+        if(isAuth()){
+            console.log("redirect")
+            Router.push('/')
+        }
+    })
 
     const changeHandler = (name, value)=>{
         const payload = {

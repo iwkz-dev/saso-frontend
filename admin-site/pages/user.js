@@ -1,35 +1,15 @@
-import Head from 'next/head'
-import Navbar from "../src/components/Navbar/Navbar";
-import styles from '../styles/Home.module.scss';
-import {useDispatch} from "react-redux";
-import {updatePage} from "../src/store/reducers/navigation";
-import {useEffect} from "react";
-import Footer from "../src/components/Footer/Footer";
+import LoggedInMain from "../src/components/Main/loggedInMain/loggedInMain";
 
 const User = () => {
-    const dispatch = useDispatch();
-
-    useEffect(()=>{
-        dispatch(updatePage(
-            { name: 'User', href: '/user', current: true }
-        ));
-    })
+    const pageData = { name: 'User', href: '/user', current: true };
+    const pageTitle = "Saso App | User";
 
     return (
-        <div className={styles.container}>
-            <Head>
-                <title>Saso App | User</title>
-                <meta name="description" content="Saso Application" />
-                <link rel="icon" href="/favicon.ico" />
-            </Head>
-            <Navbar/>
-            <main className={styles.main}>
-                <p>
-                    {"I'm user page"}
-                </p>
-            </main>
-            <Footer/>
-        </div>
+        <LoggedInMain title={pageTitle} pageData={pageData}>
+            <p>
+                {"I'm user page"}
+            </p>
+        </LoggedInMain>
     );
 };
 
