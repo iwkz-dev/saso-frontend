@@ -3,10 +3,7 @@ import {BASE_URL_HOST} from "../config/config";
 import Router from "next/router";
 
 export const isAuth = ()=>{
-    if(getToken() && getUserId()){
-        return true;
-    }
-    return false;
+    return !!(getToken() && getUserId());
 }
 
 export const setToken = (data)=>{
@@ -15,18 +12,14 @@ export const setToken = (data)=>{
 
 export const getToken = ()=>{
     if (typeof window !== 'undefined') {
-        // Perform localStorage action
-        const token = JSON.parse(localStorage.getItem("access_token"))?.accessToken;
-        return token;
+        return JSON.parse(localStorage.getItem("access_token"))?.accessToken;
     }
     return null;
 }
 
 export const getUserId = ()=>{
     if (typeof window !== 'undefined') {
-        // Perform localStorage action
-        const userId = JSON.parse(localStorage.getItem("access_token"))?.id;
-        return userId;
+        return JSON.parse(localStorage.getItem("access_token"))?.id;
     }
     return null;
 }

@@ -1,6 +1,6 @@
 import LoggedInMain from "../src/components/Main/loggedInMain/loggedInMain";
 
-const Index = () => {
+const index = () => {
     const pageData = { name: 'Dashboard', href: '/', current: true };
     const pageTitle = "Saso App | Main Page";
 
@@ -13,4 +13,4 @@ const Index = () => {
     );
 };
 
-export default Index;
+export default index;

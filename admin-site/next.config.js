@@ -16,4 +16,3 @@ module.exports = {
     domains: ['tailwindui.com', 'images.unsplash.com'],
   }
 }
-

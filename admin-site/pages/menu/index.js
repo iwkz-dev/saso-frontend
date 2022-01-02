@@ -2,7 +2,7 @@ import LoggedInMain from "../../src/components/Main/loggedInMain/loggedInMain";
 import MenuTables from "../../src/components/Tables/MenuTables";
 
 
-const Index = () => {
+const index = () => {
     const pageData = { name: 'Menu', href: '/menu', current: true };
     const pageTitle = "Saso App | Menu";
 
@@ -13,4 +13,4 @@ const Index = () => {
     );
 };
 
-export default Index;
+export default index;

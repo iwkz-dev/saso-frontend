@@ -2,7 +2,7 @@ import React from 'react';
 import LoginForm from "../src/components/Forms/LoginForm";
 import Head from "next/head";
 
-const Login = () => {
+const login = () => {
     return (
         <div >
             <Head>
@@ -17,4 +17,4 @@ const Login = () => {
     );
 };
 
-export default Login;
+export default login;

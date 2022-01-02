@@ -1,6 +1,6 @@
 import LoggedInMain from "../src/components/Main/loggedInMain/loggedInMain";
 
-const User = () => {
+const user = () => {
     const pageData = { name: 'User', href: '/user', current: true };
     const pageTitle = "Saso App | User";
 
@@ -13,4 +13,4 @@ const User = () => {
     );
 };
 
-export default User;
+export default user;
