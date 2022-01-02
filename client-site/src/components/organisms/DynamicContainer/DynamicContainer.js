@@ -1,16 +1,23 @@
-import React, { useState, useCallback, useEffect } from "react"
-import styles from "./dynamicContainer.module.scss"
-import Tabs from "../../molecules/Tabs/Tabs"
-import Cart from "../../molecules/Cart/Cart"
-import { Button } from "@mui/material"
+import React, { useState, useCallback, useEffect } from 'react';
+import styles from './dynamicContainer.module.scss';
+import Tabs from '../../molecules/Tabs/Tabs';
+import Cart from '../../molecules/Cart/Cart';
+import { Button } from '@mui/material';
+import sasoApi from '../../../api/SasoApi';
 const DynamicContainer = () => {
-  const isBreakpoint = useMediaQuery(parseInt(styles.breakpointTablet))
-  const [mobileActive, setMobileActive] = useState(false)
+  const isBreakpoint = useMediaQuery(parseInt(styles.breakpointTablet));
+  const [mobileActive, setMobileActive] = useState(false);
   useEffect(() => {
-    setMobileActive(false)
-  }, [isBreakpoint])
+    setMobileActive(false);
+  }, [isBreakpoint]);
+  const handleClick = async () => {
+    await sasoApi.getData('/customer/menu');
+  };
   return (
     <div className={styles.dynamicContainer}>
+      <Button onClick={handleClick} variant="contained">
+        FETCH API
+      </Button>
       <div className={styles.firstBlock}>
         <div className={styles.firstInnerContainer}>
           <Tabs />
@@ -39,33 +46,33 @@ const DynamicContainer = () => {
         </Button>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default DynamicContainer
+export default DynamicContainer;
 
 const useMediaQuery = width => {
-  const [targetReached, setTargetReached] = useState(true)
+  const [targetReached, setTargetReached] = useState(true);
 
   const updateTarget = useCallback(e => {
     if (e.matches) {
-      setTargetReached(true)
+      setTargetReached(true);
     } else {
-      setTargetReached(false)
+      setTargetReached(false);
     }
-  }, [])
+  }, []);
 
   useEffect(() => {
-    const media = window.matchMedia(`(max-width: ${width - 1}px)`)
-    media.addEventListener("change", updateTarget)
+    const media = window.matchMedia(`(max-width: ${width - 1}px)`);
+    media.addEventListener('change', updateTarget);
 
     // Check on mount (callback is not called until a change occurs)
     if (!media.matches) {
-      setTargetReached(false)
+      setTargetReached(false);
     }
 
-    return () => media.removeEventListener("change", updateTarget)
-  }, [])
+    return () => media.removeEventListener('change', updateTarget);
+  }, []);
 
-  return targetReached
-}
+  return targetReached;
+};
