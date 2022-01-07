@@ -1,15 +1,17 @@
 import React, {useEffect} from 'react';
 import {useDispatch} from "react-redux";
-import {textFieldChangeHandler, formSubmitHandler} from "../../store/reducers/login";
+import {textFieldChangeHandler, submitLogin} from "../../store/reducers/login";
 import {isAuth} from "../../helpers/auth";
 import Router from "next/router";
+import {useSelector} from 'react-redux';
 
 const LoginForm = () => {
     const dispatch = useDispatch();
+    const errorMessage = useSelector((state) => state.login.data.message.error);
+    const userData = useSelector((state) => state.login.data.user);
 
     useEffect(()=>{
         if(isAuth()){
-            console.log("redirect")
             Router.push('/')
         }
     })
@@ -24,7 +26,7 @@ const LoginForm = () => {
 
     const submitHandler = (e)=>{
         e.preventDefault();
-        dispatch(formSubmitHandler());
+        dispatch(submitLogin(userData));
     }
 
     return (
@@ -71,6 +73,7 @@ const LoginForm = () => {
                         />
                     </div>
                 </div>
+                <span className="text-xs text-red-700 ">{errorMessage}</span>
                 <div>
                     <button
                         type="submit"

@@ -1,5 +1,3 @@
-import axios from "axios";
-import {BASE_URL_HOST} from "../config/config";
 import Router from "next/router";
 
 export const isAuth = ()=>{
@@ -22,22 +20,6 @@ export const getUserId = ()=>{
         return JSON.parse(localStorage.getItem("access_token"))?.id;
     }
     return null;
-}
-
-export const submitLogin = (data)=>{
-    axios.post(`${BASE_URL_HOST}/auth/login`, data)
-        .then(response => {
-            if(response.data.status==="success"){
-                const authData = {
-                    accessToken: response.data.data.accessToken,
-                    id: response.data.data.id,
-                }
-                setToken(authData);
-                Router.push("/");
-            }
-
-        })
-        .catch(error => console.log(error));
 }
 
 export const logout = ()=>{
