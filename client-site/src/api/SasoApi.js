@@ -14,8 +14,6 @@ class SasoApi {
     }
 
     Axios.defaults.baseURL = process.env.NEXT_PUBLIC_SERVER_BASE_URL;
-    Axios.defaults.withCredentials = true;
-    Axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*';
     Axios.defaults.headers.post['Content-Type'] =
       'application/json;charset=utf-8';
     Axios.defaults.headers.post['Access-Control-Allow-Methods'] =
@@ -45,7 +43,7 @@ class SasoApi {
       const res = await Axios.post(url, data);
       return res.data;
     } catch (err) {
-      throw err.response.data;
+      return err;
     }
   };
   putData = async (url, data = null) => {
