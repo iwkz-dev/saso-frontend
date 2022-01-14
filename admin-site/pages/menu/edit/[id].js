@@ -1,20 +1,22 @@
-import { useRouter } from 'next/router';
+import { useRouter } from "next/router";
 import LoggedInMain from "../../../src/components/Main/loggedInMain/loggedInMain";
-import MenuForms from "../../../src/components/Forms/MenuForms";
-
+import MenuForm from "../../../src/components/Forms/MenuForm";
 
 const id = () => {
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    const router = useRouter();
-    const { id } = router.query;
-    const pageData = { name: 'Menu', href: '/menu/edit/'+ {id}, current: true };
-    const pageTitle = "Saso App | Menu";
+  const router = useRouter();
+  const { id } = router.query;
+  const pageData = {
+    name: "Menu",
+    href: `/menu/edit/${{ id }}`,
+    current: true,
+  };
+  const pageTitle = "Saso App | Menu";
 
-    return (
-        <LoggedInMain title={pageTitle} pageData={pageData}>
-            <MenuForms id={id}/>
-        </LoggedInMain>
-    );
+  return (
+    <LoggedInMain title={pageTitle} pageData={pageData}>
+      <MenuForm id={id} />
+    </LoggedInMain>
+  );
 };
 
 export default id;

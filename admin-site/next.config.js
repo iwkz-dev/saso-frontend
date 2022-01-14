@@ -1,18 +1,18 @@
-const path = require('path')
+const path = require("path");
 module.exports = {
   trailingSlash: true,
-  webpackDevMiddleware: config => {
+  webpackDevMiddleware: (config) => {
     config.watchOptions = {
       poll: 1000,
-      aggregateTimeout: 300
-    }
+      aggregateTimeout: 300,
+    };
 
-    return config
+    return config;
   },
   sassOptions: {
-    includePaths: [path.join(__dirname, 'styles')]
+    includePaths: [path.join(__dirname, "styles")],
   },
   images: {
-    domains: ['tailwindui.com', 'images.unsplash.com'],
-  }
-}
+    domains: ["tailwindui.com", "images.unsplash.com"],
+  },
+};
