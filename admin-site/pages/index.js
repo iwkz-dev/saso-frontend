@@ -6,7 +6,7 @@ const index = () => {
 
   return (
     <LoggedInMain title={pageTitle} pageData={pageData}>
-      <p>Welcome to SASO APP</p>
+      <p>Dashboard is here</p>
     </LoggedInMain>
   );
 };

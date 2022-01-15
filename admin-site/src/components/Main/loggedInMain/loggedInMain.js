@@ -4,9 +4,9 @@ import { useEffect } from "react";
 import Router from "next/router";
 import Navbar from "../../Navbar/Navbar";
 import styles from "../../../../styles/Home.module.scss";
-import { updatePage } from "../../../store/reducers/navigation";
+import { updatePage } from "../../../store/reducers/navigationReducer";
 import Footer from "../../Footer/Footer";
-import { isAuth } from "../../../helpers/auth";
+import { isAuth } from "../../../helpers/authHelper";
 
 function LoggedInMain({ pageData, children, title }) {
   const dispatch = useDispatch();

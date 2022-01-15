@@ -4,7 +4,7 @@ import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { BellIcon, MenuIcon, XIcon } from "@heroicons/react/outline";
 import Link from "next/link";
 import { useSelector } from "react-redux";
-import { logout } from "../../helpers/auth";
+import { logout } from "../../helpers/authHelper";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");

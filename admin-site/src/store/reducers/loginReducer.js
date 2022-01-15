@@ -1,10 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
 import Router from "next/router";
-import auth from "../../services/auth";
-import { setToken } from "../../helpers/auth";
+import authService from "../../services/authService";
+import { setToken } from "../../helpers/authHelper";
 
 export const submitLogin = (data) => (dispatch) =>
-  auth.login(data).then((response) => {
+  authService.login(data).then((response) => {
     if (response.status === "success" && response.data.role === 1) {
       const authData = {
         accessToken: response.data.accessToken,

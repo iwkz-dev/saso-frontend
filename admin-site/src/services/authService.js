@@ -16,7 +16,7 @@ const login = (data) => {
     });
 };
 
-const auth = {
+const authService = {
   login,
 };
-export default auth;
+export default authService;
