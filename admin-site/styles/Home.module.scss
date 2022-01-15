@@ -10,5 +10,8 @@
     margin-right: auto;
     align-items: center;
     overflow-y: scroll;
+    @media screen and (max-width: 639px) {
+      height: calc(100vh - 192px);
+    }
   }
 }

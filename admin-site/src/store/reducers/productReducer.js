@@ -12,7 +12,6 @@ export const getAllMenus = (requestURL) => (dispatch) =>
 
 export const getAllEvents = () => (dispatch) =>
   productService.getAllEvents().then((response) => {
-    console.log(response);
     if (response.status === "success") {
       dispatch(getEventsSuccess(response.data.data));
     } else {
@@ -22,7 +21,6 @@ export const getAllEvents = () => (dispatch) =>
 
 export const getAllCategories = () => (dispatch) =>
   productService.getAllCategories().then((response) => {
-    console.log(response);
     if (response.status === "success") {
       dispatch(getCategoriesSuccess(response.data.data));
     } else {
