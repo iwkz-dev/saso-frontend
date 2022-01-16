@@ -1,12 +1,13 @@
-import * as React from "react"
-import AppBar from "@mui/material/AppBar"
-import Box from "@mui/material/Box"
-import Toolbar from "@mui/material/Toolbar"
-import Typography from "@mui/material/Typography"
-import Button from "@mui/material/Button"
-import IconButton from "@mui/material/IconButton"
-import MenuIcon from "@mui/icons-material/Menu"
-import styles from "./navbar.module.scss"
+import * as React from 'react';
+import AppBar from '@mui/material/AppBar';
+import Box from '@mui/material/Box';
+import Toolbar from '@mui/material/Toolbar';
+import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button';
+import IconButton from '@mui/material/IconButton';
+import MenuIcon from '@mui/icons-material/Menu';
+import styles from './navbar.module.scss';
+import RegisterModal from '../../molecules/RegisterModal/RegisterModal';
 
 const Navbar = () => {
   return (
@@ -18,8 +19,8 @@ const Navbar = () => {
             edge="start"
             color="inherit"
             aria-label="menu"
+            >
             sx={{ mr: 2 }}
-          >
             <MenuIcon />
           </IconButton> */}
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
@@ -27,11 +28,12 @@ const Navbar = () => {
           </Typography>
           <div className={styles.buttonsContainer}>
             <Button variant="outlined">Masuk</Button>
-            <Button variant="contained">Daftar</Button>
+            {/* <Button variant="contained">Daftar</Button> */}
+            <RegisterModal />
           </div>
         </Toolbar>
       </AppBar>
     </Box>
-  )
-}
-export default Navbar
+  );
+};
+export default Navbar;

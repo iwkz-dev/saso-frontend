@@ -1,11 +1,10 @@
-import Head from "next/head"
-import Image from "next/image"
-import BigLogo from "../components/atoms/BigLogo/BigLogo"
-import Button from "../components/Button"
-import Navbar from "../components/molecules/Navbar/Navbar"
-import DynamicContainer from "../components/organisms/DynamicContainer/DynamicContainer"
-
-import styles from "../styles/Home.module.scss"
+import Head from 'next/head';
+import Image from 'next/image';
+import BigLogo from '../components/atoms/BigLogo/BigLogo';
+import Button from '../components/Button';
+import DynamicContainer from '../components/organisms/DynamicContainer/DynamicContainer';
+import Navbar from '../components/organisms/Navbar/Navbar';
+import styles from '../styles/Home.module.scss';
 
 export default function Home() {
   return (
@@ -20,5 +19,5 @@ export default function Home() {
       <BigLogo />
       <DynamicContainer />
     </div>
-  )
+  );
 }

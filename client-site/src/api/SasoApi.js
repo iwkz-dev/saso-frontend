@@ -1,13 +1,6 @@
 import Axios from 'axios';
 
 class SasoApi {
-  static instance = null;
-  static getInstance() {
-    if (SasoApi.instance === null) {
-      SasoApi.instance = new SasoApi();
-    }
-    return SasoApi.instance;
-  }
   constructor() {
     if (SasoApi.instance != null) {
       return SasoApi.instance;
@@ -18,7 +11,6 @@ class SasoApi {
       'application/json;charset=utf-8';
     Axios.defaults.headers.post['Access-Control-Allow-Methods'] =
       'GET,POST,DELETE,PUT';
-    SasoApi.instance = this;
   }
   getData = async url => {
     try {
@@ -64,4 +56,4 @@ class SasoApi {
   };
 }
 
-export default SasoApi.getInstance();
+export default new SasoApi();
