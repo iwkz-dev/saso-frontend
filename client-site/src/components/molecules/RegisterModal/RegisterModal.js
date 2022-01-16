@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
@@ -7,29 +7,39 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import { useDispatch } from 'react-redux';
-import { submitLogin } from '../../../stores/reducers/login';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  submitRegister,
+  textFieldChangeHandler,
+  resetRegister,
+} from '../../../stores/reducers/register';
 
 const RegisterModal = () => {
   const [open, setOpen] = useState(false);
-  const [registerData, setRegisterData] = useState({
-    nama: '',
-    telefon: '',
-    email: '',
-    password: '',
-  });
-  const dispatch = useDispatch();
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const handleChange = e => {
-    setRegisterData({
-      ...registerData,
-      [e.target.name]: e.target.value,
-    });
+
+  const dispatch = useDispatch();
+  const userData = useSelector(state => state.register.data.user);
+  const errorMessage = useSelector(state => {
+    return state.register.data.message.error;
+  });
+  useSelector(state => {
+    if (state.register.data.message.success !== '') {
+      handleClose();
+      dispatch(resetRegister());
+    }
+  });
+  const handleChange = (name, value) => {
+    const payload = {
+      name,
+      value,
+    };
+    dispatch(textFieldChangeHandler(payload));
   };
   const handleSubmit = e => {
     e.preventDefault();
-    // dispatch(submitLogin(registerData));
+    dispatch(submitRegister(userData));
   };
 
   return (
@@ -42,7 +52,7 @@ const RegisterModal = () => {
         <form
           id="register-form"
           onSubmit={handleSubmit}
-          onChange={handleChange}
+          onChange={e => handleChange(e.target.name, e.target.value)}
         >
           <DialogContent>
             {/* <DialogContentText></DialogContentText> */}
@@ -50,7 +60,7 @@ const RegisterModal = () => {
               <Grid item xs={6}>
                 <TextField
                   fullWidth
-                  name="nama"
+                  name="fullname"
                   label="Nama Lengkap"
                   variant="outlined"
                 />
@@ -58,7 +68,7 @@ const RegisterModal = () => {
               <Grid item xs={6}>
                 <TextField
                   fullWidth
-                  name="telefon"
+                  name="phone"
                   label="Nomor Telefon"
                   variant="outlined"
                 />
@@ -80,13 +90,15 @@ const RegisterModal = () => {
                 />
               </Grid>
             </Grid>
+            <span className="text-xs text-red-700 ">{errorMessage}</span>
           </DialogContent>
           <DialogActions>
             <Button onClick={handleClose}>Cancel</Button>
             <Button
-              onClick={e => {
-                handleClose();
-              }}
+              // onClick={e => {
+              //   console.log('asdasd');
+              //   handleClose();
+              // }}
               form="register-form"
               type="submit"
             >

@@ -4,14 +4,10 @@ import Tabs from '../../molecules/Tabs/Tabs';
 import Cart from '../../molecules/Cart/Cart';
 import { Button } from '@mui/material';
 import sasoApi from '../../../api/SasoApi';
-import { useDispatch } from 'react-redux';
-import { submitLogin } from '../../../stores/reducers/login';
-import { useSelector } from 'react-redux';
 
 const DynamicContainer = () => {
   const isBreakpoint = useMediaQuery(parseInt(styles.breakpointTablet));
   const [mobileActive, setMobileActive] = useState(false);
-  const dispatch = useDispatch();
   // const errorMessage = useSelector(state => state.login.data.message.error);
 
   useEffect(() => {
@@ -19,7 +15,6 @@ const DynamicContainer = () => {
   }, [isBreakpoint]);
   const handleClick = async () => {
     await sasoApi.getData('/customer/menu');
-    // dispatch(submitLogin({}));
   };
   return (
     <div className={styles.dynamicContainer}>

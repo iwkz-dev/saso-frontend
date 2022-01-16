@@ -3,40 +3,40 @@ import auth from '../../services/auth';
 // import { setToken } from '../../helpers/auth';
 import Router from 'next/router';
 
+const initialState = {
+  user: {
+    fullname: '',
+    phone: '',
+    email: '',
+    password: '',
+  },
+  message: {
+    error: '',
+    success: '',
+  },
+};
+
 export const submitRegister = data => dispatch => {
-  return auth.login(data).then(response => {
+  return auth.register(data).then(response => {
     if (response.status === 'success') {
+      //TODO: do the auto login here, data is in accessToken
       const authData = {
         accessToken: response.data.accessToken,
         id: response.data.id,
       };
-      dispatch(loginSuccess(response.message));
+      dispatch(registerSuccess(response.message));
       // setToken(authData);
       Router.push('/');
     } else {
-      dispatch(loginFailed(response.message));
+      dispatch(registerFailed('please put the data correctly'));
     }
     return Promise.resolve();
   });
 };
 
 export const registerSlice = createSlice({
-  name: 'login',
-  initialState: {
-    data: {
-      user: {
-        nama: '',
-        telefon: '',
-        email: '',
-        password: '',
-      },
-      message: {
-        error: '',
-        success: '',
-      },
-      isLogin: false,
-    },
-  },
+  name: 'register',
+  initialState: { data: initialState },
   reducers: {
     textFieldChangeHandler: (state, action) => {
       const name = action.payload.name;
@@ -50,10 +50,17 @@ export const registerSlice = createSlice({
     registerFailed: (state, action) => {
       state.data.message.error = action.payload;
     },
+    resetRegister: (state, action) => {
+      state.data = initialState;
+    },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { textFieldChangeHandler, registerSuccess, registerFailed } =
-  registerSlice.actions;
+export const {
+  textFieldChangeHandler,
+  registerSuccess,
+  registerFailed,
+  resetRegister,
+} = registerSlice.actions;
 export default registerSlice.reducer;
