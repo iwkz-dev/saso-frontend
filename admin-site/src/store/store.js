@@ -1,12 +1,16 @@
 import navReducer from "./reducers/navigationReducer";
 import loginReducer from "./reducers/loginReducer";
-import productReducer from "./reducers/productReducer";
+import menuReducer from "./reducers/menuReducer";
 import { configureStore } from "@reduxjs/toolkit";
+import eventReducer from "./reducers/eventReducer";
+import categoryReducer from "./reducers/categoryReducer";
 // Add reducers here!
 export default configureStore({
   reducer: {
     nav: navReducer,
     login: loginReducer,
-    product: productReducer,
+    menu: menuReducer,
+    event: eventReducer,
+    category: categoryReducer,
   },
 });

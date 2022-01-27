@@ -1,23 +1,19 @@
 import axios from "axios";
-import {
-  BASE_URL_HOST_ADMIN_MENU,
-  BASE_URL_HOST_ADMIN_EVENT,
-  BASE_URL_HOST_ADMIN_CATEGORY,
-} from "../config/config";
+import { BASE_URL_HOST_ADMIN_MENU } from "../config/config";
 import { getToken } from "../helpers/authHelper";
 
 const headers = {
   accept: "application/JSON",
-  access_token: getToken(),
+  Authorization: getToken(),
 };
 
 const adminAxios = axios.create({
   headers,
 });
 
-const getAllMenus = (requestURL) =>
+const getAllMenus = (requestURL = "") =>
   adminAxios
-    .get(`${BASE_URL_HOST_ADMIN_MENU}${requestURL || ""}`)
+    .get(`${BASE_URL_HOST_ADMIN_MENU}${requestURL}`)
     .then((response) => response.data)
     .catch((error) => {
       if (error.response?.data) {
@@ -27,9 +23,9 @@ const getAllMenus = (requestURL) =>
       }
     });
 
-const getAllEvents = () =>
+const getDetailMenu = (id) =>
   adminAxios
-    .get(`${BASE_URL_HOST_ADMIN_EVENT}`)
+    .get(`${BASE_URL_HOST_ADMIN_MENU}/${id}/detail`)
     .then((response) => response.data)
     .catch((error) => {
       if (error.response?.data) {
@@ -39,9 +35,9 @@ const getAllEvents = () =>
       }
     });
 
-const getAllCategories = () =>
+const editDetailMenu = (id, requestedData) =>
   adminAxios
-    .get(`${BASE_URL_HOST_ADMIN_CATEGORY}`)
+    .put(`${BASE_URL_HOST_ADMIN_MENU}/${id}`, requestedData)
     .then((response) => response.data)
     .catch((error) => {
       if (error.response?.data) {
@@ -51,9 +47,9 @@ const getAllCategories = () =>
       }
     });
 
-const productService = {
+const menuService = {
   getAllMenus,
-  getAllEvents,
-  getAllCategories,
+  getDetailMenu,
+  editDetailMenu,
 };
-export default productService;
+export default menuService;

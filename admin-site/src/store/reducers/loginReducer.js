@@ -7,7 +7,7 @@ export const submitLogin = (data) => (dispatch) =>
   authService.login(data).then((response) => {
     if (response.status === "success" && response.data.role === 1) {
       const authData = {
-        accessToken: response.data.accessToken,
+        accessToken: `Bearer ${response.data.accessToken}`,
         id: response.data.id,
       };
       dispatch(loginSuccess(response.message));

@@ -5,8 +5,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint ./ --ext js,jsx,ts,tsx",
-    "lint:fix": "eslint \"src/**/*.{js,jsx}\" --fix",
+    "lint": "eslint \"./**/*.{js,jsx}\" --fix && eslint \"./**/*.{js,jsx}\" --ext js,jsx,ts,tsx",
     "pretty": "prettier --write \"./**/*.{js,jsx,json}\""
   },
   "dependencies": {
@@ -19,6 +18,7 @@
     "next": "^12.0.7",
     "react": "17.0.2",
     "react-dom": "17.0.2",
+    "react-icons": "^4.3.1",
     "react-redux": "^7.2.6",
     "sass": "^1.44.0"
   },
