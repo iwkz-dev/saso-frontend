@@ -1,0 +1,136 @@
+const menu = [
+  {
+    name: "Pempek",
+    description: "Pempek enak asal palembang asli!",
+    quantity: "100",
+    ordered: "50",
+    price: "5.5€",
+    category: "Makanan Besar",
+    image:
+      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
+    updated: "10.01.2022",
+    created: "10.03.2022",
+  },
+  {
+    name: "Pempek1",
+    description: "Pempek enak asal palembang asli!",
+    quantity: "100",
+    ordered: "20",
+    price: "5.5€",
+    category: "Makanan Besar",
+    image:
+      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
+    updated: "10.01.2022",
+    created: "10.03.2022",
+  },
+  {
+    name: "Pempek2",
+    description: "Pempek enak asal palembang asli!",
+    quantity: "100",
+    ordered: "70",
+    price: "5.5€",
+    category: "Makanan Besar",
+    image:
+      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
+    updated: "10.01.2022",
+    created: "10.03.2022",
+  },
+  {
+    name: "Pempek2",
+    description: "Pempek enak asal palembang asli!",
+    quantity: "100",
+    ordered: "70",
+    price: "5.5€",
+    category: "Makanan Besar",
+    image:
+      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
+    updated: "10.01.2022",
+    created: "10.03.2022",
+  },
+  {
+    name: "Pempek2",
+    description: "Pempek enak asal palembang asli!",
+    quantity: "100",
+    ordered: "70",
+    price: "5.5€",
+    category: "Makanan Besar",
+    image:
+      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
+    updated: "10.01.2022",
+    created: "10.03.2022",
+  },
+  {
+    name: "Pempek2",
+    description: "Pempek enak asal palembang asli!",
+    quantity: "100",
+    ordered: "70",
+    price: "5.5€",
+    category: "Makanan Besar",
+    image:
+      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
+    updated: "10.01.2022",
+    created: "10.03.2022",
+  },
+  {
+    name: "Pempek2",
+    description: "Pempek enak asal palembang asli!",
+    quantity: "100",
+    ordered: "70",
+    price: "5.5€",
+    category: "Makanan Besar",
+    image:
+      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
+    updated: "10.01.2022",
+    created: "10.03.2022",
+  },
+  {
+    name: "Pempek2",
+    description: "Pempek enak asal palembang asli!",
+    quantity: "100",
+    ordered: "70",
+    price: "5.5€",
+    category: "Makanan Besar",
+    image:
+      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
+    updated: "10.01.2022",
+    created: "10.03.2022",
+  },
+  {
+    name: "Pempek2",
+    description: "Pempek enak asal palembang asli!",
+    quantity: "100",
+    ordered: "70",
+    price: "5.5€",
+    category: "Makanan Besar",
+    image:
+      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
+    updated: "10.01.2022",
+    created: "10.03.2022",
+  },
+  {
+    name: "Pempek2",
+    description: "Pempek enak asal palembang asli!",
+    quantity: "100",
+    ordered: "70",
+    price: "5.5€",
+    category: "Makanan Besar",
+    image:
+      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
+    updated: "10.01.2022",
+    created: "10.03.2022",
+  },
+  {
+    name: "Pempek2",
+    description: "Pempek enak asal palembang asli!",
+    quantity: "100",
+    ordered: "70",
+    price: "5.5€",
+    category: "Makanan Besar",
+    image:
+      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
+    updated: "10.01.2022",
+    created: "10.03.2022",
+  },
+];
+
+export default menu;

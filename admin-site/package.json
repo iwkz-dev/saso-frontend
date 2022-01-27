@@ -5,15 +5,33 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "eslint \"./**/*.{js,jsx}\" --fix && eslint \"./**/*.{js,jsx}\" --ext js,jsx,ts,tsx",
+    "pretty": "prettier --write \"./**/*.{js,jsx,json}\""
   },
   "dependencies": {
-    "next": "12.0.4",
+    "@headlessui/react": "^1.4.2",
+    "@heroicons/react": "^1.0.5",
+    "@reduxjs/toolkit": "^1.6.2",
+    "@tailwindcss/forms": "^0.4.0",
+    "axios": "^0.24.0",
+    "eslint-config-prettier": "^8.3.0",
+    "next": "^12.0.7",
     "react": "17.0.2",
-    "react-dom": "17.0.2"
+    "react-dom": "17.0.2",
+    "react-icons": "^4.3.1",
+    "react-redux": "^7.2.6",
+    "sass": "^1.44.0"
   },
   "devDependencies": {
-    "eslint": "7.32.0",
-    "eslint-config-next": "12.0.4"
+    "autoprefixer": "^10.4.0",
+    "eslint": "^7.32.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-react": "^7.27.1",
+    "postcss": "^8.4.4",
+    "postcss-flexbugs-fixes": "^5.0.2",
+    "postcss-import": "^14.0.2",
+    "postcss-preset-env": "^7.1.0",
+    "precss": "^4.0.0",
+    "tailwindcss": "^3.0.7"
   }
 }

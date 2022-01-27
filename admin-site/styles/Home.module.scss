@@ -1,0 +1,17 @@
+.container {
+  .main {
+    height: calc(100vh - 120px);
+    padding: 2rem 0 2rem 0;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    max-width: 80rem;
+    margin-left: auto;
+    margin-right: auto;
+    align-items: center;
+    overflow-y: scroll;
+    @media screen and (max-width: 639px) {
+      height: calc(100vh - 192px);
+    }
+  }
+}
