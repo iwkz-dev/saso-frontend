@@ -40,7 +40,6 @@ function MenuTable() {
       return <div className="text-sm text-gray-900">{category?.name}</div>;
     } else if (key === "event") {
       const event = events.find((e) => e._id === menu[key]);
-      console.log(event, menu[key], events);
       return <div className="text-sm text-gray-900">{event?.name}</div>;
     } else {
       return <div className="text-sm text-gray-900">{menu[key]}</div>;

@@ -12,7 +12,6 @@ export const getAllMenus = (requestURL) => (dispatch) =>
 
 export const getDetailMenu = (id) => (dispatch) =>
   menuService.getDetailMenu(id).then((response) => {
-    console.log(response);
     if (response.status === "success") {
       dispatch(getMenuDetailSuccess(response));
     } else {
@@ -22,7 +21,6 @@ export const getDetailMenu = (id) => (dispatch) =>
 
 export const editDetailMenu = (id, requestedData) => (dispatch) =>
   menuService.editDetailMenu(id, requestedData).then((response) => {
-    console.log(response);
     if (response.status === "success") {
       dispatch(editMenuDetailSuccess(response));
     } else {

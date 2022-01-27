@@ -36,12 +36,10 @@ function MenuForm() {
       description: description,
     };
     setReqData(requestedData);
-    console.log(reqData);
   }, [name, quantity, price, event, category, description]);
 
   const submitForm = (e) => {
     e.preventDefault();
-    console.log(reqData);
     const putData = async () => {
       try {
         await dispatch(editDetailMenu(menu._id, reqData));
@@ -60,20 +58,14 @@ function MenuForm() {
   };
 
   const reset = () => {
-    setName(menu.name);
-    setQuantity(menu.quantity);
-    setPrice(menu.price);
-    setEvent(menu.event);
-    setCategory(menu.category);
-    setDescription(menu.description);
-    console.log("test");
+    window.location.reload();
   };
 
   const alert = () => {
     if (showFailed) {
       return (
         <div
-          className="max-w-md my-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
+          className="max-w-md mb-3 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
           role="alert"
           onClick={() => alertOnClick()}>
           <strong className="font-bold">Failed!</strong>
@@ -83,7 +75,7 @@ function MenuForm() {
     } else if (showSuccess) {
       return (
         <div
-          className="max-w-md my-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative"
+          className="max-w-md mb-3 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative"
           role="alert"
           onClick={() => alertOnClick()}>
           <strong className="font-bold">Success!</strong>
@@ -95,6 +87,7 @@ function MenuForm() {
 
   return (
     <div className="w-10/12">
+      {alert()}
       <form onSubmit={(e) => submitForm(e)}>
         <div className="max-w-md">
           <div className="grid grid-cols-1 gap-6">
@@ -122,6 +115,7 @@ function MenuForm() {
               <span className="text-gray-700">Price in €</span>
               <input
                 type="number"
+                step="0.01"
                 className="mt-1 block w-full  rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                 defaultValue={menu.price}
                 onChange={(e) => setPrice(Number(e.target.value))}
@@ -175,7 +169,6 @@ function MenuForm() {
             </label>
           </div>
         </div>
-        {alert()}
         <div className="flex my-4">
           <button
             type="submit"
