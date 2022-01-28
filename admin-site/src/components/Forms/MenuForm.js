@@ -39,17 +39,23 @@ function MenuForm() {
   }, [name, quantity, price, event, category, description]);
 
   const submitForm = (e) => {
+    setShowSuccess(false);
+    setShowFailed(false);
     e.preventDefault();
-    const putData = async () => {
-      try {
+    const text = confirm("Please confirm to save your changes");
+    if (text) {
+      const putData = async () => {
         await dispatch(editDetailMenu(menu._id, reqData));
-        setShowSuccess(true);
-        alert("Menu has been changed");
-      } catch (e) {
-        setShowFailed(true);
-      }
-    };
-    putData();
+      };
+      putData()
+        .then(() => {
+          setShowSuccess(true);
+          alert("Menu has been changed");
+        })
+        .catch(() => {
+          setShowFailed(true);
+        });
+    }
   };
 
   const alertOnClick = () => {
@@ -75,7 +81,7 @@ function MenuForm() {
     } else if (showSuccess) {
       return (
         <div
-          className="max-w-md mb-3 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative"
+          className="max-w mb-3 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative"
           role="alert"
           onClick={() => alertOnClick()}>
           <strong className="font-bold">Success!</strong>
@@ -89,8 +95,8 @@ function MenuForm() {
     <div className="w-10/12">
       {alert()}
       <form onSubmit={(e) => submitForm(e)}>
-        <div className="max-w-md">
-          <div className="grid grid-cols-1 gap-6">
+        <div className="max-w">
+          <div className="grid md:grid-cols-2 sm:grid-cols-1 gap-6">
             <label className="block">
               <span className="text-gray-700">Name</span>
               <input

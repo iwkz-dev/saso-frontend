@@ -11,17 +11,22 @@ const adminAxios = axios.create({
   headers,
 });
 
-const getAllEvents = () =>
-  adminAxios
-    .get(`${BASE_URL_HOST_ADMIN_EVENT}`)
-    .then((response) => response.data)
-    .catch((error) => {
-      if (error.response?.data) {
-        return error.response.data;
-      } else {
-        return { message: "Error unknown" };
-      }
-    });
+const getAllEvents = () => {
+  return new Promise((resolve, reject) => {
+    adminAxios
+      .get(`${BASE_URL_HOST_ADMIN_EVENT}`)
+      .then((response) => {
+        if (response.data.status === "success") {
+          resolve(response.data);
+        } else {
+          reject(response.data);
+        }
+      })
+      .catch((error) => {
+        reject(error.response);
+      });
+  });
+};
 
 const eventService = {
   getAllEvents,

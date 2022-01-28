@@ -1,32 +1,41 @@
 import { createSlice } from "@reduxjs/toolkit";
 import menuService from "../../services/menuService";
 
-export const getAllMenus = (requestURL) => (dispatch) =>
-  menuService.getAllMenus(requestURL).then((response) => {
-    if (response.status === "success") {
+export const getAllMenus = (requestURL) => async (dispatch) => {
+  return menuService
+    .getAllMenus(requestURL)
+    .then((response) => {
       dispatch(getMenusSuccess(response.data.data));
-    } else {
-      dispatch(getMenusFailed(response.message));
-    }
-  });
+    })
+    .catch((e) => {
+      dispatch(getMenusFailed(e.data.message));
+      return e.data;
+    });
+};
 
-export const getDetailMenu = (id) => (dispatch) =>
-  menuService.getDetailMenu(id).then((response) => {
-    if (response.status === "success") {
+export const getDetailMenu = (id) => async (dispatch) => {
+  return menuService
+    .getDetailMenu(id)
+    .then((response) => {
       dispatch(getMenuDetailSuccess(response));
-    } else {
-      dispatch(getMenusFailed(response.message));
-    }
-  });
+    })
+    .catch((e) => {
+      dispatch(getMenuDetailFailed(e.data.message));
+      return e.data;
+    });
+};
 
-export const editDetailMenu = (id, requestedData) => (dispatch) =>
-  menuService.editDetailMenu(id, requestedData).then((response) => {
-    if (response.status === "success") {
+export const editDetailMenu = (id, requestedData) => async (dispatch) => {
+  return menuService
+    .editDetailMenu(id, requestedData)
+    .then((response) => {
       dispatch(editMenuDetailSuccess(response));
-    } else {
-      dispatch(editMenuDetailFailed(response.message));
-    }
-  });
+    })
+    .catch((e) => {
+      dispatch(editMenuDetailFailed(e.data.message));
+      return e.data;
+    });
+};
 
 export const menuSlice = createSlice({
   name: "product",
@@ -44,18 +53,26 @@ export const menuSlice = createSlice({
       state.menus = [...action.payload];
       state.success = true;
     },
+    getMenusFailed: (state, action) => {
+      state.message.error = action.payload;
+      state.success = false;
+    },
     getMenuDetailSuccess: (state, action) => {
       state.detailMenu = { ...action.payload.data };
       state.message.success = action.payload.message;
+      state.success = true;
     },
-    getMenusFailed: (state, action) => {
+    getMenuDetailFailed: (state, action) => {
       state.message.error = action.payload;
+      state.success = false;
     },
     editMenuDetailSuccess: (state, action) => {
       state.message.success = action.payload.message;
+      state.success = true;
     },
     editMenuDetailFailed: (state, action) => {
       state.message.error = action.payload;
+      state.success = false;
     },
   },
 });
@@ -65,6 +82,7 @@ export const {
   getMenusSuccess,
   getMenusFailed,
   getMenuDetailSuccess,
+  getMenuDetailFailed,
   editMenuDetailSuccess,
   editMenuDetailFailed,
 } = menuSlice.actions;

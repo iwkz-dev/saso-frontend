@@ -1,14 +1,17 @@
 import { createSlice } from "@reduxjs/toolkit";
 import eventService from "../../services/eventService";
 
-export const getAllEvents = () => (dispatch) =>
-  eventService.getAllEvents().then((response) => {
-    if (response.status === "success") {
+export const getAllEvents = () => (dispatch) => {
+  return eventService
+    .getAllEvents()
+    .then((response) => {
       dispatch(getEventsSuccess(response.data.data));
-    } else {
-      dispatch(getEventsFailed(response.message));
-    }
-  });
+    })
+    .catch((e) => {
+      dispatch(getEventsFailed(e.data.message));
+      return e.data;
+    });
+};
 
 export const eventSlice = createSlice({
   name: "event",

@@ -1,14 +1,17 @@
 import { createSlice } from "@reduxjs/toolkit";
 import categoryService from "../../services/categoryService";
 
-export const getAllCategories = () => (dispatch) =>
-  categoryService.getAllCategories().then((response) => {
-    if (response.status === "success") {
+export const getAllCategories = () => async (dispatch) => {
+  return categoryService
+    .getAllCategories()
+    .then((response) => {
       dispatch(getCategoriesSuccess(response.data.data));
-    } else {
-      dispatch(getCategoriesFailed(response.message));
-    }
-  });
+    })
+    .catch((e) => {
+      dispatch(getCategoriesFailed(e.data.message));
+      return e.data;
+    });
+};
 
 export const categorySlice = createSlice({
   name: "category",

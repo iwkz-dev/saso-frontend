@@ -22,22 +22,21 @@ const index = () => {
   const [showLoading, setShowLoading] = useState(false);
 
   useEffect(() => {
-    const fetchData = async () => {
-      setShowLoading(true);
-      try {
-        await Promise.all([
-          dispatch(getAllEvents()),
-          dispatch(getAllCategories()),
-          dispatch(getAllMenus()),
-        ]);
+    setShowLoading(true);
+    Promise.all([
+      dispatch(getAllEvents()),
+      dispatch(getAllCategories()),
+      dispatch(getAllMenus()),
+    ]).then((responses) => {
+      const failed = responses.find((r) => r?.status === "failed");
+      if (!failed) {
         setShowTable(true);
         setShowLoading(false);
-      } catch (e) {
+      } else {
         setShowTable(false);
         setShowLoading(false);
       }
-    };
-    fetchData();
+    });
   }, []);
 
   useEffect(() => {
