@@ -9,8 +9,14 @@ import MenuIcon from '@mui/icons-material/Menu';
 import styles from './navbar.module.scss';
 import RegisterModal from '../../molecules/RegisterModal/RegisterModal';
 import LoginModal from '../../molecules/LoginModal/LoginModal';
+import { isAuth } from '../../../helpers/authHelper';
 
 const Navbar = () => {
+  React.useEffect(() => {
+    {
+      console.log(isAuth());
+    }
+  });
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static" color="transparent">

@@ -17,7 +17,7 @@ const initialState = {
 };
 
 export const submitRegister = data => dispatch => {
-  return auth.register(data).then(response => {
+  return authService.register(data).then(response => {
     if (response.status === 'success') {
       //TODO: do the auto login here, data is in accessToken
       const authData = {
@@ -28,7 +28,7 @@ export const submitRegister = data => dispatch => {
       // setToken(authData);
       Router.push('/');
     } else {
-      dispatch(registerFailed('please put the data correctly'));
+      dispatch(registerFailed(response.response.data.message));
     }
     return Promise.resolve();
   });

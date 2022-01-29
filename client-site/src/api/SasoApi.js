@@ -23,7 +23,6 @@ class SasoApi {
           Authorization: `${process.env.TOKEN}`,
         },
       });
-      console.log('XXX', res);
       return res;
     } catch (err) {
       console.log(err);
