@@ -17,7 +17,10 @@ import {
 const RegisterModal = () => {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const handleClose = () => {
+    setOpen(false);
+    dispatch(resetRegister());
+  };
 
   const dispatch = useDispatch();
   const userData = useSelector(state => state.register.data.user);
@@ -27,7 +30,6 @@ const RegisterModal = () => {
   useSelector(state => {
     if (state.register.data.message.success !== '') {
       handleClose();
-      dispatch(resetRegister());
     }
   });
   const handleChange = (name, value) => {

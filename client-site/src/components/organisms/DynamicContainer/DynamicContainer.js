@@ -8,7 +8,6 @@ import sasoApi from '../../../api/SasoApi';
 const DynamicContainer = () => {
   const isBreakpoint = useMediaQuery(parseInt(styles.breakpointTablet));
   const [mobileActive, setMobileActive] = useState(false);
-  // const errorMessage = useSelector(state => state.login.data.message.error);
 
   useEffect(() => {
     setMobileActive(false);

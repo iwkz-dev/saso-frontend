@@ -1,15 +1,15 @@
-import React from "react"
-import BasicCard from "../../atoms/BasicCard/BasicCard"
-import styles from "./CardCollection.module.scss"
+import React from 'react';
+import BasicCard from '../../atoms/BasicCard/BasicCard';
+import styles from './CardCollection.module.scss';
 
-const CardCollection = () => {
+const CardCollection = ({ menuList }) => {
   return (
     <div className={styles.container}>
-      <BasicCard />
-      <BasicCard />
-      <BasicCard />
+      {menuList.map(element => (
+        <BasicCard menu={element} />
+      ))}
     </div>
-  )
-}
+  );
+};
 
-export default CardCollection
+export default CardCollection;
