@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
-import auth from '../../services/auth';
-// import { setToken } from '../../helpers/auth';
+import authService from '../../services/authService';
 import Router from 'next/router';
+import { setToken } from '../../helpers/authHelper';
 
 const initialState = {
   user: {
@@ -16,15 +16,14 @@ const initialState = {
 };
 
 export const submitLogin = data => dispatch => {
-  return auth.login(data).then(response => {
+  return authService.login(data).then(response => {
     if (response.status === 'success') {
       const authData = {
         accessToken: response.data.accessToken,
         id: response.data.id,
       };
       dispatch(loginSuccess(response.message));
-      console.log(authData);
-      // setToken(authData);
+      setToken(authData);
       Router.push('/');
     } else {
       dispatch(loginFailed(response.message));

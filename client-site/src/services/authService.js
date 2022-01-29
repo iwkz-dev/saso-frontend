@@ -7,8 +7,8 @@ const register = data => {
   return sasoApi.postData('/customer/user/register', data);
 };
 
-const auth = {
+const authService = {
   login,
   register,
 };
-export default auth;
+export default authService;

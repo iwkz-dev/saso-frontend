@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import auth from '../../services/auth';
+import authService from '../../services/authService';
 // import { setToken } from '../../helpers/auth';
 import Router from 'next/router';
 
