@@ -3,6 +3,18 @@ import auth from '../../services/auth';
 // import { setToken } from '../../helpers/auth';
 import Router from 'next/router';
 
+const initialState = {
+  user: {
+    email: '',
+    password: '',
+  },
+  message: {
+    error: '',
+    success: '',
+  },
+  isLogin: false,
+};
+
 export const submitLogin = data => dispatch => {
   return auth.login(data).then(response => {
     if (response.status === 'success') {
@@ -11,6 +23,7 @@ export const submitLogin = data => dispatch => {
         id: response.data.id,
       };
       dispatch(loginSuccess(response.message));
+      console.log(authData);
       // setToken(authData);
       Router.push('/');
     } else {
@@ -23,17 +36,7 @@ export const submitLogin = data => dispatch => {
 export const loginSlice = createSlice({
   name: 'login',
   initialState: {
-    data: {
-      user: {
-        email: '',
-        password: '',
-      },
-      message: {
-        error: '',
-        success: '',
-      },
-      isLogin: false,
-    },
+    data: initialState,
   },
   reducers: {
     textFieldChangeHandler: (state, action) => {
@@ -48,10 +51,13 @@ export const loginSlice = createSlice({
     loginFailed: (state, action) => {
       state.data.message.error = action.payload;
     },
+    resetLogin: (state, action) => {
+      state.data = { ...initialState, isLogin: state.data.isLogin };
+    },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { textFieldChangeHandler, loginSuccess, loginFailed } =
+export const { textFieldChangeHandler, loginSuccess, loginFailed, resetLogin } =
   loginSlice.actions;
 export default loginSlice.reducer;

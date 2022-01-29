@@ -8,6 +8,7 @@ import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import styles from './navbar.module.scss';
 import RegisterModal from '../../molecules/RegisterModal/RegisterModal';
+import LoginModal from '../../molecules/LoginModal/LoginModal';
 
 const Navbar = () => {
   return (
@@ -27,8 +28,7 @@ const Navbar = () => {
             iwkz logo here
           </Typography>
           <div className={styles.buttonsContainer}>
-            <Button variant="outlined">Masuk</Button>
-            {/* <Button variant="contained">Daftar</Button> */}
+            <LoginModal />
             <RegisterModal />
           </div>
         </Toolbar>
