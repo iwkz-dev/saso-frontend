@@ -3,9 +3,10 @@ import Router from "next/router";
 import authService from "../../services/authService";
 import { setToken } from "../../helpers/authHelper";
 
-export const submitLogin = (data) => (dispatch) =>
-  authService.login(data).then((response) => {
-    if (response.status === "success" && response.data.role === 1) {
+export const submitLogin = (data) => async (dispatch) => {
+  return authService
+    .login(data)
+    .then((response) => {
       const authData = {
         accessToken: `Bearer ${response.data.accessToken}`,
         id: response.data.id,
@@ -13,11 +14,11 @@ export const submitLogin = (data) => (dispatch) =>
       dispatch(loginSuccess(response.message));
       setToken(authData);
       Router.push("/");
-    } else {
-      dispatch(loginFailed(response.message));
-    }
-    return Promise.resolve();
-  });
+    })
+    .catch((e) => {
+      dispatch(loginFailed(e.data.message));
+    });
+};
 
 export const loginSlice = createSlice({
   name: "login",
@@ -43,6 +44,7 @@ export const loginSlice = createSlice({
     loginSuccess: (state, action) => {
       state.data.message.success = action.payload;
       state.data.message.error = "";
+      state.data.login = true;
     },
     loginFailed: (state, action) => {
       state.data.message.error = action.payload;

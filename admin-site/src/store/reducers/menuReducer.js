@@ -30,9 +30,35 @@ export const editDetailMenu = (id, requestedData) => async (dispatch) => {
     .editDetailMenu(id, requestedData)
     .then((response) => {
       dispatch(editMenuDetailSuccess(response));
+      return response;
     })
     .catch((e) => {
       dispatch(editMenuDetailFailed(e.data.message));
+      return e.data;
+    });
+};
+
+export const createMenu = (requestedData) => async (dispatch) => {
+  return menuService
+    .createMenu(requestedData)
+    .then((response) => {
+      dispatch(createMenuSuccess(response));
+      return response;
+    })
+    .catch((e) => {
+      dispatch(createMenuFailed(e.data.message));
+      return e.data;
+    });
+};
+
+export const deleteMenu = (id) => async (dispatch) => {
+  return menuService
+    .deleteMenu(id)
+    .then((response) => {
+      dispatch(deleteMenuSuccess(response));
+    })
+    .catch((e) => {
+      dispatch(deleteMenuFailed(e.data.message));
       return e.data;
     });
 };
@@ -74,6 +100,22 @@ export const menuSlice = createSlice({
       state.message.error = action.payload;
       state.success = false;
     },
+    createMenuSuccess: (state, action) => {
+      state.message.success = action.payload.message;
+      state.success = true;
+    },
+    createMenuFailed: (state, action) => {
+      state.message.error = action.payload;
+      state.success = false;
+    },
+    deleteMenuSuccess: (state, action) => {
+      state.message.success = action.payload.message;
+      state.success = true;
+    },
+    deleteMenuFailed: (state, action) => {
+      state.message.error = action.payload;
+      state.success = false;
+    },
   },
 });
 
@@ -85,5 +127,9 @@ export const {
   getMenuDetailFailed,
   editMenuDetailSuccess,
   editMenuDetailFailed,
+  createMenuSuccess,
+  createMenuFailed,
+  deleteMenuSuccess,
+  deleteMenuFailed,
 } = menuSlice.actions;
 export default menuSlice.reducer;

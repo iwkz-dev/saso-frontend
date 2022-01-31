@@ -4,8 +4,8 @@ import Router from "next/router";
 import {
   textFieldChangeHandler,
   submitLogin,
-} from "../../store/reducers/loginReducer";
-import { isAuth } from "../../helpers/authHelper";
+} from "../../../store/reducers/loginReducer";
+import { isAuth } from "../../../helpers/authHelper";
 
 function LoginForm() {
   const dispatch = useDispatch();

@@ -62,9 +62,45 @@ const editDetailMenu = (id, requestedData) => {
   });
 };
 
+const createMenu = (requestedData) => {
+  return new Promise((resolve, reject) => {
+    adminAxios
+      .post(`${BASE_URL_HOST_ADMIN_MENU}`, requestedData)
+      .then((response) => {
+        if (response.data.status === "success") {
+          resolve(response.data);
+        } else {
+          reject(response.data);
+        }
+      })
+      .catch((error) => {
+        reject(error.response);
+      });
+  });
+};
+
+const deleteMenu = (id) => {
+  return new Promise((resolve, reject) => {
+    adminAxios
+      .delete(`${BASE_URL_HOST_ADMIN_MENU}/${id}`)
+      .then((response) => {
+        if (response.data.status === "success") {
+          resolve(response.data);
+        } else {
+          reject(response.data);
+        }
+      })
+      .catch((error) => {
+        reject(error.response);
+      });
+  });
+};
+
 const menuService = {
   getAllMenus,
   getDetailMenu,
   editDetailMenu,
+  deleteMenu,
+  createMenu,
 };
 export default menuService;

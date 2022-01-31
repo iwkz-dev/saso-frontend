@@ -2,10 +2,10 @@ import React, { useEffect, useState } from "react";
 import LoggedInMain from "../../src/components/Main/loggedInMain/loggedInMain";
 import MenuTable from "../../src/components/Tables/MenuTable";
 import { useDispatch } from "react-redux";
-import { getAllMenus } from "../../src/store/reducers/menuReducer";
+import { deleteMenu, getAllMenus } from "../../src/store/reducers/menuReducer";
 import { getAllCategories } from "../../src/store/reducers/categoryReducer";
 import { getAllEvents } from "../../src/store/reducers/eventReducer";
-import MenusFilterForm from "../../src/components/Forms/FilterForms/MenusFilterForm";
+import MenusFilterForm from "../../src/components/Forms/Menu/MenusFilterForm";
 import Link from "next/link";
 import { HiAdjustments } from "react-icons/hi";
 import { IoMdAddCircle } from "react-icons/io";
@@ -14,19 +14,37 @@ const index = () => {
   const dispatch = useDispatch();
   const pageData = { name: "Menu", href: "/menu", current: true };
   const pageTitle = "Saso App | Menu";
-  const [selectedEvent, setSelectedEvent] = useState({});
-  const [selectedCategory, setSelectedCategory] = useState({});
   const [filters, setFilters] = useState([]);
   const [showFilterForm, setShowFilterForm] = useState(false);
   const [showTable, setShowTable] = useState(false);
   const [showLoading, setShowLoading] = useState(false);
 
   useEffect(() => {
+    getAllData();
+  }, []);
+
+  const filtersQueryBuilder = () => {
+    const queries = [];
+    if (filters.length > 0) {
+      filters.map((f) => {
+        const filtersQuery = `${f.name}=${f.id}`;
+        queries.push(filtersQuery);
+      });
+      return `?${queries.join("&")}`;
+    }
+    return "";
+  };
+
+  useEffect(() => {
+    dispatch(getAllMenus(filtersQueryBuilder()));
+  }, [filters]);
+
+  const getAllData = () => {
     setShowLoading(true);
     Promise.all([
       dispatch(getAllEvents()),
       dispatch(getAllCategories()),
-      dispatch(getAllMenus()),
+      dispatch(getAllMenus(filtersQueryBuilder())),
     ]).then((responses) => {
       const failed = responses.find((r) => r?.status === "failed");
       if (!failed) {
@@ -37,19 +55,7 @@ const index = () => {
         setShowLoading(false);
       }
     });
-  }, []);
-
-  useEffect(() => {
-    const filtersQueryBuilder = () => {
-      const queries = [];
-      filters.map((f) => {
-        const filtersQuery = `${f.name}=${f.id}`;
-        queries.push(filtersQuery);
-      });
-      return `?${queries.join("&")}`;
-    };
-    dispatch(getAllMenus(filtersQueryBuilder()));
-  }, [filters]);
+  };
 
   const handleChangeShowFilter = () => {
     setShowFilterForm(!showFilterForm);
@@ -61,11 +67,7 @@ const index = () => {
       id: value,
       name: name,
     };
-    if (name === "event") {
-      setSelectedCategory(value);
-    } else if (name === "category") {
-      setSelectedEvent(value);
-    }
+
     const filterIndex = filters.findIndex((f) => f.name === data.name);
     if (!(filterIndex > -1)) {
       setFilters([...filters, data]);
@@ -73,6 +75,27 @@ const index = () => {
       const tempFilters = [...filters];
       tempFilters[filterIndex].id = data.id;
       setFilters([...tempFilters]);
+    }
+  };
+
+  const onDelete = async (id) => {
+    try {
+      const onDelete = await dispatch(deleteMenu(id));
+      if (onDelete?.status !== "failed") {
+        try {
+          setShowLoading(true);
+          const getMenus = await dispatch(getAllMenus(filtersQueryBuilder()));
+          if (getMenus?.status !== "failed") {
+            setShowLoading(false);
+          }
+        } catch (e) {
+          //TODO: handle error here
+          console.log(e);
+        }
+      }
+    } catch (e) {
+      //TODO: handle error here
+      console.log(e);
     }
   };
 
@@ -98,12 +121,10 @@ const index = () => {
         showFilterForm={showFilterForm}
         handleChangeShowFilter={handleChangeShowFilter}
       />
-      {showLoading ? <p>Loading...</p> : ""}
-      {showTable ? (
-        <MenuTable
-          selectedEvent={selectedEvent}
-          selectedCategory={selectedCategory}
-        />
+      {showLoading ? (
+        <p>Loading...</p>
+      ) : showTable ? (
+        <MenuTable onDelete={onDelete} />
       ) : (
         ""
       )}

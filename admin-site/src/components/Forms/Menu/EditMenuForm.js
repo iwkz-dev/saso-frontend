@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { editDetailMenu } from "../../store/reducers/menuReducer";
+import React, {useEffect, useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
+import {editDetailMenu} from "../../../store/reducers/menuReducer";
 
-function MenuForm() {
+function EditMenuForm() {
   const menu = useSelector((state) => state.menu.detailMenu);
   const events = useSelector((state) => state.event.events);
   const categories = useSelector((state) => state.category.categories);
@@ -45,12 +45,15 @@ function MenuForm() {
     const text = confirm("Please confirm to save your changes");
     if (text) {
       const putData = async () => {
-        await dispatch(editDetailMenu(menu._id, reqData));
+        return await dispatch(editDetailMenu(menu._id, reqData));
       };
       putData()
-        .then(() => {
-          setShowSuccess(true);
-          alert("Menu has been changed");
+        .then((r) => {
+          if (r?.status === "failed") {
+            setShowFailed(true);
+          } else {
+            setShowSuccess(true);
+          }
         })
         .catch(() => {
           setShowFailed(true);
@@ -67,25 +70,29 @@ function MenuForm() {
     window.location.reload();
   };
 
-  const alert = () => {
+  const alertElem = () => {
     if (showFailed) {
       return (
         <div
-          className="max-w-md mb-3 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
+          className="max-w mb-3 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative cursor-pointer"
           role="alert"
           onClick={() => alertOnClick()}>
-          <strong className="font-bold">Failed!</strong>
-          <span className="block sm:inline"> Please try again!</span>
+          <span className="block sm:inline">
+            <strong className="font-bold">Failed! </strong>
+            Please try again
+          </span>
         </div>
       );
     } else if (showSuccess) {
       return (
         <div
-          className="max-w mb-3 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative"
+          className="max-w mb-3 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative cursor-pointer"
           role="alert"
           onClick={() => alertOnClick()}>
-          <strong className="font-bold">Success!</strong>
-          <span className="block sm:inline"> Menu has been changed</span>
+          <span className="block sm:inline">
+            <strong className="font-bold">Success! </strong>
+            Menu has been changed
+          </span>
         </div>
       );
     }
@@ -93,7 +100,7 @@ function MenuForm() {
 
   return (
     <div className="w-10/12">
-      {alert()}
+      {alertElem()}
       <form onSubmit={(e) => submitForm(e)}>
         <div className="max-w">
           <div className="grid md:grid-cols-2 sm:grid-cols-1 gap-6">
@@ -107,13 +114,12 @@ function MenuForm() {
                 onChange={(e) => setName(e.target.value)}
               />
             </label>
-
             <label className="block">
               <span className="text-gray-700">Quantity</span>
               <input
                 type="number"
                 className="mt-1 block w-full  rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                defaultValue={menu.quantity}
+                defaultValue={quantity}
                 onChange={(e) => setQuantity(parseInt(e.target.value))}
               />
             </label>
@@ -123,7 +129,7 @@ function MenuForm() {
                 type="number"
                 step="0.01"
                 className="mt-1 block w-full  rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                defaultValue={menu.price}
+                defaultValue={price}
                 onChange={(e) => setPrice(Number(e.target.value))}
               />
             </label>
@@ -135,13 +141,13 @@ function MenuForm() {
                 <option value="" disabled>
                   Event
                 </option>
-                {events.map((event) => {
+                {events.map((item) => {
                   return (
                     <option
-                      key={event._id}
-                      value={event._id}
-                      selected={menu.event === event._id}>
-                      {event.name}
+                      key={item._id}
+                      value={item._id}
+                      selected={event === item._id}>
+                      {item.name}
                     </option>
                   );
                 })}
@@ -152,13 +158,13 @@ function MenuForm() {
               <select
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                 onChange={(e) => setCategory(e.target.value)}>
-                {categories.map((category) => {
+                {categories.map((c) => {
                   return (
                     <option
-                      key={category._id}
-                      value={category._id}
-                      selected={menu.category === category._id}>
-                      {category.name}
+                      key={c._id}
+                      value={c._id}
+                      selected={category === c._id}>
+                      {c.name}
                     </option>
                   );
                 })}
@@ -169,7 +175,7 @@ function MenuForm() {
               <textarea
                 className=" mt-1 block w-full rounded-md  border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                 rows="2"
-                defaultValue={menu.description}
+                defaultValue={description}
                 onChange={(e) => setDescription(e.target.value)}
               />
             </label>
@@ -193,4 +199,4 @@ function MenuForm() {
   );
 }
 
-export default MenuForm;
+export default EditMenuForm;

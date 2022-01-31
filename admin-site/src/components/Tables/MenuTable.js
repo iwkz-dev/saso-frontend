@@ -4,13 +4,12 @@ import { useSelector } from "react-redux";
 import { BiEdit } from "react-icons/bi";
 import { MdDeleteOutline } from "react-icons/md";
 
-function MenuTable() {
+function MenuTable({ onDelete }) {
   const menus = useSelector((state) => state.menu.menus);
   const events = useSelector((state) => state.event.events);
   const categories = useSelector((state) => state.category.categories);
 
   const tableHead = {
-    _id: "Menu ID",
     name: "Name",
     description: "Description",
     category: "Category",
@@ -32,7 +31,9 @@ function MenuTable() {
     }
   };
 
-  const rowHandlder = (menu, key) => {
+  const rowHandler = (menu, key) => {
+    const maxLengthDescription = 30;
+    const maxLengthName = 20;
     if (key === "images") {
       return imageColumnHandler(menu[key]);
     } else if (key === "category") {
@@ -41,6 +42,15 @@ function MenuTable() {
     } else if (key === "event") {
       const event = events.find((e) => e._id === menu[key]);
       return <div className="text-sm text-gray-900">{event?.name}</div>;
+    } else if (
+      key === "description" &&
+      menu[key].length > maxLengthDescription
+    ) {
+      const shortenerStr = `${menu[key].substring(0, maxLengthDescription)}...`;
+      return <div className="text-sm text-gray-900">{shortenerStr}</div>;
+    } else if (key === "name" && menu[key].length > maxLengthName) {
+      const shortenerStr = `${menu[key].substring(0, maxLengthName)}...`;
+      return <div className="text-sm text-gray-900">{shortenerStr}</div>;
     } else {
       return <div className="text-sm text-gray-900">{menu[key]}</div>;
     }
@@ -59,16 +69,18 @@ function MenuTable() {
                 <BiEdit />
               </a>
             </Link>
-            <a href="#" className="text-red-600 hover:text-red-900 px-2">
+            <div
+              onClick={() => onDelete(m["_id"])}
+              className="text-red-600 hover:text-red-900 px-2 cursor-pointer">
               <MdDeleteOutline />
-            </a>
+            </div>
           </div>
         </td>
         {Object.keys(tableHead).map((k) => (
           <td
             key={k}
             className="px-6 py-3 whitespace-nowrap text-sm font-medium">
-            {rowHandlder(m, k)}
+            {rowHandler(m, k)}
           </td>
         ))}
       </tr>
