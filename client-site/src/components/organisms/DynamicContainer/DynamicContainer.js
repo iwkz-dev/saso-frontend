@@ -13,7 +13,8 @@ const DynamicContainer = () => {
     setMobileActive(false);
   }, [isBreakpoint]);
   const handleClick = async () => {
-    await sasoApi.getData('/customer/menu');
+    const res = await sasoApi.getData('/customer/menu');
+    console.log(res);
   };
   return (
     <div className={styles.dynamicContainer}>

@@ -17,6 +17,7 @@ const Navbar = () => {
       console.log(isAuth());
     }
   });
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static" color="transparent">
@@ -33,10 +34,14 @@ const Navbar = () => {
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             iwkz logo here
           </Typography>
-          <div className={styles.buttonsContainer}>
-            <LoginModal />
-            <RegisterModal />
-          </div>
+          {!isAuth() ? (
+            <div className={styles.buttonsContainer}>
+              <LoginModal />
+              <RegisterModal />
+            </div>
+          ) : (
+            <Button variant="contained">Logout</Button>
+          )}
         </Toolbar>
       </AppBar>
     </Box>

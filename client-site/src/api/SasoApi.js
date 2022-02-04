@@ -1,4 +1,5 @@
 import Axios from 'axios';
+import { getToken } from '../helpers/authHelper';
 
 class SasoApi {
   constructor() {
@@ -16,11 +17,11 @@ class SasoApi {
     try {
       console.log(Axios.defaults.baseURL);
       console.log(url);
-      console.log(process.env.NEXT_PUBLIC_ACCESS_TOKEN);
+      console.log(getToken());
       const res = await Axios.get(url, {
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `${process.env.TOKEN}`,
+          Authorization: getToken(),
         },
       });
       return res;
