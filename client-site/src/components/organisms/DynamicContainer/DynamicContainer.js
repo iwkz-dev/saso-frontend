@@ -4,10 +4,16 @@ import Tabs from '../../molecules/Tabs/Tabs';
 import Cart from '../../molecules/Cart/Cart';
 import { Button } from '@mui/material';
 import sasoApi from '../../../api/SasoApi';
+import { getMenu } from '../../../stores/reducers/menu';
+import { useDispatch, useSelector } from 'react-redux';
 
 const DynamicContainer = () => {
+  const dispatch = useDispatch();
   const isBreakpoint = useMediaQuery(parseInt(styles.breakpointTablet));
   const [mobileActive, setMobileActive] = useState(false);
+  useEffect(() => {
+    dispatch(getMenu());
+  }, []);
 
   useEffect(() => {
     setMobileActive(false);

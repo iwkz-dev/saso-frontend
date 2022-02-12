@@ -15,13 +15,9 @@ class SasoApi {
   }
   getData = async url => {
     try {
-      console.log(Axios.defaults.baseURL);
-      console.log(url);
-      console.log(getToken());
       const res = await Axios.get(url, {
         headers: {
           'Content-Type': 'application/json',
-          Authorization: getToken(),
         },
       });
       return res;
