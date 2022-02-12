@@ -6,6 +6,7 @@ export const getAllMenus = (requestURL) => async (dispatch) => {
     .getAllMenus(requestURL)
     .then((response) => {
       dispatch(getMenusSuccess(response.data.data));
+      return response;
     })
     .catch((e) => {
       dispatch(getMenusFailed(e.data.message));
@@ -18,6 +19,7 @@ export const getDetailMenu = (id) => async (dispatch) => {
     .getDetailMenu(id)
     .then((response) => {
       dispatch(getMenuDetailSuccess(response));
+      return response;
     })
     .catch((e) => {
       dispatch(getMenuDetailFailed(e.data.message));
@@ -56,6 +58,7 @@ export const deleteMenu = (id) => async (dispatch) => {
     .deleteMenu(id)
     .then((response) => {
       dispatch(deleteMenuSuccess(response));
+      return response;
     })
     .catch((e) => {
       dispatch(deleteMenuFailed(e.data.message));

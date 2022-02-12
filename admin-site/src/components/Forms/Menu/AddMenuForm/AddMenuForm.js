@@ -1,7 +1,8 @@
 import React, {useRef, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {createMenu} from "../../../store/reducers/menuReducer";
+import {createMenu} from "../../../../store/reducers/menuReducer";
 import ImageUploading from "react-images-uploading";
+import styles from "./AddMenuForm.module.scss";
 
 const AddMenuForm = () => {
   //TODO: Styling for uploading image
@@ -187,7 +188,7 @@ const AddMenuForm = () => {
                   // write your building UI
                   <div className="upload__image-wrapper">
                     <div
-                      className="cursor-pointer"
+                      className={styles.cursorPointer}
                       style={isDragging ? { color: "red" } : undefined}
                       onClick={onImageUpload}
                       {...dragProps}>

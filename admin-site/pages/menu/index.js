@@ -18,6 +18,7 @@ const index = () => {
   const [showFilterForm, setShowFilterForm] = useState(false);
   const [showTable, setShowTable] = useState(false);
   const [showLoading, setShowLoading] = useState(false);
+  const [showError, setShowError] = useState("");
 
   useEffect(() => {
     getAllData();
@@ -41,6 +42,7 @@ const index = () => {
 
   const getAllData = () => {
     setShowLoading(true);
+    setShowError("");
     Promise.all([
       dispatch(getAllEvents()),
       dispatch(getAllCategories()),
@@ -53,6 +55,7 @@ const index = () => {
       } else {
         setShowTable(false);
         setShowLoading(false);
+        showError(failed);
       }
     });
   };
@@ -79,23 +82,28 @@ const index = () => {
   };
 
   const onDelete = async (id) => {
+    setShowError("")
     try {
       const onDelete = await dispatch(deleteMenu(id));
-      if (onDelete?.status !== "failed") {
+      if (onDelete.status !== "failed") {
         try {
           setShowLoading(true);
           const getMenus = await dispatch(getAllMenus(filtersQueryBuilder()));
-          if (getMenus?.status !== "failed") {
+          if (getMenus.status !== "failed") {
             setShowLoading(false);
+          }else{
+            setShowError(getMenus.message);
           }
         } catch (e) {
           //TODO: handle error here
-          console.log(e);
+          setShowError(e)
         }
+      }else{
+        setShowError(onDelete.message)
       }
     } catch (e) {
       //TODO: handle error here
-      console.log(e);
+      setShowError(e)
     }
   };
 
@@ -121,6 +129,9 @@ const index = () => {
         showFilterForm={showFilterForm}
         handleChangeShowFilter={handleChangeShowFilter}
       />
+      {
+        showError || ""
+      }
       {showLoading ? (
         <p>Loading...</p>
       ) : showTable ? (
