@@ -7,30 +7,13 @@ import TabPanel from '@mui/lab/TabPanel';
 import styles from './tabs.module.scss';
 import CardCollection from '../CardCollection/CardCollection';
 
-export default function LabTabs() {
+export default function Tabs({ menu }) {
+  console.log(menu);
   const [value, setValue] = React.useState('1');
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
-  const dummyMenuMakanan = [
-    {
-      title: 'Beruang Goreng Sambel Ijo',
-      description: 'this is desc',
-      imageSrc: '',
-      imageAlt: '',
-      price: '$99',
-      porsi: '21',
-    },
-    {
-      title: 'Salted Egg Gajah Crispy',
-      description: '',
-      imageSrc: '',
-      imageAlt: '',
-      price: '$666',
-      porsi: '13',
-    },
-  ];
 
   return (
     <div className={styles.tabsContainer}>
@@ -50,7 +33,7 @@ export default function LabTabs() {
         </Box>
         <TabPanel value="1">
           Makanan Ringan
-          <CardCollection menuList={dummyMenuMakanan} />
+          <CardCollection menuList={menu} />
         </TabPanel>
         <TabPanel value="2">Makanan Utama</TabPanel>
         <TabPanel value="3">Minuman</TabPanel>

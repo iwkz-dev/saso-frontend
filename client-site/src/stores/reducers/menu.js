@@ -1,22 +1,20 @@
 import { createSlice } from '@reduxjs/toolkit';
-import SasoApi from '../../api/SasoApi';
-import authService from '../../services/authService';
+import menuService from '../../services/menuService';
 
 const initialState = {
-  data: [],
+  menu: [],
   message: {
     error: '',
     success: '',
   },
 };
 
-export const getMenu = data => dispatch => {
-  return SasoApi.getData('/customer/menu').then(response => {
+export const getMenu = () => dispatch => {
+  return menuService.getMenu().then(response => {
     if (response.data.status === 'success') {
-      console.log('aaa', response.data);
-      dispatch(menuSuccess(response));
+      dispatch(menuSuccess(response.data));
     } else {
-      // dispatch(menuFailed(response.response.data.message));
+      dispatch(menuFailed(response.data));
     }
     return Promise.resolve();
   });
@@ -27,13 +25,12 @@ export const menuSlice = createSlice({
   initialState: { data: initialState },
   reducers: {
     menuSuccess: (state, action) => {
-      debugger;
-      // state.data = action.payload.data;
-      // state.data.message.success = action.payload.message;
-      // state.data.message.error = '';
+      state.data.menu = [...action.payload.data.data];
+      state.data.message.success = action.payload.data.message;
+      state.data.message.error = '';
     },
     menuFailed: (state, action) => {
-      // state.data.message.error = action.payload;
+      state.data.message.error = action.payload.data.message;
     },
     resetMenu: (state, action) => {
       state.data = initialState;

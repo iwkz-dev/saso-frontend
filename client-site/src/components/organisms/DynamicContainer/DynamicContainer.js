@@ -11,6 +11,8 @@ const DynamicContainer = () => {
   const dispatch = useDispatch();
   const isBreakpoint = useMediaQuery(parseInt(styles.breakpointTablet));
   const [mobileActive, setMobileActive] = useState(false);
+  const menu = useSelector(state => state.menu.data.menu);
+
   useEffect(() => {
     dispatch(getMenu());
   }, []);
@@ -29,7 +31,7 @@ const DynamicContainer = () => {
       </Button>
       <div className={styles.firstBlock}>
         <div className={styles.firstInnerContainer}>
-          <Tabs />
+          <Tabs menu={menu} />
         </div>
       </div>
       <div className={styles.secondBlock}>
