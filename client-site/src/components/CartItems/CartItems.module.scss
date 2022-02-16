@@ -1,0 +1,20 @@
+.itemWrapper{
+  display: flex;
+  flex-wrap:wrap;
+  justify-content: space-between;
+  padding: 15px;
+  .firstWrapper{
+    display: flex;
+    align-items: center;
+    flex-basis: 33%;
+    span{
+      &:first-child{
+        margin-right: 13px;
+      }
+    }
+  }
+  .thirdWrapper{
+    display: flex;
+    align-items: center;
+  }
+}

@@ -3,6 +3,7 @@ import React from "react";
 import theme from "../src/theme";
 import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
+import { wrapper } from '../src/redux/store';
 
 function MyApp({ Component, pageProps }) {
   React.useEffect(() => {
@@ -20,4 +21,4 @@ function MyApp({ Component, pageProps }) {
   );
 }
 
-export default MyApp;
+export default wrapper.withRedux(MyApp)
