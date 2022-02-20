@@ -9,22 +9,44 @@ import styles from './BasicCard.module.scss';
 import Image from 'next/image';
 
 export default function BasicCard({ menu }) {
+  console.log(menu);
   return (
-    <Card sx={{ maxWidth: 345 }} className={styles.cardContainer}>
-      <Image width={400} height={200} src="/images/spiderman.jpg" />
-      <CardContent>
-        <Typography gutterBottom variant="h5" component="div">
-          {menu.title}
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
-          Lizards are a widespread group of squamate reptiles, with over 6,000
-          species, ranging across all continents except Antarctica
-        </Typography>
-      </CardContent>
-      <CardActions>
-        <Button size="small">Share</Button>
-        <Button size="small">Learn More</Button>
-      </CardActions>
+    <Card className={styles.cardContainer}>
+      <div className={styles.imageContainer}>
+        {menu.images[0] ? (
+          <Image
+            width={400}
+            height={200}
+            layout="responsive"
+            src={menu.images[0].imageUrl}
+          />
+        ) : (
+          <Image
+            width={400}
+            height={200}
+            layout="responsive"
+            src="https://via.placeholder.com/400x200"
+          />
+        )}
+      </div>
+      <div className={styles.contentContainer}>
+        <CardContent>
+          <Typography gutterBottom variant="h5" component="div">
+            {menu.name}
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            {menu.description}
+          </Typography>
+          <Typography variant="h6" color="text.price">
+            {menu.price} €
+          </Typography>
+        </CardContent>
+        <CardActions>
+          <Button size="small" variant="contained">
+            Add to Cart
+          </Button>
+        </CardActions>
+      </div>
     </Card>
   );
 }
