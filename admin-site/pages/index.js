@@ -1,14 +1,14 @@
-import LoggedInMain from "../src/components/Main/loggedInMain/loggedInMain";
+import LoggedInLayout from "../src/components/Layout/loggedInLayout/loggedInLayout";
 
 const index = () => {
-  const pageData = { name: "Dashboard", href: "/", current: true };
-  const pageTitle = "Saso App | Main Page";
+    const pageData = { name: "Dashboard", href: "/", current: true };
+    const pageTitle = "Saso App | Layout Page";
 
-  return (
-    <LoggedInMain title={pageTitle} pageData={pageData}>
-      <p>Dashboard is here</p>
-    </LoggedInMain>
-  );
+    return (
+        <LoggedInLayout title={pageTitle} pageData={pageData}>
+            <p>Dashboard is here</p>
+        </LoggedInLayout>
+    );
 };
 
 export default index;

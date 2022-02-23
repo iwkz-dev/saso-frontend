@@ -1,0 +1,51 @@
+.uploadImageWrapper {
+  .cursorPointer{
+    background-color: #f5f5f5;
+    min-height: 200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 0.375rem;
+    margin: 5px 0;
+    color: #b3b3b3;
+    cursor: pointer;
+    border: 3px dashed #b3b3b3;
+    &:hover {
+      font-size: 1.1rem;
+    }
+  }
+  .removeAllImages {
+    color: red;
+    cursor: pointer;
+    width: fit-content;
+    &:hover {
+      color: darkred;
+    }
+  }
+  .images {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .imageItem {
+    position: relative;
+    width: fit-content;
+    height: 100%;
+  }
+  .removeImage{
+    color: red;
+    position: absolute;
+    top: 3px;
+    right: 3px;
+    border-radius: 50px;
+    background-color: #fff;
+    font-size: 1.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    &:hover {
+      color: darkred;
+    }
+  }
+}

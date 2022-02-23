@@ -1,14 +1,14 @@
-import LoggedInMain from "../src/components/Main/loggedInMain/loggedInMain";
+import LoggedInLayout from "../src/components/Layout/loggedInLayout/loggedInLayout";
 
 const event = () => {
-  const pageData = { name: "Event", href: "/event", current: true };
-  const pageTitle = "Saso App | Event";
+    const pageData = { name: "Event", href: "/event", current: true };
+    const pageTitle = "Saso App | Event";
 
-  return (
-    <LoggedInMain title={pageTitle} pageData={pageData}>
-      <p>test event</p>
-    </LoggedInMain>
-  );
+    return (
+        <LoggedInLayout title={pageTitle} pageData={pageData}>
+            <p>test event</p>
+        </LoggedInLayout>
+    );
 };
 
 export default event;

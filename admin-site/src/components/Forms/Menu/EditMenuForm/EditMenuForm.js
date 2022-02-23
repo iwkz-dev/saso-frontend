@@ -1,51 +1,61 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { createMenu } from "../../../../store/reducers/menuReducer";
-import Loading from "../../../common/Loading/Loading";
-import ImageUploader from "../../../common/ImageUploader/ImageUploader";
+import { editDetailMenu } from "../../../../store/reducers/menuReducer";
 
-const AddMenuForm = () => {
-    const dispatch = useDispatch();
-    const form = useRef();
+function EditMenuForm() {
+    const menu = useSelector((state) => state.menu.detailMenu);
     const events = useSelector((state) => state.event.events);
     const categories = useSelector((state) => state.category.categories);
-    const [showUploading, setShowUploading] = useState(false);
+    const dispatch = useDispatch();
+    const [name, setName] = useState(menu.name);
+    const [quantity, setQuantity] = useState(menu.quantity);
+    const [price, setPrice] = useState(menu.price);
+    const [event, setEvent] = useState(menu.event);
+    const [category, setCategory] = useState(menu.category);
+    const [description, setDescription] = useState(menu.description);
+    const [reqData, setReqData] = useState({});
     const [showSuccess, setShowSuccess] = useState(false);
     const [showFailed, setShowFailed] = useState(false);
-    const [images, setImages] = useState([]);
-    const maxNumber = 5;
 
-    const onChange = (imageList) => {
-        // data for submit
-        setImages(imageList);
-    };
+    useEffect(() => {
+        setName(menu.name);
+        setQuantity(menu.quantity);
+        setPrice(menu.price);
+        setEvent(menu.event);
+        setCategory(menu.category);
+        setDescription(menu.description);
+    }, [menu, events, categories]);
+
+    useEffect(() => {
+        const requestedData = {
+            name: name,
+            quantity: quantity,
+            price: price,
+            event: event,
+            category: category,
+            description: description,
+        };
+        setReqData(requestedData);
+    }, [name, quantity, price, event, category, description]);
 
     const submitForm = (e) => {
         setShowSuccess(false);
         setShowFailed(false);
         e.preventDefault();
-        const text = confirm("Please confirm to add menu");
+        const text = confirm("Please confirm to save your changes");
         if (text) {
-            setShowUploading(true);
-            const createData = async () => {
-                const data = new FormData(form.current);
-                images.map((image) => {
-                    data.append("imageUrls", image.file);
-                });
-                return await dispatch(createMenu(data));
+            const putData = async () => {
+                return await dispatch(editDetailMenu(menu._id, reqData));
             };
-            createData()
+            putData()
                 .then((r) => {
                     if (r?.status === "failed") {
-                        setShowUploading(false);
                         setShowFailed(true);
                     } else {
-                        setShowUploading(false);
                         setShowSuccess(true);
                     }
                 })
                 .catch(() => {
-                    setShowUploading(false);
                     setShowFailed(true);
                 });
         }
@@ -54,6 +64,10 @@ const AddMenuForm = () => {
     const alertOnClick = () => {
         setShowFailed(false);
         setShowSuccess(false);
+    };
+
+    const reset = () => {
+        window.location.reload();
     };
 
     const alertElem = () => {
@@ -77,7 +91,7 @@ const AddMenuForm = () => {
                     onClick={() => alertOnClick()}>
                     <span className="block sm:inline">
                         <strong className="font-bold">Success! </strong>
-                        Menu has been added
+                        Menu has been changed
                     </span>
                 </div>
             );
@@ -87,8 +101,7 @@ const AddMenuForm = () => {
     return (
         <div className="w-10/12">
             {alertElem()}
-            {showUploading ? <Loading /> : ""}
-            <form ref={form} onSubmit={(e) => submitForm(e)}>
+            <form onSubmit={(e) => submitForm(e)}>
                 <div className="max-w">
                     <div className="grid md:grid-cols-2 sm:grid-cols-1 gap-6">
                         <label className="block">
@@ -97,18 +110,19 @@ const AddMenuForm = () => {
                                 type="text"
                                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                                 placeholder=""
-                                name="name"
-                                required
+                                defaultValue={name}
+                                onChange={(e) => setName(e.target.value)}
                             />
                         </label>
                         <label className="block">
                             <span className="text-gray-700">Quantity</span>
                             <input
                                 type="number"
-                                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                                placeholder=""
-                                name="quantity"
-                                required
+                                className="mt-1 block w-full  rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                                defaultValue={quantity}
+                                onChange={(e) =>
+                                    setQuantity(parseInt(e.target.value))
+                                }
                             />
                         </label>
                         <label className="block">
@@ -117,22 +131,26 @@ const AddMenuForm = () => {
                                 type="number"
                                 step="0.01"
                                 className="mt-1 block w-full  rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                                name="price"
-                                required
+                                defaultValue={price}
+                                onChange={(e) =>
+                                    setPrice(Number(e.target.value))
+                                }
                             />
                         </label>
                         <label className="block">
                             <span className="text-gray-700">Event</span>
                             <select
                                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                                name="event"
-                                required>
-                                <option value="" disabled selected hidden>
-                                    Please Choose...
+                                onChange={(e) => setEvent(e.target.value)}>
+                                <option value="" disabled>
+                                    Event
                                 </option>
                                 {events.map((item) => {
                                     return (
-                                        <option key={item._id} value={item._id}>
+                                        <option
+                                            key={item._id}
+                                            value={item._id}
+                                            selected={event === item._id}>
                                             {item.name}
                                         </option>
                                     );
@@ -143,14 +161,13 @@ const AddMenuForm = () => {
                             <span className="text-gray-700">Categories</span>
                             <select
                                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                                name="category"
-                                required>
-                                <option value="" disabled selected hidden>
-                                    Please Choose...
-                                </option>
+                                onChange={(e) => setCategory(e.target.value)}>
                                 {categories.map((c) => {
                                     return (
-                                        <option key={c._id} value={c._id}>
+                                        <option
+                                            key={c._id}
+                                            value={c._id}
+                                            selected={category === c._id}>
                                             {c.name}
                                         </option>
                                     );
@@ -162,18 +179,10 @@ const AddMenuForm = () => {
                             <textarea
                                 className=" mt-1 block w-full rounded-md  border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                                 rows="2"
-                                name="description"
-                                required
+                                defaultValue={description}
+                                onChange={(e) => setDescription(e.target.value)}
                             />
                         </label>
-                        <div className="block">
-                            <span className="text-gray-700">Images</span>
-                            <ImageUploader
-                                onChange={onChange}
-                                images={images}
-                                maxNumber={maxNumber}
-                            />
-                        </div>
                     </div>
                 </div>
                 <div className="flex my-4">
@@ -183,14 +192,15 @@ const AddMenuForm = () => {
                         Submit
                     </button>
                     <button
-                        type="reset"
-                        className="group relative flex justify-center mx-4 py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-slate-400 hover:bg-slate-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500">
+                        type="button"
+                        className="group relative flex justify-center mx-4 py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-slate-400 hover:bg-slate-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500"
+                        onClick={() => reset()}>
                         Reset
                     </button>
                 </div>
             </form>
         </div>
     );
-};
+}
 
-export default AddMenuForm;
+export default EditMenuForm;

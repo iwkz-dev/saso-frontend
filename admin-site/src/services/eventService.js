@@ -3,33 +3,33 @@ import { BASE_URL_HOST_ADMIN_EVENT } from "../config/config";
 import { getToken } from "../helpers/authHelper";
 
 const headers = {
-  accept: "application/JSON",
-  Authorization: getToken(),
+    accept: "application/JSON",
+    Authorization: getToken(),
 };
 
 const adminAxios = axios.create({
-  headers,
+    headers,
 });
 
 const getAllEvents = () => {
-  return new Promise((resolve, reject) => {
-    adminAxios
-      .get(`${BASE_URL_HOST_ADMIN_EVENT}`)
-      .then((response) => {
-        if (response.data.status === "success") {
-          resolve(response.data);
-        } else {
-          reject(response.data);
-        }
-      })
-      .catch((error) => {
-        reject(error.response);
-      });
-  });
+    return new Promise((resolve, reject) => {
+        adminAxios
+            .get(`${BASE_URL_HOST_ADMIN_EVENT}`)
+            .then((response) => {
+                if (response.data.status === "success") {
+                    resolve(response.data);
+                } else {
+                    reject(response.data);
+                }
+            })
+            .catch((error) => {
+                reject(error.response);
+            });
+    });
 };
 
 const eventService = {
-  getAllEvents,
+    getAllEvents,
 };
 
 export default eventService;

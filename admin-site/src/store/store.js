@@ -6,11 +6,11 @@ import eventReducer from "./reducers/eventReducer";
 import categoryReducer from "./reducers/categoryReducer";
 // Add reducers here!
 export default configureStore({
-  reducer: {
-    nav: navReducer,
-    login: loginReducer,
-    menu: menuReducer,
-    event: eventReducer,
-    category: categoryReducer,
-  },
+    reducer: {
+        nav: navReducer,
+        login: loginReducer,
+        menu: menuReducer,
+        event: eventReducer,
+        category: categoryReducer,
+    },
 });

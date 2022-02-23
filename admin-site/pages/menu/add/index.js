@@ -1,49 +1,52 @@
-import LoggedInMain from "../../../src/components/Main/loggedInMain/loggedInMain";
+import LoggedInLayout from "../../../src/components/Layout/loggedInLayout/loggedInLayout";
 import AddMenuForm from "../../../src/components/Forms/Menu/AddMenuForm/AddMenuForm";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { getAllEvents } from "../../../src/store/reducers/eventReducer";
 import { getAllCategories } from "../../../src/store/reducers/categoryReducer";
 import { useDispatch } from "react-redux";
+import Loading from "../../../src/components/common/Loading/Loading";
 
 const id = () => {
-  const dispatch = useDispatch();
-  const pageData = {
-    name: "Menu",
-    href: `/menu/add/`,
-    current: true,
-  };
-  const pageTitle = "Saso App | Menu";
-  const [showForm, setShowForm] = useState(false);
-  const [showError, setShowError] = useState("");
-  const [showLoading, setShowLoading] = useState(false);
+    const dispatch = useDispatch();
+    const pageData = {
+        name: "Menu",
+        href: `/menu/add/`,
+        current: true,
+    };
+    const pageTitle = "Saso App | Menu";
+    const [showForm, setShowForm] = useState(false);
+    const [showError, setShowError] = useState("");
+    const [showLoading, setShowLoading] = useState(false);
 
-  useEffect(() => {
-    setShowLoading(true);
-    if (id) {
-      Promise.all([
-        dispatch(getAllEvents()),
-        dispatch(getAllCategories()),
-      ]).then((responses) => {
-        const failed = responses.find((r) => r?.status === "failed");
-        if (!failed) {
-          setShowForm(true);
-          setShowLoading(false);
-        } else {
-          setShowLoading(false);
-          setShowError(failed.message);
+    useEffect(() => {
+        setShowLoading(true);
+        if (id) {
+            Promise.all([
+                dispatch(getAllEvents()),
+                dispatch(getAllCategories()),
+            ]).then((responses) => {
+                const failed = responses.find((r) => r?.status === "failed");
+                if (!failed) {
+                    setShowForm(true);
+                    setShowLoading(false);
+                } else {
+                    setShowLoading(false);
+                    setShowError(failed.message);
+                }
+            });
         }
-      });
-    }
-  }, [id]);
+    }, [id]);
 
-  return (
-    <LoggedInMain title={pageTitle} pageData={pageData}>
-      <h1 className="text-2xl font-bold text-left w-10/12 mb-3">Add menu</h1>
-      {showLoading ? <p>Loading...</p> : ""}
-      {showForm ? <AddMenuForm name="imageUrls" /> : ""}
-      {showError || ""}
-    </LoggedInMain>
-  );
+    return (
+        <LoggedInLayout title={pageTitle} pageData={pageData}>
+            <h1 className="text-2xl font-bold text-left w-10/12 mb-3">
+                Add menu
+            </h1>
+            {showLoading ? <Loading /> : ""}
+            {showForm ? <AddMenuForm name="imageUrls" /> : ""}
+            {showError || ""}
+        </LoggedInLayout>
+    );
 };
 
 export default id;
