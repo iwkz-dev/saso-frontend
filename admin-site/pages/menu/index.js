@@ -119,14 +119,6 @@ const index = () => {
         <LoggedInLayout title={pageTitle} pageData={pageData}>
             <h1 className="text-2xl font-bold text-left w-10/12 mb-3">Menu</h1>
             <div className="flex justify-between items-center mb-3 w-10/12">
-                <div
-                    className="flex items-center cursor-pointer mr-5"
-                    onClick={() => handleChangeShowFilter()}>
-                    <HiAdjustments className="pr-1" size={20} />
-                    <span>
-                        {showFilterForm ? "Hide Filter" : "Show Filter"}
-                    </span>
-                </div>
                 <Link href="./menu/add" className="cursor-pointer">
                     <a className="flex items-center rounded-lg p-2 border rounded-xl border-emerald-700">
                         <IoMdAddCircle
@@ -137,6 +129,14 @@ const index = () => {
                         <span className="text-emerald-700">Add Menu</span>
                     </a>
                 </Link>
+                <div
+                    className="flex items-center cursor-pointer mr-5"
+                    onClick={() => handleChangeShowFilter()}>
+                    <HiAdjustments className="pr-1" size={20} />
+                    <span>
+                        {showFilterForm ? "Hide Filter" : "Show Filter"}
+                    </span>
+                </div>
             </div>
             <MenusFilterForm
                 handleChange={handleChange}

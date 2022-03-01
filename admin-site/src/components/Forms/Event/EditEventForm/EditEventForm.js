@@ -1,36 +1,29 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
-    editDetailMenu,
-    editDetailMenuImages,
-} from "../../../../store/reducers/menuReducer";
+    editDetailEvent,
+    editDetailEventImages,
+} from "../../../../store/reducers/eventReducer";
 import ImageUploader from "../../../common/ImageUploader/ImageUploader";
+import { formatDate } from "../../../../helpers/dateHelper";
 
-function EditMenuForm() {
+const EditEventForm = () => {
     const dispatch = useDispatch();
     const form = useRef();
-    const menu = useSelector((state) => state.menu.detailMenu);
-    const events = useSelector((state) => state.event.events);
-    const categories = useSelector((state) => state.category.categories);
-    const [name, setName] = useState(menu.name);
-    const [quantity, setQuantity] = useState(menu.quantity);
-    const [price, setPrice] = useState(menu.price);
-    const [event, setEvent] = useState(menu.event);
-    const [category, setCategory] = useState(menu.category);
-    const [description, setDescription] = useState(menu.description);
-    const [images, setImages] = useState(menu.images);
+    const event = useSelector((state) => state.event.detailEvent);
+    const [name, setName] = useState(event.name);
+    const [description, setDescription] = useState(event.description);
+    const [startedAt, setStartedAt] = useState(formatDate(event.started_at));
+    const [images, setImages] = useState(event.images);
     const [showSuccess, setShowSuccess] = useState(false);
     const [showFailed, setShowFailed] = useState(false);
     const maxNumber = 5;
 
     useEffect(() => {
-        setName(menu.name);
-        setQuantity(menu.quantity);
-        setPrice(menu.price);
-        setEvent(menu.event);
-        setCategory(menu.category);
-        setDescription(menu.description);
-    }, [menu, events, categories]);
+        setName(event.name);
+        setDescription(event.description);
+        setStartedAt(event.started_at);
+    }, [event]);
 
     const onChange = (imageList) => {
         // data for submit
@@ -46,11 +39,8 @@ function EditMenuForm() {
             const data = new FormData(form.current);
             const requestedData = {
                 name: data.get("name"),
-                quantity: data.get("quantity"),
-                price: data.get("price"),
-                event: data.get("event"),
-                category: data.get("category"),
                 description: data.get("description"),
+                started_at: data.get("startedAt"),
             };
             const imagesData = new FormData();
             images.map((image) => {
@@ -61,8 +51,8 @@ function EditMenuForm() {
                 }
             });
             Promise.all([
-                dispatch(editDetailMenu(menu._id, requestedData)),
-                dispatch(editDetailMenuImages(menu._id, imagesData)),
+                dispatch(editDetailEvent(event._id, requestedData)),
+                dispatch(editDetailEventImages(event._id, imagesData)),
             ]).then((responses) => {
                 const failed = responses.find((r) => r?.status === "failed");
                 if (!failed) {
@@ -104,7 +94,7 @@ function EditMenuForm() {
                     onClick={() => alertOnClick()}>
                     <span className="block sm:inline">
                         <strong className="font-bold">Success! </strong>
-                        Menu has been changed
+                        Event has been changed
                     </span>
                 </div>
             );
@@ -123,73 +113,29 @@ function EditMenuForm() {
                                 type="text"
                                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                                 placeholder=""
-                                defaultValue={name}
                                 name="name"
+                                defaultValue={name}
+                                required
                             />
                         </label>
                         <label className="block">
-                            <span className="text-gray-700">Quantity</span>
+                            <span className="text-gray-700">Started At</span>
                             <input
-                                type="number"
-                                className="mt-1 block w-full  rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                                name="quantity"
-                                defaultValue={quantity}
-                            />
-                        </label>
-                        <label className="block">
-                            <span className="text-gray-700">Price in €</span>
-                            <input
-                                type="number"
-                                step="0.01"
-                                name="price"
-                                className="mt-1 block w-full  rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                                defaultValue={price}
-                            />
-                        </label>
-                        <label className="block">
-                            <span className="text-gray-700">Event</span>
-                            <select
+                                type="date"
                                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                                name="event">
-                                <option value="" disabled>
-                                    Event
-                                </option>
-                                {events.map((item) => {
-                                    return (
-                                        <option
-                                            key={item._id}
-                                            value={item._id}
-                                            selected={event === item._id}>
-                                            {item.name}
-                                        </option>
-                                    );
-                                })}
-                            </select>
-                        </label>
-                        <label className="block">
-                            <span className="text-gray-700">Categories</span>
-                            <select
-                                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                                name="category">
-                                {categories.map((c) => {
-                                    return (
-                                        <option
-                                            key={c._id}
-                                            value={c._id}
-                                            selected={category === c._id}>
-                                            {c.name}
-                                        </option>
-                                    );
-                                })}
-                            </select>
+                                placeholder=""
+                                defaultValue={startedAt}
+                                name="startedAt"
+                            />
                         </label>
                         <label className="block">
                             <span className="text-gray-700">Description</span>
                             <textarea
                                 className=" mt-1 block w-full rounded-md  border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                                 rows="2"
-                                defaultValue={description}
                                 name="description"
+                                defaultValue={description}
+                                required
                             />
                         </label>
                         <div className="block">
@@ -209,7 +155,7 @@ function EditMenuForm() {
                         Submit
                     </button>
                     <button
-                        type="button"
+                        type="reset"
                         className="group relative flex justify-center mx-4 py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-slate-400 hover:bg-slate-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500"
                         onClick={() => reset()}>
                         Reset
@@ -218,6 +164,6 @@ function EditMenuForm() {
             </form>
         </div>
     );
-}
+};
 
-export default EditMenuForm;
+export default EditEventForm;

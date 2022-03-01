@@ -62,6 +62,26 @@ const editDetailMenu = (id, requestedData) => {
     });
 };
 
+const editDetailMenuImages = (id, requestedData) => {
+    return new Promise((resolve, reject) => {
+        adminAxios
+            .patch(
+                `${BASE_URL_HOST_ADMIN_MENU}/${id}/upload-images`,
+                requestedData,
+            )
+            .then((response) => {
+                if (response.data.status === "success") {
+                    resolve(response.data);
+                } else {
+                    reject(response.data);
+                }
+            })
+            .catch((error) => {
+                reject(error.response);
+            });
+    });
+};
+
 const createMenu = (requestedData) => {
     return new Promise((resolve, reject) => {
         adminAxios
@@ -102,5 +122,6 @@ const menuService = {
     editDetailMenu,
     deleteMenu,
     createMenu,
+    editDetailMenuImages,
 };
 export default menuService;

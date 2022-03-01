@@ -12,7 +12,7 @@ const ImageUploader = ({ images, onChange, maxNumber }) => {
                 onChange={onChange}
                 maxNumber={maxNumber}
                 className={styles.uploadImageWrapper}
-                dataURLKey="data_url">
+                dataURLKey="imageUrl">
                 {({
                     imageList,
                     onImageUpload,
@@ -49,7 +49,7 @@ const ImageUploader = ({ images, onChange, maxNumber }) => {
                                         className="cursor-pointer"
                                         onClick={() => onImageUpdate(index)}>
                                         <img
-                                            src={image["data_url"]}
+                                            src={image.imageUrl}
                                             className={styles.image}
                                             alt=""
                                             width="100"

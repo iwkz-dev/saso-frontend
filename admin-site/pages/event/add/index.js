@@ -1,36 +1,35 @@
 import LoggedInLayout from "../../../src/components/Layout/loggedInLayout/loggedInLayout";
-import AddMenuForm from "../../../src/components/Forms/Menu/AddMenuForm/AddMenuForm";
 import React, { useEffect, useState } from "react";
 import { getAllEvents } from "../../../src/store/reducers/eventReducer";
-import { getAllCategories } from "../../../src/store/reducers/categoryReducer";
 import { useDispatch } from "react-redux";
 import Loading from "../../../src/components/common/Loading/Loading";
+import AddEventForm from "../../../src/components/Forms/Event/AddEventForm/AddEventForm";
 
 const index = () => {
     const dispatch = useDispatch();
     const pageData = {
-        name: "Menu",
-        href: `/menu/add/`,
+        name: "Event",
+        href: `/event/add/`,
         current: true,
     };
-    const pageTitle = "Saso App | Menu";
+    const pageTitle = "Saso App | Event";
     const [showForm, setShowForm] = useState(false);
     const [showError, setShowError] = useState("");
     const [showLoading, setShowLoading] = useState(false);
 
     useEffect(() => {
         setShowLoading(true);
-        Promise.all([
-            dispatch(getAllEvents()),
-            dispatch(getAllCategories()),
-        ]).then((responses) => {
-            const failed = responses.find((r) => r?.status === "failed");
-            if (!failed) {
-                setShowForm(true);
+        const getEvents = async () => {
+            return await dispatch(getAllEvents());
+        };
+        getEvents().then((r) => {
+            if (r.status === "success") {
                 setShowLoading(false);
+                setShowForm(true);
             } else {
                 setShowLoading(false);
-                setShowError(failed.message);
+                setShowError(r.message);
+                setShowForm(false);
             }
         });
     }, []);
@@ -38,10 +37,10 @@ const index = () => {
     return (
         <LoggedInLayout title={pageTitle} pageData={pageData}>
             <h1 className="text-2xl font-bold text-left w-10/12 mb-3">
-                Add menu
+                Add event
             </h1>
             {showLoading ? <Loading /> : ""}
-            {showForm ? <AddMenuForm name="imageUrls" /> : ""}
+            {showForm ? <AddEventForm name="imageUrls" /> : ""}
             {showError || ""}
         </LoggedInLayout>
     );

@@ -40,6 +40,19 @@ export const editDetailMenu = (id, requestedData) => async (dispatch) => {
         });
 };
 
+export const editDetailMenuImages = (id, requestedData) => async (dispatch) => {
+    return menuService
+        .editDetailMenuImages(id, requestedData)
+        .then((response) => {
+            dispatch(editMenuDetailSuccess(response));
+            return response;
+        })
+        .catch((e) => {
+            dispatch(editMenuDetailFailed(e.data.message));
+            return e.data;
+        });
+};
+
 export const createMenu = (requestedData) => async (dispatch) => {
     return menuService
         .createMenu(requestedData)
