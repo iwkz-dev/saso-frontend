@@ -7,7 +7,7 @@ export const navSlice = createSlice({
             { name: "Dashboard", href: "/", current: true },
             { name: "Menu", href: "/menu", current: false },
             { name: "Event", href: "/event", current: false },
-            { name: "User", href: "/user", current: false },
+            { name: "Category", href: "/category", current: false },
         ],
     },
     reducers: {

@@ -1,69 +1,49 @@
 import React from "react";
-import Link from "next/link";
 import { useSelector } from "react-redux";
+import Link from "next/link";
 import { BiEdit } from "react-icons/bi";
 import { MdDeleteOutline } from "react-icons/md";
+import { formatDate } from "../../../../helpers/dateHelper";
 
-function MenuTable({ onDelete }) {
-    const menus = useSelector((state) => state.menu.menus);
-    const events = useSelector((state) => state.event.events);
+const CategoryTable = ({ onDelete }) => {
     const categories = useSelector((state) => state.category.categories);
 
     const tableHead = {
         name: "Name",
-        description: "Description",
-        category: "Category",
-        price: "Price (€)",
-        quantity: "Quantity",
-        images: "Image",
-        event: "Event",
         created_at: "Created At",
         updated_at: "Updated At",
     };
 
-    const imageColumnHandler = (data) => {
-        if (data.length > 0) {
-            return (
-                <img
-                    className="h-10 w-10 rounded-full"
-                    src={data[0].imageUrl}
-                    alt="menu"
-                />
-            );
-        }
-    };
-
-    const rowHandler = (menu, key) => {
+    const rowHandler = (category, key) => {
         const maxLengthDescription = 30;
         const maxLengthName = 20;
-        if (key === "images") {
-            return imageColumnHandler(menu[key]);
-        } else if (key === "category") {
-            const category = categories.find((c) => c._id === menu[key]);
-            return (
-                <div className="text-sm text-gray-900">{category?.name}</div>
-            );
-        } else if (key === "event") {
-            const event = events.find((e) => e._id === menu[key]);
-            return <div className="text-sm text-gray-900">{event?.name}</div>;
-        } else if (
+        if (
             key === "description" &&
-            menu[key].length > maxLengthDescription
+            category[key].length > maxLengthDescription
         ) {
-            const shortenerStr = `${menu[key].substring(
+            const shortenerStr = `${category[key].substring(
                 0,
                 maxLengthDescription,
             )}...`;
             return <div className="text-sm text-gray-900">{shortenerStr}</div>;
-        } else if (key === "name" && menu[key].length > maxLengthName) {
-            const shortenerStr = `${menu[key].substring(0, maxLengthName)}...`;
+        } else if (key === "name" && category[key].length > maxLengthName) {
+            const shortenerStr = `${category[key].substring(
+                0,
+                maxLengthName,
+            )}...`;
             return <div className="text-sm text-gray-900">{shortenerStr}</div>;
+        } else if (key === "started_at") {
+            return (
+                <div className="text-sm text-gray-900">
+                    {formatDate(category[key], "germany")}
+                </div>
+            );
         } else {
-            return <div className="text-sm text-gray-900">{menu[key]}</div>;
+            return <div className="text-sm text-gray-900">{category[key]}</div>;
         }
     };
 
-    const tableRow = (m, index) => {
+    const tableRow = (category, index) => {
         return (
             <tr key={index}>
                 <td className="px-6 py-3 whitespace-nowrap text-center text-sm font-medium">
@@ -71,13 +51,15 @@ function MenuTable({ onDelete }) {
                 </td>
                 <td className="px-6 py-3 whitespace-nowrap text-right text-sm font-medium ">
                     <div className="flex items-center">
-                        <Link href={`menu/edit/${m._id}`}>
+                        <Link href={`category/edit/${category._id}`}>
                             <a className="text-indigo-600 hover:text-indigo-900 px-1">
                                 <BiEdit />
                             </a>
                         </Link>
                         <div
-                            onClick={() => onDelete(m["_id"], m["name"])}
+                            onClick={() =>
+                                onDelete(category["_id"], category["name"])
+                            }
                             className="text-red-600 hover:text-red-900 px-2 cursor-pointer">
                             <MdDeleteOutline />
                         </div>
@@ -87,14 +69,14 @@ function MenuTable({ onDelete }) {
                     <td
                         key={k}
                         className="px-6 py-3 whitespace-nowrap text-sm font-medium">
-                        {rowHandler(m, k)}
+                        {rowHandler(category, k)}
                     </td>
                 ))}
             </tr>
         );
     };
 
-    if (menus.length > 0) {
+    if (categories.length > 0) {
         return (
             <div className="w-10/12 overflow-x-scroll shadow border-b border-gray-200 sm:rounded-lg">
                 <table className="min-w-full divide-y divide-gray-200">
@@ -121,13 +103,13 @@ function MenuTable({ onDelete }) {
                         </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
-                        {menus.map((m, index) => tableRow(m, index))}
+                        {categories.map((m, index) => tableRow(m, index))}
                     </tbody>
                 </table>
             </div>
         );
     }
-    return <p>Menu is empty</p>;
-}
+    return <p>categories is empty</p>;
+};
 
-export default MenuTable;
+export default CategoryTable;

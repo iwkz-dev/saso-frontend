@@ -1,52 +1,44 @@
-import React, { useRef, useState } from "react";
-import { useDispatch } from "react-redux";
+import React, { useEffect, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { createCategory } from "../../../../store/reducers/categoryReducer";
 import Loading from "../../../common/Loading/Loading";
-import ImageUploader from "../../../common/ImageUploader/ImageUploader";
-import { createEvent } from "../../../../store/reducers/eventReducer";
 
-const AddEventForm = () => {
+const EditCategoryForm = () => {
     const dispatch = useDispatch();
     const form = useRef();
+    const category = useSelector((state) => state.category.detailCategory);
+    const [name, setName] = useState(category.name);
     const [showUploading, setShowUploading] = useState(false);
     const [showSuccess, setShowSuccess] = useState(false);
     const [showFailed, setShowFailed] = useState(false);
-    const [images, setImages] = useState([]);
-    const maxNumber = 5;
+
+    useEffect(() => {
+        setName(category.name);
+    }, [category]);
 
     const submitForm = (e) => {
         setShowSuccess(false);
         setShowFailed(false);
         e.preventDefault();
-        const text = confirm("Please confirm to add event");
+        const text = confirm("Please confirm to save your changes");
         if (text) {
-            setShowUploading(true);
-            const createData = async () => {
+            const editData = async () => {
                 const data = new FormData(form.current);
-                images.map((image) => {
-                    data.append("imageUrls", image.file);
-                });
-                return await dispatch(createEvent(data));
+                const requestedData = {
+                    name: data.get("name"),
+                };
+                return await dispatch(createCategory(requestedData));
             };
-            createData()
-                .then((r) => {
-                    if (r?.status === "failed") {
-                        setShowUploading(false);
-                        setShowFailed(true);
-                    } else {
-                        setShowUploading(false);
-                        setShowSuccess(true);
-                    }
-                })
-                .catch(() => {
+            editData().then((responses) => {
+                if (responses?.status === "failed") {
                     setShowUploading(false);
-                    setShowFailed(true);
-                });
+                    setShowFailed(responses.message);
+                } else {
+                    setShowUploading(false);
+                    setShowSuccess(true);
+                }
+            });
         }
-    };
-
-    const onChange = (imageList) => {
-        // data for submit
-        setImages(imageList);
     };
 
     const alertOnClick = () => {
@@ -63,7 +55,7 @@ const AddEventForm = () => {
                     onClick={() => alertOnClick()}>
                     <span className="block sm:inline">
                         <strong className="font-bold">Failed! </strong>
-                        Please try again
+                        {showFailed}
                     </span>
                 </div>
             );
@@ -75,7 +67,7 @@ const AddEventForm = () => {
                     onClick={() => alertOnClick()}>
                     <span className="block sm:inline">
                         <strong className="font-bold">Success! </strong>
-                        Event has been added
+                        Category has been added
                     </span>
                 </div>
             );
@@ -96,35 +88,10 @@ const AddEventForm = () => {
                                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                                 placeholder=""
                                 name="name"
+                                defaultValue={name}
                                 required
                             />
                         </label>
-                        <label className="block">
-                            <span className="text-gray-700">Started At</span>
-                            <input
-                                type="date"
-                                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                                placeholder=""
-                                name="started_at"
-                            />
-                        </label>
-                        <label className="block">
-                            <span className="text-gray-700">Description</span>
-                            <textarea
-                                className=" mt-1 block w-full rounded-md  border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                                rows="2"
-                                name="description"
-                                required
-                            />
-                        </label>
-                        <div className="block">
-                            <span className="text-gray-700">Images</span>
-                            <ImageUploader
-                                onChange={onChange}
-                                images={images}
-                                maxNumber={maxNumber}
-                            />
-                        </div>
                     </div>
                 </div>
                 <div className="flex my-4">
@@ -144,4 +111,4 @@ const AddEventForm = () => {
     );
 };
 
-export default AddEventForm;
+export default EditCategoryForm;

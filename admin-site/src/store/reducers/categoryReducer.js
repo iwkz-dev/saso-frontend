@@ -6,9 +6,62 @@ export const getAllCategories = () => async (dispatch) => {
         .getAllCategories()
         .then((response) => {
             dispatch(getCategoriesSuccess(response.data.data));
+            return response;
         })
         .catch((e) => {
             dispatch(getCategoriesFailed(e.data.message));
+            return e.data;
+        });
+};
+
+export const deleteCategory = (id) => async (dispatch) => {
+    return categoryService
+        .deleteCategory(id)
+        .then((response) => {
+            dispatch(deleteCategorySuccess(response));
+            return response;
+        })
+        .catch((e) => {
+            dispatch(deleteCategoryFailed(e.data.message));
+            return e.data;
+        });
+};
+
+export const createCategory = (requestedData) => async (dispatch) => {
+    return categoryService
+        .createCategory(requestedData)
+        .then((response) => {
+            dispatch(createCategorySuccess(response));
+            return response;
+        })
+        .catch((e) => {
+            dispatch(createCategoryFailed(e.data.message));
+            return e.data;
+        });
+};
+
+export const getDetailCategory = (id) => async (dispatch) => {
+    return categoryService
+        .getDetailCategory(id)
+        .then((response) => {
+            dispatch(getCategoryDetailSuccess(response));
+            return response;
+        })
+        .catch((e) => {
+            dispatch(getCategoryDetailFailed(e.data.message));
+            return e.data;
+        });
+};
+
+export const editDetailCategory = (id, requestedData) => async (dispatch) => {
+    return categoryService
+        .editDetailCategory(id, requestedData)
+        .then((response) => {
+            dispatch(editCategoryDetailSuccess(response));
+            return response;
+        })
+        .catch((e) => {
+            dispatch(editCategoryDetailFailed(e.data.message));
             return e.data;
         });
 };
@@ -22,6 +75,7 @@ export const categorySlice = createSlice({
             success: "",
         },
         categories: [],
+        detailCategory: {},
     },
     reducers: {
         getCategoriesSuccess: (state, action) => {
@@ -32,10 +86,53 @@ export const categorySlice = createSlice({
             state.message.error = action.payload;
             state.success = false;
         },
+        getCategoryDetailSuccess: (state, action) => {
+            state.detailCategory = { ...action.payload.data };
+            state.message.success = action.payload.message;
+            state.success = true;
+        },
+        getCategoryDetailFailed: (state, action) => {
+            state.message.error = action.payload;
+            state.success = false;
+        },
+        deleteCategorySuccess: (state, action) => {
+            state.message.success = action.payload.message;
+            state.success = true;
+        },
+        deleteCategoryFailed: (state, action) => {
+            state.message.error = action.payload;
+            state.success = false;
+        },
+        createCategorySuccess: (state, action) => {
+            state.message.success = action.payload.message;
+            state.success = true;
+        },
+        createCategoryFailed: (state, action) => {
+            state.message.error = action.payload;
+            state.success = false;
+        },
+        editCategoryDetailSuccess: (state, action) => {
+            state.message.success = action.payload.message;
+            state.success = true;
+        },
+        editCategoryDetailFailed: (state, action) => {
+            state.message.error = action.payload;
+            state.success = false;
+        },
     },
 });
 
 // Action creators are generated for each case reducer function
-export const { getCategoriesSuccess, getCategoriesFailed } =
-    categorySlice.actions;
+export const {
+    getCategoriesSuccess,
+    getCategoriesFailed,
+    getCategoryDetailSuccess,
+    getCategoryDetailFailed,
+    deleteCategorySuccess,
+    deleteCategoryFailed,
+    createCategorySuccess,
+    createCategoryFailed,
+    editCategoryDetailSuccess,
+    editCategoryDetailFailed,
+} = categorySlice.actions;
 export default categorySlice.reducer;

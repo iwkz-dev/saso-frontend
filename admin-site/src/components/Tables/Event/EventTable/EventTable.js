@@ -12,8 +12,10 @@ function EventTable({ onDelete }) {
         name: "Name",
         description: "Description",
         started_at: "Started at",
-        startedYear: "Started Year",
+        startYear: "Start Year",
         images: "Image",
+        created_at: "Created At",
+        updated_at: "Updated At",
     };
 
     const imageColumnHandler = (data) => {
