@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import { useRouter } from "next/router";
 import { getDetailEvent } from "../../../src/store/reducers/eventReducer";
 import Loading from "../../../src/components/common/Loading/Loading";
-import EditEventForm from "../../../src/components/Forms/Event/EditEventForm/EditEventForm";
+import EditEventForm from "../../../src/components/Form/Event/EditEventForm/EditEventForm";
 import LoggedInLayout from "../../../src/components/Layout/loggedInLayout/loggedInLayout";
 
 const id = () => {
@@ -23,10 +23,10 @@ const id = () => {
     useEffect(() => {
         setShowLoading(true);
         if (id) {
-            const getEvent = async () => {
+            const getData = async () => {
                 return await dispatch(getDetailEvent(id));
             };
-            getEvent().then((r) => {
+            getData().then((r) => {
                 if (r.status === "success") {
                     setShowForm(true);
                     setShowLoading(false);

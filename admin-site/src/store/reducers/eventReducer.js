@@ -5,13 +5,20 @@ export const getAllEvents = () => (dispatch) => {
     return eventService
         .getAllEvents()
         .then((response) => {
-            console.log(response);
             dispatch(getEventsSuccess(response.data.data));
             return response;
         })
         .catch((e) => {
-            dispatch(getEventsFailed(e.data.message));
-            return e.data;
+            if (e) {
+                dispatch(getEventsFailed(e.data.message));
+                return e.data;
+            }
+            const error = {
+                message: "Server Error",
+                status: "failed",
+            };
+            dispatch(getEventsFailed(error.message));
+            return error;
         });
 };
 
@@ -23,8 +30,16 @@ export const deleteEvent = (id) => async (dispatch) => {
             return response;
         })
         .catch((e) => {
-            dispatch(deleteEventFailed(e.data.message));
-            return e.data;
+            if (e) {
+                dispatch(deleteEventFailed(e.data.message));
+                return e.data;
+            }
+            const error = {
+                message: "Server Error",
+                status: "failed",
+            };
+            dispatch(deleteEventFailed(error.message));
+            return error;
         });
 };
 
@@ -36,8 +51,16 @@ export const createEvent = (requestedData) => async (dispatch) => {
             return response;
         })
         .catch((e) => {
-            dispatch(createEventFailed(e.data.message));
-            return e.data;
+            if (e) {
+                dispatch(createEventFailed(e.data.message));
+                return e.data;
+            }
+            const error = {
+                message: "Server Error",
+                status: "failed",
+            };
+            dispatch(createEventFailed(error.message));
+            return error;
         });
 };
 
@@ -49,8 +72,16 @@ export const getDetailEvent = (id) => async (dispatch) => {
             return response;
         })
         .catch((e) => {
-            dispatch(getEventDetailFailed(e.data.message));
-            return e.data;
+            if (e) {
+                dispatch(getEventDetailFailed(e.data.message));
+                return e.data;
+            }
+            const error = {
+                message: "Server Error",
+                status: "failed",
+            };
+            dispatch(getEventDetailFailed(error.message));
+            return error;
         });
 };
 
@@ -62,8 +93,16 @@ export const editDetailEvent = (id, requestedData) => async (dispatch) => {
             return response;
         })
         .catch((e) => {
-            dispatch(editEventDetailFailed(e.data.message));
-            return e.data;
+            if (e) {
+                dispatch(editEventDetailFailed(e.data.message));
+                return e.data;
+            }
+            const error = {
+                message: "Server Error",
+                status: "failed",
+            };
+            dispatch(editEventDetailFailed(error.message));
+            return error;
         });
 };
 
@@ -76,8 +115,16 @@ export const editDetailEventImages =
                 return response;
             })
             .catch((e) => {
-                dispatch(editEventDetailFailed(e.data.message));
-                return e.data;
+                if (e) {
+                    dispatch(editEventDetailFailed(e.data.message));
+                    return e.data;
+                }
+                const error = {
+                    message: "Server Error",
+                    status: "failed",
+                };
+                dispatch(editEventDetailFailed(error.message));
+                return error;
             });
     };
 

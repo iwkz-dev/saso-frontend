@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { getAllCategories } from "../../../src/store/reducers/categoryReducer";
 import Loading from "../../../src/components/common/Loading/Loading";
-import AddCategoryForm from "../../../src/components/Forms/Category/AddCategoryForm/AddCategoryForm";
+import AddCategoryForm from "../../../src/components/Form/Category/AddCategoryForm/AddCategoryForm";
 import LoggedInLayout from "../../../src/components/Layout/loggedInLayout/loggedInLayout";
 
 const index = () => {

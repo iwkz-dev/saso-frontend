@@ -4,6 +4,7 @@ import menuReducer from "./reducers/menuReducer";
 import { configureStore } from "@reduxjs/toolkit";
 import eventReducer from "./reducers/eventReducer";
 import categoryReducer from "./reducers/categoryReducer";
+import userReducer from "./reducers/userReducer";
 // Add reducers here!
 export default configureStore({
     reducer: {
@@ -12,5 +13,6 @@ export default configureStore({
         menu: menuReducer,
         event: eventReducer,
         category: categoryReducer,
+        user: userReducer,
     },
 });

@@ -8,6 +8,8 @@ export const navSlice = createSlice({
             { name: "Menu", href: "/menu", current: false },
             { name: "Event", href: "/event", current: false },
             { name: "Category", href: "/category", current: false },
+            { name: "Order", href: "/order", current: false },
+            { name: "User", href: "/user", current: false },
         ],
     },
     reducers: {

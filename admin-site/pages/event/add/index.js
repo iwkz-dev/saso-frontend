@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { getAllEvents } from "../../../src/store/reducers/eventReducer";
 import { useDispatch } from "react-redux";
 import Loading from "../../../src/components/common/Loading/Loading";
-import AddEventForm from "../../../src/components/Forms/Event/AddEventForm/AddEventForm";
+import AddEventForm from "../../../src/components/Form/Event/AddEventForm/AddEventForm";
 
 const index = () => {
     const dispatch = useDispatch();

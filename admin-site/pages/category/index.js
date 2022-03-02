@@ -5,10 +5,9 @@ import {
     getAllCategories,
 } from "../../src/store/reducers/categoryReducer";
 import LoggedInLayout from "../../src/components/Layout/loggedInLayout/loggedInLayout";
-import Link from "next/link";
-import { IoMdAddCircle } from "react-icons/io";
 import Loading from "../../src/components/common/Loading/Loading";
-import CategoryTable from "../../src/components/Tables/Category/CategoryTable/CategoryTable";
+import CategoryTable from "../../src/components/Table/Category/CategoryTable/CategoryTable";
+import AddItemButton from "../../src/components/common/Button/AddItemButton/AddItemButton";
 
 const index = () => {
     const dispatch = useDispatch();
@@ -73,16 +72,7 @@ const index = () => {
                 Category
             </h1>
             <div className="flex justify-between items-center mb-3 w-10/12">
-                <Link href="./category/add" className="cursor-pointer">
-                    <a className="flex items-center rounded-lg p-2 border rounded-xl border-emerald-700">
-                        <IoMdAddCircle
-                            className="pr-1"
-                            color="#047857"
-                            size={30}
-                        />
-                        <span className="text-emerald-700">Add Category</span>
-                    </a>
-                </Link>
+                <AddItemButton hrefLink="./category/add" text="Add Category" />
             </div>
             {showError || ""}
             {showLoading ? (

@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import LoggedInLayout from "../../../src/components/Layout/loggedInLayout/loggedInLayout";
-import EditMenuForm from "../../../src/components/Forms/Menu/EditMenuForm/EditMenuForm";
+import EditMenuForm from "../../../src/components/Form/Menu/EditMenuForm/EditMenuForm";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { getDetailMenu } from "../../../src/store/reducers/menuReducer";

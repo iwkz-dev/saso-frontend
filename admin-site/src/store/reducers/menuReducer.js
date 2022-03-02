@@ -9,8 +9,16 @@ export const getAllMenus = (requestURL) => async (dispatch) => {
             return response;
         })
         .catch((e) => {
-            dispatch(getMenusFailed(e.data.message));
-            return e.data;
+            if (e) {
+                dispatch(getMenusFailed(e.data.message));
+                return e.data;
+            }
+            const error = {
+                message: "Server Error",
+                status: "failed",
+            };
+            dispatch(getMenusFailed(error.message));
+            return error;
         });
 };
 
@@ -22,8 +30,16 @@ export const getDetailMenu = (id) => async (dispatch) => {
             return response;
         })
         .catch((e) => {
-            dispatch(getMenuDetailFailed(e.data.message));
-            return e.data;
+            if (e) {
+                dispatch(getMenuDetailFailed(e.data.message));
+                return e.data;
+            }
+            const error = {
+                message: "Server Error",
+                status: "failed",
+            };
+            dispatch(getMenuDetailFailed(error.message));
+            return error;
         });
 };
 
@@ -35,8 +51,16 @@ export const editDetailMenu = (id, requestedData) => async (dispatch) => {
             return response;
         })
         .catch((e) => {
-            dispatch(editMenuDetailFailed(e.data.message));
-            return e.data;
+            if (e) {
+                dispatch(editMenuDetailFailed(e.data.message));
+                return e.data;
+            }
+            const error = {
+                message: "Server Error",
+                status: "failed",
+            };
+            dispatch(editMenuDetailFailed(error.message));
+            return error;
         });
 };
 
@@ -48,8 +72,16 @@ export const editDetailMenuImages = (id, requestedData) => async (dispatch) => {
             return response;
         })
         .catch((e) => {
-            dispatch(editMenuDetailFailed(e.data.message));
-            return e.data;
+            if (e) {
+                dispatch(editMenuDetailFailed(e.data.message));
+                return e.data;
+            }
+            const error = {
+                message: "Server Error",
+                status: "failed",
+            };
+            dispatch(editMenuDetailFailed(error.message));
+            return error;
         });
 };
 
@@ -61,8 +93,16 @@ export const createMenu = (requestedData) => async (dispatch) => {
             return response;
         })
         .catch((e) => {
-            dispatch(createMenuFailed(e.data.message));
-            return e.data;
+            if (e) {
+                dispatch(createMenuFailed(e.data.message));
+                return e.data;
+            }
+            const error = {
+                message: "Server Error",
+                status: "failed",
+            };
+            dispatch(createMenuFailed(error.message));
+            return error;
         });
 };
 
@@ -74,8 +114,16 @@ export const deleteMenu = (id) => async (dispatch) => {
             return response;
         })
         .catch((e) => {
-            dispatch(deleteMenuFailed(e.data.message));
-            return e.data;
+            if (e) {
+                dispatch(deleteMenuFailed(e.data.message));
+                return e.data;
+            }
+            const error = {
+                message: "Server Error",
+                status: "failed",
+            };
+            dispatch(deleteMenuFailed(error.message));
+            return error;
         });
 };
 

@@ -1,15 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import Link from "next/link";
 import { deleteMenu, getAllMenus } from "../../src/store/reducers/menuReducer";
 import { getAllCategories } from "../../src/store/reducers/categoryReducer";
 import { getAllEvents } from "../../src/store/reducers/eventReducer";
 import { HiAdjustments } from "react-icons/hi";
-import { IoMdAddCircle } from "react-icons/io";
 import LoggedInLayout from "../../src/components/Layout/loggedInLayout/loggedInLayout";
-import MenuTable from "../../src/components/Tables/Menu/MenuTable/MenuTable";
-import MenusFilterForm from "../../src/components/Forms/Menu/MenusFilterForm/MenusFilterForm";
+import MenuTable from "../../src/components/Table/Menu/MenuTable/MenuTable";
+import MenusFilterForm from "../../src/components/Form/Menu/MenusFilterForm/MenusFilterForm";
 import Loading from "../../src/components/common/Loading/Loading";
+import AddItemButton from "../../src/components/common/Button/AddItemButton/AddItemButton";
 
 const index = () => {
     const dispatch = useDispatch();
@@ -119,16 +118,7 @@ const index = () => {
         <LoggedInLayout title={pageTitle} pageData={pageData}>
             <h1 className="text-2xl font-bold text-left w-10/12 mb-3">Menu</h1>
             <div className="flex justify-between items-center mb-3 w-10/12">
-                <Link href="./menu/add" className="cursor-pointer">
-                    <a className="flex items-center rounded-lg p-2 border rounded-xl border-emerald-700">
-                        <IoMdAddCircle
-                            className="pr-1"
-                            color="#047857"
-                            size={30}
-                        />
-                        <span className="text-emerald-700">Add Menu</span>
-                    </a>
-                </Link>
+                <AddItemButton hrefLink="./menu/add" text="Add Menu" />
                 <div
                     className="flex items-center cursor-pointer mr-5"
                     onClick={() => handleChangeShowFilter()}>

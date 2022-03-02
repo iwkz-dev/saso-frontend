@@ -1,5 +1,5 @@
 import LoggedInLayout from "../../../src/components/Layout/loggedInLayout/loggedInLayout";
-import AddMenuForm from "../../../src/components/Forms/Menu/AddMenuForm/AddMenuForm";
+import AddMenuForm from "../../../src/components/Form/Menu/AddMenuForm/AddMenuForm";
 import React, { useEffect, useState } from "react";
 import { getAllEvents } from "../../../src/store/reducers/eventReducer";
 import { getAllCategories } from "../../../src/store/reducers/categoryReducer";
