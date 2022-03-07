@@ -22,10 +22,11 @@ const index = () => {
 
     useEffect(() => {
         getAllData();
-    }, []);
+    }, [filters]);
 
     const filtersQueryBuilder = () => {
         const queries = [];
+        console.log(filters);
         if (filters.length > 0) {
             filters.map((f) => {
                 const filtersQuery = `${f.name}=${f.id}`;
@@ -35,10 +36,6 @@ const index = () => {
         }
         return "";
     };
-
-    useEffect(() => {
-        dispatch(getAllMenus(filtersQueryBuilder()));
-    }, [filters]);
 
     const getAllData = () => {
         setShowLoading(true);

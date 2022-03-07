@@ -22,6 +22,7 @@ function EventTable({ onDelete }) {
             tableHead={tableHead}
             emptyMessage="Event is empty"
             linkToEdit="event/edit/"
+            linkToView="event/view/"
         />
     );
 }

@@ -1,6 +1,6 @@
 import React from "react";
 import Link from "next/link";
-import { BiEdit } from "react-icons/bi";
+import { BiEdit, BiSearchAlt2 } from "react-icons/bi";
 import { MdDeleteOutline } from "react-icons/md";
 import { formatDate } from "../../helpers/dateHelper";
 
@@ -12,6 +12,7 @@ const Table = ({
     linkToEdit,
     categories,
     events,
+    linkToView
 }) => {
     const imageColumnHandler = (data) => {
         if (data.length > 0) {
@@ -79,6 +80,15 @@ const Table = ({
                 </td>
                 <td className="px-6 py-3 whitespace-nowrap text-right text-sm font-medium ">
                     <div className="flex items-center">
+                        {
+                            linkToView ? (
+                                <Link href={linkToView + item._id}>
+                                    <a className="text-zinc-600 hover:text-zinc-900 px-1">
+                                        <BiSearchAlt2 />
+                                    </a>
+                                </Link>
+                            ):""
+                        }
                         <Link href={linkToEdit + item._id}>
                             <a className="text-indigo-600 hover:text-indigo-900 px-1">
                                 <BiEdit />
@@ -86,7 +96,7 @@ const Table = ({
                         </Link>
                         <div
                             onClick={() => onDelete(item["_id"], item["name"])}
-                            className="text-red-600 hover:text-red-900 px-2 cursor-pointer">
+                            className="text-red-600 hover:text-red-900 px-1 cursor-pointer">
                             <MdDeleteOutline />
                         </div>
                     </div>
@@ -94,7 +104,8 @@ const Table = ({
                 {Object.keys(tableHead).map((k) => (
                     <td
                         key={k}
-                        className="px-6 py-3 whitespace-nowrap text-sm font-medium">
+                        className="px-6 py-3 whitespace-nowrap text-sm font-medium"
+                    >
                         {rowHandler(item, k)}
                     </td>
                 ))}

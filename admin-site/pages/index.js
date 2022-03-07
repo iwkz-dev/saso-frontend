@@ -2,7 +2,7 @@ import LoggedInLayout from "../src/components/Layout/loggedInLayout/loggedInLayo
 
 const index = () => {
     const pageData = { name: "Dashboard", href: "/", current: true };
-    const pageTitle = "Saso App | Layout Page";
+    const pageTitle = "Saso App | Dashboard";
 
     return (
         <LoggedInLayout title={pageTitle} pageData={pageData}>
