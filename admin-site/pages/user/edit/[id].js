@@ -40,12 +40,14 @@ const id = () => {
 
     return (
         <LoggedInLayout title={pageTitle} pageData={pageData}>
-            <h1 className="text-2xl font-bold text-left w-10/12 mb-3">
-                Edit User
-            </h1>
-            {showLoading ? <Loading /> : ""}
-            {showForm ? <EditUserForm id={id} /> : ""}
-            {showError || ""}
+            <div className="w-10/12 mx-auto">
+                <h1 className="text-2xl font-bold text-left w-10/12 mb-3">
+                    Edit User
+                </h1>
+                {showLoading ? <Loading /> : ""}
+                {showForm ? <EditUserForm id={id} /> : ""}
+                {showError || ""}
+            </div>
         </LoggedInLayout>
     );
 };

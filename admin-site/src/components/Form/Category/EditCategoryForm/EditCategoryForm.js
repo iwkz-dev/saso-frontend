@@ -38,7 +38,7 @@ const EditCategoryForm = () => {
     };
 
     return (
-        <div className="w-10/12">
+        <div>
             <form ref={form} onSubmit={(e) => submitForm(e)}>
                 <div className="max-w">
                     <div className="grid md:grid-cols-2 sm:grid-cols-1 gap-6">

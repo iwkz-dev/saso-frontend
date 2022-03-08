@@ -11,7 +11,9 @@ const index = () => {
 
     return (
         <LoggedInLayout title={pageTitle} pageData={pageData}>
-            <p>add user is here</p>
+            <div className="w-10/12 mx-auto">
+                <p>add user is here</p>
+            </div>
         </LoggedInLayout>
     );
 };

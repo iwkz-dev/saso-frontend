@@ -113,31 +113,33 @@ const index = () => {
 
     return (
         <LoggedInLayout title={pageTitle} pageData={pageData}>
-            <h1 className="text-2xl font-bold text-left w-10/12 mb-3">Menu</h1>
-            <div className="flex justify-between items-center mb-3 w-10/12">
-                <AddItemButton hrefLink="./menu/add" text="Add Menu" />
-                <div
-                    className="flex items-center cursor-pointer mr-5"
-                    onClick={() => handleChangeShowFilter()}>
-                    <HiAdjustments className="pr-1" size={20} />
-                    <span>
-                        {showFilterForm ? "Hide Filter" : "Show Filter"}
-                    </span>
+            <div className="w-10/12 mx-auto">
+                <h1 className="text-2xl font-bold text-left mb-3">Menu</h1>
+                <div className="flex justify-between items-center mb-3">
+                    <AddItemButton hrefLink="./menu/add" text="Add Menu" />
+                    <div
+                        className="flex items-center cursor-pointer mr-5"
+                        onClick={() => handleChangeShowFilter()}>
+                        <HiAdjustments className="pr-1" size={20} />
+                        <span>
+                            {showFilterForm ? "Hide Filter" : "Show Filter"}
+                        </span>
+                    </div>
                 </div>
+                <MenusFilterForm
+                    handleChange={handleChange}
+                    showFilterForm={showFilterForm}
+                    handleChangeShowFilter={handleChangeShowFilter}
+                />
+                {showError || ""}
+                {showLoading ? (
+                    <Loading />
+                ) : showTable ? (
+                    <MenuTable onDelete={onDelete} />
+                ) : (
+                    ""
+                )}
             </div>
-            <MenusFilterForm
-                handleChange={handleChange}
-                showFilterForm={showFilterForm}
-                handleChangeShowFilter={handleChangeShowFilter}
-            />
-            {showError || ""}
-            {showLoading ? (
-                <Loading />
-            ) : showTable ? (
-                <MenuTable onDelete={onDelete} />
-            ) : (
-                ""
-            )}
         </LoggedInLayout>
     );
 };

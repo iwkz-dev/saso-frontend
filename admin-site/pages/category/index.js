@@ -68,20 +68,23 @@ const index = () => {
 
     return (
         <LoggedInLayout title={pageTitle} pageData={pageData}>
-            <h1 className="text-2xl font-bold text-left w-10/12 mb-3">
-                Category
-            </h1>
-            <div className="flex justify-between items-center mb-3 w-10/12">
-                <AddItemButton hrefLink="./category/add" text="Add Category" />
+            <div className="w-10/12 mx-auto">
+                <h1 className="text-2xl font-bold text-left mb-3">Category</h1>
+                <div className="flex justify-between items-center mb-3">
+                    <AddItemButton
+                        hrefLink="./category/add"
+                        text="Add Category"
+                    />
+                </div>
+                {showError || ""}
+                {showLoading ? (
+                    <Loading />
+                ) : showTable ? (
+                    <CategoryTable onDelete={onDelete} />
+                ) : (
+                    ""
+                )}
             </div>
-            {showError || ""}
-            {showLoading ? (
-                <Loading />
-            ) : showTable ? (
-                <CategoryTable onDelete={onDelete} />
-            ) : (
-                ""
-            )}
         </LoggedInLayout>
     );
 };

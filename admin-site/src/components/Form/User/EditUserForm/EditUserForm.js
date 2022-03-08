@@ -10,7 +10,7 @@ const EditUserForm = () => {
     };
 
     return (
-        <div className="w-10/12">
+        <div>
             <form ref={form}>
                 <div className="max-w">
                     <div className="grid md:grid-cols-2 sm:grid-cols-1 gap-6">

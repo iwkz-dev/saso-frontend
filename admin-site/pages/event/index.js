@@ -66,18 +66,22 @@ const event = () => {
 
     return (
         <LoggedInLayout title={pageTitle} pageData={pageData}>
-            <h1 className="text-2xl font-bold text-left w-10/12 mb-3">Event</h1>
-            <div className="flex justify-between items-center mb-3 w-10/12">
-                <AddItemButton hrefLink="./event/add" text="Add Event" />
+            <div className="w-10/12 mx-auto">
+                <h1 className="text-2xl font-bold text-left w-10/12 mb-3">
+                    Event
+                </h1>
+                <div className="flex justify-between items-center mb-3">
+                    <AddItemButton hrefLink="./event/add" text="Add Event" />
+                </div>
+                {showError || ""}
+                {showLoading ? (
+                    <Loading />
+                ) : showTable ? (
+                    <EventTable onDelete={onDelete} />
+                ) : (
+                    ""
+                )}
             </div>
-            {showError || ""}
-            {showLoading ? (
-                <Loading />
-            ) : showTable ? (
-                <EventTable onDelete={onDelete} />
-            ) : (
-                ""
-            )}
         </LoggedInLayout>
     );
 };

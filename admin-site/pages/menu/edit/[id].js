@@ -44,12 +44,12 @@ const id = () => {
 
     return (
         <LoggedInLayout title={pageTitle} pageData={pageData}>
-            <h1 className="text-2xl font-bold text-left w-10/12 mb-3">
-                Edit menu
-            </h1>
-            {showLoading ? <Loading /> : ""}
-            {showForm ? <EditMenuForm id={id} /> : ""}
-            {showError || ""}
+            <div className="w-10/12">
+                <h1 className="text-2xl font-bold text-left mb-3">Edit menu</h1>
+                {showLoading ? <Loading /> : ""}
+                {showForm ? <EditMenuForm id={id} /> : ""}
+                {showError || ""}
+            </div>
         </LoggedInLayout>
     );
 };

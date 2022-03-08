@@ -1,7 +1,7 @@
-import React, {useEffect, useState} from 'react';
-import {useDispatch, useSelector} from "react-redux";
-import {useRouter} from "next/router";
-import {getDetailEvent} from "../../../src/store/reducers/eventReducer";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useRouter } from "next/router";
+import { getDetailEvent } from "../../../src/store/reducers/eventReducer";
 import Loading from "../../../src/components/common/Loading/Loading";
 import LoggedInLayout from "../../../src/components/Layout/loggedInLayout/loggedInLayout";
 import EventDataDisplay from "../../../src/components/DataDisplay/EventDataDisplay/EventDataDisplay";
@@ -43,32 +43,35 @@ const id = () => {
 
     return (
         <LoggedInLayout title={pageTitle} pageData={pageData}>
-            {
-                showLoading ? <Loading /> : (
+            <div className="w-10/12 mx-auto">
+                {showLoading ? (
+                    <Loading />
+                ) : (
                     <>
-                        <h1 className="text-2xl font-bold text-left w-10/12 mb-3">
-                            Event "{event.name}"
+                        <h1 className="text-2xl font-bold text-left mb-3">
+                            View Event &quot;{event.name}&quot;
                         </h1>
-                        {
-                            showDataDisplay ? (
-                                <>
-                                    <EventDataDisplay event={event}/>
-                                    <div className="w-full mt-4">
-                                        <h3 className="w-10/12 text-lg leading-7 font-medium text-gray-900 mx-auto mb-3">
-                                            Related Menu
-                                        </h3>
-                                        <div className="w-10/12 mx-auto mb-3">
-                                            <AddItemButton hrefLink={`/menu/add?event=${event._id}`} text="Add Menu" />
-                                        </div>
-                                        <RelatedMenuTable event={event}/>
-                                    </div>
-                                </>
-                            ) : ""
-                        }
+                        {showDataDisplay ? (
+                            <>
+                                <EventDataDisplay event={event} />
+                                <div className="mt-4 mb-3">
+                                    <h3 className="w-10/12 text-lg leading-7 font-medium text-gray-900 mb-3">
+                                        Related Menu
+                                    </h3>
+                                    <AddItemButton
+                                        hrefLink={`/menu/add?event=${event._id}`}
+                                        text="Add Menu for this Event"
+                                    />
+                                </div>
+                                <RelatedMenuTable event={event} />
+                            </>
+                        ) : (
+                            ""
+                        )}
                         {showError || ""}
                     </>
-                )
-            }
+                )}
+            </div>
         </LoggedInLayout>
     );
 };

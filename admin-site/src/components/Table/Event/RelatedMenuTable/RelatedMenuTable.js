@@ -1,10 +1,12 @@
-import React, {useEffect, useState} from 'react';
-import {getAllEvents} from "../../../../store/reducers/eventReducer";
-import {getAllCategories} from "../../../../store/reducers/categoryReducer";
-import {getAllMenus} from "../../../../store/reducers/menuReducer";
-import {useDispatch, useSelector} from "react-redux";
+import React, { useEffect, useState } from "react";
+import { getAllEvents } from "../../../../store/reducers/eventReducer";
+import { getAllCategories } from "../../../../store/reducers/categoryReducer";
+import { getAllMenus } from "../../../../store/reducers/menuReducer";
+import { useDispatch, useSelector } from "react-redux";
 import Table from "../../Table";
-const RelatedMenuTable = ({event, onDelete}) => {
+import Loading from "../../../common/Loading/Loading";
+
+const RelatedMenuTable = ({ event, onDelete }) => {
     const dispatch = useDispatch();
     const menus = useSelector((state) => state.menu.menus);
     const categories = useSelector((state) => state.category.categories);
@@ -49,26 +51,22 @@ const RelatedMenuTable = ({event, onDelete}) => {
 
     return (
         <>
-            {
-                showTable ? (
-                    <Table
-                        onDelete={onDelete}
-                        items={menus}
-                        events={events}
-                        categories={categories}
-                        tableHead={tableHead}
-                        emptyMessage="Menu is empty"
-                        linkToEdit="/menu/edit/"
-                    />
-                ) : (
-                    <Loading/>
-                )
-            }
+            {showTable ? (
+                <Table
+                    onDelete={onDelete}
+                    items={menus}
+                    events={events}
+                    categories={categories}
+                    tableHead={tableHead}
+                    emptyMessage="Menu is empty"
+                    linkToEdit="/menu/edit/"
+                />
+            ) : (
+                <Loading />
+            )}
             {showError || ""}
         </>
     );
 };
-
-import Loading from "../../../common/Loading/Loading";
 
 export default RelatedMenuTable;

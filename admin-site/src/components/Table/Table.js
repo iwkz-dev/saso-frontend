@@ -12,7 +12,7 @@ const Table = ({
     linkToEdit,
     categories,
     events,
-    linkToView
+    linkToView,
 }) => {
     const imageColumnHandler = (data) => {
         if (data.length > 0) {
@@ -80,15 +80,15 @@ const Table = ({
                 </td>
                 <td className="px-6 py-3 whitespace-nowrap text-right text-sm font-medium ">
                     <div className="flex items-center">
-                        {
-                            linkToView ? (
-                                <Link href={linkToView + item._id}>
-                                    <a className="text-zinc-600 hover:text-zinc-900 px-1">
-                                        <BiSearchAlt2 />
-                                    </a>
-                                </Link>
-                            ):""
-                        }
+                        {linkToView ? (
+                            <Link href={linkToView + item._id}>
+                                <a className="text-zinc-600 hover:text-zinc-900 px-1">
+                                    <BiSearchAlt2 />
+                                </a>
+                            </Link>
+                        ) : (
+                            ""
+                        )}
                         <Link href={linkToEdit + item._id}>
                             <a className="text-indigo-600 hover:text-indigo-900 px-1">
                                 <BiEdit />
@@ -104,8 +104,7 @@ const Table = ({
                 {Object.keys(tableHead).map((k) => (
                     <td
                         key={k}
-                        className="px-6 py-3 whitespace-nowrap text-sm font-medium"
-                    >
+                        className="px-6 py-3 whitespace-nowrap text-sm font-medium">
                         {rowHandler(item, k)}
                     </td>
                 ))}
@@ -115,7 +114,7 @@ const Table = ({
 
     if (items.length > 0) {
         return (
-            <div className="w-10/12 overflow-x-scroll shadow border-b border-gray-200 sm:rounded-lg mx-auto">
+            <div className="overflow-x-scroll shadow border-b border-gray-200 sm:rounded-lg">
                 <table className="min-w-full divide-y divide-gray-200">
                     <thead className="bg-gray-50">
                         <tr>
@@ -147,11 +146,10 @@ const Table = ({
         );
     }
     return (
-        <p className="w-10/12 mx-auto">
+        <p>
             <i>{emptyMessage}</i>
         </p>
     );
-
 };
 
 export default Table;

@@ -7,7 +7,11 @@ const index = () => {
 
     return (
         <LoggedInLayout title={pageTitle} pageData={pageData}>
-            <h1 className="text-2xl font-bold text-left w-10/12 mb-3">Order</h1>
+            <div className="w-10/12 mx-auto">
+                <h1 className="text-2xl font-bold text-left w-10/12 mb-3">
+                    Order
+                </h1>
+            </div>
         </LoggedInLayout>
     );
 };

@@ -69,7 +69,7 @@ function EditMenuForm() {
     };
 
     return (
-        <div className="w-10/12">
+        <div>
             <form ref={form} onSubmit={(e) => submitForm(e)}>
                 <div className="max-w">
                     <div className="grid md:grid-cols-2 sm:grid-cols-1 gap-6">
@@ -115,8 +115,7 @@ function EditMenuForm() {
                                         <option
                                             key={item._id}
                                             value={item._id}
-                                            selected={menu.event === item._id}
-                                        >
+                                            selected={menu.event === item._id}>
                                             {item.name}
                                         </option>
                                     );

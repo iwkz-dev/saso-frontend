@@ -5,7 +5,7 @@ import { getAllEvents } from "../../../src/store/reducers/eventReducer";
 import { getAllCategories } from "../../../src/store/reducers/categoryReducer";
 import { useDispatch } from "react-redux";
 import Loading from "../../../src/components/common/Loading/Loading";
-import {useRouter} from "next/router";
+import { useRouter } from "next/router";
 
 const index = () => {
     const dispatch = useDispatch();
@@ -39,12 +39,18 @@ const index = () => {
 
     return (
         <LoggedInLayout title={pageTitle} pageData={pageData}>
-            <h1 className="text-2xl font-bold text-left w-10/12 mb-3">
-                Add menu
-            </h1>
-            {showLoading ? <Loading /> : ""}
-            {showForm ? <AddMenuForm name="imageUrls" eventId={query.event}/> : ""}
-            {showError || ""}
+            <div className="w-10/12 mx-auto">
+                <h1 className="text-2xl font-bold text-left w-10/12 mb-3">
+                    Add menu
+                </h1>
+                {showLoading ? <Loading /> : ""}
+                {showForm ? (
+                    <AddMenuForm name="imageUrls" eventId={query.event} />
+                ) : (
+                    ""
+                )}
+                {showError || ""}
+            </div>
         </LoggedInLayout>
     );
 };
