@@ -115,7 +115,7 @@ const Table = ({
 
     if (items.length > 0) {
         return (
-            <div className="w-10/12 overflow-x-scroll shadow border-b border-gray-200 sm:rounded-lg">
+            <div className="w-10/12 overflow-x-scroll shadow border-b border-gray-200 sm:rounded-lg mx-auto">
                 <table className="min-w-full divide-y divide-gray-200">
                     <thead className="bg-gray-50">
                         <tr>
@@ -146,7 +146,12 @@ const Table = ({
             </div>
         );
     }
-    return <p>{emptyMessage}</p>;
+    return (
+        <p className="w-10/12 mx-auto">
+            <i>{emptyMessage}</i>
+        </p>
+    );
+
 };
 
 export default Table;

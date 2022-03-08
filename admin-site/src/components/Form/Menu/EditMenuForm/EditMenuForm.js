@@ -115,7 +115,8 @@ function EditMenuForm() {
                                         <option
                                             key={item._id}
                                             value={item._id}
-                                            selected={menu.event === item._id}>
+                                            selected={menu.event === item._id}
+                                        >
                                             {item.name}
                                         </option>
                                     );

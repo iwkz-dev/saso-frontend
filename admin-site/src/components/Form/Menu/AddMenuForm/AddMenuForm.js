@@ -4,7 +4,7 @@ import { createMenu } from "../../../../store/reducers/menuReducer";
 import ImageUploader from "../../../common/ImageUploader/ImageUploader";
 import Alert from "../../../common/Message/Alert/Alert";
 
-const AddMenuForm = () => {
+const AddMenuForm = ({eventId}) => {
     const dispatch = useDispatch();
     const form = useRef();
     const events = useSelector((state) => state.event.events);
@@ -14,6 +14,7 @@ const AddMenuForm = () => {
     const [showFailed, setShowFailed] = useState(false);
     const [images, setImages] = useState([]);
     const maxNumber = 5;
+
 
     const onChange = (imageList) => {
         // data for submit
@@ -92,7 +93,11 @@ const AddMenuForm = () => {
                                 </option>
                                 {events.map((item) => {
                                     return (
-                                        <option key={item._id} value={item._id}>
+                                        <option
+                                            key={item._id}
+                                            value={item._id}
+                                            selected={item._id === eventId}
+                                        >
                                             {item.name}
                                         </option>
                                     );

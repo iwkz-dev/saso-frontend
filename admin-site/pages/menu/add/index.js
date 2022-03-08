@@ -5,6 +5,7 @@ import { getAllEvents } from "../../../src/store/reducers/eventReducer";
 import { getAllCategories } from "../../../src/store/reducers/categoryReducer";
 import { useDispatch } from "react-redux";
 import Loading from "../../../src/components/common/Loading/Loading";
+import {useRouter} from "next/router";
 
 const index = () => {
     const dispatch = useDispatch();
@@ -17,6 +18,7 @@ const index = () => {
     const [showForm, setShowForm] = useState(false);
     const [showError, setShowError] = useState("");
     const [showLoading, setShowLoading] = useState(false);
+    const { query } = useRouter();
 
     useEffect(() => {
         setShowLoading(true);
@@ -41,7 +43,7 @@ const index = () => {
                 Add menu
             </h1>
             {showLoading ? <Loading /> : ""}
-            {showForm ? <AddMenuForm name="imageUrls" /> : ""}
+            {showForm ? <AddMenuForm name="imageUrls" eventId={query.event}/> : ""}
             {showError || ""}
         </LoggedInLayout>
     );
