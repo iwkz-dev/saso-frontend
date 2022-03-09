@@ -1,5 +1,7 @@
 import React, { useRef } from "react";
 import { useSelector } from "react-redux";
+import SubmitButton from "../../../common/Button/SubmitButton/SubmitButton";
+import ResetButton from "../../../common/Button/ResetButton/ResetButton";
 
 const EditUserForm = () => {
     const form = useRef();
@@ -89,17 +91,8 @@ const EditUserForm = () => {
                     </div>
                 </div>
                 <div className="flex my-4">
-                    <button
-                        type="submit"
-                        className="group relative flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                        Submit
-                    </button>
-                    <button
-                        type="reset"
-                        className="group relative flex justify-center mx-4 py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-slate-400 hover:bg-slate-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500"
-                        onClick={() => reset()}>
-                        Reset
-                    </button>
+                    <SubmitButton />
+                    <ResetButton onClick={reset} />
                 </div>
             </form>
         </div>
