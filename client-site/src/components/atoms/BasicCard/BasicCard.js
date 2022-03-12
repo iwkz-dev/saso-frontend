@@ -7,9 +7,14 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import styles from './BasicCard.module.scss';
 import Image from 'next/image';
+import { useDispatch, useSelector } from 'react-redux';
+import { addOrder } from '../../../stores/reducers/cart';
 
 export default function BasicCard({ menu }) {
-  console.log(menu);
+  const dispatch = useDispatch();
+  const handleClick = () => {
+    dispatch(addOrder(menu));
+  };
   return (
     <Card className={styles.cardContainer}>
       <div className={styles.imageContainer}>
@@ -42,7 +47,7 @@ export default function BasicCard({ menu }) {
           </Typography>
         </CardContent>
         <CardActions>
-          <Button size="small" variant="contained">
+          <Button size="small" variant="contained" onClick={handleClick}>
             Add to Cart
           </Button>
         </CardActions>

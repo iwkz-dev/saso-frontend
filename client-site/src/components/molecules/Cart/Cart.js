@@ -1,5 +1,7 @@
 import React from 'react';
 import styles from './cart.module.scss';
+import { Card, CardContent, Divider } from '@mui/material';
+import { useSelector } from 'react-redux';
 const items = [
   {
     amount: 2,
@@ -18,19 +20,26 @@ const items = [
   },
 ];
 const Cart = () => {
+  const cart = useSelector(state => state.cart.data);
+  console.log(cart);
   return (
-    <div className={styles.cartContainer}>
-      {/* <div className={styles.title}>Keranjang Belanja</div>
-      <div className={styles.content}>
-        <div className={styles.orderedList}>
-          {items.map(e => (
-            <div>{e.name}</div>
-          ))}
+    <Card className={styles.cartContainer}>
+      <CardContent>
+        <div className={styles.title}>Keranjang Belanja</div>
+        <div className={styles.content}>
+          <div className={styles.orderedList}>
+            {Object.values(cart).map(value => (
+              <div key={value.name}>
+                <div>{value.name}</div>
+                <div>{value.amount}</div>
+              </div>
+            ))}
+          </div>
+          <Divider />
+          <div className={styles.detail}></div>
         </div>
-        <hr />
-        <div className={styles.detail}></div>
-      </div> */}
-    </div>
+      </CardContent>
+    </Card>
   );
 };
 

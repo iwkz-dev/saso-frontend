@@ -8,7 +8,6 @@ import styles from './tabs.module.scss';
 import CardCollection from '../CardCollection/CardCollection';
 
 export default function Tabs({ menu }) {
-  console.log(menu);
   const [value, setValue] = React.useState('1');
 
   const handleChange = (event, newValue) => {

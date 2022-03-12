@@ -5,8 +5,8 @@ import styles from './CardCollection.module.scss';
 const CardCollection = ({ menuList }) => {
   return (
     <div className={styles.container}>
-      {menuList.map(element => (
-        <BasicCard menu={element} />
+      {menuList.map((element, i) => (
+        <BasicCard key={i} menu={element} />
       ))}
     </div>
   );

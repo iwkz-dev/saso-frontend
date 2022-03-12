@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import menuService from '../../services/menuService';
 
 const initialState = {
-  menu: [],
+  data: [],
   message: {
     error: '',
     success: '',
@@ -22,23 +22,22 @@ export const getMenu = () => dispatch => {
 
 export const menuSlice = createSlice({
   name: 'menu',
-  initialState: { data: initialState },
+  initialState: initialState,
   reducers: {
     menuSuccess: (state, action) => {
-      state.data.menu = [...action.payload.data.data];
-      state.data.message.success = action.payload.data.message;
-      state.data.message.error = '';
+      state.data = [...action.payload.data.data];
+      state.message.success = action.payload.data.message;
+      state.message.error = '';
     },
     menuFailed: (state, action) => {
-      state.data.message.error = action.payload.data.message;
+      state.message.error = action.payload.data.message;
     },
     resetMenu: (state, action) => {
-      state.data = initialState;
+      state = initialState;
     },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { textFieldChangeHandler, menuSuccess, menuFailed, resetMenu } =
-  menuSlice.actions;
+export const { menuSuccess, menuFailed, resetMenu } = menuSlice.actions;
 export default menuSlice.reducer;

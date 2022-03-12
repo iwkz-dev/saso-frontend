@@ -11,7 +11,7 @@ const DynamicContainer = () => {
   const dispatch = useDispatch();
   const isBreakpoint = useMediaQuery(parseInt(styles.breakpointTablet));
   const [mobileActive, setMobileActive] = useState(false);
-  const menu = useSelector(state => state.menu.data.menu);
+  const menu = useSelector(state => state.menu.data);
 
   useEffect(() => {
     dispatch(getMenu());
@@ -20,15 +20,8 @@ const DynamicContainer = () => {
   useEffect(() => {
     setMobileActive(false);
   }, [isBreakpoint]);
-  const handleClick = async () => {
-    const res = await sasoApi.getData('/customer/menu');
-    console.log(res);
-  };
   return (
     <div className={styles.dynamicContainer}>
-      <Button onClick={handleClick} variant="contained">
-        test API
-      </Button>
       <div className={styles.firstBlock}>
         <div className={styles.firstInnerContainer}>
           <Tabs menu={menu} />

@@ -1,7 +1,6 @@
 import Head from 'next/head';
 import Image from 'next/image';
 import BigLogo from '../components/atoms/BigLogo/BigLogo';
-import Button from '../components/Button';
 import DynamicContainer from '../components/organisms/DynamicContainer/DynamicContainer';
 import Navbar from '../components/organisms/Navbar/Navbar';
 import styles from '../styles/Home.module.scss';
