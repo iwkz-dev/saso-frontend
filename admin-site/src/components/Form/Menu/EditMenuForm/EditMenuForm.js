@@ -1,9 +1,6 @@
 import React, { useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-    editDetailMenu,
-    editDetailMenuImages,
-} from "../../../../store/reducers/menuReducer";
+import { editDetailMenu } from "../../../../store/reducers/menuReducer";
 import ImageUploader from "../../../common/ImageUploader/ImageUploader";
 import Alert from "../../../common/Message/Alert/Alert";
 import ResetButton from "../../../common/Button/ResetButton/ResetButton";
@@ -33,36 +30,35 @@ function EditMenuForm() {
         const text = confirm("Please confirm to save your changes");
         if (text) {
             setShowUploading(true);
-            const data = new FormData(form.current);
-            const requestedData = {
-                name: data.get("name"),
-                quantity: data.get("quantity"),
-                price: data.get("price"),
-                event: data.get("event"),
-                category: data.get("category"),
-                description: data.get("description"),
+            const createData = async () => {
+                const data = new FormData(form.current);
+                const eTags = [];
+                let i = 0;
+                images.map((image) => {
+                    if (image.file) {
+                        data.append("imageUrls", image.file);
+                    } else {
+                        eTags[i] = image.eTag;
+                        i++;
+                    }
+                });
+                data.append("eTags", eTags.join(", "));
+                return await dispatch(editDetailMenu(menu._id, data));
             };
-            const imagesData = new FormData();
-            images.map((image) => {
-                if (image.file) {
-                    imagesData.append("imageUrls", image.file);
-                } else {
-                    imagesData.append("imageUrls", image);
-                }
-            });
-            Promise.all([
-                dispatch(editDetailMenu(menu._id, requestedData)),
-                dispatch(editDetailMenuImages(menu._id, imagesData)),
-            ]).then((responses) => {
-                const failed = responses.find((r) => r?.status === "failed");
-                if (!failed) {
+            createData()
+                .then((r) => {
+                    if (r?.status === "failed") {
+                        setShowUploading(false);
+                        setShowFailed(r.message);
+                    } else {
+                        setShowUploading(false);
+                        setShowSuccess(r.message);
+                    }
+                })
+                .catch(() => {
                     setShowUploading(false);
-                    setShowSuccess(responses[0].message);
-                } else {
-                    setShowUploading(false);
-                    setShowFailed(failed.message);
-                }
-            });
+                    setShowFailed(true);
+                });
         }
     };
 
