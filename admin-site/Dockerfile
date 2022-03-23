@@ -1,10 +1,9 @@
 FROM node:lts-alpine
-WORKDIR /var/www/saso
+WORKDIR /var/www/saso-admin
 COPY admin-site/package*.json ./
 RUN ls -l
 RUN npm install
 COPY admin-site ./
 RUN ls -l
-RUN npm run build
-WORKDIR /var/www/saso
-CMD [ "npm", "run", "start" ]
+WORKDIR /var/www/saso-admin
+CMD [ "npm", "start" ]
