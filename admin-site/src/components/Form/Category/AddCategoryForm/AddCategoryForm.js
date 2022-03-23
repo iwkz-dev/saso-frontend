@@ -2,6 +2,8 @@ import React, { useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { createCategory } from "../../../../store/reducers/categoryReducer";
 import Alert from "../../../common/Message/Alert/Alert";
+import SubmitButton from "../../../common/Button/SubmitButton/SubmitButton";
+import ResetButton from "../../../common/Button/ResetButton/ResetButton";
 
 const AddCategoryForm = () => {
     const dispatch = useDispatch();
@@ -41,6 +43,10 @@ const AddCategoryForm = () => {
         }
     };
 
+    const reset = () => {
+        window.location.reload();
+    };
+
     return (
         <div className="w-10/12">
             <form ref={form} onSubmit={(e) => submitForm(e)}>
@@ -59,16 +65,8 @@ const AddCategoryForm = () => {
                     </div>
                 </div>
                 <div className="flex my-4">
-                    <button
-                        type="submit"
-                        className="group relative flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                        Submit
-                    </button>
-                    <button
-                        type="reset"
-                        className="group relative flex justify-center mx-4 py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-slate-400 hover:bg-slate-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500">
-                        Reset
-                    </button>
+                    <SubmitButton />
+                    <ResetButton onClick={reset} />
                 </div>
             </form>
             <Alert

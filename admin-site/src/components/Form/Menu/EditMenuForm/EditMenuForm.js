@@ -1,11 +1,10 @@
 import React, { useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-    editDetailMenu,
-    editDetailMenuImages,
-} from "../../../../store/reducers/menuReducer";
+import { editDetailMenu } from "../../../../store/reducers/menuReducer";
 import ImageUploader from "../../../common/ImageUploader/ImageUploader";
 import Alert from "../../../common/Message/Alert/Alert";
+import ResetButton from "../../../common/Button/ResetButton/ResetButton";
+import SubmitButton from "../../../common/Button/SubmitButton/SubmitButton";
 
 function EditMenuForm() {
     const dispatch = useDispatch();
@@ -31,36 +30,35 @@ function EditMenuForm() {
         const text = confirm("Please confirm to save your changes");
         if (text) {
             setShowUploading(true);
-            const data = new FormData(form.current);
-            const requestedData = {
-                name: data.get("name"),
-                quantity: data.get("quantity"),
-                price: data.get("price"),
-                event: data.get("event"),
-                category: data.get("category"),
-                description: data.get("description"),
+            const createData = async () => {
+                const data = new FormData(form.current);
+                const eTags = [];
+                let i = 0;
+                images.map((image) => {
+                    if (image.file) {
+                        data.append("imageUrls", image.file);
+                    } else {
+                        eTags[i] = image.eTag;
+                        i++;
+                    }
+                });
+                data.append("eTags", eTags.join(", "));
+                return await dispatch(editDetailMenu(menu._id, data));
             };
-            const imagesData = new FormData();
-            images.map((image) => {
-                if (image.file) {
-                    imagesData.append("imageUrls", image.file);
-                } else {
-                    imagesData.append("imageUrls", image);
-                }
-            });
-            Promise.all([
-                dispatch(editDetailMenu(menu._id, requestedData)),
-                dispatch(editDetailMenuImages(menu._id, imagesData)),
-            ]).then((responses) => {
-                const failed = responses.find((r) => r?.status === "failed");
-                if (!failed) {
+            createData()
+                .then((r) => {
+                    if (r?.status === "failed") {
+                        setShowUploading(false);
+                        setShowFailed(r.message);
+                    } else {
+                        setShowUploading(false);
+                        setShowSuccess(r.message);
+                    }
+                })
+                .catch(() => {
                     setShowUploading(false);
-                    setShowSuccess(responses[0].message);
-                } else {
-                    setShowUploading(false);
-                    setShowFailed(failed.message);
-                }
-            });
+                    setShowFailed(true);
+                });
         }
     };
 
@@ -159,17 +157,8 @@ function EditMenuForm() {
                     </div>
                 </div>
                 <div className="flex my-4">
-                    <button
-                        type="submit"
-                        className="group relative flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                        Submit
-                    </button>
-                    <button
-                        type="button"
-                        className="group relative flex justify-center mx-4 py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-slate-400 hover:bg-slate-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500"
-                        onClick={() => reset()}>
-                        Reset
-                    </button>
+                    <SubmitButton />
+                    <ResetButton onClick={reset} />
                 </div>
             </form>
             <Alert
