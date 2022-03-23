@@ -1,0 +1,33 @@
+@import '../../../styles/custom.scss';
+.cardContainer {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+  .imageContainer {
+    overflow: hidden;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-height: 200px;
+    max-width: 300px;
+    margin: auto;
+    img {
+      width: 100%;
+      height: 100%;
+    }
+  }
+  .contentContainer {
+    width: 100%;
+  }
+}
+
+@include tablet {
+  .cardContainer {
+    flex-direction: row;
+    .imageContainer {
+      width: 40%;
+    }
+  }
+}
