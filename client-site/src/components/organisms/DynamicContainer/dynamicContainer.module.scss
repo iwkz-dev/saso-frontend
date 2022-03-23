@@ -1,0 +1,58 @@
+@import '../../../styles/custom.scss';
+.dynamicContainer {
+  display: flex;
+  flex-direction: column;
+  .firstBlock {
+    width: 100%;
+    .firstInnerContainer {
+    }
+  }
+  .secondBlock {
+    .secondInnerBlock {
+      width: 100vw;
+      height: 100%;
+      // background-color: rebeccapurple;
+      display: none;
+    }
+    .active {
+      display: block;
+      top: 0;
+      left: 0;
+      right: 0;
+      position: fixed;
+      background-color: white;
+      overflow: scroll;
+    }
+  }
+  .cartButton {
+    position: fixed;
+    bottom: 0px;
+    left: 0;
+    width: 100vw;
+  }
+}
+
+@include tablet {
+  .dynamicContainer {
+    display: flex;
+    flex-direction: row;
+    .firstBlock {
+      width: 100%;
+      .firstInnerContainer {
+        max-width: 1024px;
+        margin: 0 auto;
+      }
+    }
+    .secondBlock {
+      min-width: 344px;
+      .secondInnerBlock {
+        background-color: white;
+        top: 64px;
+        right: 0;
+        left: unset;
+        width: 344px;
+        display: block;
+      }
+    }
+  }
+}

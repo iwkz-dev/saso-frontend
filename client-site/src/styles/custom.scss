@@ -1,0 +1,52 @@
+// min or max
+$breakpointTablet: 788;
+$media-direction: min; // min / max — default is min (mobile first)
+
+// Breakpoints
+// A Sass Map for all Breakpoints you need. But keep it simple! Just add Sizes that you need several times.
+// Here are my basic set. I change the values a bit from project to project
+$breakpoints: (
+  'default': '',
+  'xs': 480px,
+  's': $breakpointTablet + 0px,
+  'm': 1024px,
+  'l': 1280px,
+  'xl': 1680px,
+);
+$breakpointS: 500px;
+
+@mixin breakpoint($breakpoint, $direction: $media-direction) {
+  // Es wird gecheckt ob der Wert in der Sass Map vorhanden ist
+  @if map-has-key($breakpoints, $breakpoint) {
+    // Ausgabe
+    @media (#{$direction}-width: #{map-get($breakpoints, $breakpoint)}) {
+      @content;
+    }
+  }
+
+  // Wenn ihr oben einen Wert eingetragen habt wird hier gecheckt ob ihr einen Einheit angehängt habt. Falls nicht wird px genutzt.
+  @else if unitless($breakpoint) {
+    $breakpoint: $breakpoint + 0px;
+
+    // Ausgabe
+    @media (#{$direction}-width: $breakpoint) {
+      @content;
+    }
+  }
+}
+
+@mixin desktop() {
+  @include breakpoint('m') {
+    @content;
+  }
+}
+
+@mixin tablet() {
+  @include breakpoint('s') {
+    @content;
+  }
+}
+
+:export {
+  breakpointTablet: $breakpointTablet;
+}
