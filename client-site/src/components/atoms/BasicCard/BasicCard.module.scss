@@ -5,7 +5,14 @@
   flex-direction: column;
   margin-bottom: 10px;
   .imageContainer {
+    overflow: hidden;
     width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-height: 200px;
+    max-width: 300px;
+    margin: auto;
   }
   .contentContainer {
     width: 100%;
@@ -16,7 +23,7 @@
   .cardContainer {
     flex-direction: row;
     .imageContainer {
-      width: 30%;
+      width: 40%;
     }
     .contentContainer {
     }

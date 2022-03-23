@@ -19,10 +19,8 @@ export default function BasicCard({ menu }) {
     <Card className={styles.cardContainer}>
       <div className={styles.imageContainer}>
         {menu.images[0] ? (
-          <Image
-            width={400}
-            height={200}
-            layout="responsive"
+          <img
+            className={styles.menuImage}
             src={menu.images[0].imageUrl}
           />
         ) : (

@@ -1,7 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit';
+import CartItem from "../../components/atoms/CartItem/CartItem";
+import React from "react";
 
 const initialState = {
   data: {},
+  totalAmount: 0,
+  totalPrice: 0,
 };
 
 export const cartSlice = createSlice({
@@ -11,10 +15,21 @@ export const cartSlice = createSlice({
     addOrder: (state, action) => {
       const id = action.payload._id;
       const currentAmount = state?.data[id]?.amount || 0;
+      const amount = currentAmount + 1;
+      const sumPrice = action.payload.price * amount;
       state.data[id] = {
-        amount: currentAmount + 1,
+        amount: amount,
+        sumPrice: sumPrice,
         ...action.payload,
       };
+      let totalPrice = 0;
+      let totalAmount = 0;
+      Object.values(state.data).map(cartItem => {
+        totalPrice += cartItem.sumPrice;
+        totalAmount += cartItem.amount;
+      });
+      state.totalAmount = totalAmount;
+      state.totalPrice = totalPrice;
     },
     removeOrder: (state, action) => {
       console.log(action.payload);

@@ -2,41 +2,25 @@ import React from 'react';
 import styles from './cart.module.scss';
 import { Card, CardContent, Divider } from '@mui/material';
 import { useSelector } from 'react-redux';
-const items = [
-  {
-    amount: 2,
-    name: 'garlic potatoes',
-    price: 23,
-  },
-  {
-    amount: 5,
-    name: 'hot potatoes',
-    price: 23,
-  },
-  {
-    amount: 1,
-    name: 'teriyaki potatoes',
-    price: 23,
-  },
-];
+import Typography from '@mui/material/Typography';
+import CartItem from "../../atoms/CartItem/CartItem";
+import CartDetail from "../../atoms/CartDetail/CartDetail";
+
 const Cart = () => {
-  const cart = useSelector(state => state.cart.data);
-  console.log(cart);
+  const cart = useSelector(state => state.cart);
+
   return (
     <Card className={styles.cartContainer}>
-      <CardContent>
-        <div className={styles.title}>Keranjang Belanja</div>
+      <CardContent className={styles.cartContent}>
+        <Typography className={styles.cartTitle} gutterBottom variant="h6" component="div">Keranjang Belanja</Typography>
         <div className={styles.content}>
           <div className={styles.orderedList}>
-            {Object.values(cart).map(value => (
-              <div key={value.name}>
-                <div>{value.name}</div>
-                <div>{value.amount}</div>
-              </div>
+            {Object.values(cart.data).map(cartItem => (
+              <CartItem key={cartItem._id} cartItem={cartItem}/>
             ))}
           </div>
           <Divider />
-          <div className={styles.detail}></div>
+          <CartDetail cart={cart}/>
         </div>
       </CardContent>
     </Card>

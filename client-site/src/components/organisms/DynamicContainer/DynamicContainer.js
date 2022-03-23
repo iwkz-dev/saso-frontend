@@ -20,6 +20,7 @@ const DynamicContainer = () => {
   useEffect(() => {
     setMobileActive(false);
   }, [isBreakpoint]);
+
   return (
     <div className={styles.dynamicContainer}>
       <div className={styles.firstBlock}>
