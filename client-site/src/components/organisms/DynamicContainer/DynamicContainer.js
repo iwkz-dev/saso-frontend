@@ -34,10 +34,10 @@ const DynamicContainer = () => {
             mobileActive && styles.active
           }`}
         >
-          <Cart />
+          <Cart isBreakpoint={isBreakpoint} setMobileActive={setMobileActive} />
         </div>
       </div>
-      {isBreakpoint && (
+      {isBreakpoint && !mobileActive ? (
         <Button
           variant="contained"
           className={styles.cartButton}
@@ -45,6 +45,8 @@ const DynamicContainer = () => {
         >
           Cart
         </Button>
+      ) : (
+        ''
       )}
     </div>
   );

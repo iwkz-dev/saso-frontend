@@ -2,7 +2,6 @@
 .dynamicContainer {
   display: flex;
   flex-direction: column;
-  width: 100vw;
   .firstBlock {
     width: 100%;
     .firstInnerContainer {
@@ -10,17 +9,19 @@
   }
   .secondBlock {
     .secondInnerBlock {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 100vh;
       width: 100vw;
+      height: 100%;
       // background-color: rebeccapurple;
       display: none;
     }
     .active {
       display: block;
+      top: 0;
+      left: 0;
+      right: 0;
+      position: fixed;
+      background-color: white;
+      overflow: scroll;
     }
   }
   .cartButton {
@@ -46,12 +47,10 @@
       min-width: 344px;
       .secondInnerBlock {
         background-color: white;
-        position: absolute;
         top: 64px;
         right: 0;
         left: unset;
         width: 344px;
-        height: 100vh;
         display: block;
       }
     }

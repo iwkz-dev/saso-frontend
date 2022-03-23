@@ -15,9 +15,10 @@
       width: 100%;
     }
     .buttons {
-      font-size: 20px;
+      font-size: 30px;
       display: flex;
       align-items: center;
+      justify-content: end;
       gap: 5px;
       color: #556cd6;
       .btn {
