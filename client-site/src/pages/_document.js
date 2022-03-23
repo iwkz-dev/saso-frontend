@@ -1,6 +1,6 @@
-import * as React from "react";
-import Document, { Html, Head, Main, NextScript } from "next/document";
-import theme from "../theme";
+import * as React from 'react';
+import Document, { Html, Head, Main, NextScript } from 'next/document';
+import theme from '../theme';
 
 export default class MyDocument extends Document {
   render() {
@@ -25,7 +25,7 @@ export default class MyDocument extends Document {
 
 // `getInitialProps` belongs to `_document` (instead of `_app`),
 // it's compatible with static-site generation (SSG).
-MyDocument.getInitialProps = async (ctx) => {
+MyDocument.getInitialProps = async ctx => {
   // Resolution order
   //
   // On the server:
@@ -52,7 +52,7 @@ MyDocument.getInitialProps = async (ctx) => {
 
   ctx.renderPage = () =>
     originalRenderPage({
-      enhanceApp: (App) => (props) => <App {...props} />,
+      enhanceApp: App => props => <App {...props} />,
     });
 
   const initialProps = await Document.getInitialProps(ctx);

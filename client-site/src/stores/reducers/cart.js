@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
-import CartItem from "../../components/atoms/CartItem/CartItem";
-import React from "react";
+import CartItem from '../../components/atoms/CartItem/CartItem';
+import React from 'react';
 
 const initialState = {
   data: {},

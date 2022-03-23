@@ -3,7 +3,8 @@
   flex-direction: column;
   gap: 5px;
   padding: 10px 0;
-  .amountDetail, .priceDetail {
+  .amountDetail,
+  .priceDetail {
     display: flex;
     width: 100%;
     justify-content: space-between;

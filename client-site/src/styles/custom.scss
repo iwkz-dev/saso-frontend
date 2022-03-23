@@ -6,12 +6,12 @@ $media-direction: min; // min / max — default is min (mobile first)
 // A Sass Map for all Breakpoints you need. But keep it simple! Just add Sizes that you need several times.
 // Here are my basic set. I change the values a bit from project to project
 $breakpoints: (
-  "default": "",
-  "xs": 480px,
-  "s": $breakpointTablet + 0px,
-  "m": 1024px,
-  "l": 1280px,
-  "xl": 1680px,
+  'default': '',
+  'xs': 480px,
+  's': $breakpointTablet + 0px,
+  'm': 1024px,
+  'l': 1280px,
+  'xl': 1680px,
 );
 $breakpointS: 500px;
 
@@ -36,13 +36,13 @@ $breakpointS: 500px;
 }
 
 @mixin desktop() {
-  @include breakpoint("m") {
+  @include breakpoint('m') {
     @content;
   }
 }
 
 @mixin tablet() {
-  @include breakpoint("s") {
+  @include breakpoint('s') {
     @content;
   }
 }
