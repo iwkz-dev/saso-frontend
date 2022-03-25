@@ -1,5 +1,6 @@
 const path = require("path");
 module.exports = {
+    basePath: "/admin",
     trailingSlash: true,
     webpackDevMiddleware: (config) => {
         config.watchOptions = {
