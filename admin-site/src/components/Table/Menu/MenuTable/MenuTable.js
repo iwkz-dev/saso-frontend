@@ -27,7 +27,7 @@ function MenuTable({ onDelete }) {
             categories={categories}
             tableHead={tableHead}
             emptyMessage="Event is empty"
-            linkToEdit="menu/edit/"
+            linkToEdit="/menu/edit/"
         />
     );
 }

@@ -7,7 +7,7 @@ function Footer() {
                 <a className="flex title-font font-medium items-center md:justify-start justify-center text-gray-900">
                     <img
                         className="block h-8 w-auto"
-                        src="/iwkz_logo.png"
+                        src="/admin/iwkz_logo.png"
                         alt="logo"
                     />
                     <span className="ml-3 text-xl">SASO App</span>

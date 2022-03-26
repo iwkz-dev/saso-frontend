@@ -71,7 +71,7 @@ const event = () => {
                     Event
                 </h1>
                 <div className="flex justify-between items-center mb-3">
-                    <AddItemButton hrefLink="./event/add" text="Add Event" />
+                    <AddItemButton hrefLink="/event/add" text="Add Event" />
                 </div>
                 {showError || ""}
                 {showLoading ? (
