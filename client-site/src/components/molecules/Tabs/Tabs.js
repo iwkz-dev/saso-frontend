@@ -25,17 +25,20 @@ export default function Tabs({ menu }) {
             scrollButtons="auto"
             allowScrollButtonsMobile
           >
-            <Tab label="Makanan Ringan" value="1" />
-            <Tab label="Makanan Utama" value="2" />
+            <Tab label="Makanan Utama" value="1" />
+            <Tab label="Makanan Ringan" value="2" />
             <Tab label="Minuman" value="3" />
           </TabList>
         </Box>
         <TabPanel value="1">
-          Makanan Ringan
           <CardCollection menuList={menu} />
         </TabPanel>
-        <TabPanel value="2">Makanan Utama</TabPanel>
-        <TabPanel value="3">Minuman</TabPanel>
+        <TabPanel value="2">
+          <CardCollection menuList={menu} />
+        </TabPanel>
+        <TabPanel value="3">
+          <CardCollection menuList={menu} />
+        </TabPanel>
       </TabContext>
     </div>
   );
