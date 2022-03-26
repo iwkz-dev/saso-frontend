@@ -21,7 +21,7 @@ const UserTable = ({ onDelete }) => {
             items={categories}
             tableHead={tableHead}
             emptyMessage="User is empty"
-            linkToEdit="user/edit/"
+            linkToEdit="/user/edit/"
         />
     );
 };

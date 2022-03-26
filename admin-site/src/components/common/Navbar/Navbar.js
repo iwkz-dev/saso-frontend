@@ -44,12 +44,12 @@ export default function Navbar() {
                                 <div className="flex-shrink-0 flex items-center">
                                     <img
                                         className="block lg:hidden h-8 w-auto"
-                                        src="/iwkz_logo.png"
+                                        src="/admin/iwkz_logo.png"
                                         alt="Workflow"
                                     />
                                     <img
                                         className="hidden lg:block h-8 w-auto"
-                                        src="/iwkz_logo.png"
+                                        src="/admin/iwkz_logo.png"
                                         alt="Workflow"
                                     />
                                 </div>
@@ -59,7 +59,7 @@ export default function Navbar() {
                                             <Link
                                                 key={item.name}
                                                 href={item.href}>
-                                                <a
+                                                <span
                                                     className={classNames(
                                                         item.current
                                                             ? "bg-gray-900 text-white"
@@ -72,7 +72,7 @@ export default function Navbar() {
                                                             : undefined
                                                     }>
                                                     {item.name}
-                                                </a>
+                                                </span>
                                             </Link>
                                         ))}
                                     </div>
@@ -145,8 +145,7 @@ export default function Navbar() {
                             {navigation.map((item) => (
                                 <Disclosure.Button
                                     key={item.name}
-                                    as="a"
-                                    href={item.href}
+                                    as="div"
                                     className={classNames(
                                         item.current
                                             ? "bg-gray-900 text-white"
@@ -156,7 +155,7 @@ export default function Navbar() {
                                     aria-current={
                                         item.current ? "page" : undefined
                                     }>
-                                    {item.name}
+                                    <Link href={item.href}>{item.name}</Link>
                                 </Disclosure.Button>
                             ))}
                         </div>

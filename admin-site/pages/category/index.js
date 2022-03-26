@@ -72,7 +72,7 @@ const index = () => {
                 <h1 className="text-2xl font-bold text-left mb-3">Category</h1>
                 <div className="flex justify-between items-center mb-3">
                     <AddItemButton
-                        hrefLink="./category/add"
+                        hrefLink="/category/add"
                         text="Add Category"
                     />
                 </div>

@@ -116,7 +116,7 @@ const index = () => {
             <div className="w-10/12 mx-auto">
                 <h1 className="text-2xl font-bold text-left mb-3">Menu</h1>
                 <div className="flex justify-between items-center mb-3">
-                    <AddItemButton hrefLink="./menu/add" text="Add Menu" />
+                    <AddItemButton hrefLink="/menu/add" text="Add Menu" />
                     <div
                         className="flex items-center cursor-pointer mr-5"
                         onClick={() => handleChangeShowFilter()}>

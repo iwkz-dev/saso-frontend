@@ -17,7 +17,7 @@ const CategoryTable = ({ onDelete }) => {
             items={categories}
             tableHead={tableHead}
             emptyMessage="Category is empty"
-            linkToEdit="category/edit/"
+            linkToEdit="/category/edit/"
         />
     );
 };

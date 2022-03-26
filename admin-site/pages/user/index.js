@@ -68,7 +68,7 @@ const index = () => {
                     User
                 </h1>
                 <div className="flex justify-between items-center mb-3 w-10/12">
-                    <AddItemButton hrefLink="./user/add" text="Add User" />
+                    <AddItemButton hrefLink="/user/add" text="Add User" />
                 </div>
                 {showError || ""}
                 {showLoading ? (
