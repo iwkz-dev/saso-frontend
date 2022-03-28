@@ -6,6 +6,7 @@ const EventDataDisplay = ({ event }) => {
         _id: "ID",
         name: "Name",
         description: "Description",
+        status: "Status",
         started_at: "Started at",
         startYear: "Start Year",
         images: "Images",

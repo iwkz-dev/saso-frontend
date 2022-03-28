@@ -16,6 +16,11 @@ const EditEventForm = () => {
     const [showSuccess, setShowSuccess] = useState(false);
     const [showFailed, setShowFailed] = useState(false);
     const maxNumber = 5;
+    const status = [
+        { title: "draft", value: 0 },
+        { title: "approved", value: 1 },
+        { title: "done", value: 2 },
+    ];
 
     const onChange = (imageList) => {
         // data for submit
@@ -100,6 +105,27 @@ const EditEventForm = () => {
                                 defaultValue={event.description}
                                 required
                             />
+                        </label>
+                        <label className="block">
+                            <span className="text-gray-700">Status</span>
+                            <select
+                                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                                name="status"
+                                required>
+                                <option value="" disabled selected hidden>
+                                    Please Choose...
+                                </option>
+                                {status.map((s) => {
+                                    return (
+                                        <option
+                                            key={s.value}
+                                            value={s.value}
+                                            selected={s.value == event.status}>
+                                            {s.title}
+                                        </option>
+                                    );
+                                })}
+                            </select>
                         </label>
                         <div className="block">
                             <span className="text-gray-700">Images</span>
