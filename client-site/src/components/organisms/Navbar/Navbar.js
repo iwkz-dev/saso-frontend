@@ -21,7 +21,7 @@ const Navbar = () => {
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static" color="transparent">
-        <Toolbar>
+        <Toolbar className={styles.toolbar}>
           {/* <IconButton
             size="large"
             edge="start"
@@ -31,9 +31,9 @@ const Navbar = () => {
             sx={{ mr: 2 }}
             <MenuIcon />
           </IconButton> */}
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            iwkz logo here
-          </Typography>
+          <div className={styles.logoWrapper}>
+            <img src="/images/iwkz_logo.png" alt="iwkz logo"/>
+          </div>
           {!isAuth() ? (
             <div className={styles.buttonsContainer}>
               <LoginModal />

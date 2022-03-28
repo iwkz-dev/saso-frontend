@@ -1,8 +1,19 @@
-.buttonsContainer {
+.toolbar {
   display: flex;
-  > button {
-    &:first-child {
-      margin-right: 10px;
+  justify-content: space-between;
+
+  .buttonsContainer {
+    display: flex;
+    gap: 10px;
+  }
+
+  .logoWrapper {
+    max-width: 75px;
+    max-height: 75px;
+    padding: 10px;
+
+    img {
+      width: 100%;
     }
   }
 }

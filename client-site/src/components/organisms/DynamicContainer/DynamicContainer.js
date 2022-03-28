@@ -5,6 +5,7 @@ import Cart from '../../molecules/Cart/Cart';
 import { Button } from '@mui/material';
 import sasoApi from '../../../api/SasoApi';
 import { getMenu } from '../../../stores/reducers/menu';
+import { getEvent } from '../../../stores/reducers/event';
 import { useDispatch, useSelector } from 'react-redux';
 
 const DynamicContainer = () => {
@@ -15,6 +16,7 @@ const DynamicContainer = () => {
 
   useEffect(() => {
     dispatch(getMenu());
+    dispatch(getEvent());
   }, []);
 
   useEffect(() => {
