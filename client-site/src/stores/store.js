@@ -1,5 +1,6 @@
 import loginReducer from './reducers/login';
 import menuReducer from './reducers/menu';
+import eventReducer from './reducers/event';
 import cartReducer from './reducers/cart';
 import registerReducer from './reducers/register';
 import { configureStore } from '@reduxjs/toolkit';
@@ -10,5 +11,6 @@ export default configureStore({
     register: registerReducer,
     menu: menuReducer,
     cart: cartReducer,
+    event: eventReducer,
   },
 });
