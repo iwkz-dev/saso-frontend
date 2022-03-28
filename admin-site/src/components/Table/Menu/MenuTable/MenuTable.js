@@ -13,6 +13,7 @@ function MenuTable({ onDelete }) {
         category: "Category",
         price: "Price (€)",
         quantity: "Quantity",
+        quantityOrder: "Ordered Quantity",
         images: "Image",
         event: "Event",
         created_at: "Created At",

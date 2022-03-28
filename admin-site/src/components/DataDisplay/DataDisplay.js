@@ -17,6 +17,19 @@ const DataDisplay = ({ item, dataForm }) => {
         }
     };
 
+    const getStatusTitle = (statusValue) => {
+        switch (statusValue) {
+            case 0:
+                return "Draft";
+            case 1:
+                return "Approved";
+            case 2:
+                return "Done";
+            default:
+                return "No Status";
+        }
+    };
+
     const columnHandler = (key, i) => {
         if (key === "started_at") {
             return (
@@ -43,6 +56,20 @@ const DataDisplay = ({ item, dataForm }) => {
                     </dt>
                     <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                         {formatDate(item[key], true, true)}
+                    </dd>
+                </div>
+            );
+        } else if (key === "status") {
+            return (
+                <div
+                    className={`${
+                        i % 2 === 0 ? "bg-gray-50" : "bg-white"
+                    } px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6`}>
+                    <dt className="text-sm font-medium text-gray-500">
+                        {dataForm[key]}
+                    </dt>
+                    <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2 flex gap-2">
+                        {getStatusTitle(item[key])}
                     </dd>
                 </div>
             );
