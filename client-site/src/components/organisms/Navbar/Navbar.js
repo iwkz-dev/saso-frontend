@@ -32,7 +32,7 @@ const Navbar = () => {
             <MenuIcon />
           </IconButton> */}
           <div className={styles.logoWrapper}>
-            <img src="/images/iwkz_logo.png" alt="iwkz logo"/>
+            <img src="/images/iwkz_logo.png" alt="iwkz logo" />
           </div>
           {!isAuth() ? (
             <div className={styles.buttonsContainer}>

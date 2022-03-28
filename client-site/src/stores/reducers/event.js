@@ -10,15 +10,15 @@ const initialState = {
 };
 
 export const getEvent = () => dispatch => {
-    const status="approved"
-    return eventService.getEvent(status).then(response => {
+  const status = 'approved';
+  return eventService.getEvent(status).then(response => {
     if (response.data.status === 'success') {
-        dispatch(eventSuccess(response.data));
+      dispatch(eventSuccess(response.data));
     } else {
-        dispatch(eventFailed(response.data));
+      dispatch(eventFailed(response.data));
     }
     return Promise.resolve();
-    });
+  });
 };
 
 export const eventSlice = createSlice({
@@ -40,5 +40,5 @@ export const eventSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { eventSuccess, eventFailed} = eventSlice.actions;
+export const { eventSuccess, eventFailed } = eventSlice.actions;
 export default eventSlice.reducer;
