@@ -58,8 +58,7 @@ export default function Navbar() {
                                         {navigation.map((item) => (
                                             <Link
                                                 key={item.name}
-                                                href={item.href}
-                                            >
+                                                href={item.href}>
                                                 <span
                                                     className={classNames(
                                                         item.current
