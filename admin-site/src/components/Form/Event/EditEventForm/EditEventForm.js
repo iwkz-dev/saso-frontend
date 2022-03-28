@@ -1,9 +1,6 @@
 import React, { useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-    editDetailEvent,
-    editDetailEventImages,
-} from "../../../../store/reducers/eventReducer";
+import { editDetailEvent } from "../../../../store/reducers/eventReducer";
 import ImageUploader from "../../../common/ImageUploader/ImageUploader";
 import { getDateValue } from "../../../../helpers/dateHelper";
 import Alert from "../../../common/Message/Alert/Alert";
@@ -19,6 +16,11 @@ const EditEventForm = () => {
     const [showSuccess, setShowSuccess] = useState(false);
     const [showFailed, setShowFailed] = useState(false);
     const maxNumber = 5;
+    const status = [
+        { title: "draft", value: 0 },
+        { title: "approved", value: 1 },
+        { title: "done", value: 2 },
+    ];
 
     const onChange = (imageList) => {
         // data for submit
@@ -32,33 +34,35 @@ const EditEventForm = () => {
         const text = confirm("Please confirm to save your changes");
         if (text) {
             setShowUploading(true);
-            const data = new FormData(form.current);
-            const requestedData = {
-                name: data.get("name"),
-                description: data.get("description"),
-                started_at: data.get("startedAt"),
+            const createData = async () => {
+                const data = new FormData(form.current);
+                const eTags = [];
+                let i = 0;
+                images.map((image) => {
+                    if (image.file) {
+                        data.append("imageUrls", image.file);
+                    } else {
+                        eTags[i] = image.eTag;
+                        i++;
+                    }
+                });
+                data.append("eTags", eTags.join(","));
+                return await dispatch(editDetailEvent(event._id, data));
             };
-            const imagesData = new FormData();
-            images.map((image) => {
-                if (image.file) {
-                    imagesData.append("imageUrls", image.file);
-                } else {
-                    imagesData.append("imageUrls", image);
-                }
-            });
-            Promise.all([
-                dispatch(editDetailEvent(event._id, requestedData)),
-                dispatch(editDetailEventImages(event._id, imagesData)),
-            ]).then((responses) => {
-                const failed = responses.find((r) => r?.status === "failed");
-                if (!failed) {
+            createData()
+                .then((r) => {
+                    if (r?.status === "failed") {
+                        setShowUploading(false);
+                        setShowFailed(r.message);
+                    } else {
+                        setShowUploading(false);
+                        setShowSuccess(r.message);
+                    }
+                })
+                .catch(() => {
                     setShowUploading(false);
-                    setShowSuccess(responses[0].message);
-                } else {
-                    setShowUploading(false);
-                    setShowFailed(failed.message);
-                }
-            });
+                    setShowFailed(true);
+                });
         }
     };
 
@@ -101,6 +105,27 @@ const EditEventForm = () => {
                                 defaultValue={event.description}
                                 required
                             />
+                        </label>
+                        <label className="block">
+                            <span className="text-gray-700">Status</span>
+                            <select
+                                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                                name="status"
+                                required>
+                                <option value="" disabled selected hidden>
+                                    Please Choose...
+                                </option>
+                                {status.map((s) => {
+                                    return (
+                                        <option
+                                            key={s.value}
+                                            value={s.value}
+                                            selected={s.value == event.status}>
+                                            {s.title}
+                                        </option>
+                                    );
+                                })}
+                            </select>
                         </label>
                         <div className="block">
                             <span className="text-gray-700">Images</span>

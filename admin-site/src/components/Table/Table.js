@@ -63,10 +63,25 @@ const Table = ({
                     {formatDate(item[key], true)}
                 </div>
             );
+        } else if (key === "status") {
+            switch (item[key]) {
+                case 0:
+                    return <div className="text-sm text-gray-900">Draft</div>;
+                case 1:
+                    return (
+                        <div className="text-sm text-gray-900">Approved</div>
+                    );
+                case 2:
+                    return <div className="text-sm text-gray-900">Done</div>;
+                default:
+                    return (
+                        <div className="text-sm text-gray-900">No Status</div>
+                    );
+            }
         } else {
             return (
                 <div className="text-sm text-gray-900">
-                    {item[key].toString()}
+                    {item[key]?.toString()}
                 </div>
             );
         }

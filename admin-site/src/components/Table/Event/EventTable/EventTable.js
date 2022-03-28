@@ -8,6 +8,7 @@ function EventTable({ onDelete }) {
     const tableHead = {
         name: "Name",
         description: "Description",
+        status: "Status",
         started_at: "Started at",
         startYear: "Start Year",
         images: "Image",
