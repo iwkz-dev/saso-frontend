@@ -66,7 +66,7 @@ const Table = ({
         } else {
             return (
                 <div className="text-sm text-gray-900">
-                    {item[key].toString()}
+                    {item[key]?.toString()}
                 </div>
             );
         }
