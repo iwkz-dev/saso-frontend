@@ -3,7 +3,7 @@ name: SaSo Frontend push to docker hub
 on:
   pull_request:
     branches:
-      - master
+      - masters
   push:
     branches:
       - master
