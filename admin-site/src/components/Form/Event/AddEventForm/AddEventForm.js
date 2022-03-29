@@ -93,24 +93,6 @@ const AddEventForm = () => {
                                 required
                             />
                         </label>
-                        <label className="block">
-                            <span className="text-gray-700">Status</span>
-                            <select
-                                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                                name="status"
-                                required>
-                                <option value="" disabled selected hidden>
-                                    Please Choose...
-                                </option>
-                                {status.map((s) => {
-                                    return (
-                                        <option key={s.value} value={s.value}>
-                                            {s.title}
-                                        </option>
-                                    );
-                                })}
-                            </select>
-                        </label>
                         <div className="block">
                             <span className="text-gray-700">Images</span>
                             <ImageUploader
