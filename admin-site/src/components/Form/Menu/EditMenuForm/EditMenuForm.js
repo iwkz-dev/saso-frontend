@@ -42,7 +42,7 @@ function EditMenuForm() {
                         i++;
                     }
                 });
-                data.append("eTags", eTags.join(", "));
+                data.append("eTags", eTags);
                 return await dispatch(editDetailMenu(menu._id, data));
             };
             createData()
