@@ -2,12 +2,9 @@ name: SaSo Frontend push to docker hub
 
 on:
   pull_request:
-    branches:
-      - master
+    branches: [master, client-frontend]
   push:
-    branches:
-      - master
-      - 'client-frontend'
+    branches: [master, client-frontend]
 
 jobs:
   build-and-deploy-admin-site:
