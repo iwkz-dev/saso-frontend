@@ -40,6 +40,9 @@ const index = () => {
     const getAllData = () => {
         setShowLoading(true);
         setShowError("");
+        
+        console.log("test ci/cd, getAllData");
+        
         Promise.all([
             dispatch(getAllEvents()),
             dispatch(getAllCategories()),
