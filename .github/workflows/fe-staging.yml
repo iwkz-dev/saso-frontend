@@ -7,6 +7,7 @@ on:
   push:
     branches:
       - master
+      - 'client-frontend'
 
 jobs:
   build-and-deploy-admin-site:
