@@ -7,7 +7,6 @@ import styles from '../styles/Home.module.scss';
 
 export default function Home() {
   //TODO fetch current event
-  console.log("test index");
   return (
     <div className={styles.container}>
       <Head>
