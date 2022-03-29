@@ -60,7 +60,7 @@ const index = () => {
             }
         }
     };
-
+    console.log("test ci/cd");
     return (
         <LoggedInLayout title={pageTitle} pageData={pageData}>
             <div className="w-10/12 mx-auto">
