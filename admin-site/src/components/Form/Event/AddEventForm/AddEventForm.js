@@ -14,11 +14,6 @@ const AddEventForm = () => {
     const [showFailed, setShowFailed] = useState(false);
     const [images, setImages] = useState([]);
     const maxNumber = 5;
-    const status = [
-        { title: "draft", value: 0 },
-        { title: "approved", value: 1 },
-        { title: "done", value: 2 },
-    ];
 
     const submitForm = (e) => {
         setShowSuccess(false);

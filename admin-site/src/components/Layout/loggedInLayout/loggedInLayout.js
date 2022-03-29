@@ -28,7 +28,7 @@ function LoggedInLayout({ pageData, children, title }) {
             <Head>
                 <title>{title}</title>
                 <meta name="description" content="Saso Application" />
-                <link rel="icon" href="/favicon.ico" />
+                <link rel="icon" href="/admin/favicon.ico" />
             </Head>
             <Navbar />
             <main className={`${styles.main} w-full mx-20`}>{children}</main>
