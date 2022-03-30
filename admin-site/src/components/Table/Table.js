@@ -26,6 +26,28 @@ const Table = ({
         }
     };
 
+    const editableRow = (th, item, id) => {
+        switch (th.type) {
+            case "select":
+                return (
+                    <select
+                        className="rounded-md"
+                        onChange={(e) => th.onChange(e, id)}>
+                        {th.options.map((opt) => (
+                            <option
+                                key={opt.title + " " + id}
+                                value={opt.value}
+                                selected={item == opt.code}>
+                                {opt.title}
+                            </option>
+                        ))}
+                    </select>
+                );
+            default:
+                break;
+        }
+    };
+
     const rowHandler = (item, key) => {
         const maxLengthDescription = 40;
         const maxLengthName = 25;
@@ -64,20 +86,13 @@ const Table = ({
                 </div>
             );
         } else if (key === "status") {
-            switch (item[key]) {
-                case 0:
-                    return <div className="text-sm text-gray-900">Draft</div>;
-                case 1:
-                    return (
-                        <div className="text-sm text-gray-900">Approved</div>
-                    );
-                case 2:
-                    return <div className="text-sm text-gray-900">Done</div>;
-                default:
-                    return (
-                        <div className="text-sm text-gray-900">No Status</div>
-                    );
-            }
+            return (
+                <div className="text-sm text-gray-900">
+                    {tableHead[key].editable
+                        ? editableRow(tableHead[key], item[key], item._id)
+                        : "Draft"}
+                </div>
+            );
         } else {
             return (
                 <div className="text-sm text-gray-900">
@@ -90,10 +105,14 @@ const Table = ({
     const tableRow = (item, index) => {
         return (
             <tr key={index}>
-                <td className="px-6 py-3 whitespace-nowrap text-center text-sm font-medium">
+                <td
+                    key="number"
+                    className="px-6 py-3 whitespace-nowrap text-center text-sm font-medium">
                     <div className="text-sm text-gray-900">{index + 1}</div>
                 </td>
-                <td className="px-6 py-3 whitespace-nowrap text-right text-sm font-medium ">
+                <td
+                    key="actions"
+                    className="px-6 py-3 whitespace-nowrap text-right text-sm font-medium ">
                     <div className="flex items-center">
                         {linkToView ? (
                             <Link href={linkToView + item._id}>
@@ -118,8 +137,8 @@ const Table = ({
                 </td>
                 {Object.keys(tableHead).map((k) => (
                     <td
-                        key={k}
-                        className="px-6 py-3 whitespace-nowrap text-sm font-medium">
+                        key={k + " " + index}
+                        className="px-6 py-3 whitespace-nowrap text-sm font-medium ">
                         {rowHandler(item, k)}
                     </td>
                 ))}
@@ -148,7 +167,9 @@ const Table = ({
                                     key={index}
                                     scope="col"
                                     className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap	">
-                                    {tableHead[k]}
+                                    {typeof tableHead[k] === "string"
+                                        ? tableHead[k]
+                                        : tableHead[k].name}
                                 </th>
                             ))}
                         </tr>
