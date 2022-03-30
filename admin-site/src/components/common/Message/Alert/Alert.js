@@ -40,7 +40,11 @@ const Alert = ({
             </div>
         );
     } else if (showUploading) {
-        return <Loading />;
+        return (
+            <div className="p-3">
+                <Loading />
+            </div>
+        );
     } else {
         return "";
     }

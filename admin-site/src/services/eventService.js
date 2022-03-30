@@ -62,6 +62,23 @@ const createEvent = (requestedData) => {
     });
 };
 
+const changeEventStatus = (id, status) => {
+    return new Promise((resolve, reject) => {
+        adminAxios
+            .patch(`${BASE_URL_HOST_ADMIN_EVENT}/${id}/${status}/change-status`)
+            .then((response) => {
+                if (response.data.status === "success") {
+                    resolve(response.data);
+                } else {
+                    reject(response.data);
+                }
+            })
+            .catch((error) => {
+                reject(error.response);
+            });
+    });
+};
+
 const getDetailEvent = (id) => {
     return new Promise((resolve, reject) => {
         adminAxios
@@ -123,6 +140,7 @@ const eventService = {
     getDetailEvent,
     editDetailEventImages,
     editDetailEvent,
+    changeEventStatus,
 };
 
 export default eventService;
