@@ -9,8 +9,7 @@ const initialState = {
   },
 };
 
-export const getEvent = () => dispatch => {
-  const status = 'approved';
+export const getEvent = status => dispatch => {
   return eventService.getEvent(status).then(response => {
     if (response.data.status === 'success') {
       dispatch(eventSuccess(response.data));

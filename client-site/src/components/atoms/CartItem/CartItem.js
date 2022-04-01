@@ -8,17 +8,11 @@ const CartItem = ({ cartItem, add, remove }) => {
   const price = cartItem.sumPrice;
   return (
     <div className={styles.cartItem} key={menu.name}>
-      <div className={styles.amount}>
-        <b>{amount}</b>
-      </div>
+      <div className={styles.amount}>{amount}</div>
       <div className={styles.menuDetail}>
         <div className={styles.nameAndPrice}>
-          <div className={styles.menuTitle}>
-            <b>{menu.name}</b>
-          </div>
-          <div className={styles.menuPrice}>
-            <b>{price} €</b>
-          </div>
+          <div className={styles.menuTitle}>{menu.name}</div>
+          <div className={styles.menuPrice}>{price} €</div>
         </div>
         <div className={styles.buttons}>
           <div className={styles.btn} onClick={() => remove(menu)}>

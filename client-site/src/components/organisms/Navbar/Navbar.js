@@ -2,10 +2,7 @@ import * as React from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
-import IconButton from '@mui/material/IconButton';
-import MenuIcon from '@mui/icons-material/Menu';
 import styles from './navbar.module.scss';
 import RegisterModal from '../../molecules/RegisterModal/RegisterModal';
 import LoginModal from '../../molecules/LoginModal/LoginModal';
@@ -31,6 +28,7 @@ const Navbar = () => {
             sx={{ mr: 2 }}
             <MenuIcon />
           </IconButton> */}
+
           <div className={styles.logoWrapper}>
             <img src="/images/iwkz_logo.png" alt="iwkz logo" />
           </div>
