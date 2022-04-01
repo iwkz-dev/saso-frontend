@@ -9,6 +9,7 @@ import MenuTable from "../../src/components/Table/Menu/MenuTable/MenuTable";
 import MenusFilterForm from "../../src/components/Form/Menu/MenusFilterForm/MenusFilterForm";
 import Loading from "../../src/components/common/Loading/Loading";
 import AddItemButton from "../../src/components/common/Button/AddItemButton/AddItemButton";
+import Alert from "../../src/components/common/Message/Alert/Alert";
 
 const index = () => {
     const dispatch = useDispatch();
@@ -19,6 +20,9 @@ const index = () => {
     const [showTable, setShowTable] = useState(false);
     const [showLoading, setShowLoading] = useState(false);
     const [showError, setShowError] = useState("");
+    const [showSuccess, setShowSuccess] = useState(false);
+    const [showFailed, setShowFailed] = useState(false);
+    const [showUploading, setShowUploading] = useState(false);
 
     useEffect(() => {
         getAllData();
@@ -83,30 +87,38 @@ const index = () => {
             `Please confirm this if you want to delete "${name}"`,
         );
         if (isConfirm) {
-            setShowError("");
+            setShowFailed(false);
+            setShowSuccess(false);
+            setShowUploading(true);
             try {
                 const onDelete = await dispatch(deleteMenu(id));
                 if (onDelete.status !== "failed") {
+                    setShowUploading(false);
+                    setShowSuccess(onDelete.message);
                     try {
-                        setShowLoading(true);
+                        setShowUploading(true);
                         const getMenus = await dispatch(
                             getAllMenus(filtersQueryBuilder()),
                         );
                         if (getMenus.status !== "failed") {
-                            setShowLoading(false);
+                            setShowUploading(false);
                         } else {
-                            setShowError(getMenus.message);
+                            setShowUploading(false);
+                            setShowFailed(getMenus.message);
                         }
                     } catch (e) {
                         //TODO: handle error here
-                        setShowError(e);
+                        setShowUploading(false);
+                        setShowFailed(e);
                     }
                 } else {
-                    setShowError(onDelete.message);
+                    setShowUploading(false);
+                    setShowFailed(onDelete.message);
                 }
             } catch (e) {
                 //TODO: handle error here
-                setShowError(e);
+                setShowUploading(false);
+                setShowFailed(e);
             }
         }
     };
@@ -126,6 +138,15 @@ const index = () => {
                         </span>
                     </div>
                 </div>
+                <Alert
+                    showFailed={showFailed}
+                    showSuccess={showSuccess}
+                    setShowFailed={setShowFailed}
+                    setShowSuccess={setShowSuccess}
+                    successMessage={showSuccess}
+                    failedMessage={showFailed}
+                    showUploading={showUploading}
+                />
                 <MenusFilterForm
                     handleChange={handleChange}
                     showFilterForm={showFilterForm}

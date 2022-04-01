@@ -87,6 +87,7 @@ const event = () => {
             try {
                 const onDelete = await dispatch(deleteEvent(id));
                 if (onDelete.status !== "failed") {
+                    setShowUploading(false);
                     setShowSuccess(onDelete.message);
                     try {
                         setShowUploading(true);
@@ -94,17 +95,21 @@ const event = () => {
                         if (getEvents.status !== "failed") {
                             setShowUploading(false);
                         } else {
+                            setShowUploading(false);
                             setShowFailed(getEvents.message);
                         }
                     } catch (e) {
                         //TODO: handle error here
+                        setShowUploading(false);
                         setShowFailed(e);
                     }
                 } else {
+                    setShowUploading(false);
                     setShowFailed(onDelete.message);
                 }
             } catch (e) {
                 //TODO: handle error here
+                setShowUploading(false);
                 setShowFailed(e);
             }
         }

@@ -9,8 +9,16 @@ export const getAllCategories = () => async (dispatch) => {
             return response;
         })
         .catch((e) => {
-            dispatch(getCategoriesFailed(e.data.message));
-            return e.data;
+            if (e) {
+                dispatch(getCategoriesFailed(e.data.message));
+                return e.data;
+            }
+            const error = {
+                message: "Server Error",
+                status: "failed",
+            };
+            dispatch(getCategoriesFailed(error.message));
+            return error;
         });
 };
 
@@ -22,8 +30,16 @@ export const deleteCategory = (id) => async (dispatch) => {
             return response;
         })
         .catch((e) => {
-            dispatch(deleteCategoryFailed(e.data.message));
-            return e.data;
+            if (e) {
+                dispatch(deleteCategoryFailed(e.data.message));
+                return e.data;
+            }
+            const error = {
+                message: "Server Error",
+                status: "failed",
+            };
+            dispatch(deleteCategoryFailed(error.message));
+            return error;
         });
 };
 
@@ -35,8 +51,16 @@ export const createCategory = (requestedData) => async (dispatch) => {
             return response;
         })
         .catch((e) => {
-            dispatch(createCategoryFailed(e.data.message));
-            return e.data;
+            if (e) {
+                dispatch(createCategoryFailed(e.data.message));
+                return e.data;
+            }
+            const error = {
+                message: "Server Error",
+                status: "failed",
+            };
+            dispatch(createCategoryFailed(error.message));
+            return error;
         });
 };
 
@@ -48,8 +72,16 @@ export const getDetailCategory = (id) => async (dispatch) => {
             return response;
         })
         .catch((e) => {
-            dispatch(getCategoryDetailFailed(e.data.message));
-            return e.data;
+            if (e) {
+                dispatch(getCategoryDetailFailed(e.data.message));
+                return e.data;
+            }
+            const error = {
+                message: "Server Error",
+                status: "failed",
+            };
+            dispatch(getCategoryDetailFailed(error.message));
+            return error;
         });
 };
 
@@ -61,8 +93,16 @@ export const editDetailCategory = (id, requestedData) => async (dispatch) => {
             return response;
         })
         .catch((e) => {
-            dispatch(editCategoryDetailFailed(e.data.message));
-            return e.data;
+            if (e) {
+                dispatch(editCategoryDetailFailed(e.data.message));
+                return e.data;
+            }
+            const error = {
+                message: "Server Error",
+                status: "failed",
+            };
+            dispatch(editCategoryDetailFailed(error.message));
+            return error;
         });
 };
 
