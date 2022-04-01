@@ -1,2 +1,17 @@
 .container {
+  .box {
+    width: 100vw;
+    margin: 0 auto;
+    overflow: hidden;
+    position: relative;
+    height: calc(100vw / 4);
+    overflow: hidden;
+    img {
+      position: absolute;
+      width: 100%;
+      right: 50%;
+      top: 50%;
+      transform: translate(50%, -50%);
+    }
+  }
 }

@@ -9,8 +9,8 @@ const initialState = {
   },
 };
 
-export const getMenu = () => dispatch => {
-  return menuService.getMenu().then(response => {
+export const getMenu = filter => dispatch => {
+  return menuService.getMenu(filter).then(response => {
     if (response.data.status === 'success') {
       dispatch(menuSuccess(response.data));
     } else {

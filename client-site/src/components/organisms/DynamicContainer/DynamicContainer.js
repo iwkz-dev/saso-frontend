@@ -4,19 +4,20 @@ import Tabs from '../../molecules/Tabs/Tabs';
 import Cart from '../../molecules/Cart/Cart';
 import { Button } from '@mui/material';
 import sasoApi from '../../../api/SasoApi';
-import { getMenu } from '../../../stores/reducers/menu';
-import { getEvent } from '../../../stores/reducers/event';
+import { getAllCategories } from '../../../stores/reducers/category';
 import { useDispatch, useSelector } from 'react-redux';
 
-const DynamicContainer = () => {
+const DynamicContainer = ({ event }) => {
   const dispatch = useDispatch();
   const isBreakpoint = useMediaQuery(parseInt(styles.breakpointTablet));
   const [mobileActive, setMobileActive] = useState(false);
+  const [loading, setLoading] = useState(false);
   const menu = useSelector(state => state.menu.data);
+  const category = useSelector(state => state.category);
 
   useEffect(() => {
-    dispatch(getMenu());
-    dispatch(getEvent());
+    const filter = `?event=${event._id}`;
+    dispatch(getAllCategories(filter));
   }, []);
 
   useEffect(() => {
@@ -27,7 +28,7 @@ const DynamicContainer = () => {
     <div className={styles.dynamicContainer}>
       <div className={styles.firstBlock}>
         <div className={styles.firstInnerContainer}>
-          <Tabs menu={menu} />
+          <Tabs category={category} menu={menu} />
         </div>
       </div>
       <div className={styles.secondBlock}>

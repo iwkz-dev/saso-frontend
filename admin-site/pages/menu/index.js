@@ -30,7 +30,6 @@ const index = () => {
 
     const filtersQueryBuilder = () => {
         const queries = [];
-        console.log(filters);
         if (filters.length > 0) {
             filters.map((f) => {
                 const filtersQuery = `${f.name}=${f.id}`;

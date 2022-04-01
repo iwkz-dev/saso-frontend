@@ -18,13 +18,11 @@ export default function BasicCard({ menu }) {
   return (
     <Card className={styles.cardContainer}>
       <div className={styles.imageContainer}>
-        {menu.images[0] ? (
+        {menu.images.length > 0 ? (
           <img className={styles.menuImage} src={menu.images[0].imageUrl} />
         ) : (
-          <Image
-            width={400}
-            height={200}
-            layout="responsive"
+          <img
+            className={styles.menuImage}
             src="https://via.placeholder.com/400x200"
           />
         )}
@@ -34,8 +32,11 @@ export default function BasicCard({ menu }) {
           <Typography gutterBottom variant="h5" component="div">
             {menu.name}
           </Typography>
-          <Typography variant="body2" color="text.secondary">
+          <Typography variant="body1" color="text.secondary">
             {menu.description}
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            Left: {menu.quantity - menu.quantityOrder}
           </Typography>
           <Typography variant="h6" color="text.price">
             {menu.price} €

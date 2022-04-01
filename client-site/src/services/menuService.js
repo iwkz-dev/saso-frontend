@@ -1,7 +1,7 @@
 import sasoApi from '../api/SasoApi';
 
-const getMenu = () => {
-  return sasoApi.getData('/customer/menu');
+const getMenu = filter => {
+  return sasoApi.getData(`/customer/menu${filter}`);
 };
 const getMenuWithCategory = category => {
   // return sasoApi.postData('/customer/user/register', data);

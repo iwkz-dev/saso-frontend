@@ -48,7 +48,7 @@ const event = () => {
             const onChangeStatus = await dispatch(
                 changeEventStatus(id, e.target.value),
             );
-            console.log(setShowSuccess(onChangeStatus.message));
+            setShowSuccess(onChangeStatus.message);
             if (onChangeStatus.status !== "failed") {
                 setShowUploading(false);
                 setShowSuccess(onChangeStatus.message);

@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import Box from '@mui/material/Box';
 import Tab from '@mui/material/Tab';
 import TabContext from '@mui/lab/TabContext';
@@ -7,8 +7,8 @@ import TabPanel from '@mui/lab/TabPanel';
 import styles from './tabs.module.scss';
 import CardCollection from '../CardCollection/CardCollection';
 
-export default function Tabs({ menu }) {
-  const [value, setValue] = React.useState('1');
+export default function Tabs({ category, menu }) {
+  const [value, setValue] = React.useState('0');
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -25,20 +25,16 @@ export default function Tabs({ menu }) {
             scrollButtons="auto"
             allowScrollButtonsMobile
           >
-            <Tab label="Makanan Utama" value="1" />
-            <Tab label="Makanan Ringan" value="2" />
-            <Tab label="Minuman" value="3" />
+            {category.data.map((c, i) => (
+              <Tab key={c._id} label={c.name} value={i.toString()} />
+            ))}
           </TabList>
         </Box>
-        <TabPanel value="1">
-          <CardCollection menuList={menu} />
-        </TabPanel>
-        <TabPanel value="2">
-          <CardCollection menuList={menu} />
-        </TabPanel>
-        <TabPanel value="3">
-          <CardCollection menuList={menu} />
-        </TabPanel>
+        {category.data.map((c, i) => (
+          <TabPanel key={c._id} value={i.toString()}>
+            <CardCollection menuList={c.menus.data} />
+          </TabPanel>
+        ))}
       </TabContext>
     </div>
   );
