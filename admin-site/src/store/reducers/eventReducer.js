@@ -22,6 +22,27 @@ export const getAllEvents = () => (dispatch) => {
         });
 };
 
+export const changeEventStatus = (id, status) => (dispatch) => {
+    return eventService
+        .changeEventStatus(id, status)
+        .then((response) => {
+            dispatch(changeEventStatusSuccess(response.data.data));
+            return response;
+        })
+        .catch((e) => {
+            if (e) {
+                dispatch(changeEventStatusFailed(e.data.message));
+                return e.data;
+            }
+            const error = {
+                message: "Server Error",
+                status: "failed",
+            };
+            dispatch(getEventsFailed(error.message));
+            return error;
+        });
+};
+
 export const deleteEvent = (id) => async (dispatch) => {
     return eventService
         .deleteEvent(id)
@@ -181,6 +202,14 @@ export const eventSlice = createSlice({
             state.message.error = action.payload;
             state.success = false;
         },
+        changeEventStatusSuccess: (state, action) => {
+            state.message.error = action.payload;
+            state.success = false;
+        },
+        changeEventStatusFailed: (state, action) => {
+            state.message.error = action.payload;
+            state.success = false;
+        },
     },
 });
 
@@ -195,5 +224,7 @@ export const {
     getEventDetailFailed,
     editEventDetailSuccess,
     editEventDetailFailed,
+    changeEventStatusSuccess,
+    changeEventStatusFailed,
 } = eventSlice.actions;
 export default eventSlice.reducer;

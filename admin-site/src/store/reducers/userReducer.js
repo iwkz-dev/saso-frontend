@@ -9,8 +9,16 @@ export const getAllUsers = (requestURL) => async (dispatch) => {
             return response;
         })
         .catch((e) => {
-            dispatch(getUsersFailed(e.data.message));
-            return e.data;
+            if (e) {
+                dispatch(getUsersFailed(e.data.message));
+                return e.data;
+            }
+            const error = {
+                message: "Server Error",
+                status: "failed",
+            };
+            dispatch(getUsersFailed(error.message));
+            return error;
         });
 };
 
@@ -22,8 +30,16 @@ export const getDetailUser = (id) => async (dispatch) => {
             return response;
         })
         .catch((e) => {
-            dispatch(getUserDetailFailed(e.data.message));
-            return e.data;
+            if (e) {
+                dispatch(getUserDetailFailed(e.data.message));
+                return e.data;
+            }
+            const error = {
+                message: "Server Error",
+                status: "failed",
+            };
+            dispatch(getUserDetailFailed(error.message));
+            return error;
         });
 };
 
@@ -35,8 +51,16 @@ export const createUser = (requestedData) => async (dispatch) => {
             return response;
         })
         .catch((e) => {
-            dispatch(createUserFailed(e.data.message));
-            return e.data;
+            if (e) {
+                dispatch(createUserFailed(e.data.message));
+                return e.data;
+            }
+            const error = {
+                message: "Server Error",
+                status: "failed",
+            };
+            dispatch(createUserFailed(error.message));
+            return error;
         });
 };
 
@@ -48,8 +72,16 @@ export const deleteUser = (id) => async (dispatch) => {
             return response;
         })
         .catch((e) => {
-            dispatch(deleteUserFailed(e.data.message));
-            return e.data;
+            if (e) {
+                dispatch(deleteUserFailed(e.data.message));
+                return e.data;
+            }
+            const error = {
+                message: "Server Error",
+                status: "failed",
+            };
+            dispatch(deleteUserFailed(error.message));
+            return error;
         });
 };
 
@@ -61,8 +93,16 @@ export const editDetailUser = (id, requestedData) => async (dispatch) => {
             return response;
         })
         .catch((e) => {
-            dispatch(editUserDetailFailed(e.data.message));
-            return e.data;
+            if (e) {
+                dispatch(editUserDetailFailed(e.data.message));
+                return e.data;
+            }
+            const error = {
+                message: "Server Error",
+                status: "failed",
+            };
+            dispatch(editUserDetailFailed(error.message));
+            return error;
         });
 };
 

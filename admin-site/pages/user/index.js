@@ -5,6 +5,7 @@ import AddItemButton from "../../src/components/common/Button/AddItemButton/AddI
 import Loading from "../../src/components/common/Loading/Loading";
 import UserTable from "../../src/components/Table/User/UserTable/UserTable";
 import { deleteUser, getAllUsers } from "../../src/store/reducers/userReducer";
+import Alert from "../../src/components/common/Message/Alert/Alert";
 
 const index = () => {
     const dispatch = useDispatch();
@@ -13,6 +14,9 @@ const index = () => {
     const [showTable, setShowTable] = useState(false);
     const [showLoading, setShowLoading] = useState(false);
     const [showError, setShowError] = useState("");
+    const [showSuccess, setShowSuccess] = useState(false);
+    const [showFailed, setShowFailed] = useState(false);
+    const [showUploading, setShowUploading] = useState(false);
 
     useEffect(() => {
         setShowLoading(true);
@@ -37,26 +41,36 @@ const index = () => {
             `Please confirm this if you want to delete "${name}"`,
         );
         if (isConfirm) {
-            setShowError("");
+            setShowFailed(false);
+            setShowSuccess(false);
+            setShowUploading(true);
             try {
                 const onDelete = await dispatch(deleteUser(id));
                 if (onDelete.status !== "failed") {
+                    setShowUploading(false);
+                    setShowSuccess(onDelete.message);
                     try {
-                        setShowLoading(true);
-                        const getEvents = await dispatch(getAllUsers());
-                        if (getEvents.status !== "failed") {
-                            setShowLoading(false);
+                        setShowUploading(true);
+                        const getUsers = await dispatch(getAllUsers());
+                        if (getUsers.status !== "failed") {
+                            setShowUploading(false);
                         } else {
-                            setShowError(getEvents.message);
+                            setShowUploading(false);
+                            setShowFailed(getUsers.message);
                         }
                     } catch (e) {
                         //TODO: handle error here
-                        setShowError(e.message);
+                        setShowUploading(false);
+                        setShowFailed(e);
                     }
+                } else {
+                    setShowUploading(false);
+                    setShowFailed(onDelete.message);
                 }
             } catch (e) {
                 //TODO: handle error here
-                setShowError(e.message);
+                setShowUploading(false);
+                setShowFailed(e);
             }
         }
     };
@@ -70,6 +84,15 @@ const index = () => {
                 <div className="flex justify-between items-center mb-3 w-10/12">
                     <AddItemButton hrefLink="/user/add" text="Add User" />
                 </div>
+                <Alert
+                    showFailed={showFailed}
+                    showSuccess={showSuccess}
+                    setShowFailed={setShowFailed}
+                    setShowSuccess={setShowSuccess}
+                    successMessage={showSuccess}
+                    failedMessage={showFailed}
+                    showUploading={showUploading}
+                />
                 {showError || ""}
                 {showLoading ? (
                     <Loading />
