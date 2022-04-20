@@ -89,6 +89,7 @@ const RegisterModal = () => {
                   name="password"
                   label="Password"
                   variant="outlined"
+                  type="password"
                 />
               </Grid>
             </Grid>

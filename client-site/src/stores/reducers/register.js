@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import authService from '../../services/authService';
-// import { setToken } from '../../helpers/auth';
+import { setToken } from '../../helpers/authHelper';
 import Router from 'next/router';
 
 const initialState = {
@@ -20,12 +20,13 @@ export const submitRegister = data => dispatch => {
   return authService.register(data).then(response => {
     if (response.status === 'success') {
       //TODO: do the auto login here, data is in accessToken
+      console.log(response);
       const authData = {
         accessToken: response.data.accessToken,
-        id: response.data.id,
+        id: response.data._id,
       };
       dispatch(registerSuccess(response.message));
-      // setToken(authData);
+      setToken(authData);
       Router.push('/');
     } else {
       dispatch(registerFailed(response.response.data.message));
