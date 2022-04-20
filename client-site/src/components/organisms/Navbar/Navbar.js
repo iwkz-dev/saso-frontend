@@ -6,7 +6,7 @@ import Button from '@mui/material/Button';
 import styles from './navbar.module.scss';
 import RegisterModal from '../../molecules/RegisterModal/RegisterModal';
 import LoginModal from '../../molecules/LoginModal/LoginModal';
-import { isAuth } from '../../../helpers/authHelper';
+import { isAuth, logout } from '../../../helpers/authHelper';
 
 const Navbar = () => {
   React.useEffect(() => {
@@ -14,6 +14,10 @@ const Navbar = () => {
       console.log(isAuth());
     }
   });
+
+  const logoutHandler = () => {
+    logout();
+  };
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -38,7 +42,7 @@ const Navbar = () => {
               <RegisterModal />
             </div>
           ) : (
-            <Button variant="contained">Logout</Button>
+            <Button onClick={logoutHandler} variant="contained">Logout</Button>
           )}
         </Toolbar>
       </AppBar>
