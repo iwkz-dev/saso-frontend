@@ -8,7 +8,7 @@ import CartDetail from '../../atoms/CartDetail/CartDetail';
 import { addOrder, removeOrder } from '../../../stores/reducers/cart';
 import { AiOutlineShoppingCart, AiOutlineClose } from 'react-icons/ai';
 
-const Cart = ({ setMobileActive, isBreakpoint }) => {
+const Cart = ({ setMobileActive, isBreakpoint, openOrder, setOpenOrder }) => {
   const dispatch = useDispatch();
   const cart = useSelector(state => state.cart);
 
@@ -62,7 +62,11 @@ const Cart = ({ setMobileActive, isBreakpoint }) => {
             </div>
             <div className={styles.bottomCart}>
               <Divider />
-              <CartDetail cart={cart} />
+              <CartDetail
+                cart={cart}
+                setOpenOrder={setOpenOrder}
+                openOrder={openOrder}
+              />
             </div>
           </>
         ) : (
