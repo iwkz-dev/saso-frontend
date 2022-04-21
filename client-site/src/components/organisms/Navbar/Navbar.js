@@ -9,12 +9,6 @@ import LoginModal from '../../molecules/LoginModal/LoginModal';
 import { isAuth, logout } from '../../../helpers/authHelper';
 
 const Navbar = () => {
-  React.useEffect(() => {
-    {
-      console.log(isAuth());
-    }
-  });
-
   const logoutHandler = () => {
     logout();
   };
@@ -42,7 +36,9 @@ const Navbar = () => {
               <RegisterModal />
             </div>
           ) : (
-            <Button onClick={logoutHandler} variant="contained">Logout</Button>
+            <Button onClick={logoutHandler} variant="contained">
+              Logout
+            </Button>
           )}
         </Toolbar>
       </AppBar>
