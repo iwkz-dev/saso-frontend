@@ -2,7 +2,7 @@ import React from 'react';
 import styles from './userFormOrder.module.scss';
 import { Button, Typography } from '@mui/material';
 import LoginModal from '../LoginModal/LoginModal';
-import RegisterModal from '../RegisterForm/RegisterForm';
+import RegisterForm from '../RegisterForm/RegisterForm';
 
 const UserFormOrder = ({ setOpenOrder }) => {
   const backClickHandler = () => {
@@ -34,7 +34,7 @@ const UserFormOrder = ({ setOpenOrder }) => {
           <Typography variant="body1" color="text.primary">
             Silahkan daftar
           </Typography>
-          <RegisterModal />
+          <RegisterForm />
         </div>
       </div>
       <hr />
