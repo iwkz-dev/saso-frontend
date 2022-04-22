@@ -23,7 +23,7 @@ export const getUserId = () => {
 export const logout = () => {
   if (typeof window !== 'undefined') {
     // Perform localStorage action
-    localStorage.clear();
+    localStorage.removeItem('access_token_client');
     Router.push('/');
   }
 };
