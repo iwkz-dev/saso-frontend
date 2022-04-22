@@ -31,9 +31,6 @@ const DynamicContainer = ({ event }) => {
   }, [isBreakpoint]);
 
   useEffect(() => {
-    console.log('showCheckorder: ', showCheckOrder);
-    console.log('isAuth: ', isAuth());
-    console.log('showUserFormOrder: ', showUserFormOrder);
     if (openOrder) {
       if (isAuth()) {
         setShowCheckOrder(true);
