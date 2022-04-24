@@ -7,7 +7,7 @@ const CartItem = ({ cartItem, add, remove }) => {
   const amount = cartItem.amount;
   const price = cartItem.sumPrice;
   return (
-    <div className={styles.cartItem} key={menu.name}>
+    <div className={styles.cartItem}>
       <div className={styles.amount}>{amount}</div>
       <div className={styles.menuDetail}>
         <div className={styles.nameAndPrice}>
@@ -23,7 +23,7 @@ const CartItem = ({ cartItem, add, remove }) => {
           </div>
         </div>
       </div>
-    </div >
+    </div>
   );
 };
 

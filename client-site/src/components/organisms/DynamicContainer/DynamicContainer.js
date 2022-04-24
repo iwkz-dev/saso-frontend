@@ -62,8 +62,9 @@ const DynamicContainer = ({ event }) => {
           </div>
           <div className={styles.secondBlock}>
             <div
-              className={`${styles.secondInnerBlock} ${mobileActive && styles.active
-                }`}
+              className={`${styles.secondInnerBlock} ${
+                mobileActive && styles.active
+              }`}
             >
               <Cart
                 isBreakpoint={isBreakpoint}
@@ -75,6 +76,7 @@ const DynamicContainer = ({ event }) => {
           </div>
           {isBreakpoint && !mobileActive ? (
             <Button
+              size="large"
               variant="contained"
               className={styles.cartButton}
               onClick={() => setMobileActive(true)}

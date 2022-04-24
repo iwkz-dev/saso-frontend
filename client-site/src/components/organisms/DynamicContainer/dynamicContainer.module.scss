@@ -2,14 +2,12 @@
 .dynamicContainer {
   display: flex;
   flex-direction: column;
+  margin-bottom: 50px;
   .firstBlock {
     width: 100%;
-    .firstInnerContainer {
-    }
   }
   .secondBlock {
     .secondInnerBlock {
-      width: 100vw;
       height: 100%;
       // background-color: rebeccapurple;
       display: none;
@@ -30,6 +28,7 @@
     bottom: 0px;
     left: 0;
     width: 100vw;
+    box-shadow: 0 1px 15px #000;
   }
 }
 
@@ -37,21 +36,18 @@
   .dynamicContainer {
     display: flex;
     flex-direction: row;
+    max-width: 1440px;
+    margin: auto;
     .firstBlock {
-      width: 100%;
-      .firstInnerContainer {
-        max-width: 1024px;
-        margin: 0 auto;
-      }
+      flex-basis: 66.66%;
     }
     .secondBlock {
-      min-width: 344px;
+      flex-basis: 33.33%;
       .secondInnerBlock {
         background-color: white;
         top: 64px;
         right: 0;
         left: unset;
-        width: 344px;
         display: block;
       }
     }

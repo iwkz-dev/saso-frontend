@@ -12,7 +12,7 @@ const Cart = ({ setMobileActive, isBreakpoint, openOrder, setOpenOrder }) => {
   const dispatch = useDispatch();
   const cart = useSelector(state => state.cart);
 
-  const add = (menu) => {
+  const add = menu => {
     dispatch(addOrder(menu));
   };
 
@@ -22,8 +22,9 @@ const Cart = ({ setMobileActive, isBreakpoint, openOrder, setOpenOrder }) => {
 
   return (
     <Card
-      className={`${styles.cartContainer} ${isBreakpoint ? (setMobileActive ? styles.openCart : '') : ''
-        }`}
+      className={`${styles.cartContainer} ${
+        isBreakpoint ? (setMobileActive ? styles.openCart : '') : ''
+      }`}
     >
       <CardContent className={styles.cartContent}>
         <div className={styles.cartTitle}>
@@ -48,15 +49,10 @@ const Cart = ({ setMobileActive, isBreakpoint, openOrder, setOpenOrder }) => {
           <>
             <div className={styles.orderedList}>
               {cart.items.map(cartItem => (
-                <>
-                  <CartItem
-                    key={cartItem._id}
-                    cartItem={cartItem}
-                    add={add}
-                    remove={remove}
-                  />
+                <div key={cartItem.menu._id}>
+                  <CartItem cartItem={cartItem} add={add} remove={remove} />
                   <Divider />
-                </>
+                </div>
               ))}
             </div>
             <div className={styles.bottomCart}>
