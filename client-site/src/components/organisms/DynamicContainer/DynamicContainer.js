@@ -62,9 +62,8 @@ const DynamicContainer = ({ event }) => {
           </div>
           <div className={styles.secondBlock}>
             <div
-              className={`${styles.secondInnerBlock} ${
-                mobileActive && styles.active
-              }`}
+              className={`${styles.secondInnerBlock} ${mobileActive && styles.active
+                }`}
             >
               <Cart
                 isBreakpoint={isBreakpoint}
