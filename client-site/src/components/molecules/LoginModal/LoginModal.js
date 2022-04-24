@@ -70,6 +70,7 @@ const LoginModal = () => {
                   name="email"
                   label="Email"
                   variant="outlined"
+                  required
                 />
               </Grid>
               <Grid item xs={12}>
@@ -79,6 +80,7 @@ const LoginModal = () => {
                   label="Password"
                   variant="outlined"
                   type="password"
+                  required
                 />
               </Grid>
             </Grid>

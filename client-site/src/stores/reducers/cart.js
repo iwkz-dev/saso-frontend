@@ -15,10 +15,11 @@ export const cartSlice = createSlice({
   reducers: {
     addOrder: (state, action) => {
       const id = action.payload._id;
+      const quantityLeft = action.payload.quantity - action.payload.quantityOrder;
       if (!state.items.length) {
         state.items[0] = {
           amount: 1,
-          sumPrice: action.payload.price,
+          sumPrice: parseFloat(action.payload.price.toFixed(2)),
           menu: action.payload,
         };
       } else {
@@ -27,13 +28,14 @@ export const cartSlice = createSlice({
         );
         if (itemIndex >= 0) {
           const amount = state.items[itemIndex].amount + 1;
-          state.items[itemIndex].amount = amount;
-          state.items[itemIndex].sumPrice =
-            state.items[itemIndex].menu.price * amount;
+          if (amount <= quantityLeft) {
+            state.items[itemIndex].amount = amount;
+            state.items[itemIndex].sumPrice = parseFloat((state.items[itemIndex].menu.price * amount).toFixed(2));
+          }
         } else {
           state.items.push({
             amount: 1,
-            sumPrice: action.payload.price,
+            sumPrice: parseFloat(action.payload.price.toFixed(2)),
             menu: action.payload,
           });
         }
@@ -45,7 +47,7 @@ export const cartSlice = createSlice({
         totalAmount += item.amount;
       });
       state.totalAmount = totalAmount;
-      state.totalPrice = totalPrice;
+      state.totalPrice = parseFloat(totalPrice).toFixed(2);
     },
     removeOrder: (state, action) => {
       const id = action.payload._id;
@@ -63,12 +65,12 @@ export const cartSlice = createSlice({
         } else {
           state.items[itemIndex].amount = amount;
           state.items[itemIndex].sumPrice =
-            state.items[itemIndex].menu.price * amount;
+            parseFloat((state.items[itemIndex].menu.price * amount).toFixed(2));
         }
       } else {
         state.items.push({
           amount: 1,
-          sumPrice: action.payload.price,
+          sumPrice: parseFloat(action.payload.price.toFixed(2)),
           menu: action.payload,
         });
       }
@@ -79,7 +81,7 @@ export const cartSlice = createSlice({
         totalAmount += item.amount;
       });
       state.totalAmount = totalAmount;
-      state.totalPrice = totalPrice;
+      state.totalPrice = parseFloat(totalPrice).toFixed(2);
     },
     resetCart: (state, action) => {
       state = initialState;

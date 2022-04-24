@@ -2,9 +2,10 @@ import React from 'react';
 import styles from './cartdetail.module.scss';
 import Button from '@mui/material/Button';
 
-const CartDetail = ({ cart, setOpenOrder, openOrder }) => {
+const CartDetail = ({ cart, setOpenOrder, openOrder, setMobileActive }) => {
   const handleOrderClick = () => {
     setOpenOrder(!openOrder);
+    setMobileActive(false);
   };
 
   return (

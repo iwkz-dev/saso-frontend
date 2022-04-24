@@ -44,6 +44,7 @@ const RegisterForm = () => {
               name="fullname"
               label="Nama Lengkap"
               variant="outlined"
+              required
             />
           </Grid>
           <Grid item xs={6}>
@@ -52,6 +53,7 @@ const RegisterForm = () => {
               name="phone"
               label="Nomor Telefon"
               variant="outlined"
+              required
             />
           </Grid>
           <Grid item xs={6}>
@@ -60,6 +62,7 @@ const RegisterForm = () => {
               name="email"
               label="Email"
               variant="outlined"
+              required
             />
           </Grid>
           <Grid item xs={6}>
@@ -69,6 +72,7 @@ const RegisterForm = () => {
               label="Password"
               variant="outlined"
               type="password"
+              required
             />
           </Grid>
         </Grid>

@@ -65,6 +65,7 @@ const RegisterModal = () => {
                   name="fullname"
                   label="Nama Lengkap"
                   variant="outlined"
+                  required
                 />
               </Grid>
               <Grid item xs={6}>
@@ -73,6 +74,7 @@ const RegisterModal = () => {
                   name="phone"
                   label="Nomor Telefon"
                   variant="outlined"
+                  required
                 />
               </Grid>
               <Grid item xs={6}>
@@ -81,6 +83,7 @@ const RegisterModal = () => {
                   name="email"
                   label="Email"
                   variant="outlined"
+                  required
                 />
               </Grid>
               <Grid item xs={6}>
@@ -90,6 +93,7 @@ const RegisterModal = () => {
                   label="Password"
                   variant="outlined"
                   type="password"
+                  required
                 />
               </Grid>
             </Grid>
