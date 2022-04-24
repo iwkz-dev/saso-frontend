@@ -76,6 +76,7 @@ const DynamicContainer = ({ event }) => {
           </div>
           {isBreakpoint && !mobileActive ? (
             <Button
+              size="large"
               variant="contained"
               className={styles.cartButton}
               onClick={() => setMobileActive(true)}

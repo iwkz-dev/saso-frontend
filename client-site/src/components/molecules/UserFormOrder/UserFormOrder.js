@@ -38,7 +38,7 @@ const UserFormOrder = ({ setOpenOrder }) => {
         </div>
       </div>
       <hr />
-      <Typography variant="body2" color="text.secondary">
+      <Typography variant="body2" color="text.secondary" component="div">
         <ul>
           <li>Pembayaran maksimal H + 1</li>
           <li>Pesanan yang sudah dibayar tidak bisa dibatalkan</li>
