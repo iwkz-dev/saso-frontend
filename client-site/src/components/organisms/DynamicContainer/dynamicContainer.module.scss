@@ -4,8 +4,6 @@
   flex-direction: column;
   .firstBlock {
     width: 100%;
-    .firstInnerContainer {
-    }
   }
   .secondBlock {
     .secondInnerBlock {
@@ -22,7 +20,8 @@
       position: fixed;
       background-color: white;
       overflow: scroll;
-      z-index: 99;
+      z-index: 99
+      ;
     }
   }
   .cartButton {

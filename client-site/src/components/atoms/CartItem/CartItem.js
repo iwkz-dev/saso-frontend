@@ -23,7 +23,7 @@ const CartItem = ({ cartItem, add, remove }) => {
           </div>
         </div>
       </div>
-    </div >
+    </div>
   );
 };
 

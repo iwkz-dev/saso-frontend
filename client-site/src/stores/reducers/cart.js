@@ -15,7 +15,8 @@ export const cartSlice = createSlice({
   reducers: {
     addOrder: (state, action) => {
       const id = action.payload._id;
-      const quantityLeft = action.payload.quantity - action.payload.quantityOrder;
+      const quantityLeft =
+        action.payload.quantity - action.payload.quantityOrder;
       if (!state.items.length) {
         state.items[0] = {
           amount: 1,
@@ -30,7 +31,9 @@ export const cartSlice = createSlice({
           const amount = state.items[itemIndex].amount + 1;
           if (amount <= quantityLeft) {
             state.items[itemIndex].amount = amount;
-            state.items[itemIndex].sumPrice = parseFloat((state.items[itemIndex].menu.price * amount).toFixed(2));
+            state.items[itemIndex].sumPrice = parseFloat(
+              (state.items[itemIndex].menu.price * amount).toFixed(2)
+            );
           }
         } else {
           state.items.push({
@@ -64,8 +67,9 @@ export const cartSlice = createSlice({
           }
         } else {
           state.items[itemIndex].amount = amount;
-          state.items[itemIndex].sumPrice =
-            parseFloat((state.items[itemIndex].menu.price * amount).toFixed(2));
+          state.items[itemIndex].sumPrice = parseFloat(
+            (state.items[itemIndex].menu.price * amount).toFixed(2)
+          );
         }
       } else {
         state.items.push({

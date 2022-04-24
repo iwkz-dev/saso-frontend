@@ -12,7 +12,7 @@ const Cart = ({ setMobileActive, isBreakpoint, openOrder, setOpenOrder }) => {
   const dispatch = useDispatch();
   const cart = useSelector(state => state.cart);
 
-  const add = (menu) => {
+  const add = menu => {
     dispatch(addOrder(menu));
   };
 
