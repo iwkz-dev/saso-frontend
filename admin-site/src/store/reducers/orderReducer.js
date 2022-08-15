@@ -43,6 +43,27 @@ export const deleteOrder = (id) => async (dispatch) => {
         });
 };
 
+export const changeOrderStatus = (id, status) => (dispatch) => {
+    return orderService
+        .changeOrderStatus(id, status)
+        .then((response) => {
+            dispatch(changeOrderStatusSuccess(response.data.data));
+            return response;
+        })
+        .catch((e) => {
+            if (e) {
+                dispatch(changeOrderStatusFailed(e.data.message));
+                return e.data;
+            }
+            const error = {
+                message: "Server Error",
+                status: "failed",
+            };
+            dispatch(getOrdersFailed(error.message));
+            return error;
+        });
+};
+
 export const orderSlice = createSlice({
     name: "order",
     initialState: {
@@ -71,6 +92,14 @@ export const orderSlice = createSlice({
             state.message.error = action.payload;
             state.success = false;
         },
+        changeOrderStatusSuccess: (state, action) => {
+            state.message.error = action.payload;
+            state.success = false;
+        },
+        changeOrderStatusFailed: (state, action) => {
+            state.message.error = action.payload;
+            state.success = false;
+        },
     },
 });
 
@@ -79,5 +108,7 @@ export const {
     getOrdersFailed,
     deleteOrderSuccess,
     deleteOrderFailed,
+    changeOrderStatusSuccess,
+    changeOrderStatusFailed,
 } = orderSlice.actions;
 export default orderSlice.reducer;

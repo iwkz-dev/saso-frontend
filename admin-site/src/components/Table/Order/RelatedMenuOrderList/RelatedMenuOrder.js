@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import Table from "../../Table";
 import { getAllEvents } from "../../../../store/reducers/eventReducer";
 import { getAllCategories } from "../../../../store/reducers/categoryReducer";
+import Table from "../../Table";
 import Loading from "../../../common/Loading/Loading";
 
 const RelatedMenuOrder = ({ menus }) => {
@@ -15,7 +15,7 @@ const RelatedMenuOrder = ({ menus }) => {
 
     useEffect(() => {
         getAllData();
-    }, [event]);
+    }, []);
 
     const getAllData = () => {
         setShowError("");

@@ -4,11 +4,13 @@ import LoggedInLayout from "../../src/components/Layout/loggedInLayout/loggedInL
 import AddItemButton from "../../src/components/common/Button/AddItemButton/AddItemButton";
 import Alert from "../../src/components/common/Message/Alert/Alert";
 import {
+    changeOrderStatus,
     deleteOrder,
     getAllOrders,
 } from "../../src/store/reducers/orderReducer";
 import Loading from "../../src/components/common/Loading/Loading";
 import OrderTable from "../../src/components/Table/Order/OrderTable/OrderTable";
+import { getAllEvents } from "../../src/store/reducers/eventReducer";
 const index = () => {
     const dispatch = useDispatch();
     const pageData = { name: "Order", href: "/order", current: true };
@@ -21,22 +23,62 @@ const index = () => {
     const [showUploading, setShowUploading] = useState(false);
 
     useEffect(() => {
+        getAllData();
+    }, []);
+
+    const getAllData = () => {
         setShowLoading(true);
         setShowError("");
-        const getOrders = async () => {
-            return dispatch(getAllOrders());
-        };
-        getOrders().then((r) => {
-            if (r.status === "success") {
-                setShowLoading(false);
-                setShowTable(true);
+        Promise.all([dispatch(getAllEvents()), dispatch(getAllOrders())]).then(
+            (responses) => {
+                const failed = responses.find((r) => r?.status === "failed");
+                if (!failed) {
+                    setShowTable(true);
+                    setShowLoading(false);
+                } else {
+                    setShowTable(false);
+                    setShowLoading(false);
+                    setShowError(failed.message);
+                }
+            },
+        );
+    };
+
+    const onChangeStatus = async (e, id) => {
+        setShowSuccess(false);
+        setShowFailed(false);
+        setShowUploading(true);
+        try {
+            const onChangeStatus = await dispatch(
+                changeOrderStatus(id, e.target.value),
+            );
+            setShowSuccess(onChangeStatus.message);
+            if (onChangeStatus.status !== "failed") {
+                setShowUploading(false);
+                setShowSuccess(onChangeStatus.message);
+                try {
+                    setShowUploading(true);
+                    const getOrders = await dispatch(getAllOrders());
+                    if (getOrders.status !== "failed") {
+                        setShowUploading(false);
+                    } else {
+                        setShowUploading(false);
+                        setShowFailed(getOrders.message);
+                    }
+                } catch (e) {
+                    //TODO: handle error here
+                    setShowUploading(false);
+                    setShowFailed(e);
+                }
             } else {
-                setShowLoading(false);
-                setShowError(r.message);
-                setShowTable(false);
+                setShowUploading(false);
+                setShowFailed(onChangeStatus.message);
             }
-        });
-    }, []);
+        } catch (error) {
+            setShowUploading(false);
+            setShowFailed(true);
+        }
+    };
 
     const onDelete = async (item) => {
         const isConfirm = confirm(
@@ -80,12 +122,6 @@ const index = () => {
                 setShowFailed(e);
             }
         }
-    };
-
-    const onChangeStatus = async () => {
-        setShowSuccess(false);
-        setShowFailed(false);
-        setShowUploading(true);
     };
 
     return (

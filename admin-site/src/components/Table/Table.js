@@ -32,6 +32,7 @@ const Table = ({
             case "select":
                 return (
                     <select
+                        key={"select " + id}
                         className="rounded-md"
                         onChange={(e) => th.onChange(e, id)}>
                         {th.options.map((opt) => (
@@ -137,9 +138,7 @@ const Table = ({
                             </div>
                         </div>
                     </td>
-                ) : (
-                    ""
-                )}
+                ) : null}
                 {Object.keys(tableHead).map((k) => (
                     <td
                         key={k + " " + index}
@@ -168,9 +167,7 @@ const Table = ({
                                     className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Actions
                                 </th>
-                            ) : (
-                                ""
-                            )}
+                            ) : null}
                             {Object.keys(tableHead).map((k, index) => (
                                 <th
                                     key={index}

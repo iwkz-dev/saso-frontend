@@ -17,7 +17,7 @@ const RelatedMenuTable = ({ event, onDelete }) => {
 
     useEffect(() => {
         getAllData();
-    }, [event]);
+    }, []);
 
     const getAllData = () => {
         const filter = `?event=${event._id}`;

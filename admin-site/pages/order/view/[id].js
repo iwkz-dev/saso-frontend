@@ -48,7 +48,6 @@ const id = () => {
                     setShowDataDisplay(true);
                     setShowLoading(false);
                     setShowError("");
-                    console.log(orderDetail);
                 } else {
                     setShowLoading(false);
                     setShowError(

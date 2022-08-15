@@ -34,6 +34,7 @@ const DataDisplay = ({ item, dataForm }) => {
         if (key === "started_at") {
             return (
                 <div
+                    key={key + i}
                     className={`${
                         i % 2 === 0 ? "bg-gray-50" : "bg-white"
                     } px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6`}>
@@ -48,6 +49,7 @@ const DataDisplay = ({ item, dataForm }) => {
         } else if (key === "created_at" || key === "updated_at") {
             return (
                 <div
+                    key={key + i}
                     className={`${
                         i % 2 === 0 ? "bg-gray-50" : "bg-white"
                     } px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6`}>
@@ -62,6 +64,7 @@ const DataDisplay = ({ item, dataForm }) => {
         } else if (key === "status") {
             return (
                 <div
+                    key={key + i}
                     className={`${
                         i % 2 === 0 ? "bg-gray-50" : "bg-white"
                     } px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6`}>
@@ -76,6 +79,7 @@ const DataDisplay = ({ item, dataForm }) => {
         } else if (key === "images") {
             return (
                 <div
+                    key={key + i}
                     className={`${
                         i % 2 === 0 ? "bg-gray-50" : "bg-white"
                     } px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6`}>
@@ -90,6 +94,7 @@ const DataDisplay = ({ item, dataForm }) => {
         } else {
             return (
                 <div
+                    key={key + i}
                     className={`${
                         i % 2 === 0 ? "bg-gray-50" : "bg-white"
                     } px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6`}>
