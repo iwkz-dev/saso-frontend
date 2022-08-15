@@ -16,7 +16,9 @@ const id = () => {
     return (
         <LoggedInLayout title={pageTitle} pageData={pageData}>
             <div className="w-10/12">
-                <h1 className="text-2xl font-bold text-left mb-3">Edit Order</h1>
+                <h1 className="text-2xl font-bold text-left mb-3">
+                    Edit Order
+                </h1>
             </div>
         </LoggedInLayout>
     );
