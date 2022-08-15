@@ -129,7 +129,7 @@ const Table = ({
                             </a>
                         </Link>
                         <div
-                            onClick={() => onDelete(item["_id"], item["name"])}
+                            onClick={() => onDelete(item)}
                             className="text-red-600 hover:text-red-900 px-1 cursor-pointer">
                             <MdDeleteOutline />
                         </div>

@@ -1,0 +1,49 @@
+import { createSlice } from "@reduxjs/toolkit";
+import orderService from "../../services/orderService";
+
+export const getAllOrders = (requestURL) => async (dispatch) => {
+    return orderService
+        .getAllOrders(requestURL)
+        .then((response) => {
+            dispatch(getOrdersSuccess(response.data.data));
+            return response;
+        })
+        .catch((e) => {
+            if (e) {
+                dispatch(getOrdersFailed(e.data.message));
+                return e.data;
+            }
+            const error = {
+                message: "Server Error",
+                status: "failed",
+            };
+            dispatch(getOrdersFailed(error.message));
+            return error;
+        });
+};
+
+export const orderSlice = createSlice({
+    name: "order",
+    initialState: {
+        success: false,
+        message: {
+            error: "",
+            success: "",
+        },
+        orders: [],
+        detailEvent: {},
+    },
+    reducers: {
+        getOrdersSuccess: (state, action) => {
+            state.orders = [...action.payload];
+            state.success = true;
+        },
+        getOrdersFailed: (state, action) => {
+            state.message.error = action.payload;
+            state.success = false;
+        },
+    },
+});
+
+export const { getOrdersSuccess, getOrdersFailed } = orderSlice.actions;
+export default orderSlice.reducer;

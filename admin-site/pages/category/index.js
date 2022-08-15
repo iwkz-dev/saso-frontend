@@ -39,16 +39,16 @@ const index = () => {
         });
     }, []);
 
-    const onDelete = async (id, name) => {
+    const onDelete = async (item) => {
         const isConfirm = confirm(
-            `Please confirm this if you want to delete "${name}"`,
+            `Please confirm this if you want to delete "${item.name}"`,
         );
         if (isConfirm) {
             setShowFailed(false);
             setShowSuccess(false);
             setShowUploading(true);
             try {
-                const onDelete = await dispatch(deleteCategory(id));
+                const onDelete = await dispatch(deleteCategory(item["_id"]));
                 if (onDelete.status !== "failed") {
                     setShowUploading(false);
                     setShowSuccess(onDelete.message);

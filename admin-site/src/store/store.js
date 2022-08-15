@@ -5,6 +5,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import eventReducer from "./reducers/eventReducer";
 import categoryReducer from "./reducers/categoryReducer";
 import userReducer from "./reducers/userReducer";
+import orderReducer from "./reducers/orderReducer";
 // Add reducers here!
 export default configureStore({
     reducer: {
@@ -12,6 +13,7 @@ export default configureStore({
         login: loginReducer,
         menu: menuReducer,
         event: eventReducer,
+        order: orderReducer,
         category: categoryReducer,
         user: userReducer,
     },

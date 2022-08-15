@@ -1,9 +1,56 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import LoggedInLayout from "../../src/components/Layout/loggedInLayout/loggedInLayout";
-
+import AddItemButton from "../../src/components/common/Button/AddItemButton/AddItemButton";
+import Alert from "../../src/components/common/Message/Alert/Alert";
+import { getAllOrders } from "../../src/store/reducers/orderReducer";
+import Loading from "../../src/components/common/Loading/Loading";
+import OrderTable from "../../src/components/Table/Order/OrderTable/OrderTable";
 const index = () => {
+    const dispatch = useDispatch();
     const pageData = { name: "Order", href: "/order", current: true };
     const pageTitle = "Saso App | Order";
+    const [showTable, setShowTable] = useState(false);
+    const [showLoading, setShowLoading] = useState(false);
+    const [showError, setShowError] = useState("");
+    const [showSuccess, setShowSuccess] = useState(false);
+    const [showFailed, setShowFailed] = useState(false);
+    const [showUploading, setShowUploading] = useState(false);
+
+    useEffect(() => {
+        setShowLoading(true);
+        setShowError("");
+        const getEvents = async () => {
+            return dispatch(getAllOrders());
+        };
+        getEvents().then((r) => {
+            if (r.status === "success") {
+                setShowLoading(false);
+                setShowTable(true);
+            } else {
+                setShowLoading(false);
+                setShowError(r.message);
+                setShowTable(false);
+            }
+        });
+    }, []);
+
+    const onDelete = async (item) => {
+        const isConfirm = confirm(
+            `Please confirm this if you want to delete "${item.invoiceNumber}"`,
+        );
+        if (isConfirm) {
+            setShowFailed(false);
+            setShowSuccess(false);
+            setShowUploading(true);
+        }
+    };
+
+    const onChangeStatus = async () => {
+        setShowSuccess(false);
+        setShowFailed(false);
+        setShowUploading(true);
+    };
 
     return (
         <LoggedInLayout title={pageTitle} pageData={pageData}>
@@ -11,6 +58,35 @@ const index = () => {
                 <h1 className="text-2xl font-bold text-left w-10/12 mb-3">
                     Order
                 </h1>
+                <div className="flex justify-between items-center mb-3">
+                    <AddItemButton hrefLink="/order/add" text="Add Order" />
+                </div>
+                <Alert
+                    showFailed={showFailed}
+                    showSuccess={showSuccess}
+                    setShowFailed={setShowFailed}
+                    setShowSuccess={setShowSuccess}
+                    successMessage={showSuccess}
+                    failedMessage={showFailed}
+                    showUploading={showUploading}
+                />
+                {showError || ""}
+                {showLoading ? (
+                    <Loading />
+                ) : showTable ? (
+                    <OrderTable
+                        onDelete={onDelete}
+                        onChangeStatus={onChangeStatus}
+                        showFailed={showFailed}
+                        showSuccess={showSuccess}
+                        setShowFailed={setShowFailed}
+                        setShowSuccess={setShowSuccess}
+                        showUploading={showUploading}
+                        setShowUploading={setShowUploading}
+                    />
+                ) : (
+                    ""
+                )}
             </div>
         </LoggedInLayout>
     );
