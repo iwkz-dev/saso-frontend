@@ -3,7 +3,10 @@ import { useDispatch } from "react-redux";
 import LoggedInLayout from "../../src/components/Layout/loggedInLayout/loggedInLayout";
 import AddItemButton from "../../src/components/common/Button/AddItemButton/AddItemButton";
 import Alert from "../../src/components/common/Message/Alert/Alert";
-import { getAllOrders } from "../../src/store/reducers/orderReducer";
+import {
+    deleteOrder,
+    getAllOrders,
+} from "../../src/store/reducers/orderReducer";
 import Loading from "../../src/components/common/Loading/Loading";
 import OrderTable from "../../src/components/Table/Order/OrderTable/OrderTable";
 const index = () => {
@@ -20,10 +23,10 @@ const index = () => {
     useEffect(() => {
         setShowLoading(true);
         setShowError("");
-        const getEvents = async () => {
+        const getOrders = async () => {
             return dispatch(getAllOrders());
         };
-        getEvents().then((r) => {
+        getOrders().then((r) => {
             if (r.status === "success") {
                 setShowLoading(false);
                 setShowTable(true);
@@ -43,6 +46,39 @@ const index = () => {
             setShowFailed(false);
             setShowSuccess(false);
             setShowUploading(true);
+        }
+        if (isConfirm) {
+            setShowFailed(false);
+            setShowSuccess(false);
+            setShowUploading(true);
+            try {
+                const onDelete = await dispatch(deleteOrder(item["_id"]));
+                if (onDelete.status !== "failed") {
+                    setShowUploading(false);
+                    setShowSuccess(onDelete.message);
+                    try {
+                        setShowUploading(true);
+                        const getOrders = await dispatch(getAllOrders());
+                        if (getOrders.status !== "failed") {
+                            setShowUploading(false);
+                        } else {
+                            setShowUploading(false);
+                            setShowFailed(getOrders.message);
+                        }
+                    } catch (e) {
+                        //TODO: handle error here
+                        setShowUploading(false);
+                        setShowFailed(e);
+                    }
+                } else {
+                    setShowUploading(false);
+                    setShowFailed(onDelete.message);
+                }
+            } catch (e) {
+                //TODO: handle error here
+                setShowUploading(false);
+                setShowFailed(e);
+            }
         }
     };
 

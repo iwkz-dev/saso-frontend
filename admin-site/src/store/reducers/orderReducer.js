@@ -22,6 +22,27 @@ export const getAllOrders = (requestURL) => async (dispatch) => {
         });
 };
 
+export const deleteOrder = (id) => async (dispatch) => {
+    return orderService
+        .deleteOrder(id)
+        .then((response) => {
+            dispatch(deleteOrderSuccess(response));
+            return response;
+        })
+        .catch((e) => {
+            if (e) {
+                dispatch(deleteOrderFailed(e.data.message));
+                return e.data;
+            }
+            const error = {
+                message: "Server Error",
+                status: "failed",
+            };
+            dispatch(deleteOrderFailed(error.message));
+            return error;
+        });
+};
+
 export const orderSlice = createSlice({
     name: "order",
     initialState: {
@@ -31,7 +52,7 @@ export const orderSlice = createSlice({
             success: "",
         },
         orders: [],
-        detailEvent: {},
+        detailOrder: {},
     },
     reducers: {
         getOrdersSuccess: (state, action) => {
@@ -42,8 +63,21 @@ export const orderSlice = createSlice({
             state.message.error = action.payload;
             state.success = false;
         },
+        deleteOrderSuccess: (state, action) => {
+            state.message.success = action.payload.message;
+            state.success = true;
+        },
+        deleteOrderFailed: (state, action) => {
+            state.message.error = action.payload;
+            state.success = false;
+        },
     },
 });
 
-export const { getOrdersSuccess, getOrdersFailed } = orderSlice.actions;
+export const {
+    getOrdersSuccess,
+    getOrdersFailed,
+    deleteOrderSuccess,
+    deleteOrderFailed,
+} = orderSlice.actions;
 export default orderSlice.reducer;

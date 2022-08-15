@@ -4,12 +4,17 @@ import Table from "../../Table";
 
 function OrderTable({ onDelete }) {
     const orders = useSelector((state) => state.order.orders);
+    const events = useSelector((state) => state.event.events);
 
     const tableHead = {
         invoiceNumber: "Invoice Number",
-        order: "Order",
-        started_at: "Started at",
-        startYear: "Start Year",
+        event: "Event",
+        customerFullname: "Customer Fullname",
+        customerEmail: "Customer Email",
+        customerPhone: "Customer Phone Number",
+        totalPrice: "totalPrice",
+        note: "Note",
+        arrived_at: "Arrived At",
         created_at: "Created At",
         updated_at: "Updated At",
     };
@@ -18,6 +23,7 @@ function OrderTable({ onDelete }) {
         <Table
             onDelete={onDelete}
             items={orders}
+            events={events}
             tableHead={tableHead}
             emptyMessage="Order is empty"
             linkToEdit="/order/edit/"

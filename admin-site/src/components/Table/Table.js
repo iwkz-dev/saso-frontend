@@ -13,6 +13,7 @@ const Table = ({
     categories,
     events,
     linkToView,
+    actionsOff,
 }) => {
     const imageColumnHandler = (data) => {
         if (data.length > 0) {
@@ -110,31 +111,35 @@ const Table = ({
                     className="px-6 py-3 whitespace-nowrap text-center text-sm font-medium">
                     <div className="text-sm text-gray-900">{index + 1}</div>
                 </td>
-                <td
-                    key="actions"
-                    className="px-6 py-3 whitespace-nowrap text-right text-sm font-medium ">
-                    <div className="flex items-center">
-                        {linkToView ? (
-                            <Link href={linkToView + item._id}>
-                                <a className="text-zinc-600 hover:text-zinc-900 px-1">
-                                    <BiSearchAlt2 />
+                {!actionsOff ? (
+                    <td
+                        key="actions"
+                        className="px-6 py-3 whitespace-nowrap text-right text-sm font-medium ">
+                        <div className="flex items-center">
+                            {linkToView ? (
+                                <Link href={linkToView + item._id}>
+                                    <a className="text-zinc-600 hover:text-zinc-900 px-1">
+                                        <BiSearchAlt2 />
+                                    </a>
+                                </Link>
+                            ) : (
+                                ""
+                            )}
+                            <Link href={linkToEdit + item._id}>
+                                <a className="text-indigo-600 hover:text-indigo-900 px-1">
+                                    <BiEdit />
                                 </a>
                             </Link>
-                        ) : (
-                            ""
-                        )}
-                        <Link href={linkToEdit + item._id}>
-                            <a className="text-indigo-600 hover:text-indigo-900 px-1">
-                                <BiEdit />
-                            </a>
-                        </Link>
-                        <div
-                            onClick={() => onDelete(item)}
-                            className="text-red-600 hover:text-red-900 px-1 cursor-pointer">
-                            <MdDeleteOutline />
+                            <div
+                                onClick={() => onDelete(item)}
+                                className="text-red-600 hover:text-red-900 px-1 cursor-pointer">
+                                <MdDeleteOutline />
+                            </div>
                         </div>
-                    </div>
-                </td>
+                    </td>
+                ) : (
+                    ""
+                )}
                 {Object.keys(tableHead).map((k) => (
                     <td
                         key={k + " " + index}
@@ -157,11 +162,15 @@ const Table = ({
                                 className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Nr.
                             </th>
-                            <th
-                                scope="col"
-                                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Actions
-                            </th>
+                            {!actionsOff ? (
+                                <th
+                                    scope="col"
+                                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Actions
+                                </th>
+                            ) : (
+                                ""
+                            )}
                             {Object.keys(tableHead).map((k, index) => (
                                 <th
                                     key={index}
