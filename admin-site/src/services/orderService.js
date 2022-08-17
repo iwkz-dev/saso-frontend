@@ -28,7 +28,43 @@ const getAllOrders = (requestURL = "") => {
     });
 };
 
+const deleteOrder = (id) => {
+    return new Promise((resolve, reject) => {
+        adminAxios
+            .delete(`${BASE_URL_HOST_ADMIN_ORDER}/${id}`)
+            .then((response) => {
+                if (response.data.status === "success") {
+                    resolve(response.data);
+                } else {
+                    reject(response.data);
+                }
+            })
+            .catch((error) => {
+                reject(error.response);
+            });
+    });
+};
+
+const changeOrderStatus = (id, status) => {
+    return new Promise((resolve, reject) => {
+        adminAxios
+            .patch(`${BASE_URL_HOST_ADMIN_ORDER}/${id}/${status}`)
+            .then((response) => {
+                if (response.data.status === "success") {
+                    resolve(response.data);
+                } else {
+                    reject(response.data);
+                }
+            })
+            .catch((error) => {
+                reject(error.response);
+            });
+    });
+};
+
 const orderService = {
     getAllOrders,
+    deleteOrder,
+    changeOrderStatus,
 };
 export default orderService;

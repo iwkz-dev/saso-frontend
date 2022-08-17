@@ -1,14 +1,12 @@
 import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { getAllEvents } from "../../../../store/reducers/eventReducer";
 import { getAllCategories } from "../../../../store/reducers/categoryReducer";
-import { getAllMenus } from "../../../../store/reducers/menuReducer";
-import { useDispatch, useSelector } from "react-redux";
 import Table from "../../Table";
 import Loading from "../../../common/Loading/Loading";
 
-const RelatedMenuTable = ({ event, onDelete }) => {
+const RelatedMenuOrder = ({ menus }) => {
     const dispatch = useDispatch();
-    const menus = useSelector((state) => state.menu.menus);
     const categories = useSelector((state) => state.category.categories);
     const events = useSelector((state) => state.event.events);
 
@@ -20,12 +18,10 @@ const RelatedMenuTable = ({ event, onDelete }) => {
     }, []);
 
     const getAllData = () => {
-        const filter = `?event=${event._id}`;
         setShowError("");
         Promise.all([
             dispatch(getAllEvents()),
             dispatch(getAllCategories()),
-            dispatch(getAllMenus(filter)),
         ]).then((responses) => {
             const failed = responses.find((r) => r?.status === "failed");
             if (!failed) {
@@ -39,27 +35,24 @@ const RelatedMenuTable = ({ event, onDelete }) => {
 
     const tableHead = {
         name: "Name",
-        description: "Description",
         category: "Category",
         price: "Price (€)",
-        quantity: "Quantity",
+        quantityOrder: "Quantity Order",
         images: "Image",
         event: "Event",
-        created_at: "Created At",
-        updated_at: "Updated At",
+        totalPortion: "Total Portion",
     };
 
     return (
         <>
             {showTable ? (
                 <Table
-                    onDelete={onDelete}
                     items={menus}
+                    tableHead={tableHead}
                     events={events}
                     categories={categories}
-                    tableHead={tableHead}
                     emptyMessage="Menu is empty"
-                    linkToEdit="/menu/edit/"
+                    actionsOff={true}
                 />
             ) : (
                 <Loading />
@@ -69,4 +62,4 @@ const RelatedMenuTable = ({ event, onDelete }) => {
     );
 };
 
-export default RelatedMenuTable;
+export default RelatedMenuOrder;
