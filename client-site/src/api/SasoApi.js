@@ -30,7 +30,12 @@ class SasoApi {
   };
   postData = async (url, data = null) => {
     try {
-      const res = await Axios.post(url, data);
+      const res = await Axios.post(url, data, {
+        headers: {
+          'content-type': 'application/json',
+          Authorization: 'Bearer ' + getToken(),
+        },
+      });
       return res.data;
     } catch (err) {
       return err;
