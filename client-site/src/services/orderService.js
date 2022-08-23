@@ -8,13 +8,13 @@ const getOrderList = () => {
   return sasoApi.getData('/customer/order', true);
 };
 
-const getOrderPdf = (orderId) => {
+const getOrderPdf = orderId => {
   return sasoApi.postData(`/customer/order/${orderId}/generatePdf`);
 };
 
 const orderService = {
   postOrder,
   getOrderList,
-  getOrderPdf
+  getOrderPdf,
 };
 export default orderService;

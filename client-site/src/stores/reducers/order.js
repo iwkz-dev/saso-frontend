@@ -23,7 +23,7 @@ export const submitOrder = data => dispatch => {
 
 export const getOrderList = () => dispatch => {
   return orderService.getOrderList().then(response => {
-    console.log(response)
+    console.log(response);
     if (response.data.status === 'success') {
       dispatch(getOrderListSuccess(response.data));
       return response;
@@ -34,9 +34,9 @@ export const getOrderList = () => dispatch => {
   });
 };
 
-export const getOrderPdf = (id) => dispatch => {
+export const getOrderPdf = id => dispatch => {
   return orderService.getOrderPdf(id).then(response => {
-    console.log(response)
+    console.log(response);
     if (response.status === 'success') {
       dispatch(submitOrderSuccess(response.message));
       return response;
@@ -46,7 +46,6 @@ export const getOrderPdf = (id) => dispatch => {
     }
   });
 };
-
 
 export const orderSlice = createSlice({
   name: 'order',
@@ -84,5 +83,12 @@ export const orderSlice = createSlice({
   },
 });
 
-export const { submitOrderSuccess, submitOrderFailed, getOrderListSuccess, getOrderListFailed, getOrderPdfSuccess, getOrderPdfFailed } = orderSlice.actions;
+export const {
+  submitOrderSuccess,
+  submitOrderFailed,
+  getOrderListSuccess,
+  getOrderListFailed,
+  getOrderPdfSuccess,
+  getOrderPdfFailed,
+} = orderSlice.actions;
 export default orderSlice.reducer;
