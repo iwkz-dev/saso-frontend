@@ -4,10 +4,14 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
-  max-width: 1024px;
+  max-width: 800px;
   margin: 0 auto;
   .backButton {
     width: fit-content;
+  }
+  .buttonWrapper {
+    display: flex;
+    justify-content: center;
   }
   hr {
     width: 100%;

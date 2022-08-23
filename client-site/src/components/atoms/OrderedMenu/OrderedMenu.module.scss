@@ -1,15 +1,15 @@
 .orderedMenu {
-    display: flex;
-    justify-content: center;
-    max-width: 320px;
-    margin: auto;
-    .left {
+  display: flex;
+  justify-content: center;
+  max-width: 320px;
+  margin: auto;
+  .left {
     flex-basis: 20%;
-    }
-    .center {
+  }
+  .center {
     flex-basis: 60%;
-    }
-    .right {
+  }
+  .right {
     flex-basis: 20%;
-    }
+  }
 }

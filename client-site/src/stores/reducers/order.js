@@ -13,10 +13,11 @@ export const submitOrder = data => dispatch => {
   return orderService.postOrder(data).then(response => {
     if (response.status === 'success') {
       dispatch(submitOrderSuccess(response.message));
+      return response;
     } else {
       dispatch(submitOrderFailed(response.message));
+      return response;
     }
-    return Promise.resolve();
   });
 };
 

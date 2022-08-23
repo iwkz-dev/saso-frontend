@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import Alert from '@mui/material/Alert';
 import OrderedMenu from '../../atoms/OrderedMenu/OrderedMenu';
 import { Button, Typography, Divider } from '@mui/material';
@@ -8,20 +8,13 @@ import Grid from '@mui/material/Grid';
 import styles from './checkOrder.module.scss';
 import { submitOrder } from '../../../stores/reducers/order';
 
-const CheckOrder = ({ setOpenOrder }) => {
+const CheckOrder = ({ setOpenOrder, setOpenOrderList }) => {
   const form = useRef();
   const dispatch = useDispatch();
   const cart = useSelector(state => state.cart);
   const order = useSelector(state => state.order);
   const events = useSelector(state => state.event.data);
-  const [showFailedOrder, setShowFailedOrder] = useState(false)
-
-
-  useEffect(() => {
-    if (order.data.message.error !== "") {
-      setShowFailedOrder(true);
-    }
-  }, [order, showFailedOrder])
+  const [showFailedOrder, setShowFailedOrder] = useState(false);
 
   const backClickHandler = () => {
     setOpenOrder(false);
@@ -49,7 +42,17 @@ const CheckOrder = ({ setOpenOrder }) => {
         arrivedAt: arrivedAt,
         menus: menus,
       };
-      dispatch(submitOrder(orderData));
+
+      dispatch(submitOrder(orderData)).then(response => {
+        console.log(response.status);
+        if (response.status == 'success') {
+          setShowFailedOrder(false);
+          setOpenOrderList(true);
+          setOpenOrder(false);
+        } else {
+          setShowFailedOrder(true);
+        }
+      });
     }
   };
 
@@ -114,14 +117,12 @@ const CheckOrder = ({ setOpenOrder }) => {
                 InputLabelProps={{ shrink: true }}
               />
             </Grid>
-            {
-              showFailedOrder ? (
-                <Grid item xs={12}>
-                  <Alert severity="error">{order.data.message.error}</Alert>
-                </Grid>
-              ) : null
-            }
-            <Grid item xs={12}>
+            {showFailedOrder ? (
+              <Grid item xs={12}>
+                <Alert severity="error">{order.data.message.error}</Alert>
+              </Grid>
+            ) : null}
+            <Grid item xs={12} className={styles.buttonWrapper}>
               <Button
                 margin="auto"
                 size="large"
