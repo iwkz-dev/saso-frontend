@@ -15,14 +15,24 @@ class SasoApi {
     Axios.defaults.headers.post['Access-Control-Allow-Methods'] =
       'GET,POST,DELETE,PUT';
   }
-  getData = async url => {
+  getData = async (url, withAuth = false) => {
     try {
-      const res = await Axios.get(url, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-      return res;
+      if (withAuth) {
+        const res = await Axios.get(url, {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer ' + getToken(),
+          },
+        });
+        return res;
+      } else {
+        const res = await Axios.get(url, {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        return res;
+      }
     } catch (err) {
       console.log(err);
       // throw err;
