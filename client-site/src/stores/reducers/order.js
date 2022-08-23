@@ -12,13 +12,12 @@ const initialState = {
 export const submitOrder = data => dispatch => {
   return orderService.postOrder(data).then(response => {
     if (response.status === 'success') {
-      console.log('test', response.message);
       dispatch(submitOrderSuccess(response.message));
+      return response;
     } else {
-      console.log('test', response.message);
       dispatch(submitOrderFailed(response.message));
+      return response;
     }
-    return Promise.resolve();
   });
 };
 
@@ -34,6 +33,7 @@ export const orderSlice = createSlice({
     },
     submitOrderFailed: (state, action) => {
       state.data.message.error = action.payload;
+      state.data.message.success = '';
     },
   },
 });

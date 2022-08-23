@@ -9,12 +9,14 @@ import { getAllCategories } from '../../../stores/reducers/category';
 import { useDispatch, useSelector } from 'react-redux';
 import { isAuth } from '../../../helpers/authHelper';
 import { useRouter } from 'next/router';
+import OrderList from '../../molecules/OrderList/OrderList';
 
-const DynamicContainer = ({ event }) => {
+const DynamicContainer = ({ event, openOrderList, setOpenOrderList }) => {
   const dispatch = useDispatch();
   const router = useRouter();
   const isBreakpoint = useMediaQuery(parseInt(styles.breakpointTablet));
   const [showCheckOrder, setShowCheckOrder] = useState(false);
+  const [showOrderList, setShowOrderList] = useState(false);
   const [openOrder, setOpenOrder] = useState(false);
   const [showUserFormOrder, setShowUserFormOrder] = useState(false);
   const [mobileActive, setMobileActive] = useState(false);
@@ -31,24 +33,42 @@ const DynamicContainer = ({ event }) => {
   }, [isBreakpoint]);
 
   useEffect(() => {
-    if (openOrder) {
+    if (openOrderList) {
+      if (isAuth()) {
+        setShowOrderList(true);
+        setShowCheckOrder(false);
+        setShowUserFormOrder(false);
+      } else {
+        setShowOrderList(false);
+        setShowCheckOrder(false);
+        setShowUserFormOrder(true);
+      }
+    } else if (openOrder) {
       if (isAuth()) {
         setShowCheckOrder(true);
+        setShowOrderList(false);
         setShowUserFormOrder(false);
       } else {
         setShowCheckOrder(false);
+        setShowOrderList(false);
         setShowUserFormOrder(true);
       }
     } else {
       setShowCheckOrder(false);
       setShowUserFormOrder(false);
+      setShowOrderList(false);
     }
-  }, [openOrder, isAuth()]);
+  }, [openOrder, isAuth(), openOrderList]);
 
   return (
     <div className={styles.dynamicContainer}>
       {showCheckOrder ? (
-        <CheckOrder setOpenOrder={setOpenOrder} />
+        <CheckOrder
+          setOpenOrder={setOpenOrder}
+          setOpenOrderList={setOpenOrderList}
+        />
+      ) : showOrderList ? (
+        <OrderList setOpenOrderList={setOpenOrderList} />
       ) : (
         <>
           <div className={styles.firstBlock}>

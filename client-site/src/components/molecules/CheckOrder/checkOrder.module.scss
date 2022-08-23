@@ -4,30 +4,17 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
-  max-width: 1024px;
+  max-width: 800px;
   margin: 0 auto;
   .backButton {
     width: fit-content;
   }
+  .buttonWrapper {
+    display: flex;
+    justify-content: center;
+  }
   hr {
     width: 100%;
     margin: 20px 0;
-  }
-  .orderedInfo {
-    .orderedMenu {
-      display: flex;
-      justify-content: center;
-      max-width: 320px;
-      margin: auto;
-      .left {
-        flex-basis: 20%;
-      }
-      .center {
-        flex-basis: 60%;
-      }
-      .right {
-        flex-basis: 20%;
-      }
-    }
   }
 }
