@@ -6,11 +6,23 @@
   h6 {
     margin-bottom: 1rem;
   }
+  .tableContainer {
+    max-height: 500px;
+  }
   .table {
     align-self: center;
+  }
+  .paymentAddress {
+    padding-top: 20px;
   }
   hr {
     width: 100%;
     margin: 20px 0;
+  }
+  .downloadPdf {
+    cursor: pointer;
+    &:hover {
+      text-decoration: underline;
+    }
   }
 }
