@@ -1,35 +1,45 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
+import { getOrderList, getOrderPdf } from '../../../stores/reducers/order';
 import { Button, Typography, Divider } from '@mui/material';
 import Paper from '@mui/material/Paper';
 import styles from './orderList.module.scss';
+import { formatDate } from '../../../helpers/dateHelper';
 
 const OrderList = ({ setOpenOrderList }) => {
+  const dispatch = useDispatch();
+  const order = useSelector(state => state.order);
+
+  useEffect(() => {
+    console.log(order);
+    dispatch(getOrderList());
+  }, []);
+
   const backClickHandler = () => {
     setOpenOrderList(false);
   };
 
-  function createData(name, calories, fat, carbs, protein) {
-    return { name, calories, fat, carbs, protein };
-  }
+  const handleClick = orderId => {
+    dispatch(getOrderPdf(orderId));
+  };
 
-  const rows = [
-    createData(
-      'SS22-12',
-      'Wait for Confirmation',
-      '23 Agustus 2022, 11.33',
-      ' Download'
-    ),
-    createData('SS22-13', 'Refund', '23 Agustus 2022, 11.33', ' Download'),
-    createData('SS22-24', 'Paid', '23 Agustus 2022, 11.33', ' Download'),
-  ];
-
-  console.log(rows);
+  const reformStatus = status => {
+    if (status == 1) {
+      return 'Paid';
+    } else if (status == 2) {
+      return 'Refund/cancel';
+    } else if (status == 3) {
+      return 'Done';
+    } else {
+      return 'Wait for confirmation';
+    }
+  };
 
   return (
     <div className={styles.container}>
@@ -49,25 +59,28 @@ const OrderList = ({ setOpenOrderList }) => {
           <Table sx={{ minWidth: 280 }} aria-label="a dense table">
             <TableHead>
               <TableRow>
+                <TableCell>Nr.</TableCell>
                 <TableCell>Inovice Nr.</TableCell>
-                <TableCell align="right">Status</TableCell>
-                <TableCell align="right">Download PDF</TableCell>
-                <TableCell align="right">Created</TableCell>
+                <TableCell>Status</TableCell>
+                <TableCell>Download PDF</TableCell>
+                <TableCell>Created</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {rows.map(row => (
+              {order.data.data.map((data, i) => (
                 <TableRow
-                  key={row.name}
+                  key={data.invoiceNumber}
                   sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                 >
-                  <TableCell component="th" scope="row">
-                    {row.name}
+                  <TableCell>{i + 1}</TableCell>
+                  <TableCell>{data.invoiceNumber}</TableCell>
+                  <TableCell>{reformStatus(data.status)}</TableCell>
+                  <TableCell onClick={() => handleClick(data._id)}>
+                    Download here
                   </TableCell>
-                  <TableCell align="right">{row.calories}</TableCell>
-                  <TableCell align="right">{row.fat}</TableCell>
-                  <TableCell align="right">{row.carbs}</TableCell>
-                  <TableCell align="right">{row.protein}</TableCell>
+                  <TableCell>
+                    {formatDate(data.created_at, true, true)}
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
