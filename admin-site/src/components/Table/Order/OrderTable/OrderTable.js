@@ -54,8 +54,8 @@ function OrderTable({ onDelete, onChangeStatus }) {
             events={events}
             tableHead={tableHead}
             emptyMessage="Order is empty"
-            linkToEdit="/order/edit/"
             linkToView="/order/view/"
+            deleteOff={true}
         />
     );
 }

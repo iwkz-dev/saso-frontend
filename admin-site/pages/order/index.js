@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import LoggedInLayout from "../../src/components/Layout/loggedInLayout/loggedInLayout";
-import AddItemButton from "../../src/components/common/Button/AddItemButton/AddItemButton";
 import Alert from "../../src/components/common/Message/Alert/Alert";
 import {
     changeOrderStatus,
@@ -130,9 +129,6 @@ const index = () => {
                 <h1 className="text-2xl font-bold text-left w-10/12 mb-3">
                     Order
                 </h1>
-                <div className="flex justify-between items-center mb-3">
-                    <AddItemButton hrefLink="/order/add" text="Add Order" />
-                </div>
                 <Alert
                     showFailed={showFailed}
                     showSuccess={showSuccess}
