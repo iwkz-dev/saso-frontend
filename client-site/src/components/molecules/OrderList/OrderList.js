@@ -51,11 +51,28 @@ const OrderList = ({ setOpenOrderList }) => {
       >
         Back
       </Button>
+      <div className={styles.paymentAddress}>
+        <Typography variant="h6" align="center">
+          Pembayaran dapat dibayarkan melalui:
+          <br />
+        </Typography>
+        <Typography align="center">
+          Indonesischer Weisheits- und Kulturzentrum e.V.
+          <br />
+          IBAN: DE29 1001 0010 0346 6691 06
+          <br />
+          BIC: PBNKDEFF
+          <br />
+          Verwendungszweck: SS21-0001
+          <br />
+        </Typography>
+      </div>
+      <Divider />
       <Typography variant="h6" align="center">
         Your Order List
       </Typography>
       <div className={styles.table}>
-        <TableContainer component={Paper}>
+        <TableContainer component={Paper} className={styles.tableContainer}>
           <Table sx={{ minWidth: 280 }} aria-label="a dense table">
             <TableHead>
               <TableRow>
@@ -75,7 +92,10 @@ const OrderList = ({ setOpenOrderList }) => {
                   <TableCell>{i + 1}</TableCell>
                   <TableCell>{data.invoiceNumber}</TableCell>
                   <TableCell>{reformStatus(data.status)}</TableCell>
-                  <TableCell onClick={() => handleClick(data._id)}>
+                  <TableCell
+                    onClick={() => handleClick(data._id)}
+                    className={styles.downloadPdf}
+                  >
                     Download here
                   </TableCell>
                   <TableCell>
@@ -86,23 +106,6 @@ const OrderList = ({ setOpenOrderList }) => {
             </TableBody>
           </Table>
         </TableContainer>
-      </div>
-      <Divider />
-      <div>
-        <Typography variant="h6" align="center">
-          Pembayaran dapat dibayarkan melalui:
-          <br />
-        </Typography>
-        <Typography align="center">
-          Indonesischer Weisheits- und Kulturzentrum e.V.
-          <br />
-          IBAN: DE29 1001 0010 0346 6691 06
-          <br />
-          BIC: PBNKDEFF
-          <br />
-          Verwendungszweck: SS21-0001
-          <br />
-        </Typography>
       </div>
     </div>
   );

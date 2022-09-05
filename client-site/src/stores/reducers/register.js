@@ -20,7 +20,6 @@ export const submitRegister = data => dispatch => {
   return authService.register(data).then(response => {
     if (response.status === 'success') {
       //TODO: do the auto login here, data is in accessToken
-      console.log(response);
       const authData = {
         accessToken: response.data.accessToken,
         id: response.data._id,

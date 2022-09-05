@@ -23,7 +23,6 @@ export const submitOrder = data => dispatch => {
 
 export const getOrderList = () => dispatch => {
   return orderService.getOrderList().then(response => {
-    console.log(response);
     if (response.data.status === 'success') {
       dispatch(getOrderListSuccess(response.data));
       return response;
@@ -36,7 +35,6 @@ export const getOrderList = () => dispatch => {
 
 export const getOrderPdf = id => dispatch => {
   return orderService.getOrderPdf(id).then(response => {
-    console.log(response);
     if (response.status === 'success') {
       dispatch(submitOrderSuccess(response.message));
       return response;
@@ -62,8 +60,6 @@ export const orderSlice = createSlice({
       state.data.message.success = '';
     },
     getOrderListSuccess: (state, action) => {
-      console.log(action.payload);
-      console.log(state.data);
       state.data.data = [...action.payload.data.data];
       state.data.message.success = action.payload.message;
       state.data.message.error = '';

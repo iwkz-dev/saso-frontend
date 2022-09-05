@@ -22,9 +22,11 @@ const DynamicContainer = ({ event, openOrderList, setOpenOrderList }) => {
   const [mobileActive, setMobileActive] = useState(false);
   const menu = useSelector(state => state.menu.data);
   const category = useSelector(state => state.category);
+  const cart = useSelector(state => state.cart);
 
   useEffect(() => {
     const filter = `?event=${event._id}`;
+
     dispatch(getAllCategories(filter));
   }, []);
 
@@ -101,7 +103,7 @@ const DynamicContainer = ({ event, openOrderList, setOpenOrderList }) => {
               className={styles.cartButton}
               onClick={() => setMobileActive(true)}
             >
-              Cart
+              Cart {cart.totalAmount == 0 ? '' : `(${cart.totalAmount})`}
             </Button>
           ) : (
             ''

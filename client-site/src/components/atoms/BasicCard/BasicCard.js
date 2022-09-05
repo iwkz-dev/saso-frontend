@@ -35,15 +35,26 @@ export default function BasicCard({ menu }) {
           <Typography variant="body1" color="text.secondary">
             {menu.description}
           </Typography>
-          <Typography variant="body2" color="text.secondary">
-            Left: {menu.quantity - menu.quantityOrder}
-          </Typography>
+          {menu.quantity == menu.quantityOrder ? (
+            <Typography variant="body2" color="text.secondary">
+              Sold Out
+            </Typography>
+          ) : (
+            <Typography variant="body2" color="text.secondary">
+              Left Stock: {menu.quantity - menu.quantityOrder}
+            </Typography>
+          )}
           <Typography variant="h6" color="text.price">
             {menu.price} €
           </Typography>
         </CardContent>
         <CardActions>
-          <Button size="small" variant="contained" onClick={handleClick}>
+          <Button
+            size="small"
+            variant="contained"
+            onClick={handleClick}
+            disabled={menu.quantity == menu.quantityOrder}
+          >
             Add to Cart
           </Button>
         </CardActions>

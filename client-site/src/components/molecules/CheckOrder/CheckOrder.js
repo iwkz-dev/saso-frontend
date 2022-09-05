@@ -44,7 +44,6 @@ const CheckOrder = ({ setOpenOrder, setOpenOrderList }) => {
       };
 
       dispatch(submitOrder(orderData)).then(response => {
-        console.log(response.status);
         if (response.status == 'success') {
           setShowFailedOrder(false);
           setOpenOrderList(true);
