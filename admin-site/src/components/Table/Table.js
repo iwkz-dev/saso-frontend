@@ -14,6 +14,7 @@ const Table = ({
     events,
     linkToView,
     actionsOff,
+    deleteOff,
 }) => {
     const imageColumnHandler = (data) => {
         if (data.length > 0) {
@@ -123,19 +124,22 @@ const Table = ({
                                         <BiSearchAlt2 />
                                     </a>
                                 </Link>
-                            ) : (
-                                ""
+                            ) : null}
+                            {linkToEdit ? (
+                                <Link href={linkToEdit + item._id}>
+                                    <a className="text-indigo-600 hover:text-indigo-900 px-1">
+                                        <BiEdit />
+                                    </a>
+                                </Link>
+                            ) : null}
+
+                            {deleteOff ? null : (
+                                <div
+                                    onClick={() => onDelete(item)}
+                                    className="text-red-600 hover:text-red-900 px-1 cursor-pointer">
+                                    <MdDeleteOutline />
+                                </div>
                             )}
-                            <Link href={linkToEdit + item._id}>
-                                <a className="text-indigo-600 hover:text-indigo-900 px-1">
-                                    <BiEdit />
-                                </a>
-                            </Link>
-                            <div
-                                onClick={() => onDelete(item)}
-                                className="text-red-600 hover:text-red-900 px-1 cursor-pointer">
-                                <MdDeleteOutline />
-                            </div>
                         </div>
                     </td>
                 ) : null}
