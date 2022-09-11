@@ -29,7 +29,7 @@ const OrderList = ({ setOpenOrderList }) => {
 
   const handleClick = async orderId => {
     axios({
-      url: `http://localhost:3000/api/v1/customer/order/${orderId}/generatePdf`,
+      url: `https://saso.iwkz.de/api/v1/customer/order/${orderId}/generatePdf`,
       method: 'post',
       responseType: 'blob',
       headers: {
