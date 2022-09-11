@@ -1,16 +1,18 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import axios from 'axios';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import { getOrderList, getOrderPdf } from '../../../stores/reducers/order';
+import { getOrderList } from '../../../stores/reducers/order';
 import { Button, Typography, Divider } from '@mui/material';
 import Paper from '@mui/material/Paper';
 import styles from './orderList.module.scss';
 import { formatDate } from '../../../helpers/dateHelper';
+import { getToken } from '../../../helpers/authHelper';
 
 const OrderList = ({ setOpenOrderList }) => {
   const dispatch = useDispatch();
@@ -25,8 +27,24 @@ const OrderList = ({ setOpenOrderList }) => {
     setOpenOrderList(false);
   };
 
-  const handleClick = orderId => {
-    dispatch(getOrderPdf(orderId));
+  const handleClick = async orderId => {
+    axios({
+      url: `http://localhost:3000/api/v1/customer/order/${orderId}/generatePdf`,
+      method: 'post',
+      responseType: 'blob',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + getToken(),
+      },
+    }).then(response => {
+      console.log(response);
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `Schedule day.pdf`);
+      document.body.appendChild(link);
+      link.click();
+    });
   };
 
   const reformStatus = status => {
