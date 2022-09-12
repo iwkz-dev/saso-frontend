@@ -127,7 +127,7 @@ const DetailOrder = ({ orderId, setSelectedOrderId }) => {
                                     >
                                         <TableCell>{i + 1}</TableCell>
                                         <TableCell>{data.name}</TableCell>
-                                        <TableCell>{data.price}</TableCell>
+                                        <TableCell>{data.price}€</TableCell>
                                         <TableCell>{data.totalPortion}</TableCell>
                                     </TableRow>
                                 ))}
