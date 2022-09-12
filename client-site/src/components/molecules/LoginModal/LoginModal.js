@@ -17,6 +17,12 @@ import styles from './loginModal.module.scss';
 import { Box } from '@mui/system';
 import { BASE_URL_HOST } from '../../../config/config';
 import { LoadingButton } from '@mui/lab';
+import MuiAlert from '@mui/material/Alert';
+import { Snackbar } from '@mui/material';
+
+const Alert = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
 const LoginModal = () => {
   const [open, setOpen] = useState(false);
@@ -71,6 +77,7 @@ const LoginModal = () => {
           if (response.status === 200) {
             handleClose();
             setIsLoading(false);
+            handleClickSnackbar();
           }
         })
         .catch(err => {
@@ -81,8 +88,36 @@ const LoginModal = () => {
     }
   };
 
+  //
+  const [openSnackbar, setOpenSnackbar] = React.useState(false);
+  const handleClickSnackbar = () => {
+    setOpenSnackbar(true);
+  };
+
+  const handleCloseSnackbar = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setOpenSnackbar(false);
+  };
+
   return (
     <div>
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+      >
+        <Alert
+          onClose={handleCloseSnackbar}
+          severity="success"
+          sx={{ width: '100%' }}
+        >
+          Link change password has been sent. Please check your email!
+        </Alert>
+      </Snackbar>
       <Button
         variant="outlined"
         onClick={handleOpen}
