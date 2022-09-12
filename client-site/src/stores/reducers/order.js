@@ -7,6 +7,7 @@ const initialState = {
     error: '',
     success: '',
   },
+  detailOrder: {},
 };
 
 export const submitOrder = data => dispatch => {
@@ -28,6 +29,18 @@ export const getOrderList = () => dispatch => {
       return response;
     } else {
       dispatch(getOrderListFailed(response.data));
+      return response;
+    }
+  });
+};
+
+export const getOrderDetail = id => dispatch => {
+  return orderService.getOrderDetail(id).then(response => {
+    if (response.data.status === 'success') {
+      dispatch(getOrderDetailSuccess(response.data));
+      return response;
+    } else {
+      dispatch(getOrderDetailFailed(response.data));
       return response;
     }
   });
@@ -76,6 +89,15 @@ export const orderSlice = createSlice({
       state.data.message.error = action.payload;
       state.data.message.success = '';
     },
+    getOrderDetailSuccess: (state, action) => {
+      state.data.detailOrder = action.payload.data;
+      state.data.message.success = action.payload.message;
+      state.data.message.error = '';
+    },
+    getOrderDetailFailed: (state, action) => {
+      state.data.message.error = action.payload;
+      state.data.message.success = '';
+    },
   },
 });
 
@@ -86,5 +108,7 @@ export const {
   getOrderListFailed,
   getOrderPdfSuccess,
   getOrderPdfFailed,
+  getOrderDetailSuccess,
+  getOrderDetailFailed,
 } = orderSlice.actions;
 export default orderSlice.reducer;
