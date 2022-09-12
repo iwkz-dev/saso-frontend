@@ -70,7 +70,7 @@ const DynamicContainer = ({ event, openOrderList, setOpenOrderList }) => {
           setOpenOrderList={setOpenOrderList}
         />
       ) : showOrderList ? (
-        <OrderList setOpenOrderList={setOpenOrderList} />
+        <OrderList setOpenOrderList={setOpenOrderList} event={event} />
       ) : (
         <>
           <div className={styles.firstBlock}>
