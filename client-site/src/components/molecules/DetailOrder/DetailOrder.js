@@ -25,7 +25,7 @@ const DetailOrder = ({ orderId, setSelectedOrderId }) => {
     setSelectedOrderId(null);
   };
 
-  const saveWindow = () => {
+  const saveInvoice = () => {
     window.print();
   };
 
@@ -84,12 +84,8 @@ const DetailOrder = ({ orderId, setSelectedOrderId }) => {
               <TableCell>{detailOrder.customerPhone}</TableCell>
             </TableRow>
             <TableRow>
-              <TableCell sx={{ fontWeight: 'medium' }}>Arrived At</TableCell>
-              <TableCell>{detailOrder.arrived_at}</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell sx={{ fontWeight: 'medium' }}>Note</TableCell>
-              <TableCell>{detailOrder.note}</TableCell>
+              <TableCell sx={{ fontWeight: 'medium' }}>Total Price</TableCell>
+              <TableCell>{detailOrder.totalPrice}€</TableCell>
             </TableRow>
             <TableRow>
               <TableCell sx={{ fontWeight: 'medium' }}>Status</TableCell>
@@ -99,6 +95,14 @@ const DetailOrder = ({ orderId, setSelectedOrderId }) => {
                   color={reformColor(detailOrder.status)}
                 />
               </TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell sx={{ fontWeight: 'medium' }}>Arrived At</TableCell>
+              <TableCell>{detailOrder.arrived_at}</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell sx={{ fontWeight: 'medium' }}>Note</TableCell>
+              <TableCell>{detailOrder.note}</TableCell>
             </TableRow>
             <TableRow>
               <TableCell sx={{ fontWeight: 'medium' }}>Created At</TableCell>
@@ -144,9 +148,9 @@ const DetailOrder = ({ orderId, setSelectedOrderId }) => {
         sx={{ marginTop: '20px' }}
         variant="outlined"
         size="small"
-        onClick={saveWindow}
+        onClick={saveInvoice}
       >
-        Save this window
+        Save Invoice
       </Button>
     </div>
   );

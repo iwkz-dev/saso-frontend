@@ -80,8 +80,8 @@ const OrderList = ({ setOpenOrderList, event }) => {
           Verwendungszweck: {'<Name> <Invoice-Number>'}
           <br />
           <br />
-          *Mohon konfirmasi ke CP setelah membayar dengan mengirimkan bukti
-          transfer
+          *Setelah membayar pesanan, mohon konfirmasi ke CP dengan mengirimkan
+          bukti transfer
         </Typography>
       </div>
       <Divider />
