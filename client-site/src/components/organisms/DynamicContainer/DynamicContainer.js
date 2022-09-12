@@ -70,7 +70,7 @@ const DynamicContainer = ({ event, openOrderList, setOpenOrderList }) => {
           setOpenOrderList={setOpenOrderList}
         />
       ) : showOrderList ? (
-        <OrderList setOpenOrderList={setOpenOrderList} />
+        <OrderList setOpenOrderList={setOpenOrderList} event={event} />
       ) : (
         <>
           <div className={styles.firstBlock}>
@@ -84,9 +84,8 @@ const DynamicContainer = ({ event, openOrderList, setOpenOrderList }) => {
           </div>
           <div className={styles.secondBlock}>
             <div
-              className={`${styles.secondInnerBlock} ${
-                mobileActive && styles.active
-              }`}
+              className={`${styles.secondInnerBlock} ${mobileActive && styles.active
+                }`}
             >
               <Cart
                 isBreakpoint={isBreakpoint}
