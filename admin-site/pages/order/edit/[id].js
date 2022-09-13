@@ -1,6 +1,6 @@
+import React from "react";
 import { useRouter } from "next/router";
 import LoggedInLayout from "../../../src/components/Layout/loggedInLayout/loggedInLayout";
-import React from "react";
 
 const id = () => {
     const router = useRouter();

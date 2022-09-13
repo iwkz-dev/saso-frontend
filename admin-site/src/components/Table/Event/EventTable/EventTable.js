@@ -34,6 +34,8 @@ function EventTable({ onDelete, onChangeStatus }) {
         started_at: "Started at",
         startYear: "Start Year",
         images: "Image",
+        iban: "IBAN",
+        paypal: "Paypal",
         created_at: "Created At",
         updated_at: "Updated At",
     };

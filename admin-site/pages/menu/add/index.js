@@ -45,7 +45,11 @@ const index = () => {
                 </h1>
                 {showLoading ? <Loading /> : ""}
                 {showForm ? (
-                    <AddMenuForm name="imageUrls" eventId={query.event} />
+                    <AddMenuForm
+                        name="imageUrls"
+                        eventId={query.event}
+                        categoryId={query.category}
+                    />
                 ) : (
                     ""
                 )}

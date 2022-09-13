@@ -18,6 +18,7 @@ const CategoryTable = ({ onDelete }) => {
             tableHead={tableHead}
             emptyMessage="Category is empty"
             linkToEdit="/category/edit/"
+            linkToView="/category/view/"
         />
     );
 };

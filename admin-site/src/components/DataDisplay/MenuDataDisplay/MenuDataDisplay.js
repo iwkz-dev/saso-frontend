@@ -1,37 +1,33 @@
 import React from "react";
 import { useSelector } from "react-redux";
-import Table from "../../Table";
+import DataDisplay from "../DataDisplay";
 
-function MenuTable({ onDelete }) {
-    const menus = useSelector((state) => state.menu.menus);
+const MenuDataDisplay = ({ menu }) => {
     const events = useSelector((state) => state.event.events);
     const categories = useSelector((state) => state.category.categories);
 
-    const tableHead = {
+    const dataForm = {
+        _id: "ID",
         name: "Name",
         description: "Description",
-        category: "Category",
         price: "Price (€)",
         quantity: "Quantity",
         quantityOrder: "Ordered Quantity",
-        images: "Image",
+        category: "Category",
         event: "Event",
+        images: "Image",
         created_at: "Created At",
         updated_at: "Updated At",
     };
 
     return (
-        <Table
-            onDelete={onDelete}
-            items={menus}
+        <DataDisplay
+            item={menu}
+            dataForm={dataForm}
             events={events}
             categories={categories}
-            tableHead={tableHead}
-            emptyMessage="Menu is empty"
-            linkToEdit="/menu/edit/"
-            linkToView="/menu/view/"
         />
     );
-}
+};
 
-export default MenuTable;
+export default MenuDataDisplay;

@@ -8,13 +8,6 @@ function OrderTable({ onDelete, onChangeStatus }) {
 
     const tableHead = {
         invoiceNumber: "Invoice Number",
-        event: "Event",
-        customerFullname: "Customer Fullname",
-        customerEmail: "Customer Email",
-        customerPhone: "Customer Phone Number",
-        totalPrice: "totalPrice",
-        note: "Note",
-        arrived_at: "Arrived At",
         status: {
             name: "Status",
             editable: 1,
@@ -43,6 +36,13 @@ function OrderTable({ onDelete, onChangeStatus }) {
                 },
             ],
         },
+        event: "Event",
+        customerFullname: "Customer Fullname",
+        customerEmail: "Customer Email",
+        customerPhone: "Customer Phone Number",
+        totalPrice: "totalPrice",
+        arrived_at: "Arrived At",
+        note: "Note",
         created_at: "Created At",
         updated_at: "Updated At",
     };

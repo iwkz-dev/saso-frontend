@@ -6,7 +6,7 @@ import Alert from "../../../common/Message/Alert/Alert";
 import SubmitButton from "../../../common/Button/SubmitButton/SubmitButton";
 import ResetButton from "../../../common/Button/ResetButton/ResetButton";
 
-const AddMenuForm = ({ eventId }) => {
+const AddMenuForm = ({ eventId, categoryId }) => {
     const dispatch = useDispatch();
     const form = useRef();
     const events = useSelector((state) => state.event.events);
@@ -119,7 +119,10 @@ const AddMenuForm = ({ eventId }) => {
                                 </option>
                                 {categories.map((c) => {
                                     return (
-                                        <option key={c._id} value={c._id}>
+                                        <option
+                                            key={c._id}
+                                            value={c._id}
+                                            selected={c._id === categoryId}>
                                             {c.name}
                                         </option>
                                     );

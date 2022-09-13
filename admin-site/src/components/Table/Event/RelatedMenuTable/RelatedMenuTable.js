@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Table from "../../Table";
 import Loading from "../../../common/Loading/Loading";
 
-const RelatedMenuTable = ({ event, onDelete }) => {
+const RelatedMenuTable = ({ filterName, itemFilter, onDelete }) => {
     const dispatch = useDispatch();
     const menus = useSelector((state) => state.menu.menus);
     const categories = useSelector((state) => state.category.categories);
@@ -20,7 +20,7 @@ const RelatedMenuTable = ({ event, onDelete }) => {
     }, []);
 
     const getAllData = () => {
-        const filter = `?event=${event._id}`;
+        const filter = `?${filterName}=${itemFilter._id}`;
         setShowError("");
         Promise.all([
             dispatch(getAllEvents()),
@@ -60,6 +60,7 @@ const RelatedMenuTable = ({ event, onDelete }) => {
                     tableHead={tableHead}
                     emptyMessage="Menu is empty"
                     linkToEdit="/menu/edit/"
+                    linkToView="/menu/view/"
                 />
             ) : (
                 <Loading />

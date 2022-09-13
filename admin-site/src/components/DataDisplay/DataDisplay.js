@@ -1,7 +1,7 @@
 import React from "react";
 import { formatDate } from "../../helpers/dateHelper";
 
-const DataDisplay = ({ item, dataForm }) => {
+const DataDisplay = ({ item, dataForm, events, categories }) => {
     const imageColumnHandler = (data) => {
         if (data.length > 0) {
             return data.map((d) => {
@@ -43,6 +43,38 @@ const DataDisplay = ({ item, dataForm }) => {
                     </dt>
                     <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                         {formatDate(item[key], false, true)}
+                    </dd>
+                </div>
+            );
+        } else if (key === "category") {
+            const category = categories.find((e) => e._id === item[key]);
+            return (
+                <div
+                    key={key + i}
+                    className={`${
+                        i % 2 === 0 ? "bg-gray-50" : "bg-white"
+                    } px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6`}>
+                    <dt className="text-sm font-medium text-gray-500">
+                        {dataForm[key]}
+                    </dt>
+                    <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                        {category?.name}
+                    </dd>
+                </div>
+            );
+        } else if (key === "event") {
+            const event = events.find((e) => e._id === item[key]);
+            return (
+                <div
+                    key={key + i}
+                    className={`${
+                        i % 2 === 0 ? "bg-gray-50" : "bg-white"
+                    } px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6`}>
+                    <dt className="text-sm font-medium text-gray-500">
+                        {dataForm[key]}
+                    </dt>
+                    <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                        {event?.name}
                     </dd>
                 </div>
             );

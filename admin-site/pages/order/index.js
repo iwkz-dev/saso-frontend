@@ -10,6 +10,8 @@ import {
 import Loading from "../../src/components/common/Loading/Loading";
 import OrderTable from "../../src/components/Table/Order/OrderTable/OrderTable";
 import { getAllEvents } from "../../src/store/reducers/eventReducer";
+import OrderFilterForm from "../../src/components/Form/Order/OrderFilterForm/OrderFilterForm";
+
 const index = () => {
     const dispatch = useDispatch();
     const pageData = { name: "Order", href: "/order", current: true };
@@ -20,27 +22,41 @@ const index = () => {
     const [showSuccess, setShowSuccess] = useState(false);
     const [showFailed, setShowFailed] = useState(false);
     const [showUploading, setShowUploading] = useState(false);
+    const [filters, setFilters] = useState([]);
 
     useEffect(() => {
         getAllData();
-    }, []);
+    }, [filters]);
+
+    const filtersQueryBuilder = () => {
+        const queries = [];
+        if (filters.length > 0) {
+            filters.map((f) => {
+                const filtersQuery = `${f.name}=${f.id}`;
+                queries.push(filtersQuery);
+            });
+            return `?${queries.join("&")}`;
+        }
+        return "";
+    };
 
     const getAllData = () => {
         setShowLoading(true);
         setShowError("");
-        Promise.all([dispatch(getAllEvents()), dispatch(getAllOrders())]).then(
-            (responses) => {
-                const failed = responses.find((r) => r?.status === "failed");
-                if (!failed) {
-                    setShowTable(true);
-                    setShowLoading(false);
-                } else {
-                    setShowTable(false);
-                    setShowLoading(false);
-                    setShowError(failed.message);
-                }
-            },
-        );
+        Promise.all([
+            dispatch(getAllEvents()),
+            dispatch(getAllOrders(filtersQueryBuilder())),
+        ]).then((responses) => {
+            const failed = responses.find((r) => r?.status === "failed");
+            if (!failed) {
+                setShowTable(true);
+                setShowLoading(false);
+            } else {
+                setShowTable(false);
+                setShowLoading(false);
+                setShowError(failed.message);
+            }
+        });
     };
 
     const onChangeStatus = async (e, id) => {
@@ -138,6 +154,7 @@ const index = () => {
                     failedMessage={showFailed}
                     showUploading={showUploading}
                 />
+                <OrderFilterForm filters={filters} setFilters={setFilters} />
                 {showError || ""}
                 {showLoading ? (
                     <Loading />
