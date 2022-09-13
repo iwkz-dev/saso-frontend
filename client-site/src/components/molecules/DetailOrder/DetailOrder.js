@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getOrderDetail } from '../../../stores/reducers/order';
-import { Button, Typography, Divider } from '@mui/material';
+import { Button, Typography, Box } from '@mui/material';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -12,6 +12,7 @@ import Paper from '@mui/material/Paper';
 import Chip from '@mui/material/Chip';
 import { formatDate } from '../../../helpers/dateHelper';
 import styles from './detailOrder.module.scss';
+import LocalPrintshopIcon from '@mui/icons-material/LocalPrintshop';
 
 const DetailOrder = ({ orderId, setSelectedOrderId }) => {
   const dispatch = useDispatch();
@@ -55,9 +56,27 @@ const DetailOrder = ({ orderId, setSelectedOrderId }) => {
 
   return (
     <div>
-      <Button variant="outlined" size="small" onClick={backClickHandler}>
-        See Order List
-      </Button>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          marginBottom: '20px',
+        }}
+      >
+        <div>
+          <Button variant="outlined" size="small" onClick={backClickHandler}>
+            See Order List
+          </Button>
+        </div>
+        <div>
+          <Button variant="outlined" size="small" onClick={saveInvoice}>
+            <LocalPrintshopIcon
+              sx={{ marginRight: '5px', fontSize: 'medium' }}
+            />{' '}
+            Save Invoice
+          </Button>
+        </div>
+      </Box>
       <div>
         <Typography variant="h6" align="center">
           Invoice {detailOrder.invoiceNumber}
@@ -114,7 +133,7 @@ const DetailOrder = ({ orderId, setSelectedOrderId }) => {
         </TableContainer>
         <div className={styles.orderedMenus}>
           <Typography variant="h6" align="center">
-            Ordered Menus
+            Ordered Menu(s)
           </Typography>
           <TableContainer component={Paper} className={styles.tableContainer}>
             <Table sx={{ minWidth: 280 }} aria-label="a dense table">
@@ -144,14 +163,6 @@ const DetailOrder = ({ orderId, setSelectedOrderId }) => {
           </TableContainer>
         </div>
       </div>
-      <Button
-        sx={{ marginTop: '20px' }}
-        variant="outlined"
-        size="small"
-        onClick={saveInvoice}
-      >
-        Save Invoice
-      </Button>
     </div>
   );
 };

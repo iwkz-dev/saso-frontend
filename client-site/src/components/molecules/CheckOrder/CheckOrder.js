@@ -18,6 +18,7 @@ const CheckOrder = ({ setOpenOrder, setOpenOrderList }) => {
 
   const backClickHandler = () => {
     setOpenOrder(false);
+    setOpenOrderList(false);
   };
 
   const submitForm = e => {

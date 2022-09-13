@@ -4,9 +4,10 @@ import { Button, Typography } from '@mui/material';
 import LoginModal from '../LoginModal/LoginModal';
 import RegisterForm from '../RegisterForm/RegisterForm';
 
-const UserFormOrder = ({ setOpenOrder }) => {
+const UserFormOrder = ({ setOpenOrder, setOpenOrderList }) => {
   const backClickHandler = () => {
     setOpenOrder(false);
+    setOpenOrderList(false);
   };
   return (
     <div className={styles.container}>
