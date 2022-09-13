@@ -9,6 +9,8 @@ const EventDataDisplay = ({ event }) => {
         status: "Status",
         started_at: "Started at",
         startYear: "Start Year",
+        iban: "IBAN",
+        paypal: "Paypal",
         images: "Images",
         created_at: "Created At",
         updated_at: "Updated At",
