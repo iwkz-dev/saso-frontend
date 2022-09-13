@@ -76,7 +76,10 @@ const DynamicContainer = ({ event, openOrderList, setOpenOrderList }) => {
           <div className={styles.firstBlock}>
             <div className={styles.firstInnerContainer}>
               {showUserFormOrder ? (
-                <UserFormOrder setOpenOrder={setOpenOrder} />
+                <UserFormOrder
+                  setOpenOrder={setOpenOrder}
+                  setOpenOrderList={setOpenOrderList}
+                />
               ) : (
                 <Tabs category={category} menu={menu} />
               )}
