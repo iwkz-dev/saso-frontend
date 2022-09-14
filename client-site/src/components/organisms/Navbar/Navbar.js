@@ -8,13 +8,19 @@ import RegisterModal from '../../molecules/RegisterModal/RegisterModal';
 import LoginModal from '../../molecules/LoginModal/LoginModal';
 import { isAuth, logout } from '../../../helpers/authHelper';
 
-const Navbar = ({ setOpenOrderList }) => {
+const Navbar = ({
+  setOpenOrderList,
+  openOrderList,
+  openOrder,
+  setOpenOrder,
+}) => {
   const logoutHandler = () => {
     logout();
   };
 
-  const openOrderList = () => {
-    setOpenOrderList(true);
+  const handleOpenOrderList = () => {
+    setOpenOrderList(!openOrderList);
+    setOpenOrder(false);
   };
 
   return (
@@ -41,8 +47,8 @@ const Navbar = ({ setOpenOrderList }) => {
             </div>
           ) : (
             <div className={styles.buttonsContainer}>
-              <Button onClick={openOrderList} variant="outlined">
-                My Order
+              <Button onClick={handleOpenOrderList} variant="outlined">
+                {openOrderList ? 'Home' : 'My Order'}
               </Button>
               <Button onClick={logoutHandler} variant="contained">
                 Logout
