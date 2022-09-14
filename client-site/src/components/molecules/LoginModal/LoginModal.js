@@ -68,6 +68,7 @@ const LoginModal = () => {
   const handleSubmit = e => {
     e.preventDefault();
     setForgotPasswordErrorMessage('');
+    dispatch(resetLogin());
     if (isForgotPassword) {
       dispatch(resetLogin());
       setIsLoading(true);

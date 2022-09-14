@@ -11,13 +11,18 @@ import { isAuth } from '../../../helpers/authHelper';
 import { useRouter } from 'next/router';
 import OrderList from '../../molecules/OrderList/OrderList';
 
-const DynamicContainer = ({ event, openOrderList, setOpenOrderList }) => {
+const DynamicContainer = ({
+  event,
+  openOrderList,
+  setOpenOrderList,
+  openOrder,
+  setOpenOrder,
+}) => {
   const dispatch = useDispatch();
   const router = useRouter();
   const isBreakpoint = useMediaQuery(parseInt(styles.breakpointTablet));
   const [showCheckOrder, setShowCheckOrder] = useState(false);
   const [showOrderList, setShowOrderList] = useState(false);
-  const [openOrder, setOpenOrder] = useState(false);
   const [showUserFormOrder, setShowUserFormOrder] = useState(false);
   const [mobileActive, setMobileActive] = useState(false);
   const menu = useSelector(state => state.menu.data);
