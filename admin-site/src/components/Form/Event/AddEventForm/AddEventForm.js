@@ -80,6 +80,53 @@ const AddEventForm = () => {
                             />
                         </label>
                         <label className="block">
+                            <span className="text-gray-700">Bank Name</span>
+                            <input
+                                type="text"
+                                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                                placeholder=""
+                                name="bankName"
+                            />
+                        </label>
+                        <label className="block">
+                            <span className="text-gray-700">IBAN</span>
+                            <input
+                                type="text"
+                                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                                placeholder=""
+                                name="iban"
+                            />
+                        </label>
+                        <label className="block">
+                            <span className="text-gray-700">BIC</span>
+                            <input
+                                type="text"
+                                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                                placeholder=""
+                                name="bic"
+                            />
+                        </label>
+                        <label className="block">
+                            <span className="text-gray-700">VZW</span>
+                            <input
+                                type="text"
+                                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                                placeholder=""
+                                name="usageNote"
+                            />
+                        </label>
+                        <label className="block">
+                            <span className="text-gray-700">
+                                Paypal Address
+                            </span>
+                            <input
+                                type="text"
+                                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                                placeholder=""
+                                name="paypal"
+                            />
+                        </label>
+                        <label className="block">
                             <span className="text-gray-700">Description</span>
                             <textarea
                                 className=" mt-1 block w-full rounded-md  border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
