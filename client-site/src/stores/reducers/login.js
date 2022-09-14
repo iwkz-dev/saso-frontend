@@ -26,7 +26,7 @@ export const submitLogin = data => dispatch => {
       setToken(authData);
       Router.push('/');
     } else {
-      dispatch(loginFailed(response.message));
+      dispatch(loginFailed(response.response.data.message));
     }
     return Promise.resolve();
   });

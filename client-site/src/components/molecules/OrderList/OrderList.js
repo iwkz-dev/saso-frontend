@@ -103,6 +103,7 @@ const OrderList = ({ setOpenOrderList, event }) => {
                     <TableCell>Nr.</TableCell>
                     <TableCell>Inovice Nr.</TableCell>
                     <TableCell>Status</TableCell>
+                    <TableCell>Updated</TableCell>
                     <TableCell>Created</TableCell>
                   </TableRow>
                 </TableHead>
@@ -126,6 +127,9 @@ const OrderList = ({ setOpenOrderList, event }) => {
                               label={reformStatus(data.status)}
                               color={reformColor(data.status)}
                             />
+                          </TableCell>
+                          <TableCell>
+                            {formatDate(data.updated_at, true, true)}
                           </TableCell>
                           <TableCell>
                             {formatDate(data.created_at, true, true)}

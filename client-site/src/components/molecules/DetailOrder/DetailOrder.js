@@ -124,6 +124,12 @@ const DetailOrder = ({ orderId, setSelectedOrderId }) => {
               <TableCell>{detailOrder.note}</TableCell>
             </TableRow>
             <TableRow>
+              <TableCell sx={{ fontWeight: 'medium' }}>Updated At</TableCell>
+              <TableCell>
+                {formatDate(detailOrder.updated_at, true, true)}
+              </TableCell>
+            </TableRow>
+            <TableRow>
               <TableCell sx={{ fontWeight: 'medium' }}>Created At</TableCell>
               <TableCell>
                 {formatDate(detailOrder.created_at, true, true)}
