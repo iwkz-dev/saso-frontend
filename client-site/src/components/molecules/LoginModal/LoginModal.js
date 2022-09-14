@@ -30,14 +30,15 @@ const LoginModal = () => {
   const handleClose = () => {
     setOpen(false);
     setIsForgotPassword(false);
-    setForgotPasswordErrorMessage("")
+    setForgotPasswordErrorMessage('');
     dispatch(resetLogin());
   };
 
   // CHANGE MODAL FORGOT PASSWORD AND LOGIN
   const [isForgotPassword, setIsForgotPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [forgotPasswordErrorMessage, setForgotPasswordErrorMessage] = useState("");
+  const [forgotPasswordErrorMessage, setForgotPasswordErrorMessage] =
+    useState('');
 
   const handleModalForgotPassword = () => {
     setIsForgotPassword(true);
@@ -66,7 +67,7 @@ const LoginModal = () => {
   };
   const handleSubmit = e => {
     e.preventDefault();
-    setForgotPasswordErrorMessage("");
+    setForgotPasswordErrorMessage('');
     if (isForgotPassword) {
       dispatch(resetLogin());
       setIsLoading(true);
@@ -177,7 +178,9 @@ const LoginModal = () => {
                 </Grid>
               )}
             </Grid>
-            <span style={{ color: 'red', fontSize: '12px' }}>{isForgotPassword ? forgotPasswordErrorMessage : errorMessage}</span>
+            <span style={{ color: 'red', fontSize: '12px' }}>
+              {isForgotPassword ? forgotPasswordErrorMessage : errorMessage}
+            </span>
             {isForgotPassword ? (
               ''
             ) : (
