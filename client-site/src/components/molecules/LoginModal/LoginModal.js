@@ -30,12 +30,15 @@ const LoginModal = () => {
   const handleClose = () => {
     setOpen(false);
     setIsForgotPassword(false);
+    setForgotPasswordErrorMessage('');
     dispatch(resetLogin());
   };
 
   // CHANGE MODAL FORGOT PASSWORD AND LOGIN
   const [isForgotPassword, setIsForgotPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [forgotPasswordErrorMessage, setForgotPasswordErrorMessage] =
+    useState('');
 
   const handleModalForgotPassword = () => {
     setIsForgotPassword(true);
@@ -64,7 +67,9 @@ const LoginModal = () => {
   };
   const handleSubmit = e => {
     e.preventDefault();
+    setForgotPasswordErrorMessage('');
     if (isForgotPassword) {
+      dispatch(resetLogin());
       setIsLoading(true);
       axios({
         url: `${BASE_URL_HOST}/auth/forget-password`,
@@ -76,12 +81,14 @@ const LoginModal = () => {
         .then(response => {
           if (response.status === 200) {
             handleClose();
-            setIsLoading(false);
             handleClickSnackbar();
           }
+          setIsLoading(false);
         })
         .catch(err => {
           console.log(err);
+          setIsLoading(false);
+          setForgotPasswordErrorMessage(err.response.data.message);
         });
     } else {
       dispatch(submitLogin(userData));
@@ -98,7 +105,6 @@ const LoginModal = () => {
     if (reason === 'clickaway') {
       return;
     }
-
     setOpenSnackbar(false);
   };
 
@@ -172,7 +178,9 @@ const LoginModal = () => {
                 </Grid>
               )}
             </Grid>
-            <span className="text-xs text-red-700 ">{errorMessage}</span>
+            <span style={{ color: 'red', fontSize: '12px' }}>
+              {isForgotPassword ? forgotPasswordErrorMessage : errorMessage}
+            </span>
             {isForgotPassword ? (
               ''
             ) : (
