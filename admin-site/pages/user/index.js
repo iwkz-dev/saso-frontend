@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import LoggedInLayout from "../../src/components/Layout/loggedInLayout/loggedInLayout";
 import { useDispatch } from "react-redux";
-import AddItemButton from "../../src/components/common/Button/AddItemButton/AddItemButton";
+//import AddItemButton from "../../src/components/common/Button/AddItemButton/AddItemButton";
 import Loading from "../../src/components/common/Loading/Loading";
 import UserTable from "../../src/components/Table/User/UserTable/UserTable";
 import { deleteUser, getAllUsers } from "../../src/store/reducers/userReducer";
@@ -81,9 +81,11 @@ const index = () => {
                 <h1 className="text-2xl font-bold text-left w-10/12 mb-3">
                     User
                 </h1>
+                {/*
                 <div className="flex justify-between items-center mb-3 w-10/12">
                     <AddItemButton hrefLink="/user/add" text="Add User" />
                 </div>
+                */}
                 <Alert
                     showFailed={showFailed}
                     showSuccess={showSuccess}
