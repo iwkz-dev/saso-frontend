@@ -1,20 +1,18 @@
-import axios from "axios";
-import { BASE_URL_HOST_ADMIN_USER } from "../config/config";
+import api from "../api";
 import { getToken } from "../helpers/authHelper";
-
-const headers = {
-    accept: "application/JSON",
-    Authorization: getToken(),
-};
-
-const adminAxios = axios.create({
-    headers,
-});
 
 const getAllUsers = (requestURL = "") => {
     return new Promise((resolve, reject) => {
-        adminAxios
-            .get(`${BASE_URL_HOST_ADMIN_USER}${requestURL}`)
+        const headers = {
+            accept: "application/JSON",
+            Authorization: getToken(),
+        };
+
+        api({
+            method: "GET",
+            url: `/user${requestURL}`,
+            headers,
+        })
             .then((response) => {
                 if (response.data.status === "success") {
                     resolve(response.data);
@@ -30,8 +28,16 @@ const getAllUsers = (requestURL = "") => {
 
 const getDetailUser = (id) => {
     return new Promise((resolve, reject) => {
-        adminAxios
-            .get(`${BASE_URL_HOST_ADMIN_USER}/${id}/detail`)
+        const headers = {
+            accept: "application/JSON",
+            Authorization: getToken(),
+        };
+
+        api({
+            method: "GET",
+            url: `/user/${id}/detail`,
+            headers,
+        })
             .then((response) => {
                 if (response.data.status === "success") {
                     resolve(response.data);
@@ -47,8 +53,17 @@ const getDetailUser = (id) => {
 
 const editDetailUser = (id, requestedData) => {
     return new Promise((resolve, reject) => {
-        adminAxios
-            .put(`${BASE_URL_HOST_ADMIN_USER}/${id}`, requestedData)
+        const headers = {
+            accept: "application/JSON",
+            Authorization: getToken(),
+        };
+
+        api({
+            method: "PUT",
+            url: `/user/${id}`,
+            data: requestedData,
+            headers,
+        })
             .then((response) => {
                 if (response.data.status === "success") {
                     resolve(response.data);
@@ -64,8 +79,17 @@ const editDetailUser = (id, requestedData) => {
 
 const createUser = (requestedData) => {
     return new Promise((resolve, reject) => {
-        adminAxios
-            .post(`${BASE_URL_HOST_ADMIN_USER}`, requestedData)
+        const headers = {
+            accept: "application/JSON",
+            Authorization: getToken(),
+        };
+
+        api({
+            method: "POST",
+            url: `/user`,
+            data: requestedData,
+            headers,
+        })
             .then((response) => {
                 if (response.data.status === "success") {
                     resolve(response.data);
@@ -81,8 +105,16 @@ const createUser = (requestedData) => {
 
 const deleteUser = (id) => {
     return new Promise((resolve, reject) => {
-        adminAxios
-            .delete(`${BASE_URL_HOST_ADMIN_USER}/${id}`)
+        const headers = {
+            accept: "application/JSON",
+            Authorization: getToken(),
+        };
+
+        api({
+            method: "DELETE",
+            url: `/user/${id}`,
+            headers,
+        })
             .then((response) => {
                 if (response.data.status === "success") {
                     resolve(response.data);
