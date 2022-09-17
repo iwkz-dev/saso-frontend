@@ -10,7 +10,7 @@ const getAllEvents = () => {
 
         api({
             method: "GET",
-            url: "/",
+            url: "/event",
             headers,
         })
             .then((response) => {
@@ -34,7 +34,7 @@ const deleteEvent = (id) => {
         };
         api({
             method: "DELETE",
-            url: `/${id}`,
+            url: `/event/${id}`,
             headers,
         })
             .then((response) => {
@@ -58,7 +58,7 @@ const createEvent = (requestedData) => {
         };
         api({
             method: "POST",
-            url: `/`,
+            url: `/event`,
             data: requestedData,
             headers,
         })
@@ -83,7 +83,7 @@ const changeEventStatus = (id, status) => {
         };
         api({
             method: "PATCH",
-            url: `/${id}/${status}/change-status`,
+            url: `/event/${id}/${status}/change-status`,
             headers,
         })
             .then((response) => {
@@ -107,7 +107,7 @@ const getDetailEvent = (id) => {
         };
         api({
             method: "GET",
-            url: `/${id}/detail`,
+            url: `/event/${id}/detail`,
             headers,
         })
             .then((response) => {
@@ -131,7 +131,7 @@ const editDetailEvent = (id, requestedData) => {
         };
         api({
             method: "PUT",
-            url: `/${id}`,
+            url: `/event/${id}`,
             data: requestedData,
             headers,
         })
@@ -156,7 +156,7 @@ const editDetailEventImages = (id, requestedData) => {
         };
         api({
             method: "PATCH",
-            url: `/${id}/upload-images`,
+            url: `/event/${id}/upload-images`,
             data: requestedData,
             headers,
         })
