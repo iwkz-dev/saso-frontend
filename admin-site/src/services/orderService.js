@@ -35,7 +35,7 @@ const deleteOrder = (id) => {
 
         api({
             method: "DELETE",
-            url: `/event/${id}`,
+            url: `/order/${id}`,
             headers,
         })
             .then((response) => {
@@ -60,7 +60,7 @@ const changeOrderStatus = (id, status) => {
 
         api({
             method: "PATCH",
-            url: `/event/${id}/${status}`,
+            url: `/order/${id}/${status}`,
             headers,
         })
             .then((response) => {
