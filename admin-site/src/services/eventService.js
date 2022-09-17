@@ -10,7 +10,7 @@ const getAllEvents = () => {
 
         api({
             method: "GET",
-            url: "/event",
+            url: `/event`,
             headers,
         })
             .then((response) => {

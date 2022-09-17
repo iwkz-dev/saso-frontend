@@ -1,20 +1,18 @@
-import axios from "axios";
-import { BASE_URL_HOST_ADMIN_ORDER } from "../config/config";
+import api from "../api";
 import { getToken } from "../helpers/authHelper";
-
-const headers = {
-    accept: "application/JSON",
-    Authorization: getToken(),
-};
-
-const adminAxios = axios.create({
-    headers,
-});
 
 const getAllOrders = (requestURL = "") => {
     return new Promise((resolve, reject) => {
-        adminAxios
-            .get(`${BASE_URL_HOST_ADMIN_ORDER}${requestURL}`)
+        const headers = {
+            accept: "application/JSON",
+            Authorization: getToken(),
+        };
+
+        api({
+            method: "GET",
+            url: `/order${requestURL}`,
+            headers,
+        })
             .then((response) => {
                 if (response.data.status === "success") {
                     resolve(response.data);
@@ -30,8 +28,16 @@ const getAllOrders = (requestURL = "") => {
 
 const deleteOrder = (id) => {
     return new Promise((resolve, reject) => {
-        adminAxios
-            .delete(`${BASE_URL_HOST_ADMIN_ORDER}/${id}`)
+        const headers = {
+            accept: "application/JSON",
+            Authorization: getToken(),
+        };
+
+        api({
+            method: "DELETE",
+            url: `/event/${id}`,
+            headers,
+        })
             .then((response) => {
                 if (response.data.status === "success") {
                     resolve(response.data);
@@ -47,8 +53,16 @@ const deleteOrder = (id) => {
 
 const changeOrderStatus = (id, status) => {
     return new Promise((resolve, reject) => {
-        adminAxios
-            .patch(`${BASE_URL_HOST_ADMIN_ORDER}/${id}/${status}`)
+        const headers = {
+            accept: "application/JSON",
+            Authorization: getToken(),
+        };
+
+        api({
+            method: "PATCH",
+            url: `/event/${id}/${status}`,
+            headers,
+        })
             .then((response) => {
                 if (response.data.status === "success") {
                     resolve(response.data);
