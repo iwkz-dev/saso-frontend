@@ -1,4 +1,5 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import Box from '@mui/material/Box';
 import Tab from '@mui/material/Tab';
 import TabContext from '@mui/lab/TabContext';
@@ -6,11 +7,21 @@ import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
 import styles from './tabs.module.scss';
 import CardCollection from '../CardCollection/CardCollection';
+import { getAllCategories } from '../../../stores/reducers/category';
+import { useRouter } from 'next/router';
 
-export default function Tabs({ category, menu }) {
+export default function Tabs({ event }) {
+  const dispatch = useDispatch();
+  const category = useSelector(state => state.category);
+
   const [value, setValue] = React.useState('0');
 
-  const handleChange = (event, newValue) => {
+  useEffect(() => {
+    const filter = `?event=${event._id}`;
+    dispatch(getAllCategories(filter));
+  }, []);
+
+  const handleChange = newValue => {
     setValue(newValue);
   };
 
