@@ -7,14 +7,17 @@ import TextField from '@mui/material/TextField';
 import Grid from '@mui/material/Grid';
 import styles from './checkOrder.module.scss';
 import { submitOrder } from '../../../stores/reducers/order';
+import { resetCart } from '../../../stores/reducers/cart';
+import { LoadingButton } from '@mui/lab';
 
 const CheckOrder = ({ setOpenOrder, setOpenOrderList }) => {
-  const form = useRef();
   const dispatch = useDispatch();
-  const cart = useSelector(state => state.cart);
+  const form = useRef();
+  const cart = useSelector(state => state.cart.data);
   const order = useSelector(state => state.order);
   const events = useSelector(state => state.event.data);
   const [showFailedOrder, setShowFailedOrder] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const backClickHandler = () => {
     setOpenOrder(false);
@@ -25,6 +28,7 @@ const CheckOrder = ({ setOpenOrder, setOpenOrderList }) => {
     e.preventDefault();
     const text = confirm('Please confirm to order');
     if (text) {
+      setIsLoading(true);
       setShowFailedOrder(false);
       const data = new FormData(form.current);
       const note = data.get('note');
@@ -49,8 +53,11 @@ const CheckOrder = ({ setOpenOrder, setOpenOrderList }) => {
           setShowFailedOrder(false);
           setOpenOrderList(true);
           setOpenOrder(false);
+          setIsLoading(false);
+          dispatch(resetCart());
         } else {
           setShowFailedOrder(true);
+          setIsLoading(false);
         }
       });
     }
@@ -123,14 +130,25 @@ const CheckOrder = ({ setOpenOrder, setOpenOrderList }) => {
               </Grid>
             ) : null}
             <Grid item xs={12} className={styles.buttonWrapper}>
-              <Button
-                margin="auto"
-                size="large"
-                variant="outlined"
-                type="submit"
-              >
-                Konfirmasi Pemesanan
-              </Button>
+              {isLoading ? (
+                <LoadingButton
+                  loading
+                  margin="auto"
+                  size="large"
+                  variant="outlined"
+                >
+                  Konfirmasi Pemesanan
+                </LoadingButton>
+              ) : (
+                <Button
+                  margin="auto"
+                  size="large"
+                  variant="outlined"
+                  type="submit"
+                >
+                  Konfirmasi Pemesanan
+                </Button>
+              )}
             </Grid>
           </Grid>
         </form>
