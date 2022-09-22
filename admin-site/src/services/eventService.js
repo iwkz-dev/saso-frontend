@@ -1,20 +1,18 @@
-import axios from "axios";
-import { BASE_URL_HOST_ADMIN_EVENT } from "../config/config";
+import api from "../api";
 import { getToken } from "../helpers/authHelper";
-
-const headers = {
-    accept: "application/JSON",
-    Authorization: getToken(),
-};
-
-const adminAxios = axios.create({
-    headers,
-});
 
 const getAllEvents = () => {
     return new Promise((resolve, reject) => {
-        adminAxios
-            .get(`${BASE_URL_HOST_ADMIN_EVENT}`)
+        const headers = {
+            accept: "application/JSON",
+            Authorization: getToken(),
+        };
+
+        api({
+            method: "GET",
+            url: `/event`,
+            headers,
+        })
             .then((response) => {
                 if (response.data.status === "success") {
                     resolve(response.data);
@@ -30,8 +28,15 @@ const getAllEvents = () => {
 
 const deleteEvent = (id) => {
     return new Promise((resolve, reject) => {
-        adminAxios
-            .delete(`${BASE_URL_HOST_ADMIN_EVENT}/${id}`)
+        const headers = {
+            accept: "application/JSON",
+            Authorization: getToken(),
+        };
+        api({
+            method: "DELETE",
+            url: `/event/${id}`,
+            headers,
+        })
             .then((response) => {
                 if (response.data.status === "success") {
                     resolve(response.data);
@@ -47,8 +52,16 @@ const deleteEvent = (id) => {
 
 const createEvent = (requestedData) => {
     return new Promise((resolve, reject) => {
-        adminAxios
-            .post(`${BASE_URL_HOST_ADMIN_EVENT}`, requestedData)
+        const headers = {
+            accept: "application/JSON",
+            Authorization: getToken(),
+        };
+        api({
+            method: "POST",
+            url: `/event`,
+            data: requestedData,
+            headers,
+        })
             .then((response) => {
                 if (response.data.status === "success") {
                     resolve(response.data);
@@ -64,8 +77,15 @@ const createEvent = (requestedData) => {
 
 const changeEventStatus = (id, status) => {
     return new Promise((resolve, reject) => {
-        adminAxios
-            .patch(`${BASE_URL_HOST_ADMIN_EVENT}/${id}/${status}/change-status`)
+        const headers = {
+            accept: "application/JSON",
+            Authorization: getToken(),
+        };
+        api({
+            method: "PATCH",
+            url: `/event/${id}/${status}/change-status`,
+            headers,
+        })
             .then((response) => {
                 if (response.data.status === "success") {
                     resolve(response.data);
@@ -81,8 +101,15 @@ const changeEventStatus = (id, status) => {
 
 const getDetailEvent = (id) => {
     return new Promise((resolve, reject) => {
-        adminAxios
-            .get(`${BASE_URL_HOST_ADMIN_EVENT}/${id}/detail`)
+        const headers = {
+            accept: "application/JSON",
+            Authorization: getToken(),
+        };
+        api({
+            method: "GET",
+            url: `/event/${id}/detail`,
+            headers,
+        })
             .then((response) => {
                 if (response.data.status === "success") {
                     resolve(response.data);
@@ -98,8 +125,16 @@ const getDetailEvent = (id) => {
 
 const editDetailEvent = (id, requestedData) => {
     return new Promise((resolve, reject) => {
-        adminAxios
-            .put(`${BASE_URL_HOST_ADMIN_EVENT}/${id}`, requestedData)
+        const headers = {
+            accept: "application/JSON",
+            Authorization: getToken(),
+        };
+        api({
+            method: "PUT",
+            url: `/event/${id}`,
+            data: requestedData,
+            headers,
+        })
             .then((response) => {
                 if (response.data.status === "success") {
                     resolve(response.data);
@@ -115,11 +150,16 @@ const editDetailEvent = (id, requestedData) => {
 
 const editDetailEventImages = (id, requestedData) => {
     return new Promise((resolve, reject) => {
-        adminAxios
-            .patch(
-                `${BASE_URL_HOST_ADMIN_EVENT}/${id}/upload-images`,
-                requestedData,
-            )
+        const headers = {
+            accept: "application/JSON",
+            Authorization: getToken(),
+        };
+        api({
+            method: "PATCH",
+            url: `/event/${id}/upload-images`,
+            data: requestedData,
+            headers,
+        })
             .then((response) => {
                 if (response.data.status === "success") {
                     resolve(response.data);

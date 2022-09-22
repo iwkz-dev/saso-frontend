@@ -1,20 +1,18 @@
-import axios from "axios";
-import { BASE_URL_HOST_ADMIN_MENU } from "../config/config";
+import api from "../api";
 import { getToken } from "../helpers/authHelper";
-
-const headers = {
-    accept: "application/JSON",
-    Authorization: getToken(),
-};
-
-const adminAxios = axios.create({
-    headers,
-});
 
 const getAllMenus = (requestURL = "") => {
     return new Promise((resolve, reject) => {
-        adminAxios
-            .get(`${BASE_URL_HOST_ADMIN_MENU}${requestURL}`)
+        const headers = {
+            accept: "application/JSON",
+            Authorization: getToken(),
+        };
+
+        api({
+            method: "GET",
+            url: `/menu${requestURL}`,
+            headers,
+        })
             .then((response) => {
                 if (response.data.status === "success") {
                     resolve(response.data);
@@ -30,8 +28,16 @@ const getAllMenus = (requestURL = "") => {
 
 const getDetailMenu = (id) => {
     return new Promise((resolve, reject) => {
-        adminAxios
-            .get(`${BASE_URL_HOST_ADMIN_MENU}/${id}/detail`)
+        const headers = {
+            accept: "application/JSON",
+            Authorization: getToken(),
+        };
+
+        api({
+            method: "GET",
+            url: `/menu/${id}/detail`,
+            headers,
+        })
             .then((response) => {
                 if (response.data.status === "success") {
                     resolve(response.data);
@@ -47,8 +53,17 @@ const getDetailMenu = (id) => {
 
 const editDetailMenu = (id, requestedData) => {
     return new Promise((resolve, reject) => {
-        adminAxios
-            .put(`${BASE_URL_HOST_ADMIN_MENU}/${id}`, requestedData)
+        const headers = {
+            accept: "application/JSON",
+            Authorization: getToken(),
+        };
+
+        api({
+            method: "PUT",
+            url: `/menu/${id}`,
+            data: requestedData,
+            headers,
+        })
             .then((response) => {
                 if (response.data.status === "success") {
                     resolve(response.data);
@@ -64,11 +79,17 @@ const editDetailMenu = (id, requestedData) => {
 
 const editDetailMenuImages = (id, requestedData) => {
     return new Promise((resolve, reject) => {
-        adminAxios
-            .patch(
-                `${BASE_URL_HOST_ADMIN_MENU}/${id}/upload-images`,
-                requestedData,
-            )
+        const headers = {
+            accept: "application/JSON",
+            Authorization: getToken(),
+        };
+
+        api({
+            method: "PATCH",
+            url: `/menu/${id}/upload-images`,
+            data: requestedData,
+            headers,
+        })
             .then((response) => {
                 if (response.data.status === "success") {
                     resolve(response.data);
@@ -84,8 +105,17 @@ const editDetailMenuImages = (id, requestedData) => {
 
 const createMenu = (requestedData) => {
     return new Promise((resolve, reject) => {
-        adminAxios
-            .post(`${BASE_URL_HOST_ADMIN_MENU}`, requestedData)
+        const headers = {
+            accept: "application/JSON",
+            Authorization: getToken(),
+        };
+
+        api({
+            method: "POST",
+            url: `/menu`,
+            data: requestedData,
+            headers,
+        })
             .then((response) => {
                 if (response.data.status === "success") {
                     resolve(response.data);
@@ -101,8 +131,16 @@ const createMenu = (requestedData) => {
 
 const deleteMenu = (id) => {
     return new Promise((resolve, reject) => {
-        adminAxios
-            .delete(`${BASE_URL_HOST_ADMIN_MENU}/${id}`)
+        const headers = {
+            accept: "application/JSON",
+            Authorization: getToken(),
+        };
+
+        api({
+            method: "DELETE",
+            url: `/menu/${id}`,
+            headers,
+        })
             .then((response) => {
                 if (response.data.status === "success") {
                     resolve(response.data);

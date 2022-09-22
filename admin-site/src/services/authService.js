@@ -6,7 +6,11 @@ const login = (data) => {
         axios
             .post(`${BASE_URL_HOST}/auth/login`, data)
             .then((response) => {
-                if (response.status === 200 && response.data.data.role === 1) {
+                if (
+                    (response.status === 200 &&
+                        response.data.data.role === 1) ||
+                    response.data.data.role === 2
+                ) {
                     resolve(response.data);
                 } else {
                     reject(response.data);
