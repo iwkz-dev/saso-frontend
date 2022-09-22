@@ -10,7 +10,6 @@ const initialState = {
 };
 
 export const getAllCategories = filter => dispatch => {
-  console.log('run');
   return categoryService.getCategory(filter).then(response => {
     if (response.data.status === 'success') {
       dispatch(categorySuccess(response.data));
