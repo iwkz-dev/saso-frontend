@@ -5,10 +5,8 @@ import UserFormOrder from '../../molecules/UserFormOrder/UserFormOrder';
 import CheckOrder from '../../molecules/CheckOrder/CheckOrder';
 import Cart from '../../molecules/Cart/Cart';
 import { Button } from '@mui/material';
-import { getAllCategories } from '../../../stores/reducers/category';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { isAuth } from '../../../helpers/authHelper';
-import { useRouter } from 'next/router';
 import OrderList from '../../molecules/OrderList/OrderList';
 
 const DynamicContainer = ({
@@ -18,22 +16,12 @@ const DynamicContainer = ({
   openOrder,
   setOpenOrder,
 }) => {
-  const dispatch = useDispatch();
-  const router = useRouter();
   const isBreakpoint = useMediaQuery(parseInt(styles.breakpointTablet));
   const [showCheckOrder, setShowCheckOrder] = useState(false);
   const [showOrderList, setShowOrderList] = useState(false);
   const [showUserFormOrder, setShowUserFormOrder] = useState(false);
   const [mobileActive, setMobileActive] = useState(false);
-  const menu = useSelector(state => state.menu.data);
-  const category = useSelector(state => state.category);
   const cart = useSelector(state => state.cart);
-
-  useEffect(() => {
-    const filter = `?event=${event._id}`;
-
-    dispatch(getAllCategories(filter));
-  }, []);
 
   useEffect(() => {
     setMobileActive(false);
@@ -86,7 +74,7 @@ const DynamicContainer = ({
                   setOpenOrderList={setOpenOrderList}
                 />
               ) : (
-                <Tabs category={category} menu={menu} />
+                <Tabs event={event} />
               )}
             </div>
           </div>
