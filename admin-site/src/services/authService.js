@@ -13,7 +13,12 @@ const login = (data) => {
                 ) {
                     resolve(response.data);
                 } else {
-                    reject(response.data);
+                    const error = {
+                        data: {
+                            message: "Email / Password is wrong",
+                        },
+                    };
+                    reject(error);
                 }
             })
             .catch((error) => {

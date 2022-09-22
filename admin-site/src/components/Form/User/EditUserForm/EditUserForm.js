@@ -17,39 +17,6 @@ const EditUserForm = () => {
                 <div className="max-w">
                     <div className="grid md:grid-cols-2 sm:grid-cols-1 gap-6">
                         <label className="block">
-                            <span className="text-gray-700">Name</span>
-                            <input
-                                type="text"
-                                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                                placeholder=""
-                                name="name"
-                                defaultValue={user.fullname}
-                                disabled
-                            />
-                        </label>
-                        <label className="block">
-                            <span className="text-gray-700">Email</span>
-                            <input
-                                type="text"
-                                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                                placeholder=""
-                                defaultValue={user.email}
-                                name="email"
-                                disabled
-                            />
-                        </label>
-                        <label className="block">
-                            <span className="text-gray-700">Phone</span>
-                            <input
-                                type="text"
-                                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                                placeholder=""
-                                defaultValue={user.phone}
-                                name="phone"
-                                disabled
-                            />
-                        </label>
-                        <label className="block">
                             <span className="text-gray-700">Is Active</span>
                             <select
                                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"

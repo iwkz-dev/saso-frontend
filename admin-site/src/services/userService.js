@@ -86,7 +86,7 @@ const createUser = (requestedData) => {
 
         api({
             method: "POST",
-            url: `/user`,
+            url: `/user/create`,
             data: requestedData,
             headers,
         })

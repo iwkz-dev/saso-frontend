@@ -8,7 +8,7 @@ import { updatePage } from "../../../store/reducers/navigationReducer";
 import Footer from "../../common/Footer/Footer";
 import { isAuth } from "../../../helpers/authHelper";
 
-function LoggedInLayout({ pageData, children, title }) {
+function LoggedInLayout({ pageData, children, title, isNotAllowed }) {
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -17,9 +17,13 @@ function LoggedInLayout({ pageData, children, title }) {
         } else {
             dispatch(updatePage(pageData));
         }
-    });
 
-    if (!isAuth()) {
+        if (isNotAllowed) {
+            Router.back();
+        }
+    }, []);
+
+    if (!isAuth() || isNotAllowed) {
         return "";
     }
 
