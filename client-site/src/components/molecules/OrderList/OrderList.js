@@ -19,8 +19,6 @@ const OrderList = ({ setOpenOrderList, event }) => {
   const order = useSelector(state => state.order);
   const [selectedOrderId, setSelectedOrderId] = useState(null);
 
-  console.log(event);
-
   useEffect(() => {
     dispatch(getOrderList());
   }, []);
@@ -72,32 +70,32 @@ const OrderList = ({ setOpenOrderList, event }) => {
           Pembayaran dapat dibayarkan melalui:
           <br />
         </Typography>
-        <Typography sx={{ fontSize: "0.8rem" }} align="center">
+        <Typography sx={{ fontSize: '0.8rem' }} align="center">
           Indonesischer Weisheits- und Kulturzentrum e.V.
         </Typography>
-        {
-          event.iban ? (
-            <Typography sx={{ fontSize: "0.8rem" }} align="center">
-              Bank: {event.bankName}
-              <br />
-              IBAN: {event.iban}
-              <br />
-              BIC: {event.bic}
-              <br />
-              Verwendungszweck: {event.usageNote}
-            </Typography>
-          ) : ""
-        }
+        {event.iban ? (
+          <Typography sx={{ fontSize: '0.8rem' }} align="center">
+            Bank: {event.bankName}
+            <br />
+            IBAN: {event.iban}
+            <br />
+            BIC: {event.bic}
+            <br />
+            Verwendungszweck: {event.usageNote}
+          </Typography>
+        ) : (
+          ''
+        )}
         <br />
-        {
-          event.paypal ? (
-            <Typography sx={{ fontSize: "0.8rem" }} align="center">
-              Paypal: {event.paypal}
-            </Typography>
-          ) : ""
-        }
+        {event.paypal ? (
+          <Typography sx={{ fontSize: '0.8rem' }} align="center">
+            Paypal: {event.paypal}
+          </Typography>
+        ) : (
+          ''
+        )}
         <br />
-        <Typography sx={{ fontSize: "0.8rem" }} align="center">
+        <Typography sx={{ fontSize: '0.8rem' }} align="center">
           *Setelah membayar pesanan, mohon konfirmasi ke CP dengan mengirimkan
           bukti transfer
         </Typography>

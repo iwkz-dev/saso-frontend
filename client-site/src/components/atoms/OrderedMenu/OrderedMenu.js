@@ -4,7 +4,7 @@ import { Typography } from '@mui/material';
 import styles from './orderedMenu.module.scss';
 
 const OrderedMenu = () => {
-  const cart = useSelector(state => state.cart);
+  const cart = useSelector(state => state.cart.data);
 
   return cart.items.map((item, i) => (
     <div className={styles.orderedMenu} key={i}>
