@@ -1,11 +1,17 @@
 import React, { useEffect, useState } from "react";
 import LoggedInLayout from "../../src/components/Layout/loggedInLayout/loggedInLayout";
 import { useDispatch } from "react-redux";
-//import AddItemButton from "../../src/components/common/Button/AddItemButton/AddItemButton";
+import AddItemButton from "../../src/components/common/Button/AddItemButton/AddItemButton";
 import Loading from "../../src/components/common/Loading/Loading";
 import UserTable from "../../src/components/Table/User/UserTable/UserTable";
-import { deleteUser, getAllUsers } from "../../src/store/reducers/userReducer";
+import { useSelector } from "react-redux";
+import {
+    deleteUser,
+    getAllUsers,
+    getDetailUser,
+} from "../../src/store/reducers/userReducer";
 import Alert from "../../src/components/common/Message/Alert/Alert";
+import { getUserId } from "../../src/helpers/authHelper";
 
 const index = () => {
     const dispatch = useDispatch();
@@ -17,20 +23,22 @@ const index = () => {
     const [showSuccess, setShowSuccess] = useState(false);
     const [showFailed, setShowFailed] = useState(false);
     const [showUploading, setShowUploading] = useState(false);
+    const currUser = useSelector((state) => state.user.detailUser);
 
     useEffect(() => {
         setShowLoading(true);
         setShowError("");
-        const getData = async () => {
-            return await dispatch(getAllUsers());
-        };
-        getData().then((r) => {
-            if (r.status === "success") {
+        Promise.all([
+            dispatch(getDetailUser(getUserId())),
+            dispatch(getAllUsers()),
+        ]).then((responses) => {
+            const failed = responses.find((r) => r?.status === "failed");
+            if (!failed) {
                 setShowLoading(false);
                 setShowTable(true);
             } else {
                 setShowLoading(false);
-                setShowError(r.message);
+                setShowError(failed.message);
                 setShowTable(false);
             }
         });
@@ -81,11 +89,11 @@ const index = () => {
                 <h1 className="text-2xl font-bold text-left w-10/12 mb-3">
                     User
                 </h1>
-                {/*
-                <div className="flex justify-between items-center mb-3 w-10/12">
-                    <AddItemButton hrefLink="/user/add" text="Add User" />
-                </div>
-                */}
+                {currUser?.role == 1 ? (
+                    <div className="flex justify-between items-center mb-3 w-10/12">
+                        <AddItemButton hrefLink="/user/add" text="Add User" />
+                    </div>
+                ) : null}
                 <Alert
                     showFailed={showFailed}
                     showSuccess={showSuccess}
