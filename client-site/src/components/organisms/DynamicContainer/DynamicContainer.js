@@ -21,7 +21,7 @@ const DynamicContainer = ({
   const [showOrderList, setShowOrderList] = useState(false);
   const [showUserFormOrder, setShowUserFormOrder] = useState(false);
   const [mobileActive, setMobileActive] = useState(false);
-  const cart = useSelector(state => state.cart);
+  const cart = useSelector(state => state.cart.data);
 
   useEffect(() => {
     setMobileActive(false);
