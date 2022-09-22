@@ -82,7 +82,7 @@ const getDetailCategory = (id) => {
         };
         api({
             method: "GET",
-            url: `/category${id}/detail`,
+            url: `/category/${id}/detail`,
             headers,
         })
             .then((response) => {

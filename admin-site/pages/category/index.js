@@ -13,7 +13,7 @@ import Alert from "../../src/components/common/Message/Alert/Alert";
 const index = () => {
     const dispatch = useDispatch();
     const pageData = { name: "Category", href: "/category", current: true };
-    const pageTitle = "Saso App | Event";
+    const pageTitle = "Saso App | Category";
     const [showTable, setShowTable] = useState(false);
     const [showLoading, setShowLoading] = useState(false);
     const [showError, setShowError] = useState("");

@@ -13,11 +13,11 @@ const id = () => {
     const router = useRouter();
     const { id } = router.query;
     const pageData = {
-        name: "Event",
-        href: `/event/view/${id}`,
+        name: "Category",
+        href: `/category/view/${id}`,
         current: true,
     };
-    const pageTitle = "Saso App | Event";
+    const pageTitle = "Saso App | Category";
     const [showDataDisplay, setShowDataDisplay] = useState(false);
     const [showError, setShowError] = useState("");
     const [showLoading, setShowLoading] = useState(false);
