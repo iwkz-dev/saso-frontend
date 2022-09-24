@@ -1,1 +1,1 @@
-export const BASE_URL_HOST = 'https://saso.iwkz.de/api/v1';
+export const BASE_URL_HOST = process.env.NEXT_PUBLIC_BASE_URL_HOST;
