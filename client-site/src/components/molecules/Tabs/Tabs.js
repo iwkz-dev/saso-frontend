@@ -25,7 +25,6 @@ export default function Tabs({ event }) {
     setValue(newValue);
   };
 
-
   return (
     <div className={styles.tabsContainer}>
       <TabContext value={value}>
