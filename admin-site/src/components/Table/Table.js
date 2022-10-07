@@ -60,7 +60,6 @@ const Table = ({
     };
 
     const sort = (item, key) => {
-        console.log(item.sortable);
         if (item.sortable) {
             if (item.sortable === "asc") {
                 const sortedData = [...items].sort((a, b) =>
