@@ -14,8 +14,8 @@ const CategoryTable = ({ onDelete }) => {
     return (
         <Table
             onDelete={onDelete}
-            items={categories}
-            tableHead={tableHead}
+            data={categories}
+            dataHead={tableHead}
             emptyMessage="Category is empty"
             linkToEdit="/category/edit/"
             linkToView="/category/view/"
