@@ -7,9 +7,13 @@ function OrderTable({ onDelete, onChangeStatus }) {
     const events = useSelector((state) => state.event.events);
 
     const tableHead = {
-        invoiceNumber: "Invoice Number",
+        invoiceNumber: {
+            name: "Invoice Number",
+            sortable: "asc",
+        },
         status: {
             name: "Status",
+            sortable: "asc",
             editable: 1,
             type: "select",
             onChange: onChangeStatus,
@@ -36,23 +40,50 @@ function OrderTable({ onDelete, onChangeStatus }) {
                 },
             ],
         },
-        event: "Event",
-        customerFullname: "Customer Fullname",
-        customerEmail: "Customer Email",
-        customerPhone: "Customer Phone Number",
-        totalPrice: "totalPrice",
-        arrived_at: "Arrived At",
-        note: "Note",
-        created_at: "Created At",
-        updated_at: "Updated At",
+        event: {
+            name: "Event",
+            sortable: "asc",
+        },
+        customerFullname: {
+            name: "Customer Fullname",
+            sortable: "asc",
+        },
+        customerEmail: {
+            name: "Customer Email",
+            sortable: "asc",
+        },
+        customerPhone: {
+            name: "Customer Phone Number",
+            sortable: "asc",
+        },
+        totalPrice: {
+            name: "Total Price",
+            sortable: "asc",
+        },
+        arrived_at: {
+            name: "Arrived At",
+            sortable: "asc",
+        },
+        note: {
+            name: "Note",
+            sortable: "asc",
+        },
+        created_at: {
+            name: "Created At",
+            sortable: "asc",
+        },
+        updated_at: {
+            name: "Updated At",
+            sortable: "asc",
+        },
     };
 
     return (
         <Table
             onDelete={onDelete}
-            items={orders}
+            data={orders}
             events={events}
-            tableHead={tableHead}
+            dataHead={tableHead}
             emptyMessage="Order is empty"
             linkToView="/order/view/"
             deleteOff={true}

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { BiEdit, BiSearchAlt2 } from "react-icons/bi";
 import { MdDeleteOutline } from "react-icons/md";
@@ -6,8 +6,8 @@ import { formatDate } from "../../helpers/dateHelper";
 
 const Table = ({
     onDelete,
-    items,
-    tableHead,
+    data,
+    dataHead,
     emptyMessage,
     linkToEdit,
     categories,
@@ -16,6 +16,14 @@ const Table = ({
     actionsOff,
     deleteOff,
 }) => {
+    const [items, setItems] = useState([]);
+    const [tableHead, setTableHead] = useState([]);
+
+    useEffect(() => {
+        setItems(data);
+        setTableHead(dataHead);
+    }, []);
+
     const imageColumnHandler = (data) => {
         if (data.length > 0) {
             return (
@@ -51,6 +59,29 @@ const Table = ({
         }
     };
 
+    const sort = (item, key) => {
+        console.log(item.sortable);
+        if (item.sortable) {
+            if (item.sortable === "asc") {
+                const sortedData = [...items].sort((a, b) =>
+                    a[key] > b[key] ? 1 : -1,
+                );
+                setItems(sortedData);
+                const newTableHead = { ...tableHead };
+                newTableHead[key].sortable = "desc";
+                setTableHead(newTableHead);
+            } else if (item.sortable === "desc") {
+                const sortedData = [...items].sort((a, b) =>
+                    a[key] < b[key] ? 1 : -1,
+                );
+                setItems(sortedData);
+                const newTableHead = { ...tableHead };
+                newTableHead[key].sortable = "asc";
+                setTableHead(newTableHead);
+            }
+        }
+    };
+
     const rowHandler = (item, key) => {
         const maxLengthDescription = 40;
         const maxLengthName = 25;
@@ -65,7 +96,7 @@ const Table = ({
             const event = events.find((e) => e._id === item[key]);
             return <div className="text-sm text-gray-900">{event?.name}</div>;
         } else if (
-            key === "description" &&
+            (key === "description" || key === "note") &&
             item[key].length > maxLengthDescription
         ) {
             const shortenerStr = `${item[key].substring(
@@ -176,7 +207,12 @@ const Table = ({
                                 <th
                                     key={index}
                                     scope="col"
-                                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap	">
+                                    className={`${
+                                        tableHead[k].sortable
+                                            ? "cursor-pointer hover:bg-gray-200"
+                                            : ""
+                                    } px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap`}
+                                    onClick={() => sort(tableHead[k], k)}>
                                     {typeof tableHead[k] === "string"
                                         ? tableHead[k]
                                         : tableHead[k].name}

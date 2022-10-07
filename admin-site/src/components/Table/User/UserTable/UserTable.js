@@ -18,8 +18,8 @@ const UserTable = ({ onDelete }) => {
     return (
         <Table
             onDelete={onDelete}
-            items={categories}
-            tableHead={tableHead}
+            data={categories}
+            dataHead={tableHead}
             emptyMessage="User is empty"
             linkToEdit="/user/edit/"
         />

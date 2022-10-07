@@ -47,8 +47,8 @@ const RelatedMenuOrder = ({ menus }) => {
         <>
             {showTable ? (
                 <Table
-                    items={menus}
-                    tableHead={tableHead}
+                    data={menus}
+                    dataHead={tableHead}
                     events={events}
                     categories={categories}
                     emptyMessage="Menu is empty"

@@ -46,8 +46,8 @@ function EventTable({ onDelete, onChangeStatus }) {
     return (
         <Table
             onDelete={onDelete}
-            items={events}
-            tableHead={tableHead}
+            data={events}
+            dataHead={tableHead}
             emptyMessage="Event is empty"
             linkToEdit="/event/edit/"
             linkToView="/event/view/"

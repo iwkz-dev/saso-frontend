@@ -54,10 +54,10 @@ const RelatedMenuTable = ({ filterName, itemFilter, onDelete }) => {
             {showTable ? (
                 <Table
                     onDelete={onDelete}
-                    items={menus}
+                    data={menus}
                     events={events}
                     categories={categories}
-                    tableHead={tableHead}
+                    dataHead={tableHead}
                     emptyMessage="Menu is empty"
                     linkToEdit="/menu/edit/"
                     linkToView="/menu/view/"
