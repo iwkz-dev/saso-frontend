@@ -28,7 +28,7 @@ const DashboardCard = () => {
     };
 
     const eventCardComponent = events.map((event, i) => {
-        if (event.status === 2) {
+        if (event.status === 2 || event.status === 1) {
             return (
                 <div
                     key={i}
@@ -66,7 +66,7 @@ const DashboardCard = () => {
                             </div>
                             <div className="text-center sm:mt-0 sm:ml-2 sm:text-left mb-3">
                                 <h3 className="text-sm leading-6 font-medium text-gray-400">
-                                    Total Prices in Euro (€)
+                                    Total Price in Euro (€)
                                 </h3>
                                 <p className="text-3xl font-bold text-blue-900">
                                     {getAllInfo(event).sumTotalPrice}
