@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Box from '@mui/material/Box';
 import Tab from '@mui/material/Tab';
@@ -14,16 +14,17 @@ export default function Tabs({ event }) {
   const dispatch = useDispatch();
   const category = useSelector(state => state.category);
 
-  const [value, setValue] = React.useState('0');
+  const [value, setValue] = useState('0');
 
   useEffect(() => {
     const filter = `?event=${event._id}`;
     dispatch(getAllCategories(filter));
   }, []);
 
-  const handleChange = newValue => {
+  const handleChange = (event, newValue) => {
     setValue(newValue);
   };
+
 
   return (
     <div className={styles.tabsContainer}>
