@@ -1,10 +1,11 @@
 import '../styles/globals.scss';
 import React from 'react';
-import theme from '../theme';
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import { Provider } from 'react-redux';
+import theme from '../theme';
 import store from '../stores/store';
+import Layout from '../components/Layout';
 
 function MyApp({ Component, pageProps }) {
   React.useEffect(() => {
@@ -17,8 +18,10 @@ function MyApp({ Component, pageProps }) {
   return (
     <ThemeProvider theme={theme}>
       <Provider store={store}>
-        <CssBaseline />
-        <Component {...pageProps} />
+        <Layout>
+          <CssBaseline />
+          <Component {...pageProps} />
+        </Layout>
       </Provider>
     </ThemeProvider>
   );
