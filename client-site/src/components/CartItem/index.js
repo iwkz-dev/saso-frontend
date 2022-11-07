@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import styles from './cartItem.module.scss';
 import { AiOutlineMinusCircle, AiOutlinePlusCircle } from 'react-icons/ai';
 
@@ -27,4 +28,9 @@ const CartItem = ({ cartItem, add, remove }) => {
   );
 };
 
+CartItem.propTypes = {
+  cartItem: PropTypes.object,
+  add: PropTypes.func,
+  remove: PropTypes.func
+}
 export default CartItem;

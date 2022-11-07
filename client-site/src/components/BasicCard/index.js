@@ -1,14 +1,13 @@
 import * as React from 'react';
+import PropTypes from 'prop-types';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import styles from './BasicCard.module.scss';
-import Image from 'next/image';
 import { useDispatch, useSelector } from 'react-redux';
-import { addOrder } from '../../../stores/reducers/cart';
+import { addOrder } from '../../stores/reducers/cart';
 
 export default function BasicCard({ menu }) {
   const dispatch = useDispatch();
@@ -61,4 +60,8 @@ export default function BasicCard({ menu }) {
       </div>
     </Card>
   );
+}
+
+BasicCard.propTypes = {
+  menu: PropTypes.object,
 }

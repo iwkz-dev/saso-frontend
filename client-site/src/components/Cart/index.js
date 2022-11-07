@@ -1,11 +1,12 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import styles from './cart.module.scss';
 import { Card, CardContent, Divider } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import Typography from '@mui/material/Typography';
-import CartItem from '../../atoms/CartItem/CartItem';
-import CartDetail from '../../atoms/CartDetail/CartDetail';
-import { addOrder, removeOrder } from '../../../stores/reducers/cart';
+import CartItem from '../CartItem';
+import CartDetail from '../CartDetail';
+import { addOrder, removeOrder } from '../../stores/reducers/cart';
 import { AiOutlineShoppingCart, AiOutlineClose } from 'react-icons/ai';
 
 const Cart = ({ setMobileActive, isBreakpoint, openOrder, setOpenOrder }) => {
@@ -22,9 +23,8 @@ const Cart = ({ setMobileActive, isBreakpoint, openOrder, setOpenOrder }) => {
 
   return (
     <Card
-      className={`${styles.cartContainer} ${
-        isBreakpoint ? (setMobileActive ? styles.openCart : '') : ''
-      }`}
+      className={`${styles.cartContainer} ${isBreakpoint ? (setMobileActive ? styles.openCart : '') : ''
+        }`}
     >
       <CardContent className={styles.cartContent}>
         <div className={styles.cartTitle}>
@@ -67,12 +67,19 @@ const Cart = ({ setMobileActive, isBreakpoint, openOrder, setOpenOrder }) => {
           </>
         ) : (
           <Typography variant="body2" color="text.secondary">
-            Cart is empty
+            Cart is empty index
           </Typography>
         )}
       </CardContent>
     </Card>
   );
 };
+
+Cart.propTypes = {
+  setMobileActive: PropTypes.func,
+  isBreakpoint: PropTypes.bool,
+  openOrder: PropTypes.bool,
+  setOpenOrder: PropTypes.func
+}
 
 export default Cart;

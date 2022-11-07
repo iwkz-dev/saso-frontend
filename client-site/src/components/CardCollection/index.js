@@ -1,5 +1,6 @@
 import React from 'react';
-import BasicCard from '../../atoms/BasicCard/BasicCard';
+import PropTypes from 'prop-types';
+import BasicCard from '../BasicCard';
 import styles from './CardCollection.module.scss';
 
 const CardCollection = ({ menuList }) => {
@@ -12,4 +13,7 @@ const CardCollection = ({ menuList }) => {
   );
 };
 
+CardCollection.propTypes = {
+  menuList: PropTypes.array,
+}
 export default CardCollection;

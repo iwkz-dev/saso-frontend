@@ -1,15 +1,18 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import styles from './dynamicContainer.module.scss';
-import Tabs from '../../molecules/Tabs/Tabs';
-import UserFormOrder from '../../molecules/UserFormOrder/UserFormOrder';
-import CheckOrder from '../../molecules/CheckOrder/CheckOrder';
-import Cart from '../../molecules/Cart/Cart';
 import { Button } from '@mui/material';
 import { useSelector } from 'react-redux';
-import { isAuth } from '../../../helpers/authHelper';
-import OrderList from '../../molecules/OrderList/OrderList';
+import PropTypes from 'prop-types';
 
-const DynamicContainer = ({
+import Tabs from '../Tabs';
+import Cart from '../Cart';
+import UserFormOrder from '../molecules/UserFormOrder/UserFormOrder';
+import CheckOrder from '../molecules/CheckOrder/CheckOrder';
+import OrderList from '../molecules/OrderList/OrderList';
+
+import { isAuth } from '../../helpers/authHelper';
+import styles from './menu.module.scss';
+
+const Menu = ({
   event,
   openOrderList,
   setOpenOrderList,
@@ -80,9 +83,8 @@ const DynamicContainer = ({
           </div>
           <div className={styles.secondBlock}>
             <div
-              className={`${styles.secondInnerBlock} ${
-                mobileActive && styles.active
-              }`}
+              className={`${styles.secondInnerBlock} ${mobileActive && styles.active
+                }`}
             >
               <Cart
                 isBreakpoint={isBreakpoint}
@@ -110,7 +112,16 @@ const DynamicContainer = ({
   );
 };
 
-export default DynamicContainer;
+Menu.propTypes = {
+  event: PropTypes.object,
+  openOrderList: PropTypes.bool,
+  setOpenOrderList: PropTypes.func,
+  openOrder: PropTypes.bool,
+  setOpenOrder: PropTypes.func,
+
+}
+
+export default Menu;
 
 const useMediaQuery = width => {
   const [targetReached, setTargetReached] = useState(true);

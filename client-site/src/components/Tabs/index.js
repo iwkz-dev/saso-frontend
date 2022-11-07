@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import PropTypes from 'prop-types';
+
 import Box from '@mui/material/Box';
 import Tab from '@mui/material/Tab';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
+
+import CardCollection from '../CardCollection';
+import { getAllCategories } from '../../stores/reducers/category';
 import styles from './tabs.module.scss';
-import CardCollection from '../CardCollection/CardCollection';
-import { getAllCategories } from '../../../stores/reducers/category';
-import { useRouter } from 'next/router';
 
 export default function Tabs({ event }) {
   const dispatch = useDispatch();
@@ -49,4 +51,8 @@ export default function Tabs({ event }) {
       </TabContext>
     </div>
   );
+}
+
+Tab.propTypes = {
+  event: PropTypes.object
 }

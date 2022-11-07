@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import styles from './cartdetail.module.scss';
 import Button from '@mui/material/Button';
 
@@ -24,5 +25,12 @@ const CartDetail = ({ cart, setOpenOrder, openOrder, setMobileActive }) => {
     </div>
   );
 };
+
+CartDetail.propTypes = {
+  cart: PropTypes.object,
+  setOpenOrder: PropTypes.func,
+  openOrder: PropTypes.bool,
+  setMobileActive: PropTypes.func,
+}
 
 export default CartDetail;

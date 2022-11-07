@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Head from 'next/head';
-import BigLogo from '../components/atoms/BigLogo/BigLogo';
-import DynamicContainer from '../components/organisms/DynamicContainer/DynamicContainer';
-import Navbar from '../components/organisms/Navbar/Navbar';
-import Layout from '../components/Layout';
+import Menu from '../components/Menu'
 import styles from '../styles/Home.module.scss';
 import { useSelector } from 'react-redux';
 
@@ -22,7 +19,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       {events[0] ? (
-        <DynamicContainer
+        <Menu
           event={events[0]}
           openOrderList={openOrderList}
           setOpenOrderList={setOpenOrderList}
@@ -30,7 +27,9 @@ export default function Home() {
           setOpenOrder={setOpenOrder}
         />
       ) : (
-        ''
+        <div>
+          <h2>No event has been held yet</h2>
+        </div>
       )}
     </div>
   );
