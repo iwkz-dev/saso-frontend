@@ -1,25 +1,25 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
+
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   submitRegister,
   textFieldChangeHandler,
   resetRegister,
-} from '../../../stores/reducers/register';
+} from '../../stores/reducers/register';
 
-const RegisterModal = () => {
-  const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(true);
+const RegisterModal = ({ setOpen, open, handleCloseLogin, login }) => {
   const handleClose = () => {
     setOpen(false);
     dispatch(resetRegister());
+    if (login) handleCloseLogin()
   };
 
   const dispatch = useDispatch();
@@ -46,9 +46,6 @@ const RegisterModal = () => {
 
   return (
     <div>
-      <Button variant="contained" onClick={handleOpen}>
-        Register
-      </Button>
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Register</DialogTitle>
         <form
@@ -117,5 +114,12 @@ const RegisterModal = () => {
     </div>
   );
 };
+
+RegisterModal.propTypes = {
+  open: PropTypes.bool,
+  setOpen: PropTypes.func,
+  handleCloseLogin: PropTypes.func,
+  login: PropTypes.bool,
+}
 
 export default RegisterModal;

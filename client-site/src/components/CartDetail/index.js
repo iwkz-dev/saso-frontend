@@ -20,7 +20,7 @@ const CartDetail = ({ cart, setOpenOrder, openOrder, setMobileActive }) => {
         <b>{cart.totalPrice} €</b>
       </div>
       <Button size="small" variant="contained" onClick={handleOrderClick}>
-        {openOrder ? 'Show Menu' : 'Open Order'}
+        Checkout
       </Button>
     </div>
   );

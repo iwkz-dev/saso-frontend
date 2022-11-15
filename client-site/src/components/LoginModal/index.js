@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
+
 import Button from '@mui/material/Button';
 import axios from 'axios';
 import Grid from '@mui/material/Grid';
@@ -8,31 +10,33 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import { useDispatch, useSelector } from 'react-redux';
+import { LoadingButton } from '@mui/lab';
+import MuiAlert from '@mui/material/Alert';
+import { Snackbar } from '@mui/material';
 import {
   submitLogin,
   textFieldChangeHandler,
   resetLogin,
-} from '../../../stores/reducers/login';
+} from '../../stores/reducers/login';
 import styles from './loginModal.module.scss';
 import { Box } from '@mui/system';
-import { BASE_URL_HOST } from '../../../config/config';
-import { LoadingButton } from '@mui/lab';
-import MuiAlert from '@mui/material/Alert';
-import { Snackbar } from '@mui/material';
+import { BASE_URL_HOST } from '../../config/config';
+import RegisterModal from '../RegisterModal/index';
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
-const LoginModal = () => {
-  const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(true);
+const LoginModal = ({ open, setOpen }) => {
   const handleClose = () => {
     setOpen(false);
     setIsForgotPassword(false);
     setForgotPasswordErrorMessage('');
     dispatch(resetLogin());
   };
+
+  const [openRegister, setOpenRegister] = useState(false);
+  const handleOpenRegister = () => setOpenRegister(true);
 
   // CHANGE MODAL FORGOT PASSWORD AND LOGIN
   const [isForgotPassword, setIsForgotPassword] = useState(false);
@@ -125,13 +129,6 @@ const LoginModal = () => {
           Link change password has been sent. Please check your email!
         </Alert>
       </Snackbar>
-      <Button
-        variant="outlined"
-        onClick={handleOpen}
-        className={styles.loginButton}
-      >
-        Login
-      </Button>
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>
           {isForgotPassword ? 'Forget Password' : 'Login'}
@@ -185,19 +182,35 @@ const LoginModal = () => {
             {isForgotPassword ? (
               ''
             ) : (
-              <Button
-                onClick={handleModalForgotPassword}
-                sx={{
-                  display: isForgotPassword ? 'hidden' : 'block',
-                  padding: 0,
-                  marginTop: '10px',
-                  '&:hover': {
-                    backgroundColor: '#fff',
-                  },
-                }}
-              >
-                Forget Password?
-              </Button>
+              <>
+                <Button
+                  onClick={handleModalForgotPassword}
+                  sx={{
+                    display: isForgotPassword ? 'hidden' : 'block',
+                    padding: 0,
+                    marginTop: '10px',
+                    '&:hover': {
+                      backgroundColor: '#fff',
+                    },
+                  }}
+                >
+                  Forget Password?
+                </Button>
+                <Button
+                  onClick={handleOpenRegister}
+                  sx={{
+                    display: isForgotPassword ? 'hidden' : 'block',
+                    padding: 0,
+                    marginTop: '10px',
+                    '&:hover': {
+                      backgroundColor: '#fff',
+                    },
+                  }}
+                >
+                  Create new account
+                </Button>
+                <RegisterModal open={openRegister} setOpen={setOpenRegister} handleCloseLogin={handleClose} login />
+              </>
             )}
           </DialogContent>
           <DialogActions>
@@ -224,5 +237,10 @@ const LoginModal = () => {
     </div>
   );
 };
+
+LoginModal.propTypes = {
+  open: PropTypes.bool,
+  setOpen: PropTypes.func,
+}
 
 export default LoginModal;

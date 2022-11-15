@@ -1,13 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Head from 'next/head';
 import Menu from '../components/Menu'
 import styles from '../styles/Home.module.scss';
 import { useSelector } from 'react-redux';
 
 export default function Home() {
-  const [openOrderList, setOpenOrderList] = useState(false);
-  const [openOrder, setOpenOrder] = useState(false);
-
   //TODO fetch current event
   const events = useSelector(state => state.event.data);
 
@@ -21,10 +18,6 @@ export default function Home() {
       {events[0] ? (
         <Menu
           event={events[0]}
-          openOrderList={openOrderList}
-          setOpenOrderList={setOpenOrderList}
-          openOrder={openOrder}
-          setOpenOrder={setOpenOrder}
         />
       ) : (
         <div>
