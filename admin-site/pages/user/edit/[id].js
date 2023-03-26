@@ -3,8 +3,10 @@ import { useDispatch } from "react-redux";
 import { useRouter } from "next/router";
 import { getDetailUser } from "../../../src/store/reducers/userReducer";
 import Loading from "../../../src/components/common/Loading/Loading";
-import LoggedInLayout from "../../../src/components/Layout/loggedInLayout/loggedInLayout";
 import EditUserForm from "../../../src/components/Form/User/EditUserForm/EditUserForm";
+import LoggedIn from "../../../src/components/Layout/LoggedIn/LoggedIn";
+import Content from "../../../src/components/Layout/Content/Content";
+import { Typography } from "antd";
 
 const id = () => {
     const dispatch = useDispatch();
@@ -39,16 +41,14 @@ const id = () => {
     }, [id]);
 
     return (
-        <LoggedInLayout title={pageTitle} pageData={pageData}>
-            <div className="w-10/12 mx-auto">
-                <h1 className="text-2xl font-bold text-left w-10/12 mb-3">
-                    Edit User
-                </h1>
+        <LoggedIn title={pageTitle} pageData={pageData}>
+            <Content>
+                <Typography.Title level={2}>Edit User</Typography.Title>
                 {showLoading ? <Loading /> : ""}
                 {showForm ? <EditUserForm id={id} /> : ""}
                 {showError || ""}
-            </div>
-        </LoggedInLayout>
+            </Content>
+        </LoggedIn>
     );
 };
 

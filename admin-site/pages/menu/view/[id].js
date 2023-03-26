@@ -3,8 +3,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/router";
 import { getDetailMenu } from "../../../src/store/reducers/menuReducer";
 import Loading from "../../../src/components/common/Loading/Loading";
-import LoggedInLayout from "../../../src/components/Layout/loggedInLayout/loggedInLayout";
+import LoggedIn from "../../../src/components/Layout/LoggedIn/LoggedIn";
 import MenuDataDisplay from "../../../src/components/DataDisplay/MenuDataDisplay/MenuDataDisplay";
+import Content from "../../../src/components/Layout/Content/Content";
+import { Typography } from "antd";
 
 const id = () => {
     const dispatch = useDispatch();
@@ -40,15 +42,15 @@ const id = () => {
     }, [id]);
 
     return (
-        <LoggedInLayout title={pageTitle} pageData={pageData}>
-            <div className="w-10/12 mx-auto">
+        <LoggedIn title={pageTitle} pageData={pageData}>
+            <Content>
                 {showLoading ? (
                     <Loading />
                 ) : (
                     <>
-                        <h1 className="text-2xl font-bold text-left mb-3">
+                        <Typography.Title level={2}>
                             View Menu &quot;{menu.name}&quot;
-                        </h1>
+                        </Typography.Title>
                         {showDataDisplay ? (
                             <>
                                 <MenuDataDisplay menu={menu} />
@@ -59,8 +61,8 @@ const id = () => {
                         {showError || ""}
                     </>
                 )}
-            </div>
-        </LoggedInLayout>
+            </Content>
+        </LoggedIn>
     );
 };
 

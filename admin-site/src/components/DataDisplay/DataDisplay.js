@@ -1,3 +1,4 @@
+import { Descriptions } from "antd";
 import React from "react";
 import { formatDate } from "../../helpers/dateHelper";
 
@@ -31,6 +32,30 @@ const DataDisplay = ({ item, dataForm, events, categories }) => {
     };
 
     const columnHandler = (key, i) => {
+        let value = "No data";
+        if (key === "created_at" || key === "updated_at") {
+            value = formatDate(item[key], true, true);
+        } else if (key === "category") {
+            const category = categories.find((e) => e._id === item[key]);
+            value = category?.name;
+        } else if (key === "event") {
+            const event = events.find((e) => e._id === item[key]);
+            value = event?.name;
+        } else if (key === "status") {
+            value = getStatusTitle(item[key]);
+        } else if (key === "started_at") {
+            value = formatDate(item[key], false, true);
+        } else if (key === "images") {
+            imageColumnHandler(item[key]);
+        } else {
+            value = item[key];
+        }
+        return (
+            <Descriptions.Item key={key + i} label={dataForm[key]}>
+                {value}
+            </Descriptions.Item>
+        );
+        /*
         if (key === "started_at") {
             return (
                 <div
@@ -139,23 +164,13 @@ const DataDisplay = ({ item, dataForm, events, categories }) => {
                 </div>
             );
         }
+        */
     };
 
     return (
-        <div className="bg-white shadow sm:rounded-lg">
-            <div className="px-4 py-5 sm:px-6">
-                <h3 className="text-lg leading-6 font-medium text-gray-900">
-                    Detail Information
-                </h3>
-            </div>
-            <div className="border-t border-gray-200">
-                <dl>
-                    {Object.keys(dataForm).map((key, i) =>
-                        columnHandler(key, i),
-                    )}
-                </dl>
-            </div>
-        </div>
+        <Descriptions title="Detail Information" layout="vertical" bordered>
+            {Object.keys(dataForm).map((key, i) => columnHandler(key, i))}
+        </Descriptions>
     );
 };
 

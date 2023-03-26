@@ -38,7 +38,6 @@ const RelatedMenuOrder = ({ menus }) => {
         category: "Category",
         price: "Price (€)",
         quantityOrder: "Quantity Order",
-        images: "Image",
         event: "Event",
         totalPortion: "Total Portion",
     };

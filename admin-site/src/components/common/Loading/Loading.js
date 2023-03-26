@@ -3,7 +3,7 @@ import ReactLoading from "react-loading";
 
 const Loading = () => {
     return (
-        <div className="w-fit m-auto">
+        <div className="w-fit">
             <ReactLoading
                 type="spinningBubbles"
                 color="#000000"

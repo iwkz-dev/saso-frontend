@@ -1,4 +1,4 @@
-import LoggedInLayout from "../src/components/Layout/loggedInLayout/loggedInLayout";
+import LoggedIn from "../src/components/Layout/LoggedIn/LoggedIn";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import Loading from "../src/components/common/Loading/Loading";
@@ -6,6 +6,8 @@ import { getAllEvents } from "../src/store/reducers/eventReducer";
 import { getAllOrders } from "../src/store/reducers/orderReducer";
 import Alert from "../src/components/common/Message/Alert/Alert";
 import DashboardCard from "../src/components/Card/DashboardCard/DashboardCard";
+import Content from "../src/components/Layout/Content/Content";
+import { Typography } from "antd";
 
 const index = () => {
     const dispatch = useDispatch();
@@ -40,11 +42,9 @@ const index = () => {
     };
 
     return (
-        <LoggedInLayout title={pageTitle} pageData={pageData}>
-            <div className="w-10/12 mx-auto">
-                <h1 className="text-2xl font-bold text-left w-10/12 mb-3">
-                    Dashboard
-                </h1>
+        <LoggedIn title={pageTitle} pageData={pageData}>
+            <Content>
+                <Typography.Title level={2}>Dashboard</Typography.Title>
                 <Alert
                     showFailed={showFailed}
                     showSuccess={showSuccess}
@@ -55,8 +55,8 @@ const index = () => {
                 />
                 {showError || ""}
                 {showLoading ? <Loading /> : showCard ? <DashboardCard /> : ""}
-            </div>
-        </LoggedInLayout>
+            </Content>
+        </LoggedIn>
     );
 };
 

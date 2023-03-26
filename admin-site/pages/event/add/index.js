@@ -1,6 +1,8 @@
 import React from "react";
-import LoggedInLayout from "../../../src/components/Layout/loggedInLayout/loggedInLayout";
+import LoggedIn from "../../../src/components/Layout/LoggedIn/LoggedIn";
 import AddEventForm from "../../../src/components/Form/Event/AddEventForm/AddEventForm";
+import Content from "../../../src/components/Layout/Content/Content";
+import { Typography } from "antd";
 
 const index = () => {
     const pageData = {
@@ -11,12 +13,12 @@ const index = () => {
     const pageTitle = "Saso App | Event";
 
     return (
-        <LoggedInLayout title={pageTitle} pageData={pageData}>
-            <div className="w-10/12 mx-auto">
-                <h1 className="text-2xl font-bold text-left mb-3">Add event</h1>
+        <LoggedIn title={pageTitle} pageData={pageData}>
+            <Content>
+                <Typography.Title level={2}>Add event</Typography.Title>
                 <AddEventForm />
-            </div>
-        </LoggedInLayout>
+            </Content>
+        </LoggedIn>
     );
 };
 

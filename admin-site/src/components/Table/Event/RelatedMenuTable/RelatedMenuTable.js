@@ -43,7 +43,6 @@ const RelatedMenuTable = ({ filterName, itemFilter, onDelete }) => {
         category: "Category",
         price: "Price (€)",
         quantity: "Quantity",
-        images: "Image",
         event: "Event",
         created_at: "Created At",
         updated_at: "Updated At",

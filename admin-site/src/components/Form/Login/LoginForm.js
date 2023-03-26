@@ -1,16 +1,14 @@
 import React, { useEffect } from "react";
+import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
 import Router from "next/router";
-import {
-    textFieldChangeHandler,
-    submitLogin,
-} from "../../../store/reducers/loginReducer";
+import { submitLogin } from "../../../store/reducers/loginReducer";
 import { isAuth } from "../../../helpers/authHelper";
+import { Button, Form, Input } from "antd";
 
 function LoginForm() {
     const dispatch = useDispatch();
     const errorMessage = useSelector((state) => state.login.data.message.error);
-    const userData = useSelector((state) => state.login.data.user);
 
     useEffect(() => {
         if (isAuth()) {
@@ -18,20 +16,67 @@ function LoginForm() {
         }
     }, []);
 
-    const changeHandler = (name, value) => {
-        const payload = {
-            name,
-            value,
-        };
-        dispatch(textFieldChangeHandler(payload));
-    };
-
-    const submitHandler = (e) => {
-        e.preventDefault();
-        dispatch(submitLogin(userData));
+    const onFinish = (values) => {
+        dispatch(submitLogin(values));
     };
 
     return (
+        <div
+            style={{
+                width: "100vw",
+                height: "100vh",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+            }}>
+            <Form onFinish={onFinish} autoComplete="off">
+                <Form.Item
+                    name="email"
+                    rules={[
+                        {
+                            required: true,
+                            message: "Please input your email!",
+                        },
+                    ]}>
+                    <Input
+                        prefix={
+                            <UserOutlined className="site-form-item-icon" />
+                        }
+                    />
+                </Form.Item>
+
+                <Form.Item
+                    name="password"
+                    rules={[
+                        {
+                            required: true,
+                            message: "Please input your password!",
+                        },
+                    ]}>
+                    <Input.Password
+                        prefix={
+                            <LockOutlined className="site-form-item-icon" />
+                        }
+                    />
+                </Form.Item>
+                <div
+                    style={{
+                        fontSize: 12,
+                        marginBottom: 24,
+                        textAlign: "center",
+                        color: "red",
+                    }}>
+                    {errorMessage}
+                </div>
+                <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+                    <Button type="primary" htmlType="submit">
+                        Submit
+                    </Button>
+                </Form.Item>
+            </Form>
+        </div>
+
+        /*
         <div className="max-w-md w-full space-y-8">
             <div>
                 <h2 className="mt-6 text-center text-3xl text-gray-900">
@@ -83,6 +128,7 @@ function LoginForm() {
                 </div>
             </form>
         </div>
+        */
     );
 }
 

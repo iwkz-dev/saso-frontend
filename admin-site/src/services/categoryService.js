@@ -106,7 +106,7 @@ const editDetailCategory = (id, requestedData) => {
         };
         api({
             method: "PUT",
-            url: `/category${id}`,
+            url: `/category/${id}`,
             data: requestedData,
             headers,
         })

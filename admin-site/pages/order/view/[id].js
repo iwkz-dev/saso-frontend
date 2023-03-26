@@ -3,9 +3,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { getAllOrders } from "../../../src/store/reducers/orderReducer";
 import Loading from "../../../src/components/common/Loading/Loading";
 import { useRouter } from "next/router";
-import LoggedInLayout from "../../../src/components/Layout/loggedInLayout/loggedInLayout";
+import LoggedIn from "../../../src/components/Layout/LoggedIn/LoggedIn";
 import OrderDataDisplay from "../../../src/components/DataDisplay/OrderDataDisplay/OrderDataDisplay";
 import RelatedMenuOrder from "../../../src/components/Table/Order/RelatedMenuOrderList/RelatedMenuOrder";
+import Content from "../../../src/components/Layout/Content/Content";
+import { Typography } from "antd";
 
 const id = () => {
     const dispatch = useDispatch();
@@ -58,15 +60,15 @@ const id = () => {
         }
     }, [id, orders]);
     return (
-        <LoggedInLayout title={pageTitle} pageData={pageData}>
-            <div className="w-10/12">
+        <LoggedIn title={pageTitle} pageData={pageData}>
+            <Content>
                 {showLoading ? (
                     <Loading />
                 ) : (
                     <>
-                        <h1 className="text-2xl font-bold text-left mb-3">
+                        <Typography.Title level={2}>
                             View Order
-                        </h1>
+                        </Typography.Title>
                         {showDataDisplay ? (
                             <>
                                 <OrderDataDisplay order={orderDetail} />
@@ -83,8 +85,8 @@ const id = () => {
                         {showError || ""}
                     </>
                 )}
-            </div>
-        </LoggedInLayout>
+            </Content>
+        </LoggedIn>
     );
 };
 

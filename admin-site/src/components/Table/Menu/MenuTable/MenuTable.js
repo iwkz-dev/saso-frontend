@@ -9,12 +9,10 @@ function MenuTable({ onDelete }) {
 
     const tableHead = {
         name: "Name",
-        description: "Description",
         category: "Category",
         price: "Price (€)",
         quantity: "Quantity",
         quantityOrder: "Ordered Quantity",
-        images: "Image",
         event: "Event",
         created_at: "Created At",
         updated_at: "Updated At",

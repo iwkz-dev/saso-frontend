@@ -4,7 +4,9 @@ import { useRouter } from "next/router";
 import { getDetailEvent } from "../../../src/store/reducers/eventReducer";
 import Loading from "../../../src/components/common/Loading/Loading";
 import EditEventForm from "../../../src/components/Form/Event/EditEventForm/EditEventForm";
-import LoggedInLayout from "../../../src/components/Layout/loggedInLayout/loggedInLayout";
+import LoggedIn from "../../../src/components/Layout/LoggedIn/LoggedIn";
+import Content from "../../../src/components/Layout/Content/Content";
+import { Typography } from "antd";
 
 const id = () => {
     const dispatch = useDispatch();
@@ -39,16 +41,14 @@ const id = () => {
     }, [id]);
 
     return (
-        <LoggedInLayout title={pageTitle} pageData={pageData}>
-            <div className="w-10/12 mx-auto">
-                <h1 className="text-2xl font-bold text-left mb-3">
-                    Edit Event
-                </h1>
+        <LoggedIn title={pageTitle} pageData={pageData}>
+            <Content>
+                <Typography.Title level={1}>Edit Event</Typography.Title>
                 {showLoading ? <Loading /> : ""}
                 {showForm ? <EditEventForm id={id} /> : ""}
                 {showError || ""}
-            </div>
-        </LoggedInLayout>
+            </Content>
+        </LoggedIn>
     );
 };
 

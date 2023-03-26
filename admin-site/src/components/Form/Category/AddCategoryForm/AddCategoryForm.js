@@ -1,83 +1,67 @@
 import React, { useRef, useState } from "react";
+import { Form, Input, Button, Space, message } from "antd";
 import { useDispatch } from "react-redux";
 import { createCategory } from "../../../../store/reducers/categoryReducer";
-import Alert from "../../../common/Message/Alert/Alert";
-import SubmitButton from "../../../common/Button/SubmitButton/SubmitButton";
-import ResetButton from "../../../common/Button/ResetButton/ResetButton";
+import Router from "next/router";
 
 const AddCategoryForm = () => {
     const dispatch = useDispatch();
-    const form = useRef();
+    const form = useRef(null);
     const [showUploading, setShowUploading] = useState(false);
-    const [showSuccess, setShowSuccess] = useState(false);
-    const [showFailed, setShowFailed] = useState(false);
 
-    const submitForm = (e) => {
-        setShowSuccess(false);
-        setShowFailed(false);
-        e.preventDefault();
+    const submitForm = (values) => {
         const text = confirm("Please confirm to add category");
         if (text) {
             setShowUploading(true);
             const createData = async () => {
-                const data = new FormData(form.current);
-                const requestedData = {
-                    name: data.get("name"),
-                };
-                return await dispatch(createCategory(requestedData));
+                return dispatch(createCategory(values));
             };
             createData()
                 .then((r) => {
                     if (r?.status === "failed") {
                         setShowUploading(false);
-                        setShowFailed(r.message);
+                        message.error(r.message);
                     } else {
                         setShowUploading(false);
-                        setShowSuccess(r.message);
+                        message.success(r.message);
+                        Router.push("/category");
                     }
                 })
                 .catch((e) => {
                     setShowUploading(false);
-                    setShowFailed(e.message);
+                    message.error(e.message);
                 });
         }
     };
 
-    const reset = () => {
-        window.location.reload();
+    const onReset = () => {
+        form.current?.resetFields();
     };
 
     return (
-        <div className="w-10/12">
-            <form ref={form} onSubmit={(e) => submitForm(e)}>
-                <div className="max-w">
-                    <div className="grid md:grid-cols-2 sm:grid-cols-1 gap-6">
-                        <label className="block">
-                            <span className="text-gray-700">Name</span>
-                            <input
-                                type="text"
-                                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                                placeholder=""
-                                name="name"
-                                required
-                            />
-                        </label>
-                    </div>
-                </div>
-                <div className="flex my-4">
-                    <SubmitButton />
-                    <ResetButton onClick={reset} />
-                </div>
-            </form>
-            <Alert
-                showFailed={showFailed}
-                showSuccess={showSuccess}
-                setShowFailed={setShowFailed}
-                setShowSuccess={setShowSuccess}
-                successMessage={showSuccess}
-                failedMessage={showFailed}
-                showUploading={showUploading}
-            />
+        <div>
+            <Form
+                ref={form}
+                layout="vertical"
+                name="category"
+                onFinish={submitForm}>
+                <Form.Item label="Name" name="name" required>
+                    <Input placeholder="Name" />
+                </Form.Item>
+                <Form.Item>
+                    <Space>
+                        <Button
+                            type="primary"
+                            htmlType="submit"
+                            loading={showUploading}>
+                            Submit
+                        </Button>
+                        <Button htmlType="button" onClick={onReset}>
+                            Reset
+                        </Button>
+                    </Space>
+                </Form.Item>
+            </Form>
         </div>
     );
 };

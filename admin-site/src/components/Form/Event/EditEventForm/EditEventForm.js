@@ -1,208 +1,232 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
+import dayjs from "dayjs";
 import { useDispatch, useSelector } from "react-redux";
 import { editDetailEvent } from "../../../../store/reducers/eventReducer";
-import ImageUploader from "../../../common/ImageUploader/ImageUploader";
 import { getDateValue } from "../../../../helpers/dateHelper";
-import Alert from "../../../common/Message/Alert/Alert";
-import SubmitButton from "../../../common/Button/SubmitButton/SubmitButton";
-import ResetButton from "../../../common/Button/ResetButton/ResetButton";
+import {
+    Form,
+    Input,
+    Button,
+    DatePicker,
+    Upload,
+    Modal,
+    Space,
+    message,
+} from "antd";
+import { PlusOutlined } from "@ant-design/icons";
+import Router from "next/router";
 
+const getFileList = (images) => {
+    return images.map((image) => ({
+        url: image.imageUrl,
+        name: image.fileName,
+        eTag: image.eTag,
+        imageUrl: image.imageUrl,
+        fileName: image.fileName,
+    }));
+};
 const EditEventForm = () => {
     const dispatch = useDispatch();
-    const form = useRef();
+    const [form] = Form.useForm();
     const event = useSelector((state) => state.event.detailEvent);
-    const [images, setImages] = useState(event.images);
     const [showUploading, setShowUploading] = useState(false);
-    const [showSuccess, setShowSuccess] = useState(false);
-    const [showFailed, setShowFailed] = useState(false);
-    const maxNumber = 5;
+    const [previewOpen, setPreviewOpen] = useState(false);
+    const [previewImage, setPreviewImage] = useState("");
+    const [previewTitle, setPreviewTitle] = useState("");
+    const [images, setImages] = useState(getFileList(event.images));
+    const [date, setDate] = useState("");
+
+    /*
     const status = [
         { title: "draft", value: 0 },
         { title: "approved", value: 1 },
         { title: "done", value: 2 },
     ];
+    */
 
-    const onChange = (imageList) => {
-        // data for submit
-        setImages(imageList);
-    };
-
-    const submitForm = (e) => {
-        setShowSuccess(false);
-        setShowFailed(false);
-        e.preventDefault();
+    const submitForm = (values) => {
+        console.log(values);
         const text = confirm("Please confirm to save your changes");
         if (text) {
             setShowUploading(true);
             const createData = async () => {
-                const data = new FormData(form.current);
+                var data = new FormData();
+                for (var key in values) {
+                    data.append(key, values[key]);
+                }
+                data.set("started_at", date);
                 const eTags = [];
                 let i = 0;
+
                 images.map((image) => {
+                    console.log(image);
                     if (image.file) {
-                        data.append("imageUrls", image.file);
+                        data.append("imageUrls", image.originFileObj);
                     } else {
                         eTags[i] = image.eTag;
                         i++;
                     }
                 });
                 data.append("eTags", eTags);
-                return await dispatch(editDetailEvent(event._id, data));
+                return dispatch(editDetailEvent(event._id, data));
             };
             createData()
                 .then((r) => {
                     if (r?.status === "failed") {
                         setShowUploading(false);
-                        setShowFailed(r.message);
+                        message.error(r.message);
                     } else {
                         setShowUploading(false);
-                        setShowSuccess(r.message);
+                        message.success(r.message);
+                        Router.push("/event");
                     }
                 })
-                .catch(() => {
+                .catch((e) => {
                     setShowUploading(false);
-                    setShowFailed(true);
+                    message.error(e.message);
                 });
         }
     };
 
-    const reset = () => {
-        window.location.reload();
+    const getBase64 = (file) =>
+        new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = (error) => reject(error);
+        });
+
+    const handlePreview = async (file) => {
+        console.log(file);
+        if (!file.url && !file.preview) {
+            file.preview = await getBase64(file.originFileObj);
+        }
+        setPreviewImage(file.url || file.preview);
+        setPreviewOpen(true);
+        setPreviewTitle(
+            file.name || file.url.substring(file.url.lastIndexOf("/") + 1),
+        );
     };
 
+    const handleCancel = () => setPreviewOpen(false);
+    const handleChange = ({ fileList: newFileList }) => {
+        console.log(newFileList);
+        setImages(newFileList);
+    };
+
+    const uploadButton = (
+        <div>
+            <PlusOutlined />
+            <div
+                style={{
+                    marginTop: 8,
+                }}>
+                Upload
+            </div>
+        </div>
+    );
+
+    const onReset = () => {
+        form.current?.resetFields();
+    };
+
+    const beforeUpload = (file) => {
+        const isPNG = file.type === "image/png";
+        const isJPEG = file.type === "image/jpg" || file.type === "image/jpeg";
+        if (!isPNG && !isJPEG) {
+            message.error(`${file.name} is not a png, jpg, or jpeg file`);
+            return isPNG || Upload.LIST_IGNORE;
+        }
+        return false;
+    };
+
+    const onChange = (_, dateString) => {
+        setDate(dateString);
+    };
+
+    console.log(images);
     return (
         <div>
-            <form ref={form} onSubmit={(e) => submitForm(e)}>
-                <div className="max-w">
-                    <div className="grid md:grid-cols-2 sm:grid-cols-1 gap-6">
-                        <label className="block">
-                            <span className="text-gray-700">Name</span>
-                            <input
-                                type="text"
-                                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                                placeholder=""
-                                name="name"
-                                defaultValue={event.name}
-                                required
-                            />
-                        </label>
-                        <label className="block">
-                            <span className="text-gray-700">Started At</span>
-                            <input
-                                type="date"
-                                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                                placeholder=""
-                                defaultValue={getDateValue(event.started_at)}
-                                name="started_at"
-                            />
-                        </label>
-                        <label className="block">
-                            <span className="text-gray-700">Bank Name</span>
-                            <input
-                                type="text"
-                                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                                placeholder=""
-                                name="bankName"
-                                defaultValue={event.bankName}
-                            />
-                        </label>
-                        <label className="block">
-                            <span className="text-gray-700">IBAN</span>
-                            <input
-                                type="text"
-                                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                                placeholder=""
-                                name="iban"
-                                defaultValue={event.iban}
-                            />
-                        </label>
-                        <label className="block">
-                            <span className="text-gray-700">BIC</span>
-                            <input
-                                type="text"
-                                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                                placeholder=""
-                                name="bic"
-                                defaultValue={event.bic}
-                            />
-                        </label>
-                        <label className="block">
-                            <span className="text-gray-700">VZW</span>
-                            <input
-                                type="text"
-                                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                                placeholder=""
-                                name="usageNote"
-                                defaultValue={event.usageNote}
-                            />
-                        </label>
-                        <label className="block">
-                            <span className="text-gray-700">
-                                Paypal Address
-                            </span>
-                            <input
-                                type="text"
-                                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                                placeholder=""
-                                name="paypal"
-                                defaultValue={event.paypal}
-                            />
-                        </label>
-                        <label className="block">
-                            <span className="text-gray-700">Description</span>
-                            <textarea
-                                className=" mt-1 block w-full rounded-md  border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                                rows="2"
-                                name="description"
-                                defaultValue={event.description}
-                                required
-                            />
-                        </label>
-                        <label className="block">
-                            <span className="text-gray-700">Status</span>
-                            <select
-                                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                                name="status"
-                                required>
-                                <option value="" disabled selected hidden>
-                                    Please Choose...
-                                </option>
-                                {status.map((s) => {
-                                    return (
-                                        <option
-                                            key={s.value}
-                                            value={s.value}
-                                            selected={s.value == event.status}>
-                                            {s.title}
-                                        </option>
-                                    );
-                                })}
-                            </select>
-                        </label>
-                        <div className="block">
-                            <span className="text-gray-700">Images</span>
-                            <ImageUploader
-                                onChange={onChange}
-                                images={images}
-                                maxNumber={maxNumber}
-                            />
-                        </div>
-                    </div>
-                </div>
-                <div className="flex my-4">
-                    <SubmitButton />
-                    <ResetButton onClick={reset} />
-                </div>
-            </form>
-            <Alert
-                showFailed={showFailed}
-                showSuccess={showSuccess}
-                setShowFailed={setShowFailed}
-                setShowSuccess={setShowSuccess}
-                successMessage={showSuccess}
-                failedMessage={showFailed}
-                showUploading={showUploading}
-            />
+            <Form
+                form={form}
+                initialValues={{
+                    name: event.name,
+                    started_at: dayjs(getDateValue(event.started_at)),
+                    bankName: event.bankName,
+                    iban: event.iban,
+                    bic: event.bic,
+                    usageNote: event.usageNote,
+                    paypal: event.paypal,
+                    description: event.description,
+                }}
+                layout="vertical"
+                name="event"
+                onFinish={submitForm}
+                labelCol={{
+                    span: 8,
+                }}
+                wrapperCol={{
+                    span: 14,
+                }}>
+                <Form.Item label="Name" name="name">
+                    <Input placeholder="Name" />
+                </Form.Item>
+                <Form.Item label="Started At" name="started_at">
+                    <DatePicker placeholder="Started at" onChange={onChange} />
+                </Form.Item>
+                <Form.Item label="Bank Name" name="bankName">
+                    <Input placeholder="Bank name" />
+                </Form.Item>
+                <Form.Item label="IBAN" name="iban">
+                    <Input placeholder="IBAN" />
+                </Form.Item>
+                <Form.Item label="BIC" name="bic">
+                    <Input placeholder="BIC" />
+                </Form.Item>
+                <Form.Item label="VZW" name="usageNote">
+                    <Input placeholder="VZW" />
+                </Form.Item>
+                <Form.Item label="Paypal" name="paypal">
+                    <Input placeholder="Paypal" />
+                </Form.Item>
+                <Form.Item label="Description" name="description">
+                    <Input.TextArea placeholder="Description" rows={4} />
+                </Form.Item>
+                <Upload
+                    listType="picture-card"
+                    fileList={images}
+                    onPreview={handlePreview}
+                    onChange={handleChange}
+                    beforeUpload={beforeUpload}>
+                    {images.length >= 4 ? null : uploadButton}
+                </Upload>
+                <Modal
+                    open={previewOpen}
+                    title={previewTitle}
+                    footer={null}
+                    onCancel={handleCancel}>
+                    <img
+                        alt="example"
+                        style={{
+                            width: "100%",
+                        }}
+                        src={previewImage}
+                    />
+                </Modal>
+                <Form.Item>
+                    <Space>
+                        <Button
+                            type="primary"
+                            htmlType="submit"
+                            loading={showUploading}>
+                            Submit
+                        </Button>
+                        <Button htmlType="button" onClick={onReset}>
+                            Reset
+                        </Button>
+                    </Space>
+                </Form.Item>
+            </Form>
         </div>
     );
 };

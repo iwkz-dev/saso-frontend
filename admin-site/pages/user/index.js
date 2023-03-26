@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import LoggedInLayout from "../../src/components/Layout/loggedInLayout/loggedInLayout";
+import LoggedIn from "../../src/components/Layout/LoggedIn/LoggedIn";
 import { useDispatch } from "react-redux";
 import AddItemButton from "../../src/components/common/Button/AddItemButton/AddItemButton";
 import Loading from "../../src/components/common/Loading/Loading";
@@ -12,10 +12,11 @@ import {
 } from "../../src/store/reducers/userReducer";
 import Alert from "../../src/components/common/Message/Alert/Alert";
 import { getUserId } from "../../src/helpers/authHelper";
+import Content from "../../src/components/Layout/Content/Content";
+import { Typography } from "antd";
 
 const index = () => {
     const dispatch = useDispatch();
-    const pageData = { name: "User", href: "/user", current: true };
     const pageTitle = "Saso App | User";
     const [showTable, setShowTable] = useState(false);
     const [showLoading, setShowLoading] = useState(false);
@@ -26,6 +27,10 @@ const index = () => {
     const currUser = useSelector((state) => state.user.detailUser);
 
     useEffect(() => {
+        getdetailedUserAllUsers();
+    }, []);
+
+    const getdetailedUserAllUsers = () => {
         setShowLoading(true);
         setShowError("");
         Promise.all([
@@ -42,7 +47,7 @@ const index = () => {
                 setShowTable(false);
             }
         });
-    }, []);
+    };
 
     const onDelete = async (item) => {
         const isConfirm = confirm(
@@ -57,20 +62,7 @@ const index = () => {
                 if (onDelete.status !== "failed") {
                     setShowUploading(false);
                     setShowSuccess(onDelete.message);
-                    try {
-                        setShowUploading(true);
-                        const getUsers = await dispatch(getAllUsers());
-                        if (getUsers.status !== "failed") {
-                            setShowUploading(false);
-                        } else {
-                            setShowUploading(false);
-                            setShowFailed(getUsers.message);
-                        }
-                    } catch (e) {
-                        //TODO: handle error here
-                        setShowUploading(false);
-                        setShowFailed(e);
-                    }
+                    getdetailedUserAllUsers();
                 } else {
                     setShowUploading(false);
                     setShowFailed(onDelete.message);
@@ -84,11 +76,9 @@ const index = () => {
     };
 
     return (
-        <LoggedInLayout title={pageTitle} pageData={pageData}>
-            <div className="w-10/12 mx-auto">
-                <h1 className="text-2xl font-bold text-left w-10/12 mb-3">
-                    User
-                </h1>
+        <LoggedIn title={pageTitle}>
+            <Content>
+                <Typography.Title level={2}>User</Typography.Title>
                 {currUser?.role == 1 ? (
                     <div className="flex justify-between items-center mb-3 w-10/12">
                         <AddItemButton hrefLink="/user/add" text="Add User" />
@@ -111,8 +101,8 @@ const index = () => {
                 ) : (
                     ""
                 )}
-            </div>
-        </LoggedInLayout>
+            </Content>
+        </LoggedIn>
     );
 };
 

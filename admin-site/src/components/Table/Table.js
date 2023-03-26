@@ -1,236 +1,198 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { BiEdit, BiSearchAlt2 } from "react-icons/bi";
-import { MdDeleteOutline } from "react-icons/md";
 import { formatDate } from "../../helpers/dateHelper";
+import { Table, Select, Space } from "antd";
+import { DeleteTwoTone, EditTwoTone } from "@ant-design/icons";
+import Router from "next/router";
 
-const Table = ({
+const TableComponent = ({
     onDelete,
     data,
     dataHead,
-    emptyMessage,
     linkToEdit,
     categories,
     events,
     linkToView,
     actionsOff,
     deleteOff,
+    isLoading,
 }) => {
-    const [items, setItems] = useState([]);
     const [tableHead, setTableHead] = useState([]);
+    const { Column } = Table;
 
     useEffect(() => {
-        setItems(data);
         setTableHead(dataHead);
+        console.log(data);
     }, []);
 
-    const imageColumnHandler = (data) => {
-        if (data.length > 0) {
-            return (
-                <img
-                    className="h-10 w-10 rounded-full"
-                    src={data[0].imageUrl}
-                    alt="item"
-                />
-            );
-        }
+    const getDefaultValue = (options, statuses, id) => {
+        return JSON.stringify({
+            id: id,
+            value: options.find((option) => option.code === statuses)?.value,
+        });
     };
 
-    const editableRow = (th, item, id) => {
-        switch (th.type) {
+    const editableRow = (columnData, dataKey) => {
+        const type = columnData.type;
+        console.log(columnData, dataKey);
+        switch (type) {
             case "select":
                 return (
-                    <select
-                        key={"select " + id}
-                        className="rounded-md"
-                        onChange={(e) => th.onChange(e, id)}>
-                        {th.options.map((opt) => (
-                            <option
-                                key={opt.title + " " + id}
-                                value={opt.value}
-                                selected={item == opt.code}>
-                                {opt.title}
-                            </option>
-                        ))}
-                    </select>
+                    <Column
+                        title={columnData.name}
+                        dataIndex={dataKey}
+                        key={dataKey}
+                        render={(statuses, record) => {
+                            console.log(statuses);
+                            return (
+                                <Select
+                                    key={record._id}
+                                    style={{
+                                        width: "83.330%",
+                                    }}
+                                    defaultValue={getDefaultValue(
+                                        columnData.options,
+                                        statuses,
+                                        record._id,
+                                    )}
+                                    onChange={columnData.onChange}>
+                                    {columnData.options.map((statusOption) => (
+                                        <Select.Option
+                                            key={statusOption.title}
+                                            value={JSON.stringify({
+                                                id: record._id,
+                                                value: statusOption.value,
+                                            })}>
+                                            {statusOption.title}
+                                        </Select.Option>
+                                    ))}
+                                </Select>
+                            );
+                        }}
+                    />
                 );
+
             default:
                 break;
         }
     };
 
-    const sort = (item, key) => {
-        if (item.sortable) {
-            if (item.sortable === "asc") {
-                const sortedData = [...items].sort((a, b) =>
-                    a[key] > b[key] ? 1 : -1,
-                );
-                setItems(sortedData);
-                const newTableHead = { ...tableHead };
-                newTableHead[key].sortable = "desc";
-                setTableHead(newTableHead);
-            } else if (item.sortable === "desc") {
-                const sortedData = [...items].sort((a, b) =>
-                    a[key] < b[key] ? 1 : -1,
-                );
-                setItems(sortedData);
-                const newTableHead = { ...tableHead };
-                newTableHead[key].sortable = "asc";
-                setTableHead(newTableHead);
-            }
-        }
-    };
-
-    const rowHandler = (item, key) => {
-        const maxLengthDescription = 40;
-        const maxLengthName = 25;
-        if (key === "images") {
-            return imageColumnHandler(item[key]);
-        } else if (key === "category") {
-            const category = categories.find((c) => c._id === item[key]);
-            return (
-                <div className="text-sm text-gray-900">{category?.name}</div>
-            );
-        } else if (key === "event") {
-            const event = events.find((e) => e._id === item[key]);
-            return <div className="text-sm text-gray-900">{event?.name}</div>;
-        } else if (
-            (key === "description" || key === "note") &&
-            item[key].length > maxLengthDescription
-        ) {
-            const shortenerStr = `${item[key].substring(
-                0,
-                maxLengthDescription,
-            )}...`;
-            return <div className="text-sm text-gray-900">{shortenerStr}</div>;
-        } else if (key === "name" && item[key].length > maxLengthName) {
-            const shortenerStr = `${item[key].substring(0, maxLengthName)}...`;
-            return <div className="text-sm text-gray-900">{shortenerStr}</div>;
-        } else if (key === "started_at") {
-            return (
-                <div className="text-sm text-gray-900">
-                    {formatDate(item[key], false, true)}
-                </div>
-            );
-        } else if (key === "created_at" || key === "updated_at") {
-            return (
-                <div className="text-sm text-gray-900">
-                    {formatDate(item[key], true)}
-                </div>
-            );
-        } else if (key === "status") {
-            return (
-                <div className="text-sm text-gray-900">
-                    {tableHead[key].editable
-                        ? editableRow(tableHead[key], item[key], item._id)
-                        : "Draft"}
-                </div>
-            );
-        } else {
-            return (
-                <div className="text-sm text-gray-900">
-                    {item[key]?.toString()}
-                </div>
-            );
-        }
-    };
-
-    const tableRow = (item, index) => {
-        return (
-            <tr key={index}>
-                <td
-                    key="number"
-                    className="px-6 py-3 whitespace-nowrap text-center text-sm font-medium">
-                    <div className="text-sm text-gray-900">{index + 1}</div>
-                </td>
-                {!actionsOff ? (
-                    <td
-                        key="actions"
-                        className="px-6 py-3 whitespace-nowrap text-right text-sm font-medium ">
-                        <div className="flex items-center">
-                            {linkToView ? (
-                                <Link href={linkToView + item._id}>
-                                    <a className="text-zinc-600 hover:text-zinc-900 px-1">
-                                        <BiSearchAlt2 />
-                                    </a>
-                                </Link>
-                            ) : null}
-                            {linkToEdit ? (
-                                <Link href={linkToEdit + item._id}>
-                                    <a className="text-indigo-600 hover:text-indigo-900 px-1">
-                                        <BiEdit />
-                                    </a>
-                                </Link>
-                            ) : null}
-
-                            {deleteOff ? null : (
-                                <div
-                                    onClick={() => onDelete(item)}
-                                    className="text-red-600 hover:text-red-900 px-1 cursor-pointer">
-                                    <MdDeleteOutline />
-                                </div>
-                            )}
-                        </div>
-                    </td>
-                ) : null}
-                {Object.keys(tableHead).map((k) => (
-                    <td
-                        key={k + " " + index}
-                        className="px-6 py-3 whitespace-nowrap text-sm font-medium ">
-                        {rowHandler(item, k)}
-                    </td>
-                ))}
-            </tr>
-        );
-    };
-
-    if (items.length > 0) {
-        return (
-            <div className="overflow-x-scroll shadow border-b border-gray-200 sm:rounded-lg">
-                <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
-                        <tr>
-                            <th
-                                scope="col"
-                                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Nr.
-                            </th>
-                            {!actionsOff ? (
-                                <th
-                                    scope="col"
-                                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Actions
-                                </th>
-                            ) : null}
-                            {Object.keys(tableHead).map((k, index) => (
-                                <th
-                                    key={index}
-                                    scope="col"
-                                    className={`${
-                                        tableHead[k].sortable
-                                            ? "cursor-pointer hover:bg-gray-200"
-                                            : ""
-                                    } px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap`}
-                                    onClick={() => sort(tableHead[k], k)}>
-                                    {typeof tableHead[k] === "string"
-                                        ? tableHead[k]
-                                        : tableHead[k].name}
-                                </th>
-                            ))}
-                        </tr>
-                    </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
-                        {items.map((m, index) => tableRow(m, index))}
-                    </tbody>
-                </table>
-            </div>
-        );
-    }
     return (
-        <p>
-            <i>{emptyMessage}</i>
-        </p>
+        <Table
+            loading={isLoading}
+            dataSource={data}
+            scroll={{
+                x: 1500,
+                y: 800,
+            }}
+            onRow={(record, rowIndex) => {
+                console.log(record, rowIndex);
+                return {
+                    onDoubleClick: (event) => {
+                        console.log(record, rowIndex, event);
+                        const link = linkToView + record._id;
+                        Router.push(link);
+                    },
+                };
+            }}>
+            {Object.keys(tableHead).map((dataKey) => {
+                console.log(typeof tableHead[dataKey]);
+                if (typeof tableHead[dataKey] !== "string") {
+                    return editableRow(tableHead[dataKey], dataKey);
+                } else if (
+                    dataKey === "created_at" ||
+                    dataKey === "updated_at"
+                ) {
+                    return (
+                        <Column
+                            title={tableHead[dataKey]}
+                            dataIndex={dataKey}
+                            key={dataKey}
+                            render={(dates) => {
+                                console.log(tableHead[dataKey]);
+                                return <>{formatDate(dates, true)}</>;
+                            }}
+                        />
+                    );
+                } else if (dataKey === "started_at") {
+                    return (
+                        <Column
+                            title={tableHead[dataKey]}
+                            dataIndex={dataKey}
+                            key={dataKey}
+                            render={(startedAt) => {
+                                return (
+                                    <>{formatDate(startedAt, false, true)}</>
+                                );
+                            }}
+                        />
+                    );
+                } else if (dataKey === "category") {
+                    return (
+                        <Column
+                            title={tableHead[dataKey]}
+                            dataIndex={dataKey}
+                            key={dataKey}
+                            render={(categoryId) => {
+                                const category = categories.find(
+                                    (c) => c._id === categoryId,
+                                );
+                                return <>{category?.name}</>;
+                            }}
+                        />
+                    );
+                } else if (dataKey === "event") {
+                    return (
+                        <Column
+                            title={tableHead[dataKey]}
+                            dataIndex={dataKey}
+                            key={dataKey}
+                            render={(eventId) => {
+                                const event = events.find(
+                                    (e) => e._id === eventId,
+                                );
+                                console.log(tableHead[dataKey]);
+                                return <>{event?.name}</>;
+                            }}
+                        />
+                    );
+                } else {
+                    return (
+                        <Column
+                            title={tableHead[dataKey]}
+                            dataIndex={dataKey}
+                            key={dataKey}
+                        />
+                    );
+                }
+            })}
+            {actionsOff ? null : (
+                <Column
+                    title="Actions"
+                    key="action"
+                    fixed="right"
+                    render={(_, record) => {
+                        return (
+                            <Space size={24}>
+                                {linkToEdit ? (
+                                    <Link href={linkToEdit + record._id}>
+                                        <EditTwoTone />
+                                    </Link>
+                                ) : null}
+
+                                {deleteOff ? null : (
+                                    <DeleteTwoTone
+                                        twoToneColor="#eb2f96"
+                                        onClick={() => onDelete(record)}
+                                    />
+                                )}
+                            </Space>
+                        );
+                    }}
+                />
+            )}
+        </Table>
     );
 };
 
-export default Table;
+export default TableComponent;

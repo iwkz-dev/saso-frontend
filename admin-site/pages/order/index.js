@@ -1,31 +1,26 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import LoggedInLayout from "../../src/components/Layout/loggedInLayout/loggedInLayout";
-import Alert from "../../src/components/common/Message/Alert/Alert";
+import LoggedIn from "../../src/components/Layout/LoggedIn/LoggedIn";
 import {
     changeOrderStatus,
     deleteOrder,
     getAllOrders,
 } from "../../src/store/reducers/orderReducer";
-import Loading from "../../src/components/common/Loading/Loading";
 import OrderTable from "../../src/components/Table/Order/OrderTable/OrderTable";
 import { getAllEvents } from "../../src/store/reducers/eventReducer";
 import OrderFilterForm from "../../src/components/Form/Order/OrderFilterForm/OrderFilterForm";
+import Content from "../../src/components/Layout/Content/Content";
+import { Space, Typography, message } from "antd";
 
 const index = () => {
     const dispatch = useDispatch();
-    const pageData = { name: "Order", href: "/order", current: true };
     const pageTitle = "Saso App | Order";
     const [showTable, setShowTable] = useState(false);
-    const [showLoading, setShowLoading] = useState(false);
-    const [showError, setShowError] = useState("");
-    const [showSuccess, setShowSuccess] = useState(false);
-    const [showFailed, setShowFailed] = useState(false);
-    const [showUploading, setShowUploading] = useState(false);
+    const [showLoadingData, setShowLoadingData] = useState(false);
     const [filters, setFilters] = useState([]);
 
     useEffect(() => {
-        getAllData();
+        getEventsOrders();
     }, [filters]);
 
     const filtersQueryBuilder = () => {
@@ -40,9 +35,8 @@ const index = () => {
         return "";
     };
 
-    const getAllData = () => {
-        setShowLoading(true);
-        setShowError("");
+    const getEventsOrders = () => {
+        setShowLoadingData(true);
         Promise.all([
             dispatch(getAllEvents()),
             dispatch(getAllOrders(filtersQueryBuilder())),
@@ -50,48 +44,35 @@ const index = () => {
             const failed = responses.find((r) => r?.status === "failed");
             if (!failed) {
                 setShowTable(true);
-                setShowLoading(false);
+                setShowLoadingData(false);
             } else {
                 setShowTable(false);
-                setShowLoading(false);
-                setShowError(failed.message);
+                setShowLoadingData(false);
+                message.error(failed.message);
             }
         });
     };
 
-    const onChangeStatus = async (e, id) => {
-        setShowSuccess(false);
-        setShowFailed(false);
-        setShowUploading(true);
+    const onChangeStatus = async (value) => {
+        setShowLoadingData(true);
         try {
             const onChangeStatus = await dispatch(
-                changeOrderStatus(id, e.target.value),
+                changeOrderStatus(
+                    JSON.parse(value).id,
+                    JSON.parse(value).value,
+                ),
             );
-            setShowSuccess(onChangeStatus.message);
             if (onChangeStatus.status !== "failed") {
-                setShowUploading(false);
-                setShowSuccess(onChangeStatus.message);
-                try {
-                    setShowUploading(true);
-                    const getOrders = await dispatch(getAllOrders());
-                    if (getOrders.status !== "failed") {
-                        setShowUploading(false);
-                    } else {
-                        setShowUploading(false);
-                        setShowFailed(getOrders.message);
-                    }
-                } catch (e) {
-                    //TODO: handle error here
-                    setShowUploading(false);
-                    setShowFailed(e);
-                }
+                setShowLoadingData(false);
+                message.success(onChangeStatus.message);
+                getEventsOrders();
             } else {
-                setShowUploading(false);
-                setShowFailed(onChangeStatus.message);
+                setShowLoadingData(false);
+                message.error(onChangeStatus.message);
             }
         } catch (error) {
-            setShowUploading(false);
-            setShowFailed(true);
+            setShowLoadingData(false);
+            message.error(error);
         }
     };
 
@@ -100,80 +81,43 @@ const index = () => {
             `Please confirm this if you want to delete "${item.invoiceNumber}"`,
         );
         if (isConfirm) {
-            setShowFailed(false);
-            setShowSuccess(false);
-            setShowUploading(true);
-        }
-        if (isConfirm) {
-            setShowFailed(false);
-            setShowSuccess(false);
-            setShowUploading(true);
+            setShowLoadingData(true);
             try {
                 const onDelete = await dispatch(deleteOrder(item["_id"]));
                 if (onDelete.status !== "failed") {
-                    setShowUploading(false);
-                    setShowSuccess(onDelete.message);
-                    try {
-                        setShowUploading(true);
-                        const getOrders = await dispatch(getAllOrders());
-                        if (getOrders.status !== "failed") {
-                            setShowUploading(false);
-                        } else {
-                            setShowUploading(false);
-                            setShowFailed(getOrders.message);
-                        }
-                    } catch (e) {
-                        //TODO: handle error here
-                        setShowUploading(false);
-                        setShowFailed(e);
-                    }
+                    setShowLoadingData(false);
+                    message.success(onDelete.message);
+                    getEventsOrders();
                 } else {
-                    setShowUploading(false);
-                    setShowFailed(onDelete.message);
+                    setShowLoadingData(false);
+                    message.error(onChangeStatus.message);
                 }
             } catch (e) {
                 //TODO: handle error here
-                setShowUploading(false);
-                setShowFailed(e);
+                setShowLoadingData(false);
+                message.error(e);
             }
         }
     };
 
     return (
-        <LoggedInLayout title={pageTitle} pageData={pageData}>
-            <div className="w-10/12 mx-auto">
-                <h1 className="text-2xl font-bold text-left w-10/12 mb-3">
-                    Order
-                </h1>
-                <Alert
-                    showFailed={showFailed}
-                    showSuccess={showSuccess}
-                    setShowFailed={setShowFailed}
-                    setShowSuccess={setShowSuccess}
-                    successMessage={showSuccess}
-                    failedMessage={showFailed}
-                    showUploading={showUploading}
-                />
-                <OrderFilterForm filters={filters} setFilters={setFilters} />
-                {showError || ""}
-                {showLoading ? (
-                    <Loading />
-                ) : showTable ? (
+        <LoggedIn title={pageTitle}>
+            <Content>
+                <Typography.Title level={2}>Order</Typography.Title>
+                <Space direction="vertical" style={{ display: "flex" }}>
+                    <OrderFilterForm
+                        filters={filters}
+                        setFilters={setFilters}
+                    />
                     <OrderTable
                         onDelete={onDelete}
                         onChangeStatus={onChangeStatus}
-                        showFailed={showFailed}
-                        showSuccess={showSuccess}
-                        setShowFailed={setShowFailed}
-                        setShowSuccess={setShowSuccess}
-                        showUploading={showUploading}
-                        setShowUploading={setShowUploading}
+                        isLoading={showLoadingData}
+                        showTable={showTable}
                     />
-                ) : (
-                    ""
-                )}
-            </div>
-        </LoggedInLayout>
+                </Space>
+            </Content>
+        </LoggedIn>
     );
 };
 

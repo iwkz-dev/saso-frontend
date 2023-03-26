@@ -1,114 +1,83 @@
 import React, { useEffect, useState } from "react";
+import Content from "../../src/components/Layout/Content/Content";
 import { useDispatch } from "react-redux";
 import {
     deleteCategory,
     getAllCategories,
 } from "../../src/store/reducers/categoryReducer";
-import LoggedInLayout from "../../src/components/Layout/loggedInLayout/loggedInLayout";
-import Loading from "../../src/components/common/Loading/Loading";
+import LoggedIn from "../../src/components/Layout/LoggedIn/LoggedIn";
 import CategoryTable from "../../src/components/Table/Category/CategoryTable/CategoryTable";
 import AddItemButton from "../../src/components/common/Button/AddItemButton/AddItemButton";
-import Alert from "../../src/components/common/Message/Alert/Alert";
+import { Space, message } from "antd";
 
 const index = () => {
     const dispatch = useDispatch();
-    const pageData = { name: "Category", href: "/category", current: true };
     const pageTitle = "Saso App | Category";
     const [showTable, setShowTable] = useState(false);
-    const [showLoading, setShowLoading] = useState(false);
-    const [showError, setShowError] = useState("");
-    const [showSuccess, setShowSuccess] = useState(false);
-    const [showFailed, setShowFailed] = useState(false);
-    const [showUploading, setShowUploading] = useState(false);
+    const [showLoadingData, setShowLoadingData] = useState(false);
 
     useEffect(() => {
-        setShowLoading(true);
-        setShowError("");
+        getCategories();
+    }, []);
+
+    const getCategories = () => {
+        setShowLoadingData(true);
         const getEvents = async () => {
-            return await dispatch(getAllCategories());
+            return dispatch(getAllCategories());
         };
         getEvents().then((r) => {
             if (r.status === "success") {
-                setShowLoading(false);
+                setShowLoadingData(false);
                 setShowTable(true);
             } else {
-                setShowLoading(false);
-                setShowError(r.message);
+                setShowLoadingData(false);
+                message.error(r.message);
                 setShowTable(false);
             }
         });
-    }, []);
+    };
 
     const onDelete = async (item) => {
         const isConfirm = confirm(
             `Please confirm this if you want to delete "${item.name}"`,
         );
         if (isConfirm) {
-            setShowFailed(false);
-            setShowSuccess(false);
-            setShowUploading(true);
+            setShowLoadingData(true);
             try {
                 const onDelete = await dispatch(deleteCategory(item["_id"]));
                 if (onDelete.status !== "failed") {
-                    setShowUploading(false);
-                    setShowSuccess(onDelete.message);
-                    try {
-                        setShowUploading(true);
-                        const getCategories = await dispatch(
-                            getAllCategories(),
-                        );
-                        if (getCategories.status !== "failed") {
-                            setShowUploading(false);
-                        } else {
-                            setShowUploading(false);
-                            setShowFailed(getCategories.message);
-                        }
-                    } catch (e) {
-                        //TODO: handle error here
-                        setShowUploading(false);
-                        setShowFailed(e);
-                    }
+                    setShowLoadingData(false);
+                    message.success(onDelete.message);
+                    getCategories();
                 } else {
-                    setShowUploading(false);
-                    setShowFailed(onDelete.message);
+                    setShowLoadingData(false);
+                    message.error(onDelete.message);
                 }
             } catch (e) {
                 //TODO: handle error here
-                setShowUploading(false);
-                setShowFailed(e);
+                setShowLoadingData(false);
+                message.error(e);
             }
         }
     };
 
     return (
-        <LoggedInLayout title={pageTitle} pageData={pageData}>
-            <div className="w-10/12 mx-auto">
+        <LoggedIn title={pageTitle}>
+            <Content>
                 <h1 className="text-2xl font-bold text-left mb-3">Category</h1>
-                <div className="flex justify-between items-center mb-3">
+                <Space direction="vertical" style={{ display: "flex" }}>
                     <AddItemButton
                         hrefLink="/category/add"
                         text="Add Category"
                     />
-                </div>
-                <Alert
-                    showFailed={showFailed}
-                    showSuccess={showSuccess}
-                    setShowFailed={setShowFailed}
-                    setShowSuccess={setShowSuccess}
-                    successMessage={showSuccess}
-                    failedMessage={showFailed}
-                    showUploading={showUploading}
-                />
-                {showError || ""}
-                {showLoading ? (
-                    <Loading />
-                ) : showTable ? (
-                    <CategoryTable onDelete={onDelete} />
-                ) : (
-                    ""
-                )}
-            </div>
-        </LoggedInLayout>
+                    <CategoryTable
+                        onDelete={onDelete}
+                        isLoading={showLoadingData}
+                        showTable={showTable}
+                    />
+                </Space>
+            </Content>
+        </LoggedIn>
     );
 };
 

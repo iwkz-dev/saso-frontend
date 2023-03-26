@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import LoggedInLayout from "../../../src/components/Layout/loggedInLayout/loggedInLayout";
+import LoggedIn from "../../../src/components/Layout/LoggedIn/LoggedIn";
 import EditMenuForm from "../../../src/components/Form/Menu/EditMenuForm/EditMenuForm";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
@@ -7,6 +7,8 @@ import { getDetailMenu } from "../../../src/store/reducers/menuReducer";
 import { getAllEvents } from "../../../src/store/reducers/eventReducer";
 import { getAllCategories } from "../../../src/store/reducers/categoryReducer";
 import Loading from "../../../src/components/common/Loading/Loading";
+import Content from "../../../src/components/Layout/Content/Content";
+import { Typography } from "antd";
 
 const id = () => {
     const dispatch = useDispatch();
@@ -43,14 +45,14 @@ const id = () => {
     }, [id]);
 
     return (
-        <LoggedInLayout title={pageTitle} pageData={pageData}>
-            <div className="w-10/12">
-                <h1 className="text-2xl font-bold text-left mb-3">Edit menu</h1>
+        <LoggedIn title={pageTitle} pageData={pageData}>
+            <Content>
+                <Typography.Title level={2}>Edit menu</Typography.Title>
                 {showLoading ? <Loading /> : ""}
                 {showForm ? <EditMenuForm id={id} /> : ""}
                 {showError || ""}
-            </div>
-        </LoggedInLayout>
+            </Content>
+        </LoggedIn>
     );
 };
 

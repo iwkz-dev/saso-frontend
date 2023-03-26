@@ -2,7 +2,7 @@ const path = require("path");
 module.exports = {
     basePath: "/admin",
     trailingSlash: true,
-    webpackDevMiddleware: (config) => {
+    webpack: (config) => {
         config.watchOptions = {
             poll: 1000,
             aggregateTimeout: 300,
@@ -12,8 +12,5 @@ module.exports = {
     },
     sassOptions: {
         includePaths: [path.join(__dirname, "styles")],
-    },
-    images: {
-        domains: ["tailwindui.com", "images.unsplash.com"],
     },
 };

@@ -2,29 +2,24 @@ import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useRouter } from "next/router";
 import { getDetailCategory } from "../../../src/store/reducers/categoryReducer";
-import Loading from "../../../src/components/common/Loading/Loading";
-import LoggedInLayout from "../../../src/components/Layout/loggedInLayout/loggedInLayout";
 import EditCategoryForm from "../../../src/components/Form/Category/EditCategoryForm/EditCategoryForm";
+import LoggedIn from "../../../src/components/Layout/LoggedIn/LoggedIn";
+import Content from "../../../src/components/Layout/Content/Content";
+import { Spin, message } from "antd";
 
 const id = () => {
     const dispatch = useDispatch();
     const router = useRouter();
     const { id } = router.query;
-    const pageData = {
-        name: "Category",
-        href: `/category/edit/${id}`,
-        current: true,
-    };
     const pageTitle = "Saso App | Category";
     const [showForm, setShowForm] = useState(false);
-    const [showError, setShowError] = useState("");
     const [showLoading, setShowLoading] = useState(false);
 
     useEffect(() => {
         setShowLoading(true);
         if (id) {
             const getCategory = async () => {
-                return await dispatch(getDetailCategory(id));
+                return dispatch(getDetailCategory(id));
             };
             getCategory().then((r) => {
                 if (r.status === "success") {
@@ -32,23 +27,23 @@ const id = () => {
                     setShowLoading(false);
                 } else {
                     setShowLoading(false);
-                    setShowError(r.message);
+                    message.error(r.message);
                 }
             });
         }
     }, [id]);
 
     return (
-        <LoggedInLayout title={pageTitle} pageData={pageData}>
-            <div className="w-10/12 mx-auto">
+        <LoggedIn title={pageTitle}>
+            <Content>
                 <h1 className="text-2xl font-bold text-left mb-3">
                     Edit Category
                 </h1>
-                {showLoading ? <Loading /> : ""}
-                {showForm ? <EditCategoryForm id={id} /> : ""}
-                {showError || ""}
-            </div>
-        </LoggedInLayout>
+                <Spin spinning={showLoading} tip="Loading...">
+                    {showForm ? <EditCategoryForm id={id} /> : ""}
+                </Spin>
+            </Content>
+        </LoggedIn>
     );
 };
 

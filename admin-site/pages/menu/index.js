@@ -3,29 +3,30 @@ import { useDispatch } from "react-redux";
 import { deleteMenu, getAllMenus } from "../../src/store/reducers/menuReducer";
 import { getAllCategories } from "../../src/store/reducers/categoryReducer";
 import { getAllEvents } from "../../src/store/reducers/eventReducer";
-import { HiAdjustments } from "react-icons/hi";
-import LoggedInLayout from "../../src/components/Layout/loggedInLayout/loggedInLayout";
+import LoggedIn from "../../src/components/Layout/LoggedIn/LoggedIn";
 import MenuTable from "../../src/components/Table/Menu/MenuTable/MenuTable";
 import MenusFilterForm from "../../src/components/Form/Menu/MenusFilterForm/MenusFilterForm";
 import Loading from "../../src/components/common/Loading/Loading";
 import AddItemButton from "../../src/components/common/Button/AddItemButton/AddItemButton";
 import Alert from "../../src/components/common/Message/Alert/Alert";
+import Content from "../../src/components/Layout/Content/Content";
+import { Button, Modal, Space, Typography } from "antd";
+import { FilterOutlined } from "@ant-design/icons";
 
 const index = () => {
     const dispatch = useDispatch();
-    const pageData = { name: "Menu", href: "/menu", current: true };
     const pageTitle = "Saso App | Menu";
     const [filters, setFilters] = useState([]);
-    const [showFilterForm, setShowFilterForm] = useState(false);
     const [showTable, setShowTable] = useState(false);
     const [showLoading, setShowLoading] = useState(false);
     const [showError, setShowError] = useState("");
     const [showSuccess, setShowSuccess] = useState(false);
     const [showFailed, setShowFailed] = useState(false);
     const [showUploading, setShowUploading] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     useEffect(() => {
-        getAllData();
+        getEventsCategoriesMenus();
     }, [filters]);
 
     const filtersQueryBuilder = () => {
@@ -40,7 +41,7 @@ const index = () => {
         return "";
     };
 
-    const getAllData = () => {
+    const getEventsCategoriesMenus = () => {
         setShowLoading(true);
         setShowError("");
         Promise.all([
@@ -58,10 +59,6 @@ const index = () => {
                 setShowError(failed.message);
             }
         });
-    };
-
-    const handleChangeShowFilter = () => {
-        setShowFilterForm(!showFilterForm);
     };
 
     const handleChange = (e, name) => {
@@ -94,22 +91,7 @@ const index = () => {
                 if (onDelete.status !== "failed") {
                     setShowUploading(false);
                     setShowSuccess(onDelete.message);
-                    try {
-                        setShowUploading(true);
-                        const getMenus = await dispatch(
-                            getAllMenus(filtersQueryBuilder()),
-                        );
-                        if (getMenus.status !== "failed") {
-                            setShowUploading(false);
-                        } else {
-                            setShowUploading(false);
-                            setShowFailed(getMenus.message);
-                        }
-                    } catch (e) {
-                        //TODO: handle error here
-                        setShowUploading(false);
-                        setShowFailed(e);
-                    }
+                    getEventsCategoriesMenus();
                 } else {
                     setShowUploading(false);
                     setShowFailed(onDelete.message);
@@ -122,45 +104,61 @@ const index = () => {
         }
     };
 
+    const showModal = () => {
+        setIsModalOpen(true);
+    };
+
+    const handleOk = () => {
+        setIsModalOpen(false);
+    };
+
+    const handleCancel = () => {
+        setIsModalOpen(false);
+    };
+
     return (
-        <LoggedInLayout title={pageTitle} pageData={pageData}>
-            <div className="w-10/12 mx-auto">
-                <h1 className="text-2xl font-bold text-left mb-3">Menu</h1>
-                <div className="flex justify-between items-center mb-3">
-                    <AddItemButton hrefLink="/menu/add" text="Add Menu" />
-                    <div
-                        className="flex items-center cursor-pointer mr-5"
-                        onClick={() => handleChangeShowFilter()}>
-                        <HiAdjustments className="pr-1" size={20} />
-                        <span>
-                            {showFilterForm ? "Hide Filter" : "Show Filter"}
-                        </span>
-                    </div>
-                </div>
-                <Alert
-                    showFailed={showFailed}
-                    showSuccess={showSuccess}
-                    setShowFailed={setShowFailed}
-                    setShowSuccess={setShowSuccess}
-                    successMessage={showSuccess}
-                    failedMessage={showFailed}
-                    showUploading={showUploading}
-                />
-                <MenusFilterForm
-                    handleChange={handleChange}
-                    showFilterForm={showFilterForm}
-                    handleChangeShowFilter={handleChangeShowFilter}
-                />
-                {showError || ""}
-                {showLoading ? (
-                    <Loading />
-                ) : showTable ? (
-                    <MenuTable onDelete={onDelete} />
-                ) : (
-                    ""
-                )}
-            </div>
-        </LoggedInLayout>
+        <LoggedIn title={pageTitle}>
+            <Content>
+                <Typography.Title level={2}>Menu</Typography.Title>
+                <Space direction="vertical" style={{ display: "flex" }}>
+                    <Space
+                        style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                        }}>
+                        <AddItemButton hrefLink="/menu/add" text="Add Menu" />
+                        <Button icon={<FilterOutlined />} onClick={showModal}>
+                            Filter
+                        </Button>
+                    </Space>
+                    <Modal
+                        title="Filter Menu"
+                        open={isModalOpen}
+                        onOk={handleOk}
+                        onCancel={handleCancel}>
+                        <MenusFilterForm handleChange={handleChange} />
+                    </Modal>
+                    <Alert
+                        showFailed={showFailed}
+                        showSuccess={showSuccess}
+                        setShowFailed={setShowFailed}
+                        setShowSuccess={setShowSuccess}
+                        successMessage={showSuccess}
+                        failedMessage={showFailed}
+                        showUploading={showUploading}
+                    />
+
+                    {showError || ""}
+                    {showLoading ? (
+                        <Loading />
+                    ) : showTable ? (
+                        <MenuTable onDelete={onDelete} />
+                    ) : (
+                        ""
+                    )}
+                </Space>
+            </Content>
+        </LoggedIn>
     );
 };
 

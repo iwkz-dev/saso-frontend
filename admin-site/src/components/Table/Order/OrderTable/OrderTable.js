@@ -5,7 +5,46 @@ import Table from "../../Table";
 function OrderTable({ onDelete, onChangeStatus }) {
     const orders = useSelector((state) => state.order.orders);
     const events = useSelector((state) => state.event.events);
+    const tableHead = {
+        invoiceNumber: "Invoice Number",
+        event: "Event",
+        status: {
+            name: "Status",
+            editable: 1,
+            type: "select",
+            onChange: onChangeStatus,
+            options: [
+                {
+                    title: "Wait For Confirmation",
+                    value: "wait",
+                    code: 0,
+                },
+                {
+                    title: "Paid",
+                    value: "paid",
+                    code: 1,
+                },
+                {
+                    title: "Cancel / Refund",
+                    value: "cancel",
+                    code: 2,
+                },
+                {
+                    title: "Done",
+                    value: "done",
+                    code: 3,
+                },
+            ],
+        },
+        customerFullname: "Customer Fullname",
+        customerEmail: "Customer Email",
+        totalPrice: "Total Price",
+        arrived_at: "Arrived At",
+        created_at: "Created At",
+        updated_at: "Updated At",
+    };
 
+    /*
     const tableHead = {
         invoiceNumber: {
             name: "Invoice Number",
@@ -77,6 +116,7 @@ function OrderTable({ onDelete, onChangeStatus }) {
             sortable: "asc",
         },
     };
+    */
 
     return (
         <Table
@@ -85,8 +125,7 @@ function OrderTable({ onDelete, onChangeStatus }) {
             events={events}
             dataHead={tableHead}
             emptyMessage="Order is empty"
-            linkToView="/order/view/"
-            deleteOff={true}
+            actionsOff={true}
         />
     );
 }

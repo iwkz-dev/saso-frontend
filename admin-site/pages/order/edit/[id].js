@@ -1,6 +1,8 @@
 import React from "react";
 import { useRouter } from "next/router";
-import LoggedInLayout from "../../../src/components/Layout/loggedInLayout/loggedInLayout";
+import LoggedIn from "../../../src/components/Layout/LoggedIn/LoggedIn";
+import Content from "../../../src/components/Layout/Content/Content";
+import { Typography } from "antd";
 
 const id = () => {
     const router = useRouter();
@@ -14,13 +16,11 @@ const id = () => {
 
     // TODO edit form
     return (
-        <LoggedInLayout title={pageTitle} pageData={pageData}>
-            <div className="w-10/12">
-                <h1 className="text-2xl font-bold text-left mb-3">
-                    Edit Order
-                </h1>
-            </div>
-        </LoggedInLayout>
+        <LoggedIn title={pageTitle} pageData={pageData}>
+            <Content>
+                <Typography.Title level={2}>Edit Order</Typography.Title>
+            </Content>
+        </LoggedIn>
     );
 };
 
