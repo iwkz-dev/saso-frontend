@@ -22,7 +22,6 @@ const TableComponent = ({
 
     useEffect(() => {
         setTableHead(dataHead);
-        console.log(data);
     }, []);
 
     const getDefaultValue = (options, statuses, id) => {
@@ -34,7 +33,6 @@ const TableComponent = ({
 
     const editableRow = (columnData, dataKey) => {
         const type = columnData.type;
-        console.log(columnData, dataKey);
         switch (type) {
             case "select":
                 return (
@@ -43,7 +41,6 @@ const TableComponent = ({
                         dataIndex={dataKey}
                         key={dataKey}
                         render={(statuses, record) => {
-                            console.log(statuses);
                             return (
                                 <Select
                                     key={record._id}
@@ -85,18 +82,15 @@ const TableComponent = ({
                 x: 1500,
                 y: 800,
             }}
-            onRow={(record, rowIndex) => {
-                console.log(record, rowIndex);
+            onRow={(record) => {
                 return {
-                    onDoubleClick: (event) => {
-                        console.log(record, rowIndex, event);
+                    onDoubleClick: () => {
                         const link = linkToView + record._id;
                         Router.push(link);
                     },
                 };
             }}>
             {Object.keys(tableHead).map((dataKey) => {
-                console.log(typeof tableHead[dataKey]);
                 if (typeof tableHead[dataKey] !== "string") {
                     return editableRow(tableHead[dataKey], dataKey);
                 } else if (
@@ -109,7 +103,6 @@ const TableComponent = ({
                             dataIndex={dataKey}
                             key={dataKey}
                             render={(dates) => {
-                                console.log(tableHead[dataKey]);
                                 return <>{formatDate(dates, true)}</>;
                             }}
                         />
@@ -151,7 +144,6 @@ const TableComponent = ({
                                 const event = events.find(
                                     (e) => e._id === eventId,
                                 );
-                                console.log(tableHead[dataKey]);
                                 return <>{event?.name}</>;
                             }}
                         />

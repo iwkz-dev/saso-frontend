@@ -15,7 +15,6 @@ const EditCategoryForm = () => {
         if (text) {
             setShowUploading(true);
             const editData = async () => {
-                console.log(category._id, values);
                 return dispatch(editDetailCategory(category._id, values));
             };
             editData()

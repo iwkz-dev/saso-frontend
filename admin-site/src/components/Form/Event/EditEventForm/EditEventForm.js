@@ -45,7 +45,6 @@ const EditEventForm = () => {
     */
 
     const submitForm = (values) => {
-        console.log(values);
         const text = confirm("Please confirm to save your changes");
         if (text) {
             setShowUploading(true);
@@ -59,7 +58,6 @@ const EditEventForm = () => {
                 let i = 0;
 
                 images.map((image) => {
-                    console.log(image);
                     if (image.file) {
                         data.append("imageUrls", image.originFileObj);
                     } else {
@@ -97,7 +95,6 @@ const EditEventForm = () => {
         });
 
     const handlePreview = async (file) => {
-        console.log(file);
         if (!file.url && !file.preview) {
             file.preview = await getBase64(file.originFileObj);
         }
@@ -110,7 +107,6 @@ const EditEventForm = () => {
 
     const handleCancel = () => setPreviewOpen(false);
     const handleChange = ({ fileList: newFileList }) => {
-        console.log(newFileList);
         setImages(newFileList);
     };
 
@@ -144,7 +140,6 @@ const EditEventForm = () => {
         setDate(dateString);
     };
 
-    console.log(images);
     return (
         <div>
             <Form

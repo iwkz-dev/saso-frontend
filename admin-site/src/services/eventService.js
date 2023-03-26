@@ -7,7 +7,6 @@ const getAllEvents = () => {
             accept: "application/JSON",
             Authorization: getToken(),
         };
-
         api({
             method: "GET",
             url: `/event`,
