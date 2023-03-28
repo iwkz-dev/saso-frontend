@@ -26,6 +26,7 @@ const MenuDataDisplay = ({ menu }) => {
             dataForm={dataForm}
             events={events}
             categories={categories}
+            linkToEdit={`/admin/menu/edit/${menu._id}`}
         />
     );
 };

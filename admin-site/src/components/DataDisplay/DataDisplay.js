@@ -1,20 +1,13 @@
-import { Descriptions } from "antd";
+import { Button, Descriptions, Image, Space } from "antd";
 import React from "react";
 import { formatDate } from "../../helpers/dateHelper";
 
-const DataDisplay = ({ item, dataForm, events, categories }) => {
+const DataDisplay = ({ item, dataForm, events, categories, linkToEdit }) => {
     const imageColumnHandler = (data) => {
         if (data.length > 0) {
-            return data.map((d) => {
-                return (
-                    <img
-                        key={d.eTag}
-                        className="h-20 w-20 rounded-full"
-                        src={d.imageUrl}
-                        alt="item"
-                    />
-                );
-            });
+            return data.map((d) => (
+                <Image key={d.eTag} width={75} src={d.imageUrl} />
+            ));
         }
     };
 
@@ -46,7 +39,7 @@ const DataDisplay = ({ item, dataForm, events, categories }) => {
         } else if (key === "started_at") {
             value = formatDate(item[key], false, true);
         } else if (key === "images") {
-            imageColumnHandler(item[key]);
+            value = <Space>{imageColumnHandler(item[key])}</Space>;
         } else {
             value = item[key];
         }
@@ -55,120 +48,21 @@ const DataDisplay = ({ item, dataForm, events, categories }) => {
                 {value}
             </Descriptions.Item>
         );
-        /*
-        if (key === "started_at") {
-            return (
-                <div
-                    key={key + i}
-                    className={`${
-                        i % 2 === 0 ? "bg-gray-50" : "bg-white"
-                    } px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6`}>
-                    <dt className="text-sm font-medium text-gray-500">
-                        {dataForm[key]}
-                    </dt>
-                    <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                        {formatDate(item[key], false, true)}
-                    </dd>
-                </div>
-            );
-        } else if (key === "category") {
-            const category = categories.find((e) => e._id === item[key]);
-            return (
-                <div
-                    key={key + i}
-                    className={`${
-                        i % 2 === 0 ? "bg-gray-50" : "bg-white"
-                    } px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6`}>
-                    <dt className="text-sm font-medium text-gray-500">
-                        {dataForm[key]}
-                    </dt>
-                    <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                        {category?.name}
-                    </dd>
-                </div>
-            );
-        } else if (key === "event") {
-            const event = events.find((e) => e._id === item[key]);
-            return (
-                <div
-                    key={key + i}
-                    className={`${
-                        i % 2 === 0 ? "bg-gray-50" : "bg-white"
-                    } px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6`}>
-                    <dt className="text-sm font-medium text-gray-500">
-                        {dataForm[key]}
-                    </dt>
-                    <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                        {event?.name}
-                    </dd>
-                </div>
-            );
-        } else if (key === "created_at" || key === "updated_at") {
-            return (
-                <div
-                    key={key + i}
-                    className={`${
-                        i % 2 === 0 ? "bg-gray-50" : "bg-white"
-                    } px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6`}>
-                    <dt className="text-sm font-medium text-gray-500">
-                        {dataForm[key]}
-                    </dt>
-                    <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                        {formatDate(item[key], true, true)}
-                    </dd>
-                </div>
-            );
-        } else if (key === "status") {
-            return (
-                <div
-                    key={key + i}
-                    className={`${
-                        i % 2 === 0 ? "bg-gray-50" : "bg-white"
-                    } px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6`}>
-                    <dt className="text-sm font-medium text-gray-500">
-                        {dataForm[key]}
-                    </dt>
-                    <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2 flex gap-2">
-                        {getStatusTitle(item[key])}
-                    </dd>
-                </div>
-            );
-        } else if (key === "images") {
-            return (
-                <div
-                    key={key + i}
-                    className={`${
-                        i % 2 === 0 ? "bg-gray-50" : "bg-white"
-                    } px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6`}>
-                    <dt className="text-sm font-medium text-gray-500">
-                        {dataForm[key]}
-                    </dt>
-                    <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2 flex gap-2">
-                        {imageColumnHandler(item[key])}
-                    </dd>
-                </div>
-            );
-        } else {
-            return (
-                <div
-                    key={key + i}
-                    className={`${
-                        i % 2 === 0 ? "bg-gray-50" : "bg-white"
-                    } px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6`}>
-                    <dt className="text-sm font-medium text-gray-500">
-                        {dataForm[key]}
-                    </dt>
-                    <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                        {item[key]}
-                    </dd>
-                </div>
-            );
-        }
-        */
     };
 
     return (
-        <Descriptions title="Detail Information" layout="vertical" bordered>
+        <Descriptions
+            title="Detail Information"
+            bordered
+            extra={
+                linkToEdit ? (
+                    <Button type="link" href={linkToEdit}>
+                        Edit
+                    </Button>
+                ) : (
+                    ""
+                )
+            }>
             {Object.keys(dataForm).map((key, i) => columnHandler(key, i))}
         </Descriptions>
     );

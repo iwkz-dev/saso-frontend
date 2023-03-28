@@ -10,7 +10,13 @@ const CategoryDataDisplay = ({ category }) => {
         updated_at: "Updated At",
     };
 
-    return <DataDisplay item={category} dataForm={dataForm} />;
+    return (
+        <DataDisplay
+            item={category}
+            dataForm={dataForm}
+            linkToEdit={`/admin/category/edit/${category._id}`}
+        />
+    );
 };
 
 export default CategoryDataDisplay;

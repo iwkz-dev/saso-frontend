@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { createMenu } from "../../../../store/reducers/menuReducer";
 import {
@@ -13,7 +13,7 @@ import {
     Upload,
 } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
-import Router from "next/router";
+import Router, { useRouter } from "next/router";
 
 const AddMenuForm = () => {
     const dispatch = useDispatch();
@@ -25,6 +25,11 @@ const AddMenuForm = () => {
     const [previewImage, setPreviewImage] = useState("");
     const [previewTitle, setPreviewTitle] = useState("");
     const [images, setImages] = useState([]);
+    const { query } = useRouter();
+
+    useEffect(() => {
+        form.setFieldsValue({ event: query.event, category: query.category });
+    }, [query.category, query.event]);
 
     const submitForm = (values) => {
         const text = confirm("Please confirm to add menu");

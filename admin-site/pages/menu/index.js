@@ -21,7 +21,7 @@ const index = () => {
 
     useEffect(() => {
         getEventsCategoriesMenus();
-    }, []);
+    }, [filters]);
 
     const filtersQueryBuilder = () => {
         const queries = [];
@@ -55,14 +55,16 @@ const index = () => {
     };
 
     const handleChange = (value) => {
-        const data = JSON.parse(value);
-        const filterIndex = filters.findIndex((f) => f.name === data.name);
-        if (!(filterIndex > -1)) {
-            setFilters([...filters, data]);
-        } else {
-            const tempFilters = [...filters];
-            tempFilters[filterIndex].id = data.id;
-            setFilters([...tempFilters]);
+        if (value) {
+            const data = JSON.parse(value);
+            const filterIndex = filters.findIndex((f) => f.name === data.name);
+            if (!(filterIndex > -1)) {
+                setFilters([...filters, data]);
+            } else {
+                const tempFilters = [...filters];
+                tempFilters[filterIndex].id = data.id;
+                setFilters([...tempFilters]);
+            }
         }
     };
 
@@ -124,8 +126,13 @@ const index = () => {
                         open={isModalOpen}
                         onOk={handleOk}
                         onCancel={handleCancel}
-                        closable={false}>
-                        <MenusFilterForm handleChange={handleChange} />
+                        closable={false}
+                        destroyOnClose>
+                        <MenusFilterForm
+                            handleChange={handleChange}
+                            filters={filters}
+                            setFilters={setFilters}
+                        />
                     </Modal>
                     <MenuTable
                         onDelete={onDelete}

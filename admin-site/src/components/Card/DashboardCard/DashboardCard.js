@@ -1,4 +1,4 @@
-import { Space, Statistic, Typography, Card } from "antd";
+import { Space, Statistic, Typography, Card, Divider } from "antd";
 import React from "react";
 import { useSelector } from "react-redux";
 import { formatDate } from "../../../helpers/dateHelper";
@@ -10,20 +10,29 @@ const DashboardCard = () => {
 
     const getAllInfo = (event) => {
         const eventOrders = orders.filter((order) => order.event === event._id);
+
         const deliveredOrders = eventOrders?.filter(
             (eventOrder) => eventOrder.status === 3,
         );
+
         const canceledOrders = eventOrders?.filter(
             (eventOrder) => eventOrder.status === 2,
         );
+
+        const paidOrders = eventOrders?.filter(
+            (eventOrder) => eventOrder.status === 1,
+        );
+
         let sum = 0;
-        deliveredOrders?.map((deliveredOrder) => {
+        paidOrders?.map((deliveredOrder) => {
             sum += deliveredOrder.totalPrice;
         });
+
         const info = {
             totalOrders: eventOrders.length,
             totalCanceledOrders: canceledOrders.length,
             deliveredOrdersNumber: deliveredOrders.length,
+            paidOrders: paidOrders.length,
             sumTotalPrice: sum,
         };
         return info;
@@ -46,6 +55,7 @@ const DashboardCard = () => {
                         <Typography.Title level={4}>
                             {event.name}
                         </Typography.Title>
+                        <Divider />
                         <Statistic
                             title="Total Orders"
                             value={getAllInfo(event).totalOrders}
@@ -56,6 +66,13 @@ const DashboardCard = () => {
                                 color: "#cf1322",
                             }}
                             value={getAllInfo(event).totalCanceledOrders}
+                        />
+                        <Statistic
+                            title="Orders Paid"
+                            valueStyle={{
+                                color: "#FFAA1D",
+                            }}
+                            value={getAllInfo(event).paidOrders}
                         />
                         <Statistic
                             title="Orders Delivered"
@@ -73,6 +90,7 @@ const DashboardCard = () => {
                             value={getAllInfo(event).sumTotalPrice}
                             suffix="€"
                         />
+                        <Divider />
                         <Typography.Paragraph>
                             {formatDate(event.started_at, false, true)}
                         </Typography.Paragraph>

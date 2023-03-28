@@ -19,7 +19,13 @@ const EventDataDisplay = ({ event }) => {
         updated_at: "Updated At",
     };
 
-    return <DataDisplay item={event} dataForm={dataForm} />;
+    return (
+        <DataDisplay
+            item={event}
+            dataForm={dataForm}
+            linkToEdit={`/admin/event/edit/${event._id}`}
+        />
+    );
 };
 
 export default EventDataDisplay;
