@@ -1,168 +1,230 @@
 import React, { useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { createMenu } from "../../../../store/reducers/menuReducer";
-import ImageUploader from "../../../common/ImageUploader/ImageUploader";
-import Alert from "../../../common/Message/Alert/Alert";
-import SubmitButton from "../../../common/Button/SubmitButton/SubmitButton";
-import ResetButton from "../../../common/Button/ResetButton/ResetButton";
+import {
+    Button,
+    Form,
+    Input,
+    InputNumber,
+    message,
+    Modal,
+    Select,
+    Space,
+    Upload,
+} from "antd";
+import { PlusOutlined } from "@ant-design/icons";
+import Router from "next/router";
 
-const AddMenuForm = ({ eventId, categoryId }) => {
+const AddMenuForm = () => {
     const dispatch = useDispatch();
-    const form = useRef();
+    const [form] = useRef();
     const events = useSelector((state) => state.event.events);
     const categories = useSelector((state) => state.category.categories);
     const [showUploading, setShowUploading] = useState(false);
-    const [showSuccess, setShowSuccess] = useState(false);
-    const [showFailed, setShowFailed] = useState(false);
+    const [previewOpen, setPreviewOpen] = useState(false);
+    const [previewImage, setPreviewImage] = useState("");
+    const [previewTitle, setPreviewTitle] = useState("");
     const [images, setImages] = useState([]);
-    const maxNumber = 5;
 
-    const onChange = (imageList) => {
-        // data for submit
-        setImages(imageList);
-    };
-
-    const submitForm = (e) => {
-        setShowSuccess(false);
-        setShowFailed(false);
-        e.preventDefault();
+    const submitForm = (values) => {
         const text = confirm("Please confirm to add menu");
         if (text) {
             setShowUploading(true);
             const createData = async () => {
-                const data = new FormData(form.current);
-                images.map((image) => {
-                    data.append("imageUrls", image.file);
-                });
-                return await dispatch(createMenu(data));
-            };
-            createData().then((r) => {
-                if (r?.status === "failed") {
-                    setShowUploading(false);
-                    setShowFailed(r.message);
-                } else {
-                    setShowUploading(false);
-                    setShowSuccess(r.message);
+                var data = new FormData();
+                for (var key in values) {
+                    data.append(key, values[key]);
                 }
-            });
+                images.map((image) => {
+                    data.append("imageUrls", image.originFileObj);
+                });
+                return dispatch(createMenu(data));
+            };
+            createData()
+                .then((r) => {
+                    if (r?.status === "failed") {
+                        setShowUploading(false);
+                        message.error(r.message);
+                    } else {
+                        setShowUploading(false);
+                        message.success(r.message);
+                        Router.push("/menu");
+                    }
+                })
+                .catch(() => {
+                    setShowUploading(false);
+                });
         }
     };
 
-    const reset = () => {
-        window.location.reload();
+    const getBase64 = (file) =>
+        new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = (error) => reject(error);
+        });
+
+    const handlePreview = async (file) => {
+        if (!file.url && !file.preview) {
+            file.preview = await getBase64(file.originFileObj);
+        }
+        setPreviewImage(file.url || file.preview);
+        setPreviewOpen(true);
+        setPreviewTitle(
+            file.name || file.url.substring(file.url.lastIndexOf("/") + 1),
+        );
+    };
+
+    const handleCancel = () => setPreviewOpen(false);
+
+    const handleChange = ({ fileList: newFileList }) => setImages(newFileList);
+
+    const beforeUpload = (file) => {
+        const isPNG = file.type === "image/png";
+        const isJPEG = file.type === "image/jpg" || file.type === "image/jpeg";
+        if (!isPNG && !isJPEG) {
+            message.error(`${file.name} is not a png, jpg, or jpeg file`);
+            return isPNG || Upload.LIST_IGNORE;
+        }
+        return false;
+    };
+
+    const uploadButton = (
+        <div>
+            <PlusOutlined />
+            <div
+                style={{
+                    marginTop: 8,
+                }}>
+                Upload
+            </div>
+        </div>
+    );
+
+    const onReset = () => {
+        form.resetFields();
     };
 
     return (
-        <div>
-            <form ref={form} onSubmit={(e) => submitForm(e)}>
-                <div className="max-w">
-                    <div className="grid md:grid-cols-2 sm:grid-cols-1 gap-6">
-                        <label className="block">
-                            <span className="text-gray-700">Name</span>
-                            <input
-                                type="text"
-                                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                                placeholder=""
-                                name="name"
-                                required
-                            />
-                        </label>
-                        <label className="block">
-                            <span className="text-gray-700">Quantity</span>
-                            <input
-                                type="number"
-                                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                                placeholder=""
-                                name="quantity"
-                                required
-                            />
-                        </label>
-                        <label className="block">
-                            <span className="text-gray-700">Price in €</span>
-                            <input
-                                type="number"
-                                step="0.01"
-                                className="mt-1 block w-full  rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                                name="price"
-                                required
-                            />
-                        </label>
-                        <label className="block">
-                            <span className="text-gray-700">Event</span>
-                            <select
-                                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                                name="event"
-                                required>
-                                <option value="" disabled selected hidden>
-                                    Please Choose...
-                                </option>
-                                {events.map((item) => {
-                                    return (
-                                        <option
-                                            key={item._id}
-                                            value={item._id}
-                                            selected={item._id === eventId}>
-                                            {item.name}
-                                        </option>
-                                    );
-                                })}
-                            </select>
-                        </label>
-                        <label className="block">
-                            <span className="text-gray-700">Categories</span>
-                            <select
-                                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                                name="category"
-                                required>
-                                <option value="" disabled selected hidden>
-                                    Please Choose...
-                                </option>
-                                {categories.map((c) => {
-                                    return (
-                                        <option
-                                            key={c._id}
-                                            value={c._id}
-                                            selected={c._id === categoryId}>
-                                            {c.name}
-                                        </option>
-                                    );
-                                })}
-                            </select>
-                        </label>
-                        <label className="block">
-                            <span className="text-gray-700">Description</span>
-                            <textarea
-                                className=" mt-1 block w-full rounded-md  border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                                rows="2"
-                                name="description"
-                                required
-                            />
-                        </label>
-                        <div className="block">
-                            <span className="text-gray-700">Images</span>
-                            <ImageUploader
-                                onChange={onChange}
-                                images={images}
-                                maxNumber={maxNumber}
-                            />
-                        </div>
-                    </div>
-                </div>
-                <div className="flex my-4">
-                    <SubmitButton />
-                    <ResetButton onClick={reset} />
-                </div>
-            </form>
-            <Alert
-                showFailed={showFailed}
-                showSuccess={showSuccess}
-                setShowFailed={setShowFailed}
-                setShowSuccess={setShowSuccess}
-                successMessage={showSuccess}
-                failedMessage={showFailed}
-                showUploading={showUploading}
-            />
-        </div>
+        <Form
+            form={form}
+            name="menu"
+            onFinish={submitForm}
+            labelCol={{
+                span: 4,
+            }}
+            wrapperCol={{
+                span: 14,
+            }}>
+            <Form.Item
+                label="Name"
+                name="name"
+                rules={[
+                    {
+                        required: true,
+                    },
+                ]}>
+                <Input placeholder="Name" />
+            </Form.Item>
+            <Form.Item
+                label="Quantity"
+                name="quantity"
+                rules={[
+                    {
+                        required: true,
+                    },
+                ]}>
+                <InputNumber min={0} step={1} placeholder="Menu quantity" />
+            </Form.Item>
+            <Form.Item
+                label="Price (€)"
+                name="price"
+                min={0}
+                rules={[
+                    {
+                        required: true,
+                    },
+                ]}>
+                <InputNumber min={0} step={0.01} placeholder="Menu price" />
+            </Form.Item>
+            <Form.Item
+                label="Event"
+                name="event"
+                rules={[
+                    {
+                        required: true,
+                    },
+                ]}>
+                <Select
+                    placeholder="Choose event"
+                    options={events.map((item) => ({
+                        value: item._id,
+                        label: item.name,
+                    }))}></Select>
+            </Form.Item>
+            <Form.Item
+                label="Category"
+                name="category"
+                rules={[
+                    {
+                        required: true,
+                    },
+                ]}>
+                <Select
+                    placeholder="Choose menu category"
+                    options={categories.map((item) => ({
+                        value: item._id,
+                        label: item.name,
+                    }))}></Select>
+            </Form.Item>
+            <Form.Item
+                label="Description"
+                name="description"
+                rules={[
+                    {
+                        required: true,
+                    },
+                ]}>
+                <Input.TextArea placeholder="Description" rows={4} />
+            </Form.Item>
+            <Form.Item label="images">
+                <Upload
+                    listType="picture-card"
+                    fileList={images}
+                    onPreview={handlePreview}
+                    onChange={handleChange}
+                    beforeUpload={beforeUpload}>
+                    {images.length >= 4 ? null : uploadButton}
+                </Upload>
+            </Form.Item>
+            <Modal
+                open={previewOpen}
+                title={previewTitle}
+                footer={null}
+                onCancel={handleCancel}>
+                <img
+                    alt="example"
+                    style={{
+                        width: "100%",
+                    }}
+                    src={previewImage}
+                />
+            </Modal>
+            <Form.Item>
+                <Space>
+                    <Button
+                        type="primary"
+                        htmlType="submit"
+                        loading={showUploading}>
+                        Submit
+                    </Button>
+                    <Button htmlType="button" onClick={onReset}>
+                        Reset
+                    </Button>
+                </Space>
+            </Form.Item>
+        </Form>
     );
 };
 

@@ -37,7 +37,7 @@ const AddEventForm = () => {
                 images.map((image) => {
                     data.append("imageUrls", image.originFileObj);
                 });
-                return await dispatch(createEvent(data));
+                return dispatch(createEvent(data));
             };
             createData()
                 .then((r) => {
@@ -109,103 +109,102 @@ const AddEventForm = () => {
     };
 
     return (
-        <div>
-            <Form
-                form={form}
-                layout="vertical"
-                name="event"
-                onFinish={submitForm}
-                labelCol={{
-                    span: 8,
-                }}
-                wrapperCol={{
-                    span: 14,
-                }}>
-                <Form.Item
-                    label="Name"
-                    name="name"
-                    rules={[
-                        {
-                            required: true,
-                        },
-                    ]}>
-                    <Input placeholder="Name" />
-                </Form.Item>
-                <Form.Item
-                    label="Started At"
-                    name="started_at"
-                    rules={[
-                        {
-                            required: true,
-                        },
-                    ]}>
-                    <DatePicker
-                        picker="month"
-                        showTime
-                        placeholder="Started at"
-                        onChange={onChange}
-                    />
-                </Form.Item>
-                <Form.Item
-                    label="Bank Name"
-                    name="bankName"
-                    rules={[
-                        {
-                            required: true,
-                        },
-                    ]}>
-                    <Input placeholder="Bank name" />
-                </Form.Item>
-                <Form.Item
-                    label="IBAN"
-                    name="iban"
-                    rules={[
-                        {
-                            required: true,
-                        },
-                    ]}>
-                    <Input placeholder="IBAN" />
-                </Form.Item>
-                <Form.Item
-                    label="BIC"
-                    name="bic"
-                    rules={[
-                        {
-                            required: true,
-                        },
-                    ]}>
-                    <Input placeholder="BIC" />
-                </Form.Item>
-                <Form.Item
-                    label="VZW"
-                    name="usageNote"
-                    rules={[
-                        {
-                            required: true,
-                        },
-                    ]}>
-                    <Input placeholder="VZW" />
-                </Form.Item>
-                <Form.Item
-                    label="Paypal"
-                    name="paypal"
-                    rules={[
-                        {
-                            required: true,
-                        },
-                    ]}>
-                    <Input placeholder="Paypal" />
-                </Form.Item>
-                <Form.Item
-                    label="Description"
-                    name="description"
-                    rules={[
-                        {
-                            required: true,
-                        },
-                    ]}>
-                    <Input.TextArea placeholder="Description" rows={4} />
-                </Form.Item>
+        <Form
+            form={form}
+            name="event"
+            onFinish={submitForm}
+            labelCol={{
+                span: 4,
+            }}
+            wrapperCol={{
+                span: 14,
+            }}>
+            <Form.Item
+                label="Name"
+                name="name"
+                rules={[
+                    {
+                        required: true,
+                    },
+                ]}>
+                <Input placeholder="Name" />
+            </Form.Item>
+            <Form.Item
+                label="Started At"
+                name="started_at"
+                rules={[
+                    {
+                        required: true,
+                    },
+                ]}>
+                <DatePicker
+                    picker="month"
+                    showTime
+                    placeholder="Started at"
+                    onChange={onChange}
+                />
+            </Form.Item>
+            <Form.Item
+                label="Bank Name"
+                name="bankName"
+                rules={[
+                    {
+                        required: true,
+                    },
+                ]}>
+                <Input placeholder="Bank name" />
+            </Form.Item>
+            <Form.Item
+                label="IBAN"
+                name="iban"
+                rules={[
+                    {
+                        required: true,
+                    },
+                ]}>
+                <Input placeholder="IBAN" />
+            </Form.Item>
+            <Form.Item
+                label="BIC"
+                name="bic"
+                rules={[
+                    {
+                        required: true,
+                    },
+                ]}>
+                <Input placeholder="BIC" />
+            </Form.Item>
+            <Form.Item
+                label="VZW"
+                name="usageNote"
+                rules={[
+                    {
+                        required: true,
+                    },
+                ]}>
+                <Input placeholder="VZW" />
+            </Form.Item>
+            <Form.Item
+                label="Paypal"
+                name="paypal"
+                rules={[
+                    {
+                        required: true,
+                    },
+                ]}>
+                <Input placeholder="Paypal" />
+            </Form.Item>
+            <Form.Item
+                label="Description"
+                name="description"
+                rules={[
+                    {
+                        required: true,
+                    },
+                ]}>
+                <Input.TextArea placeholder="Description" rows={4} />
+            </Form.Item>
+            <Form.Item label="images">
                 <Upload
                     listType="picture-card"
                     fileList={images}
@@ -214,34 +213,34 @@ const AddEventForm = () => {
                     beforeUpload={beforeUpload}>
                     {images.length >= 4 ? null : uploadButton}
                 </Upload>
-                <Modal
-                    open={previewOpen}
-                    title={previewTitle}
-                    footer={null}
-                    onCancel={handleCancel}>
-                    <img
-                        alt="example"
-                        style={{
-                            width: "100%",
-                        }}
-                        src={previewImage}
-                    />
-                </Modal>
-                <Form.Item>
-                    <Space>
-                        <Button
-                            type="primary"
-                            htmlType="submit"
-                            loading={showUploading}>
-                            Submit
-                        </Button>
-                        <Button htmlType="button" onClick={onReset}>
-                            Reset
-                        </Button>
-                    </Space>
-                </Form.Item>
-            </Form>
-        </div>
+            </Form.Item>
+            <Modal
+                open={previewOpen}
+                title={previewTitle}
+                footer={null}
+                onCancel={handleCancel}>
+                <img
+                    alt="example"
+                    style={{
+                        width: "100%",
+                    }}
+                    src={previewImage}
+                />
+            </Modal>
+            <Form.Item>
+                <Space>
+                    <Button
+                        type="primary"
+                        htmlType="submit"
+                        loading={showUploading}>
+                        Submit
+                    </Button>
+                    <Button htmlType="button" onClick={onReset}>
+                        Reset
+                    </Button>
+                </Space>
+            </Form.Item>
+        </Form>
     );
 };
 

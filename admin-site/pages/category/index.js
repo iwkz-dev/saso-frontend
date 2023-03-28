@@ -8,7 +8,7 @@ import {
 import LoggedIn from "../../src/components/Layout/LoggedIn/LoggedIn";
 import CategoryTable from "../../src/components/Table/Category/CategoryTable/CategoryTable";
 import AddItemButton from "../../src/components/common/Button/AddItemButton/AddItemButton";
-import { Space, message } from "antd";
+import { Space, message, Typography } from "antd";
 
 const index = () => {
     const dispatch = useDispatch();
@@ -64,7 +64,7 @@ const index = () => {
     return (
         <LoggedIn title={pageTitle}>
             <Content>
-                <h1 className="text-2xl font-bold text-left mb-3">Category</h1>
+                <Typography.Title level={2}>Category</Typography.Title>
                 <Space direction="vertical" style={{ display: "flex" }}>
                     <AddItemButton
                         hrefLink="/category/add"

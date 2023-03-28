@@ -1,31 +1,25 @@
-import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 import LoggedIn from "../../../src/components/Layout/LoggedIn/LoggedIn";
 import EditMenuForm from "../../../src/components/Form/Menu/EditMenuForm/EditMenuForm";
-import React, { useEffect, useState } from "react";
+import Content from "../../../src/components/Layout/Content/Content";
+import { useRouter } from "next/router";
 import { useDispatch } from "react-redux";
 import { getDetailMenu } from "../../../src/store/reducers/menuReducer";
 import { getAllEvents } from "../../../src/store/reducers/eventReducer";
 import { getAllCategories } from "../../../src/store/reducers/categoryReducer";
-import Loading from "../../../src/components/common/Loading/Loading";
-import Content from "../../../src/components/Layout/Content/Content";
-import { Typography } from "antd";
+import { message, Spin, Typography } from "antd";
 
 const id = () => {
     const dispatch = useDispatch();
+    const [showLoading, setShowLoading] = useState(false);
     const router = useRouter();
     const { id } = router.query;
-    const pageData = {
-        name: "Menu",
-        href: `/menu/edit/${id}`,
-        current: true,
-    };
-    const pageTitle = "Saso App | Menu";
     const [showForm, setShowForm] = useState(false);
-    const [showError, setShowError] = useState("");
-    const [showLoading, setShowLoading] = useState(false);
+    const pageTitle = "Saso App | Menu";
 
     useEffect(() => {
         setShowLoading(true);
+        setShowForm(false);
         if (id) {
             Promise.all([
                 dispatch(getAllEvents()),
@@ -33,24 +27,23 @@ const id = () => {
                 dispatch(getDetailMenu(id)),
             ]).then((responses) => {
                 const failed = responses.find((r) => r?.status === "failed");
-                if (!failed) {
-                    setShowForm(true);
-                    setShowLoading(false);
+                if (failed) {
+                    message.error(failed.message);
                 } else {
-                    setShowLoading(false);
-                    setShowError(failed.message);
+                    setShowForm(true);
                 }
+                setShowLoading(false);
             });
         }
     }, [id]);
 
     return (
-        <LoggedIn title={pageTitle} pageData={pageData}>
+        <LoggedIn title={pageTitle}>
             <Content>
-                <Typography.Title level={2}>Edit menu</Typography.Title>
-                {showLoading ? <Loading /> : ""}
-                {showForm ? <EditMenuForm id={id} /> : ""}
-                {showError || ""}
+                <Spin tip="Loading" size="small" spinning={showLoading}>
+                    <Typography.Title level={2}>Edit menu</Typography.Title>
+                    {showForm && <EditMenuForm id={id} />}
+                </Spin>
             </Content>
         </LoggedIn>
     );

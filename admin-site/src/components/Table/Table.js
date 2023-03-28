@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { formatDate } from "../../helpers/dateHelper";
-import { Table, Select, Space } from "antd";
+import { Table, Select, Space, message } from "antd";
 import { DeleteTwoTone, EditTwoTone } from "@ant-design/icons";
 import Router from "next/router";
+import styles from "./Table.module.scss";
 
 const TableComponent = ({
     onDelete,
@@ -76,6 +77,7 @@ const TableComponent = ({
 
     return (
         <Table
+            className={styles.table}
             loading={isLoading}
             dataSource={data}
             scroll={{
@@ -85,8 +87,12 @@ const TableComponent = ({
             onRow={(record) => {
                 return {
                     onDoubleClick: () => {
-                        const link = linkToView + record._id;
-                        Router.push(link);
+                        if (!actionsOff) {
+                            const link = linkToView + record._id;
+                            Router.push(link);
+                        } else {
+                            message.error("Cannot open order detail");
+                        }
                     },
                 };
             }}>

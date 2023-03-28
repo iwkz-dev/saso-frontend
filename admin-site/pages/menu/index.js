@@ -6,11 +6,9 @@ import { getAllEvents } from "../../src/store/reducers/eventReducer";
 import LoggedIn from "../../src/components/Layout/LoggedIn/LoggedIn";
 import MenuTable from "../../src/components/Table/Menu/MenuTable/MenuTable";
 import MenusFilterForm from "../../src/components/Form/Menu/MenusFilterForm/MenusFilterForm";
-import Loading from "../../src/components/common/Loading/Loading";
 import AddItemButton from "../../src/components/common/Button/AddItemButton/AddItemButton";
-import Alert from "../../src/components/common/Message/Alert/Alert";
 import Content from "../../src/components/Layout/Content/Content";
-import { Button, Modal, Space, Typography } from "antd";
+import { Button, message, Modal, Space, Typography } from "antd";
 import { FilterOutlined } from "@ant-design/icons";
 
 const index = () => {
@@ -19,10 +17,6 @@ const index = () => {
     const [filters, setFilters] = useState([]);
     const [showTable, setShowTable] = useState(false);
     const [showLoading, setShowLoading] = useState(false);
-    const [showError, setShowError] = useState("");
-    const [showSuccess, setShowSuccess] = useState(false);
-    const [showFailed, setShowFailed] = useState(false);
-    const [showUploading, setShowUploading] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     useEffect(() => {
@@ -43,7 +37,6 @@ const index = () => {
 
     const getEventsCategoriesMenus = () => {
         setShowLoading(true);
-        setShowError("");
         Promise.all([
             dispatch(getAllEvents()),
             dispatch(getAllCategories()),
@@ -56,7 +49,7 @@ const index = () => {
             } else {
                 setShowTable(false);
                 setShowLoading(false);
-                setShowError(failed.message);
+                message.error(failed.message);
             }
         });
     };
@@ -83,23 +76,21 @@ const index = () => {
             `Please confirm this if you want to delete "${item.name}"`,
         );
         if (isConfirm) {
-            setShowFailed(false);
-            setShowSuccess(false);
-            setShowUploading(true);
+            setShowLoading(true);
             try {
                 const onDelete = await dispatch(deleteMenu(item["_id"]));
                 if (onDelete.status !== "failed") {
-                    setShowUploading(false);
-                    setShowSuccess(onDelete.message);
+                    setShowLoading(false);
+                    message.success(onDelete.message);
                     getEventsCategoriesMenus();
                 } else {
-                    setShowUploading(false);
-                    setShowFailed(onDelete.message);
+                    setShowLoading(false);
+                    message.error(onDelete.message);
                 }
             } catch (e) {
                 //TODO: handle error here
-                setShowUploading(false);
-                setShowFailed(e);
+                setShowLoading(false);
+                message.error(e.message);
             }
         }
     };
@@ -138,24 +129,11 @@ const index = () => {
                         onCancel={handleCancel}>
                         <MenusFilterForm handleChange={handleChange} />
                     </Modal>
-                    <Alert
-                        showFailed={showFailed}
-                        showSuccess={showSuccess}
-                        setShowFailed={setShowFailed}
-                        setShowSuccess={setShowSuccess}
-                        successMessage={showSuccess}
-                        failedMessage={showFailed}
-                        showUploading={showUploading}
+                    <MenuTable
+                        onDelete={onDelete}
+                        isLoading={showLoading}
+                        showTable={showTable}
                     />
-
-                    {showError || ""}
-                    {showLoading ? (
-                        <Loading />
-                    ) : showTable ? (
-                        <MenuTable onDelete={onDelete} />
-                    ) : (
-                        ""
-                    )}
                 </Space>
             </Content>
         </LoggedIn>

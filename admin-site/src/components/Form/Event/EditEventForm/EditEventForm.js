@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import dayjs from "dayjs";
 import { useDispatch, useSelector } from "react-redux";
 import { editDetailEvent } from "../../../../store/reducers/eventReducer";
-import { getDateValue } from "../../../../helpers/dateHelper";
 import {
     Form,
     Input,
@@ -25,6 +24,7 @@ const getFileList = (images) => {
         fileName: image.fileName,
     }));
 };
+
 const EditEventForm = () => {
     const dispatch = useDispatch();
     const [form] = Form.useForm();
@@ -34,7 +34,7 @@ const EditEventForm = () => {
     const [previewImage, setPreviewImage] = useState("");
     const [previewTitle, setPreviewTitle] = useState("");
     const [images, setImages] = useState(getFileList(event.images));
-    const [date, setDate] = useState("");
+    const [date, setDate] = useState(event.started_at);
 
     /*
     const status = [
@@ -43,6 +43,12 @@ const EditEventForm = () => {
         { title: "done", value: 2 },
     ];
     */
+
+    const getYearAndMonth = (date) => {
+        return `${dayjs(date).get("year")}-${
+            parseInt(dayjs(date).get("month")) + 1
+        }`;
+    };
 
     const submitForm = (values) => {
         const text = confirm("Please confirm to save your changes");
@@ -53,19 +59,16 @@ const EditEventForm = () => {
                 for (var key in values) {
                     data.append(key, values[key]);
                 }
-                data.set("started_at", date);
-                const eTags = [];
-                let i = 0;
+                data.set("started_at", getYearAndMonth(date));
 
                 images.map((image) => {
-                    if (image.file) {
+                    if (image.originFileObj) {
                         data.append("imageUrls", image.originFileObj);
                     } else {
-                        eTags[i] = image.eTag;
-                        i++;
+                        data.append("eTags", image.eTag);
                     }
                 });
-                data.append("eTags", eTags);
+
                 return dispatch(editDetailEvent(event._id, data));
             };
             createData()
@@ -141,52 +144,111 @@ const EditEventForm = () => {
     };
 
     return (
-        <div>
-            <Form
-                form={form}
-                initialValues={{
-                    name: event.name,
-                    started_at: dayjs(getDateValue(event.started_at)),
-                    bankName: event.bankName,
-                    iban: event.iban,
-                    bic: event.bic,
-                    usageNote: event.usageNote,
-                    paypal: event.paypal,
-                    description: event.description,
-                }}
-                layout="vertical"
-                name="event"
-                onFinish={submitForm}
-                labelCol={{
-                    span: 8,
-                }}
-                wrapperCol={{
-                    span: 14,
-                }}>
-                <Form.Item label="Name" name="name">
-                    <Input placeholder="Name" />
-                </Form.Item>
-                <Form.Item label="Started At" name="started_at">
-                    <DatePicker placeholder="Started at" onChange={onChange} />
-                </Form.Item>
-                <Form.Item label="Bank Name" name="bankName">
-                    <Input placeholder="Bank name" />
-                </Form.Item>
-                <Form.Item label="IBAN" name="iban">
-                    <Input placeholder="IBAN" />
-                </Form.Item>
-                <Form.Item label="BIC" name="bic">
-                    <Input placeholder="BIC" />
-                </Form.Item>
-                <Form.Item label="VZW" name="usageNote">
-                    <Input placeholder="VZW" />
-                </Form.Item>
-                <Form.Item label="Paypal" name="paypal">
-                    <Input placeholder="Paypal" />
-                </Form.Item>
-                <Form.Item label="Description" name="description">
-                    <Input.TextArea placeholder="Description" rows={4} />
-                </Form.Item>
+        <Form
+            form={form}
+            initialValues={{
+                name: event.name,
+                started_at: dayjs(event.started_at),
+                bankName: event.bankName,
+                iban: event.iban,
+                bic: event.bic,
+                usageNote: event.usageNote,
+                paypal: event.paypal,
+                description: event.description,
+            }}
+            name="event"
+            onFinish={submitForm}
+            labelCol={{
+                span: 4,
+            }}
+            wrapperCol={{
+                span: 14,
+            }}>
+            <Form.Item
+                label="Name"
+                name="name"
+                rules={[
+                    {
+                        required: true,
+                    },
+                ]}>
+                <Input placeholder="Name" />
+            </Form.Item>
+            <Form.Item
+                label="Started At"
+                name="started_at"
+                rules={[
+                    {
+                        required: true,
+                    },
+                ]}>
+                <DatePicker
+                    placeholder="Started at"
+                    picker="month"
+                    onChange={onChange}
+                />
+            </Form.Item>
+            <Form.Item
+                label="Bank Name"
+                name="bankName"
+                rules={[
+                    {
+                        required: true,
+                    },
+                ]}>
+                <Input placeholder="Bank name" />
+            </Form.Item>
+            <Form.Item
+                label="IBAN"
+                name="iban"
+                rules={[
+                    {
+                        required: true,
+                    },
+                ]}>
+                <Input placeholder="IBAN" />
+            </Form.Item>
+            <Form.Item
+                label="BIC"
+                name="bic"
+                rules={[
+                    {
+                        required: true,
+                    },
+                ]}>
+                <Input placeholder="BIC" />
+            </Form.Item>
+            <Form.Item
+                label="VZW"
+                name="usageNote"
+                rules={[
+                    {
+                        required: true,
+                    },
+                ]}>
+                <Input placeholder="VZW" />
+            </Form.Item>
+            <Form.Item
+                label="Paypal"
+                name="paypal"
+                rules={[
+                    {
+                        required: true,
+                    },
+                ]}>
+                <Input placeholder="Paypal" />
+            </Form.Item>
+            <Form.Item
+                label="Description"
+                name="description"
+                rules={[
+                    {
+                        required: true,
+                    },
+                ]}>
+                <Input.TextArea placeholder="Description" rows={4} />
+            </Form.Item>
+            <Form.Item label="images">
                 <Upload
                     listType="picture-card"
                     fileList={images}
@@ -195,34 +257,35 @@ const EditEventForm = () => {
                     beforeUpload={beforeUpload}>
                     {images.length >= 4 ? null : uploadButton}
                 </Upload>
-                <Modal
-                    open={previewOpen}
-                    title={previewTitle}
-                    footer={null}
-                    onCancel={handleCancel}>
-                    <img
-                        alt="example"
-                        style={{
-                            width: "100%",
-                        }}
-                        src={previewImage}
-                    />
-                </Modal>
-                <Form.Item>
-                    <Space>
-                        <Button
-                            type="primary"
-                            htmlType="submit"
-                            loading={showUploading}>
-                            Submit
-                        </Button>
-                        <Button htmlType="button" onClick={onReset}>
-                            Reset
-                        </Button>
-                    </Space>
-                </Form.Item>
-            </Form>
-        </div>
+            </Form.Item>
+
+            <Modal
+                open={previewOpen}
+                title={previewTitle}
+                footer={null}
+                onCancel={handleCancel}>
+                <img
+                    alt="example"
+                    style={{
+                        width: "100%",
+                    }}
+                    src={previewImage}
+                />
+            </Modal>
+            <Form.Item>
+                <Space>
+                    <Button
+                        type="primary"
+                        htmlType="submit"
+                        loading={showUploading}>
+                        Submit
+                    </Button>
+                    <Button htmlType="button" onClick={onReset}>
+                        Reset
+                    </Button>
+                </Space>
+            </Form.Item>
+        </Form>
     );
 };
 
