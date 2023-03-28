@@ -1,6 +1,8 @@
+import { Space, Statistic, Typography, Card } from "antd";
 import React from "react";
 import { useSelector } from "react-redux";
 import { formatDate } from "../../../helpers/dateHelper";
+import styles from "./DashboardCard.module.scss";
 
 const DashboardCard = () => {
     const events = useSelector((state) => state.event.events);
@@ -27,57 +29,55 @@ const DashboardCard = () => {
         return info;
     };
 
+    const gridStyle = {
+        width: "300px",
+        textAlign: "center",
+        backgroundColor: "#ffffff",
+    };
+
     const eventCardComponent = events.map((event, i) => {
         if (event.status === 2 || event.status === 1) {
             return (
-                <div
-                    key={i}
-                    className="flex  rounded-lg shadow-lg bg-white max-w-sm text-center">
-                    <div className="block">
-                        <div className="py-3 px-6 border-b border-gray-300">
-                            <h5 className="text-gray-900 text-xl font-medium">
-                                {event.name}
-                            </h5>
-                        </div>
-                        <div className="p-6">
-                            <div className="text-center sm:mt-0 sm:ml-2 sm:text-left mb-3">
-                                <h3 className="text-sm leading-6 font-medium text-gray-400">
-                                    Total Orders
-                                </h3>
-                                <p className="text-3xl font-bold text-black">
-                                    {getAllInfo(event).totalOrders}
-                                </p>
-                            </div>
-                            <div className="text-center sm:mt-0 sm:ml-2 sm:text-left mb-3">
-                                <h3 className="text-sm leading-6 font-medium text-gray-400 ">
-                                    Total Canceled Orders
-                                </h3>
-                                <p className="text-3xl font-bold text text-red-700">
-                                    {getAllInfo(event).totalCanceledOrders}
-                                </p>
-                            </div>
-                            <div className="text-center sm:mt-0 sm:ml-2 sm:text-left mb-3">
-                                <h3 className="text-sm leading-6 font-medium text-gray-400">
-                                    Total Delivered Orders
-                                </h3>
-                                <p className="text-3xl font-bold text-green-700">
-                                    {getAllInfo(event).deliveredOrdersNumber}
-                                </p>
-                            </div>
-                            <div className="text-center sm:mt-0 sm:ml-2 sm:text-left mb-3">
-                                <h3 className="text-sm leading-6 font-medium text-gray-400">
-                                    Total Price in Euro (€)
-                                </h3>
-                                <p className="text-3xl font-bold text-blue-900">
-                                    {getAllInfo(event).sumTotalPrice}
-                                </p>
-                            </div>
-                        </div>
-                        <div className="py-3 px-6 border-t border-gray-300 text-gray-600">
+                <Card.Grid
+                    className={styles.cardGrid}
+                    style={gridStyle}
+                    key={i}>
+                    <Space direction="vertical">
+                        <Typography.Title level={4}>
+                            {event.name}
+                        </Typography.Title>
+                        <Statistic
+                            title="Total Orders"
+                            value={getAllInfo(event).totalOrders}
+                        />
+                        <Statistic
+                            title="Orders Canceled"
+                            valueStyle={{
+                                color: "#cf1322",
+                            }}
+                            value={getAllInfo(event).totalCanceledOrders}
+                        />
+                        <Statistic
+                            title="Orders Delivered"
+                            valueStyle={{
+                                color: "#4169E1",
+                            }}
+                            value={getAllInfo(event).deliveredOrdersNumber}
+                        />
+                        <Statistic
+                            title="Total Price"
+                            valueStyle={{
+                                color: "#3f8600",
+                            }}
+                            precision={2}
+                            value={getAllInfo(event).sumTotalPrice}
+                            suffix="€"
+                        />
+                        <Typography.Paragraph>
                             {formatDate(event.started_at, false, true)}
-                        </div>
-                    </div>
-                </div>
+                        </Typography.Paragraph>
+                    </Space>
+                </Card.Grid>
             );
         } else {
             return "";
@@ -85,8 +85,10 @@ const DashboardCard = () => {
     });
 
     return (
-        <div className="flex flex-auto flex-row flex-wrap gap-4 justify-start">
-            {eventCardComponent}
+        <div className={styles.dashboardCard}>
+            <Card className={styles.cardsWrapper} bordered={false}>
+                {eventCardComponent}
+            </Card>
         </div>
     );
 };

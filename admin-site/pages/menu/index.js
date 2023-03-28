@@ -21,7 +21,7 @@ const index = () => {
 
     useEffect(() => {
         getEventsCategoriesMenus();
-    }, [filters]);
+    }, []);
 
     const filtersQueryBuilder = () => {
         const queries = [];
@@ -54,13 +54,8 @@ const index = () => {
         });
     };
 
-    const handleChange = (e, name) => {
-        const value = e.target.value;
-        const data = {
-            id: value,
-            name: name,
-        };
-
+    const handleChange = (value) => {
+        const data = JSON.parse(value);
         const filterIndex = filters.findIndex((f) => f.name === data.name);
         if (!(filterIndex > -1)) {
             setFilters([...filters, data]);
@@ -100,10 +95,12 @@ const index = () => {
     };
 
     const handleOk = () => {
+        getEventsCategoriesMenus();
         setIsModalOpen(false);
     };
 
     const handleCancel = () => {
+        setFilters([]);
         setIsModalOpen(false);
     };
 
@@ -126,7 +123,8 @@ const index = () => {
                         title="Filter Menu"
                         open={isModalOpen}
                         onOk={handleOk}
-                        onCancel={handleCancel}>
+                        onCancel={handleCancel}
+                        closable={false}>
                         <MenusFilterForm handleChange={handleChange} />
                     </Modal>
                     <MenuTable

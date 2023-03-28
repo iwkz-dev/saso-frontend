@@ -20,8 +20,7 @@ const UserTable = ({ onDelete }) => {
             onDelete={onDelete}
             data={categories}
             dataHead={tableHead}
-            emptyMessage="User is empty"
-            linkToEdit="/user/edit/"
+            actionsOff={true}
         />
     );
 };

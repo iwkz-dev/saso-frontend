@@ -1,3 +1,4 @@
+import { Select, Space } from "antd";
 import React from "react";
 import { useSelector } from "react-redux";
 
@@ -6,50 +7,38 @@ const MenusFilterForm = ({ handleChange }) => {
     const categories = useSelector((state) => state.category.categories);
 
     return (
-        <div className="w-10/12 mb-3">
-            <div className="grid grid md:grid-cols-2 sm:grid-cols-1 md:gap-15 sm:gap-6">
-                <label className="flex items-center text-left">
-                    <span className="basis-1/4 text-gray-700">Event:</span>
-                    <select
-                        onChange={(e) => handleChange(e, "event")}
-                        className="basis-3/4 flex-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
-                        <option value="" disabled selected>
-                            Event
-                        </option>
-                        <option key={"all"} value="">
-                            All
-                        </option>
-                        {events.map((event) => {
-                            return (
-                                <option key={event._id} value={event._id}>
-                                    {event.name}
-                                </option>
-                            );
-                        })}
-                    </select>
-                </label>
-                <label className="flex items-center">
-                    <span className="basis-1/4 text-gray-700">Category:</span>
-                    <select
-                        onChange={(e) => handleChange(e, "category")}
-                        className="basis-3/4 flex-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
-                        <option value="" disabled selected>
-                            Category
-                        </option>
-                        <option key={"all"} value="">
-                            All
-                        </option>
-                        {categories.map((category) => {
-                            return (
-                                <option key={category._id} value={category._id}>
-                                    {category.name}
-                                </option>
-                            );
-                        })}
-                    </select>
-                </label>
-            </div>
-        </div>
+        <Space>
+            <Space direction="vertical">
+                <span>Filter: </span>
+                <span>Category: </span>
+            </Space>
+            <Space direction="vertical">
+                <Space>
+                    <Select
+                        onChange={handleChange}
+                        placeholder="Choose event"
+                        options={events.map((event) => ({
+                            value: JSON.stringify({
+                                id: event._id,
+                                name: "event",
+                            }),
+                            label: event.name,
+                        }))}></Select>
+                </Space>
+                <Space>
+                    <Select
+                        onChange={handleChange}
+                        placeholder="Choose category"
+                        options={categories.map((category) => ({
+                            value: JSON.stringify({
+                                id: category._id,
+                                name: "category",
+                            }),
+                            label: category.name,
+                        }))}></Select>
+                </Space>
+            </Space>
+        </Space>
     );
 };
 

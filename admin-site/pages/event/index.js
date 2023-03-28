@@ -1,14 +1,14 @@
 import LoggedIn from "../../src/components/Layout/LoggedIn/LoggedIn";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import EventTable from "../../src/components/Table/Event/EventTable/EventTable";
+import AddItemButton from "../../src/components/common/Button/AddItemButton/AddItemButton";
+import Content from "../../src/components/Layout/Content/Content";
 import {
     deleteEvent,
     getAllEvents,
 } from "../../src/store/reducers/eventReducer";
-import { useDispatch } from "react-redux";
-import EventTable from "../../src/components/Table/Event/EventTable/EventTable";
-import AddItemButton from "../../src/components/common/Button/AddItemButton/AddItemButton";
 import { changeEventStatus } from "../../src/store/reducers/eventReducer";
-import Content from "../../src/components/Layout/Content/Content";
 import { Space, Typography, message } from "antd";
 
 const event = () => {
@@ -80,7 +80,7 @@ const event = () => {
             } catch (e) {
                 //TODO: handle error here
                 setShowLoadingData(false);
-                message.error(e);
+                message.error(e.mnessage);
             }
         }
     };

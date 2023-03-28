@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import { Form, Input, Button, Space, message } from "antd";
 import { useDispatch } from "react-redux";
 import { createCategory } from "../../../../store/reducers/categoryReducer";
@@ -6,7 +6,7 @@ import Router from "next/router";
 
 const AddCategoryForm = () => {
     const dispatch = useDispatch();
-    const form = useRef(null);
+    const [form] = Form.useForm();
     const [showUploading, setShowUploading] = useState(false);
 
     const submitForm = (values) => {
@@ -42,9 +42,14 @@ const AddCategoryForm = () => {
         <div>
             <Form
                 ref={form}
-                layout="vertical"
                 name="category"
-                onFinish={submitForm}>
+                onFinish={submitForm}
+                labelCol={{
+                    span: 4,
+                }}
+                wrapperCol={{
+                    span: 14,
+                }}>
                 <Form.Item label="Name" name="name" required>
                     <Input placeholder="Name" />
                 </Form.Item>

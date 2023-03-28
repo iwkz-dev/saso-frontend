@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { createMenu } from "../../../../store/reducers/menuReducer";
 import {
@@ -17,7 +17,7 @@ import Router from "next/router";
 
 const AddMenuForm = () => {
     const dispatch = useDispatch();
-    const [form] = useRef();
+    const [form] = Form.useForm();
     const events = useSelector((state) => state.event.events);
     const categories = useSelector((state) => state.category.categories);
     const [showUploading, setShowUploading] = useState(false);
