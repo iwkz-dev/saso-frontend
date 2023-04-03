@@ -160,6 +160,9 @@ const TableComponent = ({
                             title={tableHead[dataKey]}
                             dataIndex={dataKey}
                             key={dataKey}
+                            render={(el) => {
+                                return <>{el?.toString()}</>;
+                            }}
                         />
                     );
                 }
