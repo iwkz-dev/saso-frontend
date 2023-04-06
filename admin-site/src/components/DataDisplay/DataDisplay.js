@@ -53,6 +53,7 @@ const DataDisplay = ({ item, dataForm, events, categories, linkToEdit }) => {
     return (
         <Descriptions
             title="Detail Information"
+            layout="vertical"
             bordered
             extra={
                 linkToEdit ? (

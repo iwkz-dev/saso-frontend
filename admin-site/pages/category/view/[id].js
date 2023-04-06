@@ -7,7 +7,7 @@ import CategoryDataDisplay from "../../../src/components/DataDisplay/CategoryDat
 import RelatedMenuTable from "../../../src/components/Table/Event/RelatedMenuTable/RelatedMenuTable";
 import AddItemButton from "../../../src/components/common/Button/AddItemButton/AddItemButton";
 import Content from "../../../src/components/Layout/Content/Content";
-import { message, Spin } from "antd";
+import { message, Space, Spin, Typography } from "antd";
 
 const id = () => {
     const dispatch = useDispatch();
@@ -40,26 +40,24 @@ const id = () => {
         <LoggedIn title={pageTitle}>
             <Content>
                 <Spin spinning={showLoading} tip="Loading...">
-                    <h1 className="text-2xl font-bold text-left mb-3">
+                    <Typography.Title level={2}>
                         View Category &quot;{category.name}&quot;
-                    </h1>
+                    </Typography.Title>
                     {showDataDisplay ? (
-                        <>
+                        <Space direction="vertical" style={{ display: "flex" }}>
                             <CategoryDataDisplay category={category} />
-                            <div className="mt-4 mb-3">
-                                <h3 className="w-10/12 text-lg leading-7 font-medium text-gray-900 mb-3">
-                                    Related Menu
-                                </h3>
-                                <AddItemButton
-                                    hrefLink={`/menu/add?category=${category._id}`}
-                                    text="Add Menu for this Category"
-                                />
-                            </div>
+                            <Typography.Title level={3}>
+                                Related Menu
+                            </Typography.Title>
+                            <AddItemButton
+                                hrefLink={`/menu/add?category=${category._id}`}
+                                text="Add Menu for this Category"
+                            />
                             <RelatedMenuTable
                                 filterName="category"
                                 itemFilter={category}
                             />
-                        </>
+                        </Space>
                     ) : (
                         ""
                     )}

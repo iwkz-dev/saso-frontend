@@ -7,19 +7,13 @@ import LoggedIn from "../../../src/components/Layout/LoggedIn/LoggedIn";
 import OrderDataDisplay from "../../../src/components/DataDisplay/OrderDataDisplay/OrderDataDisplay";
 import RelatedMenuOrder from "../../../src/components/Table/Order/RelatedMenuOrderList/RelatedMenuOrder";
 import Content from "../../../src/components/Layout/Content/Content";
-import { Typography } from "antd";
+import { Space, Spin, Typography, message } from "antd";
 
 const id = () => {
     const dispatch = useDispatch();
     const router = useRouter();
     const { id } = router.query;
-    const pageData = {
-        name: "Order",
-        href: `/order/view/${id}`,
-        current: true,
-    };
     const [showDataDisplay, setShowDataDisplay] = useState(false);
-    const [showError, setShowError] = useState("");
     const [showLoading, setShowLoading] = useState(false);
     const pageTitle = "Saso App | Order";
     const orders = useSelector((state) => state.order.orders);
@@ -37,7 +31,7 @@ const id = () => {
                     setShowLoading(false);
                 } else {
                     setShowLoading(false);
-                    setShowError(r.message);
+                    message.error(r.message);
                 }
             });
         } else {
@@ -49,10 +43,9 @@ const id = () => {
                     setOrderDetail(order);
                     setShowDataDisplay(true);
                     setShowLoading(false);
-                    setShowError("");
                 } else {
                     setShowLoading(false);
-                    setShowError(
+                    message.error(
                         "Unfortunately, your searched order detail is not found",
                     );
                 }
@@ -60,31 +53,23 @@ const id = () => {
         }
     }, [id, orders]);
     return (
-        <LoggedIn title={pageTitle} pageData={pageData}>
+        <LoggedIn title={pageTitle}>
             <Content>
-                {showLoading ? (
-                    <Loading />
-                ) : (
-                    <>
-                        <Typography.Title level={2}>
-                            View Order
-                        </Typography.Title>
-                        {showDataDisplay ? (
-                            <>
-                                <OrderDataDisplay order={orderDetail} />
-                                <div className="mt-4 mb-3">
-                                    <h3 className="w-10/12 text-lg leading-7 font-medium text-gray-900 mb-3">
-                                        Ordered Menu
-                                    </h3>
-                                </div>
-                                <RelatedMenuOrder menus={orderDetail.menus} />
-                            </>
-                        ) : (
-                            ""
-                        )}
-                        {showError || ""}
-                    </>
-                )}
+                <Loading />
+                <Spin spinning={showLoading} tip="Loading...">
+                    <Typography.Title level={2}>View Order</Typography.Title>
+                    {showDataDisplay ? (
+                        <Space direction="vertical" style={{ display: "flex" }}>
+                            <OrderDataDisplay order={orderDetail} />
+                            <Typography.Title level={2}>
+                                Ordered Menu
+                            </Typography.Title>
+                            <RelatedMenuOrder menus={orderDetail.menus} />
+                        </Space>
+                    ) : (
+                        ""
+                    )}
+                </Spin>
             </Content>
         </LoggedIn>
     );

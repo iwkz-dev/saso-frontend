@@ -2,18 +2,9 @@ import React, { useState } from "react";
 import dayjs from "dayjs";
 import { useDispatch, useSelector } from "react-redux";
 import { editDetailEvent } from "../../../../store/reducers/eventReducer";
-import {
-    Form,
-    Input,
-    Button,
-    DatePicker,
-    Upload,
-    Modal,
-    Space,
-    message,
-} from "antd";
-import { PlusOutlined } from "@ant-design/icons";
+import { Form, message } from "antd";
 import Router from "next/router";
+import FormComponent from "../../Form";
 
 const getFileList = (images) => {
     return images.map((image) => ({
@@ -30,25 +21,8 @@ const EditEventForm = () => {
     const [form] = Form.useForm();
     const event = useSelector((state) => state.event.detailEvent);
     const [showUploading, setShowUploading] = useState(false);
-    const [previewOpen, setPreviewOpen] = useState(false);
-    const [previewImage, setPreviewImage] = useState("");
-    const [previewTitle, setPreviewTitle] = useState("");
     const [images, setImages] = useState(getFileList(event.images));
     const [date, setDate] = useState(event.started_at);
-
-    /*
-    const status = [
-        { title: "draft", value: 0 },
-        { title: "approved", value: 1 },
-        { title: "done", value: 2 },
-    ];
-    */
-
-    const getYearAndMonth = (date) => {
-        return `${dayjs(date).get("year")}-${
-            parseInt(dayjs(date).get("month")) + 1
-        }`;
-    };
 
     const submitForm = (values) => {
         const text = confirm("Please confirm to save your changes");
@@ -56,6 +30,12 @@ const EditEventForm = () => {
             setShowUploading(true);
             const createData = async () => {
                 var data = new FormData();
+
+                const getYearAndMonth = (date) => {
+                    return `${dayjs(date).get("year")}-${
+                        parseInt(dayjs(date).get("month")) + 1
+                    }`;
+                };
                 for (var key in values) {
                     data.append(key, values[key]);
                 }
@@ -89,65 +69,106 @@ const EditEventForm = () => {
         }
     };
 
-    const getBase64 = (file) =>
-        new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = () => resolve(reader.result);
-            reader.onerror = (error) => reject(error);
-        });
-
-    const handlePreview = async (file) => {
-        if (!file.url && !file.preview) {
-            file.preview = await getBase64(file.originFileObj);
-        }
-        setPreviewImage(file.url || file.preview);
-        setPreviewOpen(true);
-        setPreviewTitle(
-            file.name || file.url.substring(file.url.lastIndexOf("/") + 1),
-        );
-    };
-
-    const handleCancel = () => setPreviewOpen(false);
-    const handleChange = ({ fileList: newFileList }) => {
-        setImages(newFileList);
-    };
-
-    const uploadButton = (
-        <div>
-            <PlusOutlined />
-            <div
-                style={{
-                    marginTop: 8,
-                }}>
-                Upload
-            </div>
-        </div>
-    );
-
     const onReset = () => {
         form.current?.resetFields();
-    };
-
-    const beforeUpload = (file) => {
-        const isPNG = file.type === "image/png";
-        const isJPEG = file.type === "image/jpg" || file.type === "image/jpeg";
-        if (!isPNG && !isJPEG) {
-            message.error(`${file.name} is not a png, jpg, or jpeg file`);
-            return isPNG || Upload.LIST_IGNORE;
-        }
-        return false;
     };
 
     const onChange = (_, dateString) => {
         setDate(dateString);
     };
 
+    const formItems = [
+        {
+            name: "name",
+            label: "Name",
+            type: "text",
+            placeholder: "Name",
+            required: true,
+        },
+        {
+            name: "status",
+            label: "Status",
+            type: "select",
+            placeholder: "Status",
+            options: [
+                { label: "draft", value: 0 },
+                { label: "approved", value: 1 },
+                { label: "done", value: 2 },
+            ],
+            required: true,
+        },
+        {
+            name: "started_at",
+            label: "Started At",
+            type: "datePicker",
+            placeholder: "Started At",
+            picker: "month",
+            onChange: onChange,
+            showTime: true,
+            required: true,
+        },
+        {
+            name: "bankName",
+            label: "Bank Name",
+            type: "text",
+            placeholder: "Bank name",
+            required: true,
+        },
+        {
+            name: "iban",
+            label: "IBAN",
+            type: "text",
+            placeholder: "IBAN",
+            required: true,
+        },
+        {
+            name: "bic",
+            label: "BIC",
+            type: "text",
+            placeholder: "BIC",
+            required: true,
+        },
+        {
+            name: "usageNote",
+            label: "VZW",
+            type: "text",
+            placeholder: "VZW",
+            required: true,
+        },
+        {
+            name: "paypal",
+            label: "Paypal",
+            type: "text",
+            placeholder: "Paypal",
+            required: true,
+        },
+        {
+            name: "description",
+            label: "Description",
+            type: "text",
+            placeholder: "Description",
+            required: true,
+        },
+        {
+            label: "images",
+            type: "imageUploader",
+            required: false,
+        },
+    ];
+
     return (
-        <Form
+        <FormComponent
             form={form}
+            name="event"
+            submitForm={submitForm}
+            formItems={formItems}
+            onReset={onReset}
+            showUploading={showUploading}
+            images={images}
+            setImages={setImages}
             initialValues={{
                 name: event.name,
+                status: event.status,
                 started_at: dayjs(event.started_at),
                 bankName: event.bankName,
                 iban: event.iban,
@@ -155,137 +176,7 @@ const EditEventForm = () => {
                 usageNote: event.usageNote,
                 paypal: event.paypal,
                 description: event.description,
-            }}
-            name="event"
-            onFinish={submitForm}
-            labelCol={{
-                span: 4,
-            }}
-            wrapperCol={{
-                span: 14,
-            }}>
-            <Form.Item
-                label="Name"
-                name="name"
-                rules={[
-                    {
-                        required: true,
-                    },
-                ]}>
-                <Input placeholder="Name" />
-            </Form.Item>
-            <Form.Item
-                label="Started At"
-                name="started_at"
-                rules={[
-                    {
-                        required: true,
-                    },
-                ]}>
-                <DatePicker
-                    placeholder="Started at"
-                    picker="month"
-                    onChange={onChange}
-                />
-            </Form.Item>
-            <Form.Item
-                label="Bank Name"
-                name="bankName"
-                rules={[
-                    {
-                        required: true,
-                    },
-                ]}>
-                <Input placeholder="Bank name" />
-            </Form.Item>
-            <Form.Item
-                label="IBAN"
-                name="iban"
-                rules={[
-                    {
-                        required: true,
-                    },
-                ]}>
-                <Input placeholder="IBAN" />
-            </Form.Item>
-            <Form.Item
-                label="BIC"
-                name="bic"
-                rules={[
-                    {
-                        required: true,
-                    },
-                ]}>
-                <Input placeholder="BIC" />
-            </Form.Item>
-            <Form.Item
-                label="VZW"
-                name="usageNote"
-                rules={[
-                    {
-                        required: true,
-                    },
-                ]}>
-                <Input placeholder="VZW" />
-            </Form.Item>
-            <Form.Item
-                label="Paypal"
-                name="paypal"
-                rules={[
-                    {
-                        required: true,
-                    },
-                ]}>
-                <Input placeholder="Paypal" />
-            </Form.Item>
-            <Form.Item
-                label="Description"
-                name="description"
-                rules={[
-                    {
-                        required: true,
-                    },
-                ]}>
-                <Input.TextArea placeholder="Description" rows={4} />
-            </Form.Item>
-            <Form.Item label="images">
-                <Upload
-                    listType="picture-card"
-                    fileList={images}
-                    onPreview={handlePreview}
-                    onChange={handleChange}
-                    beforeUpload={beforeUpload}>
-                    {images.length >= 4 ? null : uploadButton}
-                </Upload>
-            </Form.Item>
-
-            <Modal
-                open={previewOpen}
-                title={previewTitle}
-                footer={null}
-                onCancel={handleCancel}>
-                <img
-                    alt="example"
-                    style={{
-                        width: "100%",
-                    }}
-                    src={previewImage}
-                />
-            </Modal>
-            <Form.Item>
-                <Space>
-                    <Button
-                        type="primary"
-                        htmlType="submit"
-                        loading={showUploading}>
-                        Submit
-                    </Button>
-                    <Button htmlType="button" onClick={onReset}>
-                        Reset
-                    </Button>
-                </Space>
-            </Form.Item>
-        </Form>
+            }}></FormComponent>
     );
 };
 

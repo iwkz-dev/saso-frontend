@@ -4,16 +4,14 @@ import { getAllCategories } from "../../../../store/reducers/categoryReducer";
 import { getAllMenus } from "../../../../store/reducers/menuReducer";
 import { useDispatch, useSelector } from "react-redux";
 import Table from "../../Table";
-import Loading from "../../../common/Loading/Loading";
+import { message } from "antd";
 
 const RelatedMenuTable = ({ filterName, itemFilter, onDelete }) => {
     const dispatch = useDispatch();
     const menus = useSelector((state) => state.menu.menus);
     const categories = useSelector((state) => state.category.categories);
     const events = useSelector((state) => state.event.events);
-
     const [showTable, setShowTable] = useState(false);
-    const [showError, setShowError] = useState("");
 
     useEffect(() => {
         getAllData();
@@ -21,7 +19,6 @@ const RelatedMenuTable = ({ filterName, itemFilter, onDelete }) => {
 
     const getAllData = () => {
         const filter = `?${filterName}=${itemFilter._id}`;
-        setShowError("");
         Promise.all([
             dispatch(getAllEvents()),
             dispatch(getAllCategories()),
@@ -32,7 +29,7 @@ const RelatedMenuTable = ({ filterName, itemFilter, onDelete }) => {
                 setShowTable(true);
             } else {
                 setShowTable(false);
-                setShowError(failed.message);
+                message.error(failed.message);
             }
         });
     };
@@ -49,23 +46,17 @@ const RelatedMenuTable = ({ filterName, itemFilter, onDelete }) => {
     };
 
     return (
-        <>
-            {showTable ? (
-                <Table
-                    onDelete={onDelete}
-                    data={menus}
-                    events={events}
-                    categories={categories}
-                    dataHead={tableHead}
-                    emptyMessage="Menu is empty"
-                    linkToEdit="/menu/edit/"
-                    linkToView="/menu/view/"
-                />
-            ) : (
-                <Loading />
-            )}
-            {showError || ""}
-        </>
+        <Table
+            onDelete={onDelete}
+            data={menus}
+            events={events}
+            categories={categories}
+            dataHead={tableHead}
+            emptyMessage="Menu is empty"
+            linkToEdit="/menu/edit/"
+            linkToView="/menu/view/"
+            isLoading={!showTable}
+        />
     );
 };
 
