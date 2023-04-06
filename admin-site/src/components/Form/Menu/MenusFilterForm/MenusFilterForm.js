@@ -9,7 +9,7 @@ const MenusFilterForm = ({ handleChange, filters }) => {
     return (
         <Space>
             <Space direction="vertical" size={16}>
-                <span>Filter: </span>
+                <span>Event: </span>
                 <span>Category: </span>
             </Space>
             <Space direction="vertical" size={16}>
