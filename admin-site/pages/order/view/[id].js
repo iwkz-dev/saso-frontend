@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllOrders } from "../../../src/store/reducers/orderReducer";
-import Loading from "../../../src/components/common/Loading/Loading";
 import { useRouter } from "next/router";
 import LoggedIn from "../../../src/components/Layout/LoggedIn/LoggedIn";
 import OrderDataDisplay from "../../../src/components/DataDisplay/OrderDataDisplay/OrderDataDisplay";
@@ -55,7 +54,6 @@ const id = () => {
     return (
         <LoggedIn title={pageTitle}>
             <Content>
-                <Loading />
                 <Spin spinning={showLoading} tip="Loading...">
                     <Typography.Title level={2}>View Order</Typography.Title>
                     {showDataDisplay ? (

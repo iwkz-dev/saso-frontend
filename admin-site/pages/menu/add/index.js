@@ -32,12 +32,12 @@ const index = () => {
 
     return (
         <LoggedIn title={pageTitle}>
-            <Spin spinning={showLoading}>
-                <Content>
+            <Content>
+                <Spin spinning={showLoading} tip="Loading...">
                     <Typography.Title level={2}>Add menu</Typography.Title>
                     {showForm ? <AddMenuForm /> : ""}
-                </Content>
-            </Spin>
+                </Spin>
+            </Content>
         </LoggedIn>
     );
 };

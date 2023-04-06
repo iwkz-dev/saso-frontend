@@ -5,7 +5,7 @@ import { getDetailCategory } from "../../../src/store/reducers/categoryReducer";
 import EditCategoryForm from "../../../src/components/Form/Category/EditCategoryForm/EditCategoryForm";
 import LoggedIn from "../../../src/components/Layout/LoggedIn/LoggedIn";
 import Content from "../../../src/components/Layout/Content/Content";
-import { Spin, message } from "antd";
+import { Spin, Typography, message } from "antd";
 
 const id = () => {
     const dispatch = useDispatch();
@@ -36,10 +36,8 @@ const id = () => {
     return (
         <LoggedIn title={pageTitle}>
             <Content>
-                <h1 className="text-2xl font-bold text-left mb-3">
-                    Edit Category
-                </h1>
                 <Spin spinning={showLoading} tip="Loading...">
+                    <Typography.Title level={2}>Edit category</Typography.Title>
                     {showForm ? <EditCategoryForm id={id} /> : ""}
                 </Spin>
             </Content>

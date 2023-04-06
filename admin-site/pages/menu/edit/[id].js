@@ -40,7 +40,7 @@ const id = () => {
     return (
         <LoggedIn title={pageTitle}>
             <Content>
-                <Spin tip="Loading" size="small" spinning={showLoading}>
+                <Spin tip="Loading..." size="small" spinning={showLoading}>
                     <Typography.Title level={2}>Edit menu</Typography.Title>
                     {showForm && <EditMenuForm id={id} />}
                 </Spin>

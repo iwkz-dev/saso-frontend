@@ -2,6 +2,7 @@ import React from "react";
 import AddCategoryForm from "../../../src/components/Form/Category/AddCategoryForm/AddCategoryForm";
 import Content from "../../../src/components/Layout/Content/Content";
 import LoggedIn from "../../../src/components/Layout/LoggedIn/LoggedIn";
+import { Typography } from "antd";
 
 const index = () => {
     const pageTitle = "Saso App | Category";
@@ -9,9 +10,7 @@ const index = () => {
     return (
         <LoggedIn title={pageTitle}>
             <Content>
-                <h1 className="text-2xl font-bold text-left mb-3">
-                    Add category
-                </h1>
+                <Typography.Title level={2}>Add category</Typography.Title>
                 <AddCategoryForm />
             </Content>
         </LoggedIn>

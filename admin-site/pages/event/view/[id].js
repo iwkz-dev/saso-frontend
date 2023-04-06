@@ -39,7 +39,7 @@ const id = () => {
     return (
         <LoggedIn title={pageTitle}>
             <Content>
-                <Spin spinning={showLoading}>
+                <Spin spinning={showLoading} tip="Loading...">
                     <Typography.Title level={2}>
                         View Event &quot;{event.name}&quot;
                     </Typography.Title>
