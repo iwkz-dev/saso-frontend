@@ -3,22 +3,19 @@ import { useDispatch, useSelector } from "react-redux";
 import { getAllEvents } from "../../../../store/reducers/eventReducer";
 import { getAllCategories } from "../../../../store/reducers/categoryReducer";
 import Table from "../../Table";
-import Loading from "../../../common/Loading/Loading";
+import { message } from "antd";
 
 const RelatedMenuOrder = ({ menus }) => {
     const dispatch = useDispatch();
     const categories = useSelector((state) => state.category.categories);
     const events = useSelector((state) => state.event.events);
-
     const [showTable, setShowTable] = useState(false);
-    const [showError, setShowError] = useState("");
 
     useEffect(() => {
         getAllData();
     }, []);
 
     const getAllData = () => {
-        setShowError("");
         Promise.all([
             dispatch(getAllEvents()),
             dispatch(getAllCategories()),
@@ -28,7 +25,7 @@ const RelatedMenuOrder = ({ menus }) => {
                 setShowTable(true);
             } else {
                 setShowTable(false);
-                setShowError(failed.message);
+                message.error(failed.message);
             }
         });
     };
@@ -43,21 +40,15 @@ const RelatedMenuOrder = ({ menus }) => {
     };
 
     return (
-        <>
-            {showTable ? (
-                <Table
-                    data={menus}
-                    dataHead={tableHead}
-                    events={events}
-                    categories={categories}
-                    emptyMessage="Menu is empty"
-                    actionsOff={true}
-                />
-            ) : (
-                <Loading />
-            )}
-            {showError || ""}
-        </>
+        <Table
+            data={menus}
+            dataHead={tableHead}
+            events={events}
+            categories={categories}
+            emptyMessage="Menu is empty"
+            actionsOff={true}
+            isLoading={!showTable}
+        />
     );
 };
 

@@ -37,7 +37,7 @@ const id = () => {
     return (
         <LoggedIn title={pageTitle}>
             <Content>
-                <Spin spinning={showLoading}>
+                <Spin spinning={showLoading} tip="Loading...">
                     <Typography.Title level={2}>
                         View Menu &quot;{menu.name}&quot;
                     </Typography.Title>
