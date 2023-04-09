@@ -125,7 +125,7 @@ const EditMenuForm = () => {
         {
             name: "description",
             label: "Description",
-            type: "text",
+            type: "description",
             placeholder: "Description",
             required: true,
         },

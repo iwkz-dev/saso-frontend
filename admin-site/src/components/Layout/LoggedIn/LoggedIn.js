@@ -130,7 +130,7 @@ function LoggedIn({ children, title, isNotAllowed }) {
                     </div>
                 </Header>
                 <Content>{children}</Content>
-                <Footer style={{ margin: "auto" }}>© 2021 IWKZ Al-Falah</Footer>
+                <Footer style={{ margin: "auto" }}>© 2023 IWKZ Al-Falah</Footer>
             </Layout>
         </Layout>
     );

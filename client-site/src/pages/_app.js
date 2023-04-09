@@ -1,8 +1,5 @@
 import '../styles/globals.scss';
 import React from 'react';
-import theme from '../theme';
-import { ThemeProvider } from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
 import { Provider } from 'react-redux';
 import store from '../stores/store';
 
@@ -15,12 +12,9 @@ function MyApp({ Component, pageProps }) {
     }
   }, []);
   return (
-    <ThemeProvider theme={theme}>
-      <Provider store={store}>
-        <CssBaseline />
-        <Component {...pageProps} />
-      </Provider>
-    </ThemeProvider>
+    <Provider store={store}>
+      <Component {...pageProps} />
+    </Provider>
   );
 }
 

@@ -75,6 +75,19 @@ const FormItem = ({ item, setImages, images }) => {
                         <Input placeholder={item.placeholder} />
                     </Form.Item>
                 );
+            case "description":
+                return (
+                    <Form.Item
+                        label={item.label}
+                        name={item.name}
+                        rules={[
+                            {
+                                required: item.required,
+                            },
+                        ]}>
+                        <Input.TextArea placeholder={item.placeholder} />
+                    </Form.Item>
+                );
             case "select":
                 return (
                     <Form.Item

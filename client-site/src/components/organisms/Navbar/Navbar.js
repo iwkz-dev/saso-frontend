@@ -1,63 +1,104 @@
-import * as React from 'react';
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import Button from '@mui/material/Button';
-import styles from './navbar.module.scss';
-import RegisterModal from '../../molecules/RegisterModal/RegisterModal';
-import LoginModal from '../../molecules/LoginModal/LoginModal';
 import { isAuth, logout } from '../../../helpers/authHelper';
+import { Layout, Row, Col, Dropdown, Button, Badge } from 'antd';
+import { ShoppingCartOutlined } from '@ant-design/icons';
+import Link from 'next/link';
+import {
+  LogoutOutlined,
+  UserOutlined,
+  HistoryOutlined,
+} from '@ant-design/icons';
+import LoginModal from '../../molecules/LoginModal/LoginModal';
+import { useDispatch, useSelector } from 'react-redux';
 
-const Navbar = ({
-  setOpenOrderList,
-  openOrderList,
-  openOrder,
-  setOpenOrder,
-}) => {
+const Navbar = () => {
+  const dispatch = useDispatch();
+  const cart = useSelector(state => state.cart.data);
+
+  console.log(cart.items);
+  const { Header } = Layout;
+
   const logoutHandler = () => {
     logout();
   };
 
-  const handleOpenOrderList = () => {
-    setOpenOrderList(!openOrderList);
-    setOpenOrder(false);
-  };
+  const items = [
+    {
+      label: <Link href="/my-order">My Order</Link>,
+      key: '0',
+      icon: <HistoryOutlined />,
+    },
+    {
+      label: <Link href="/cart">Cart</Link>,
+      key: '1',
+      icon: (
+        <Badge count={cart.items.length} size="small">
+          <ShoppingCartOutlined />
+        </Badge>
+      ),
+    },
+    {
+      type: 'divider',
+    },
+    {
+      label: <div onClick={logoutHandler}>Logout</div>,
+      key: '2',
+      icon: <LogoutOutlined />,
+    },
+  ];
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static" color="transparent">
-        <Toolbar className={styles.toolbar}>
-          {/* <IconButton
-            size="large"
-            edge="start"
-            color="inherit"
-            aria-label="menu"
-            >
-            sx={{ mr: 2 }}
-            <MenuIcon />
-          </IconButton> */}
-
-          <div className={styles.logoWrapper}>
-            <img src="/images/iwkz_logo.png" alt="iwkz logo" />
+    <Header
+      style={{
+        backgroundColor: '#ffffff',
+        borderBottom: '1px solid rgba(149, 157, 165, 0.2)',
+        position: 'sticky',
+        top: 0,
+        zIndex: 1,
+        width: '100%',
+      }}
+    >
+      <Row justify="space-between">
+        <Col>
+          <div>
+            <Link href="/">Home</Link>
           </div>
-          {!isAuth() ? (
-            <div className={styles.buttonsContainer}>
-              <LoginModal />
-              <RegisterModal />
-            </div>
+        </Col>
+        <Col
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            width: '3rem',
+            cursor:"pointer"
+          }}
+        >
+          <Link href="/">
+            <img
+              style={{ width: '100%' }}
+              src="/images/iwkz_logo.png"
+              alt="iwkz logo"
+            />
+          </Link>
+        </Col>
+        <Col style={{ textAlign: 'right' }}>
+          {isAuth() ? (
+            <Dropdown
+              style={{ cursor: 'pointer' }}
+              menu={{
+                items,
+              }}
+              trigger={['click']}
+            >
+              <Badge count={cart.items.length}>
+                <Button shape="circle" icon={<UserOutlined />} />
+              </Badge>
+            </Dropdown>
           ) : (
-            <div className={styles.buttonsContainer}>
-              <Button onClick={handleOpenOrderList} variant="outlined">
-                {openOrderList ? 'Home' : 'My Order'}
-              </Button>
-              <Button onClick={logoutHandler} variant="contained">
-                Logout
-              </Button>
-            </div>
+            <LoginModal />
           )}
-        </Toolbar>
-      </AppBar>
-    </Box>
+        </Col>
+      </Row>
+    </Header>
   );
 };
 export default Navbar;

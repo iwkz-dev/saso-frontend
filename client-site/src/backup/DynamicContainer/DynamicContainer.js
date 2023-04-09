@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import styles from './dynamicContainer.module.scss';
-import Tabs from '../../molecules/Tabs/Tabs';
+import Tabs from '../../molecules/TabsComponent/Tabs';
 import UserFormOrder from '../../molecules/UserFormOrder/UserFormOrder';
 import CheckOrder from '../../molecules/CheckOrder/CheckOrder';
 import Cart from '../../molecules/Cart/Cart';
