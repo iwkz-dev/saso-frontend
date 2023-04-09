@@ -69,7 +69,7 @@ const Navbar = () => {
             justifyContent: 'center',
             alignItems: 'center',
             width: '3rem',
-            cursor:"pointer"
+            cursor: 'pointer',
           }}
         >
           <Link href="/">

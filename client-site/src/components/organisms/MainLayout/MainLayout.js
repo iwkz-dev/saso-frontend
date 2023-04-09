@@ -22,8 +22,9 @@ const MainLayout = ({ children }) => {
         {children}
         <Footer
           style={{
-            margin: 'auto',
-            backgroundColor: '#ffffff',
+            backgroundColor: 'rgb(140, 211, 122)',
+            textAlign: 'center',
+            color: '#ffffff',
           }}
         >
           © 2023 IWKZ Al-Falah

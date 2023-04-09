@@ -1,14 +1,26 @@
-import { Button, Card, Image, Space, Typography } from 'antd';
+import { Button, Card, Image, Space, Typography, message } from 'antd';
 import { useDispatch } from 'react-redux';
 import { addOrder } from '../../../../stores/reducers/cart';
 import { isAuth } from '../../../../helpers/authHelper';
+import { useState } from 'react';
+import ImagesPreview from '../../ImagesPreview/ImagesPreview';
 
 const ProductItem = ({ product }) => {
   const dispatch = useDispatch();
-  const handleClick = () => {
+  const [visible, setVisible] = useState(false);
+
+  const { Meta } = Card;
+
+  const handleClick = e => {
+    e.stopPropagation();
+    message.success(product.name + ' Added');
     dispatch(addOrder(product));
   };
-  const { Meta } = Card;
+
+
+  const productPreview = () => {
+    console.log('test');
+  };
 
   return (
     <Card
@@ -16,14 +28,9 @@ const ProductItem = ({ product }) => {
       style={{
         width: 240,
       }}
+      onClick={productPreview}
       cover={
-        <Image
-          alt={product.name}
-          height={200}
-          src={
-            product.images[0]?.imageUrl || 'https://via.placeholder.com/240x200'
-          }
-        />
+        <ImagesPreview productName={product.name} productImages={product.images}/>
       }
     >
       <Space direction="vertical">
@@ -41,7 +48,7 @@ const ProductItem = ({ product }) => {
         <Button
           type="primary"
           disabled={product.quantity == product.quantityOrder || !isAuth()}
-          onClick={handleClick}
+          onClick={e => handleClick(e)}
           shape="round"
         >
           Add to cart
