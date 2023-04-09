@@ -8,10 +8,9 @@ import {
   HistoryOutlined,
 } from '@ant-design/icons';
 import LoginModal from '../../molecules/LoginModal/LoginModal';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 const Navbar = () => {
-  const dispatch = useDispatch();
   const cart = useSelector(state => state.cart.data);
 
   console.log(cart.items);
@@ -58,11 +57,6 @@ const Navbar = () => {
       }}
     >
       <Row justify="space-between">
-        <Col>
-          <div>
-            <Link href="/">Home</Link>
-          </div>
-        </Col>
         <Col
           style={{
             display: 'flex',

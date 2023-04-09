@@ -17,7 +17,6 @@ const ProductItem = ({ product }) => {
     dispatch(addOrder(product));
   };
 
-
   const productPreview = () => {
     console.log('test');
   };
@@ -30,18 +29,21 @@ const ProductItem = ({ product }) => {
       }}
       onClick={productPreview}
       cover={
-        <ImagesPreview productName={product.name} productImages={product.images}/>
+        <ImagesPreview
+          productName={product.name}
+          productImages={product.images}
+        />
       }
     >
       <Space direction="vertical">
-        <Meta title={product.name} />
-        {product.quantity == product.quantityOrder ? (
-          <Typography.Text>Sold Out</Typography.Text>
-        ) : (
-          <Typography.Text>
-            Left Stock: {product.quantity - product.quantityOrder}
-          </Typography.Text>
-        )}
+        <Meta
+          title={product.name}
+          description={
+            product.quantity == product.quantityOrder
+              ? 'Sold out'
+              : `Left Stock: ${product.quantity - product.quantityOrder}`
+          }
+        />
         <Typography.Title level={3} type="danger">
           {product.price} €
         </Typography.Title>
