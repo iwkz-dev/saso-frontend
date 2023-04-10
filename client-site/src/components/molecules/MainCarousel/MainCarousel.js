@@ -13,7 +13,13 @@ const MainCarousel = ({ eventName, images }) => {
   };
 
   return (
-    <Carousel autoplay>
+    <Carousel
+      autoplay
+      style={{
+        maxWidth: '1440px',
+        margin: 'auto',
+      }}
+    >
       <div>
         <Typography>
           <Typography.Title style={contentStyle}>

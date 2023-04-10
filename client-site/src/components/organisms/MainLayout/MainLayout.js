@@ -2,6 +2,7 @@ import React from 'react';
 import Head from 'next/head';
 import { Layout } from 'antd';
 import Navbar from '../Navbar/Navbar';
+import FooterComponent from '../../atoms/Footer/Footer';
 
 const MainLayout = ({ children }) => {
   const { Footer } = Layout;
@@ -20,15 +21,7 @@ const MainLayout = ({ children }) => {
       >
         <Navbar />
         {children}
-        <Footer
-          style={{
-            backgroundColor: 'rgb(140, 211, 122)',
-            textAlign: 'center',
-            color: '#ffffff',
-          }}
-        >
-          © 2023 IWKZ Al-Falah
-        </Footer>
+        <FooterComponent />
       </Layout>
     </>
   );

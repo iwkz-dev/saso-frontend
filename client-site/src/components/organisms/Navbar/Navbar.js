@@ -12,8 +12,6 @@ import { useSelector } from 'react-redux';
 
 const Navbar = () => {
   const cart = useSelector(state => state.cart.data);
-
-  console.log(cart.items);
   const { Header } = Layout;
 
   const logoutHandler = () => {
@@ -41,7 +39,7 @@ const Navbar = () => {
     {
       label: <div onClick={logoutHandler}>Logout</div>,
       key: '2',
-      icon: <LogoutOutlined />,
+      icon: <LogoutOutlined onClick={logoutHandler} />,
     },
   ];
 
@@ -53,10 +51,17 @@ const Navbar = () => {
         position: 'sticky',
         top: 0,
         zIndex: 1,
-        width: '100%',
+        paddingRight: '1rem',
+        paddingLeft: '1rem',
       }}
     >
-      <Row justify="space-between">
+      <Row
+        justify="space-between"
+        style={{
+          maxWidth: '1024px',
+          margin: 'auto',
+        }}
+      >
         <Col
           style={{
             display: 'flex',

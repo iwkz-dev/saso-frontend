@@ -1,4 +1,5 @@
-import { Button, Card, Image, Space, Typography, message } from 'antd';
+import { Button, Card, Space, Typography, message } from 'antd';
+import { ShoppingCartOutlined } from '@ant-design/icons';
 import { useDispatch } from 'react-redux';
 import { addOrder } from '../../../../stores/reducers/cart';
 import { isAuth } from '../../../../helpers/authHelper';
@@ -44,14 +45,15 @@ const ProductItem = ({ product }) => {
               : `Left Stock: ${product.quantity - product.quantityOrder}`
           }
         />
-        <Typography.Title level={3} type="danger">
+        <Typography.Text style={{ fontSize: '1.5rem' }}>
           {product.price} €
-        </Typography.Title>
+        </Typography.Text>
         <Button
           type="primary"
           disabled={product.quantity == product.quantityOrder || !isAuth()}
           onClick={e => handleClick(e)}
           shape="round"
+          icon={<ShoppingCartOutlined />}
         >
           Add to cart
         </Button>

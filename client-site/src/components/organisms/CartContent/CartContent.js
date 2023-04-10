@@ -1,5 +1,6 @@
-import React from 'react';
 import { Layout } from 'antd';
+import { isAuth } from '../../../helpers/authHelper';
+import Unauthorized from '../../atoms/Unauthorized/Unauthorized';
 
 const CartContent = () => {
   const { Content } = Layout;
@@ -10,7 +11,7 @@ const CartContent = () => {
         backgroundColor: '#ffffff',
       }}
     >
-      Test my Order
+      {isAuth() ? 'Test my Order' : <Unauthorized />}
     </Content>
   );
 };
