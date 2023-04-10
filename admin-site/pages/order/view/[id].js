@@ -55,11 +55,11 @@ const id = () => {
         <LoggedIn title={pageTitle}>
             <Content>
                 <Spin spinning={showLoading} tip="Loading...">
-                    <Typography.Title level={2}>View Order</Typography.Title>
+                    <Typography.Title level={3}>View Order</Typography.Title>
                     {showDataDisplay ? (
                         <Space direction="vertical" style={{ display: "flex" }}>
                             <OrderDataDisplay order={orderDetail} />
-                            <Typography.Title level={2}>
+                            <Typography.Title level={3}>
                                 Ordered Menu
                             </Typography.Title>
                             <RelatedMenuOrder menus={orderDetail.menus} />

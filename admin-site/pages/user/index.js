@@ -69,7 +69,7 @@ const index = () => {
     return (
         <LoggedIn title={pageTitle}>
             <Content>
-                <Typography.Title level={2}>User</Typography.Title>
+                <Typography.Title level={3}>User</Typography.Title>
                 <Space direction="vertical" style={{ display: "flex" }}>
                     {currUser?.role == 1 ? (
                         <div>

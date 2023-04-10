@@ -111,7 +111,7 @@ function LoggedIn({ children, title, isNotAllowed }) {
                             display: "flex",
                             justifyContent: "space-between",
                             alignItems: "center",
-                            width: "83.333%",
+                            width: "95%",
                             margin: "0 auto",
                         }}>
                         <div />

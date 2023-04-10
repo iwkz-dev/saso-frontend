@@ -40,7 +40,7 @@ const id = () => {
         <LoggedIn title={pageTitle}>
             <Content>
                 <Spin spinning={showLoading} tip="Loading...">
-                    <Typography.Title level={2}>
+                    <Typography.Title level={3}>
                         View Category &quot;{category.name}&quot;
                     </Typography.Title>
                     {showDataDisplay ? (

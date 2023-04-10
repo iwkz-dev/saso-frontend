@@ -109,7 +109,7 @@ const index = () => {
     return (
         <LoggedIn title={pageTitle}>
             <Content>
-                <Typography.Title level={2}>Menu</Typography.Title>
+                <Typography.Title level={3}>Menu</Typography.Title>
                 <Space direction="vertical" style={{ display: "flex" }}>
                     <Space
                         style={{

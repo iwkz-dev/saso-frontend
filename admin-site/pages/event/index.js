@@ -88,7 +88,7 @@ const event = () => {
     return (
         <LoggedIn title={pageTitle}>
             <Content>
-                <Typography.Title level={2}>Event</Typography.Title>
+                <Typography.Title level={3}>Event</Typography.Title>
                 <Space direction="vertical" style={{ display: "flex" }}>
                     <AddItemButton hrefLink="/event/add" text="Add Event" />
                     <EventTable

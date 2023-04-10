@@ -10,7 +10,7 @@ const index = () => {
     return (
         <LoggedIn title={pageTitle}>
             <Content>
-                <Typography.Title level={2}>Add category</Typography.Title>
+                <Typography.Title level={3}>Add category</Typography.Title>
                 <AddCategoryForm />
             </Content>
         </LoggedIn>

@@ -34,7 +34,7 @@ const index = () => {
         <LoggedIn title={pageTitle}>
             <Content>
                 <Spin spinning={showLoading} tip="Loading...">
-                    <Typography.Title level={2}>Add menu</Typography.Title>
+                    <Typography.Title level={3}>Add menu</Typography.Title>
                     {showForm ? <AddMenuForm /> : ""}
                 </Spin>
             </Content>

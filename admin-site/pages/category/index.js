@@ -64,7 +64,7 @@ const index = () => {
     return (
         <LoggedIn title={pageTitle}>
             <Content>
-                <Typography.Title level={2}>Category</Typography.Title>
+                <Typography.Title level={3}>Category</Typography.Title>
                 <Space direction="vertical" style={{ display: "flex" }}>
                     <AddItemButton
                         hrefLink="/category/add"

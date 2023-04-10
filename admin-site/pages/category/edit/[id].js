@@ -37,7 +37,7 @@ const id = () => {
         <LoggedIn title={pageTitle}>
             <Content>
                 <Spin spinning={showLoading} tip="Loading...">
-                    <Typography.Title level={2}>Edit category</Typography.Title>
+                    <Typography.Title level={3}>Edit category</Typography.Title>
                     {showForm ? <EditCategoryForm id={id} /> : ""}
                 </Spin>
             </Content>

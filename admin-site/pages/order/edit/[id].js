@@ -18,7 +18,7 @@ const id = () => {
     return (
         <LoggedIn title={pageTitle} pageData={pageData}>
             <Content>
-                <Typography.Title level={2}>Edit Order</Typography.Title>
+                <Typography.Title level={3}>Edit Order</Typography.Title>
             </Content>
         </LoggedIn>
     );

@@ -15,7 +15,7 @@ const index = () => {
     return (
         <LoggedIn title={pageTitle} pageData={pageData}>
             <Content>
-                <Typography.Title level={2}>Add event</Typography.Title>
+                <Typography.Title level={3}>Add event</Typography.Title>
                 <AddEventForm />
             </Content>
         </LoggedIn>
