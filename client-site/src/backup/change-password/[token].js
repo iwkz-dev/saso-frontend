@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import Head from 'next/head';
 import axios from 'axios';
 import Button from '@mui/material/Button';
