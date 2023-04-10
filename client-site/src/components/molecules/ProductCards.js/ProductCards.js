@@ -8,7 +8,7 @@ const ProductCards = ({ productList }) => {
       style={{
         display: 'flex',
         flexDirection: 'row',
-        gap: '1rem',
+        gap: '1.75rem',
         flexWrap: 'wrap',
       }}
     >

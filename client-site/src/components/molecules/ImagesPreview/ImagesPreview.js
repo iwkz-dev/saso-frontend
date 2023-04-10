@@ -19,7 +19,7 @@ const ImagesPreview = ({ productName, productImages }) => {
         onClick={e => imagePreview(e)}
         height={200}
         src={
-          productImages[0]?.imageUrl || 'https://via.placeholder.com/240x200'
+          productImages[0]?.imageUrl || 'https://via.placeholder.com/220x200'
         }
       />
       <div

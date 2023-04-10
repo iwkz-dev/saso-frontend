@@ -21,7 +21,6 @@ export default function Home() {
   }, []);
 
   const ContentComponent = event => {
-    console.log(process.env.EVENT_TYPE);
     if (process.env.EVENT_TYPE === 'toko') {
       return <TokoContent event={event} />;
     } else {

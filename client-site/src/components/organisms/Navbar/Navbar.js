@@ -14,8 +14,10 @@ const Navbar = () => {
   const cart = useSelector(state => state.cart.data);
   const { Header } = Layout;
 
-  const logoutHandler = () => {
-    logout();
+  const onClick = ({ key }) => {
+    if (key === "2") {
+      logout();
+    }
   };
 
   const items = [
@@ -37,9 +39,9 @@ const Navbar = () => {
       type: 'divider',
     },
     {
-      label: <div onClick={logoutHandler}>Logout</div>,
+      label: <div>Logout</div>,
       key: '2',
-      icon: <LogoutOutlined onClick={logoutHandler} />,
+      icon: <LogoutOutlined />,
     },
   ];
 
@@ -85,6 +87,7 @@ const Navbar = () => {
               style={{ cursor: 'pointer' }}
               menu={{
                 items,
+                onClick,
               }}
               trigger={['click']}
             >
