@@ -2,8 +2,8 @@ import React from "react";
 import Table from "../../Table";
 import { useSelector } from "react-redux";
 
-const UserTable = ({ onDelete }) => {
-    const categories = useSelector((state) => state.user.users);
+const UserTable = ({ onDelete, isLoading, showTable }) => {
+    const users = useSelector((state) => state.user.users);
 
     const tableHead = {
         fullname: "Fullname",
@@ -17,10 +17,11 @@ const UserTable = ({ onDelete }) => {
 
     return (
         <Table
+            data={showTable ? users : []}
             onDelete={onDelete}
-            data={categories}
             dataHead={tableHead}
             actionsOff={true}
+            isLoading={isLoading}
         />
     );
 };

@@ -3,16 +3,25 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import store from '../stores/store';
 
+import NProgress from 'nprogress';
+import Router from 'next/router';
+import Head from 'next/head';
+
 function MyApp({ Component, pageProps }) {
-  React.useEffect(() => {
-    // Remove the server-side injected CSS.
-    const jssStyles = document.querySelector('#jss-server-side');
-    if (jssStyles) {
-      jssStyles.parentElement.removeChild(jssStyles);
-    }
-  }, []);
+  Router.onRouteChangeStart = () => {
+    NProgress.start();
+  };
+  Router.onRouteChangeComplete = () => NProgress.done();
+  Router.onRouteChangeError = () => NProgress.done();
+
   return (
     <Provider store={store}>
+      <Head>
+        <link
+          rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.css"
+        />
+      </Head>
       <Component {...pageProps} />
     </Provider>
   );

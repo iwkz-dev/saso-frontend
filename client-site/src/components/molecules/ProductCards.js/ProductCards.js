@@ -1,21 +1,14 @@
-import { Card } from 'antd';
+import { Card, Space } from 'antd';
 import ProductItem from './ProductItem/ProductItem';
 
 const ProductCards = ({ productList }) => {
   const { Meta } = Card;
   return (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'row',
-        gap: '1.75rem',
-        flexWrap: 'wrap',
-      }}
-    >
+    <Space wrap size={[24, 32]}>
       {productList.map(product => (
         <ProductItem key={product.name} product={product} />
       ))}
-    </div>
+    </Space>
   );
 };
 

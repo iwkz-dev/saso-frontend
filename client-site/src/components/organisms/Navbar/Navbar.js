@@ -15,7 +15,7 @@ const Navbar = () => {
   const { Header } = Layout;
 
   const onClick = ({ key }) => {
-    if (key === "2") {
+    if (key === '2') {
       logout();
     }
   };
