@@ -13,7 +13,6 @@ import {
 import { useEffect, useState } from "react";
 import { isAuth } from "../../../helpers/authHelper";
 import { Button, Layout, Menu as Menus } from "antd";
-import Link from "next/link";
 
 function LoggedIn({ children, title, isNotAllowed }) {
     const [collapsed, setCollapsed] = useState(false);
@@ -94,13 +93,9 @@ function LoggedIn({ children, title, isNotAllowed }) {
                     theme="dark"
                     defaultSelectedKeys={["1"]}
                     onClick={onClick}
-                    selectedKeys={[current]}>
-                    {items.map((item) => (
-                        <Menus.Item key={item.key}>
-                            <Link href={item.key}>{item.label}</Link>
-                        </Menus.Item>
-                    ))}
-                </Menus>
+                    selectedKeys={[current]}
+                    items={items}
+                />
             </Sider>
             <Layout className="site-layout">
                 <Header
