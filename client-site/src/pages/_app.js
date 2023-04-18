@@ -6,6 +6,10 @@ import store from '../stores/store';
 import NProgress from 'nprogress';
 import Router from 'next/router';
 import Head from 'next/head';
+import { PersistGate } from 'redux-persist/integration/react';
+import { persistStore } from 'redux-persist';
+
+let persistor = persistStore(store);
 
 function MyApp({ Component, pageProps }) {
   Router.onRouteChangeStart = () => {
@@ -16,13 +20,15 @@ function MyApp({ Component, pageProps }) {
 
   return (
     <Provider store={store}>
-      <Head>
-        <link
-          rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.css"
-        />
-      </Head>
-      <Component {...pageProps} />
+      <PersistGate loading={null} persistor={persistor}>
+        <Head>
+          <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.css"
+          />
+        </Head>
+        <Component {...pageProps} />
+      </PersistGate>
     </Provider>
   );
 }
