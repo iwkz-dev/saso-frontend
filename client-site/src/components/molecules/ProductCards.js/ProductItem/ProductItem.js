@@ -31,6 +31,7 @@ const ProductItem = ({ product }) => {
       onClick={productPreview}
       cover={
         <ImagesPreview
+          height={200}
           productName={product.name}
           productImages={product.images}
         />
