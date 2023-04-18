@@ -1,15 +1,12 @@
 import '../styles/globals.scss';
 import React from 'react';
 import { Provider } from 'react-redux';
-import store from '../stores/store';
+import { persistor, store } from '../stores/store';
 
 import NProgress from 'nprogress';
 import Router from 'next/router';
 import Head from 'next/head';
 import { PersistGate } from 'redux-persist/integration/react';
-import { persistStore } from 'redux-persist';
-
-let persistor = persistStore(store);
 
 function MyApp({ Component, pageProps }) {
   Router.onRouteChangeStart = () => {

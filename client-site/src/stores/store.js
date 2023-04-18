@@ -24,15 +24,15 @@ const reducers = combineReducers({
 const persistConfig = {
   key: 'root',
   storage,
+  blacklist: ['login', 'menu', 'event', 'register', 'order', 'category'],
 };
 
 const persistedReducer = persistReducer(persistConfig, reducers);
 
-const store = configureStore({
+// Add reducers here!
+export const store = configureStore({
   reducer: persistedReducer,
   devTools: process.env.NODE_ENV !== 'production',
   middleware: [thunk],
 });
-
-// Add reducers here!
-export default store;
+export const persistor = persistStore(store);

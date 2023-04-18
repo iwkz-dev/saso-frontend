@@ -8,14 +8,17 @@ import {
   HistoryOutlined,
 } from '@ant-design/icons';
 import LoginModal from '../../molecules/LoginModal/LoginModal';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { resetCart } from '../../../stores/reducers/cart';
 
 const Navbar = () => {
   const cart = useSelector(state => state.cart.data);
+  const dispatch = useDispatch();
   const { Header } = Layout;
 
   const onClick = ({ key }) => {
     if (key === '2') {
+      dispatch(resetCart());
       logout();
     }
   };
