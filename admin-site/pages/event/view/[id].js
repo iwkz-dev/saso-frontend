@@ -9,6 +9,7 @@ import AddItemButton from "../../../src/components/common/Button/AddItemButton/A
 import Content from "../../../src/components/Layout/Content/Content";
 import { Space, Spin, Typography, message } from "antd";
 import { isAuth } from "../../../src/helpers/authHelper";
+import EventSummary from "../../../src/components/Card/Event/EventSummary/EventSummary";
 
 const id = () => {
     const dispatch = useDispatch();
@@ -47,6 +48,7 @@ const id = () => {
                     </Typography.Title>
                     {showDataDisplay ? (
                         <Space direction="vertical" style={{ display: "flex" }}>
+                            <EventSummary event={event} />
                             <EventDataDisplay event={event} />
                             <Typography.Title level={3}>
                                 Related Menu
