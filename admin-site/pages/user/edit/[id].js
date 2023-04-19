@@ -6,6 +6,7 @@ import EditUserForm from "../../../src/components/Form/User/EditUserForm/EditUse
 import LoggedIn from "../../../src/components/Layout/LoggedIn/LoggedIn";
 import Content from "../../../src/components/Layout/Content/Content";
 import { Spin, Typography, message } from "antd";
+import { isAuth } from "../../../src/helpers/authHelper";
 
 const id = () => {
     const dispatch = useDispatch();
@@ -28,6 +29,7 @@ const id = () => {
                 } else {
                     setShowLoading(false);
                     message.error(r.message);
+                    isAuth(r);
                 }
             });
         }

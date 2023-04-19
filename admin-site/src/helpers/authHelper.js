@@ -1,6 +1,16 @@
 import Router from "next/router";
 
-export const isAuth = () => !!(getToken() && getUserId());
+export const isAuth = (response) => {
+    if (response && getToken() && getUserId()) {
+        if (
+            response.message.toLowerCase() === "invalid token" ||
+            response.name.toLowerCase() === "invalid auth"
+        ) {
+            logout();
+        }
+    }
+    return !!(getToken() && getUserId());
+};
 
 export const setToken = (data) => {
     localStorage.setItem("access_token", JSON.stringify(data));

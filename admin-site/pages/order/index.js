@@ -11,6 +11,7 @@ import { getAllEvents } from "../../src/store/reducers/eventReducer";
 import OrderFilterForm from "../../src/components/Form/Order/OrderFilterForm/OrderFilterForm";
 import Content from "../../src/components/Layout/Content/Content";
 import { Space, Typography, message } from "antd";
+import { isAuth } from "../../src/helpers/authHelper";
 
 const index = () => {
     const dispatch = useDispatch();
@@ -49,6 +50,7 @@ const index = () => {
                 setShowTable(false);
                 setShowLoadingData(false);
                 message.error(failed.message);
+                isAuth(failed);
             }
         });
     };

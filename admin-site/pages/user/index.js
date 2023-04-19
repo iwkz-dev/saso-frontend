@@ -9,7 +9,7 @@ import {
     getAllUsers,
     getDetailUser,
 } from "../../src/store/reducers/userReducer";
-import { getUserId } from "../../src/helpers/authHelper";
+import { getUserId, isAuth } from "../../src/helpers/authHelper";
 import Content from "../../src/components/Layout/Content/Content";
 import { message, Space, Typography } from "antd";
 
@@ -38,6 +38,7 @@ const index = () => {
                 setShowLoading(false);
                 message.error(failed.message);
                 setShowTable(false);
+                isAuth(failed);
             }
         });
     };

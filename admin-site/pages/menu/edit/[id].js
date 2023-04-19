@@ -8,6 +8,7 @@ import { getDetailMenu } from "../../../src/store/reducers/menuReducer";
 import { getAllEvents } from "../../../src/store/reducers/eventReducer";
 import { getAllCategories } from "../../../src/store/reducers/categoryReducer";
 import { message, Spin, Typography } from "antd";
+import { isAuth } from "../../../src/helpers/authHelper";
 
 const id = () => {
     const dispatch = useDispatch();
@@ -29,6 +30,7 @@ const id = () => {
                 const failed = responses.find((r) => r?.status === "failed");
                 if (failed) {
                     message.error(failed.message);
+                    isAuth(failed);
                 } else {
                     setShowForm(true);
                 }

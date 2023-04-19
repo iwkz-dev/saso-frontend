@@ -6,6 +6,7 @@ import { getAllEvents } from "../../../src/store/reducers/eventReducer";
 import { getAllCategories } from "../../../src/store/reducers/categoryReducer";
 import { useDispatch } from "react-redux";
 import { message, Spin, Typography } from "antd";
+import { isAuth } from "../../../src/helpers/authHelper";
 
 const index = () => {
     const dispatch = useDispatch();
@@ -23,6 +24,7 @@ const index = () => {
             const failed = responses.find((r) => r?.status === "failed");
             if (failed) {
                 message.error(failed.message);
+                isAuth(failed);
             } else {
                 setShowForm(true);
             }

@@ -8,6 +8,7 @@ import RelatedMenuTable from "../../../src/components/Table/Event/RelatedMenuTab
 import AddItemButton from "../../../src/components/common/Button/AddItemButton/AddItemButton";
 import Content from "../../../src/components/Layout/Content/Content";
 import { message, Space, Spin, Typography } from "antd";
+import { isAuth } from "../../../src/helpers/authHelper";
 
 const id = () => {
     const dispatch = useDispatch();
@@ -31,6 +32,7 @@ const id = () => {
                 } else {
                     setShowLoading(false);
                     message.error(r.message);
+                    isAuth(r);
                 }
             });
         }

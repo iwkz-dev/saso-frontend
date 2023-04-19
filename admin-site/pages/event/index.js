@@ -10,6 +10,7 @@ import {
 } from "../../src/store/reducers/eventReducer";
 import { changeEventStatus } from "../../src/store/reducers/eventReducer";
 import { Space, Typography, message } from "antd";
+import { isAuth } from "../../src/helpers/authHelper";
 
 const event = () => {
     const dispatch = useDispatch();
@@ -34,6 +35,7 @@ const event = () => {
                 setShowLoadingData(false);
                 setShowTable(false);
                 message.error(r.message);
+                isAuth(r);
             }
         });
     };

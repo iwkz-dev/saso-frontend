@@ -6,6 +6,7 @@ import { useDispatch } from "react-redux";
 import { getAllEvents } from "../src/store/reducers/eventReducer";
 import { getAllOrders } from "../src/store/reducers/orderReducer";
 import { message, Spin } from "antd";
+import { isAuth } from "../src/helpers/authHelper";
 
 const index = () => {
     const dispatch = useDispatch();
@@ -30,6 +31,7 @@ const index = () => {
                     setShowCard(false);
                     setShowLoading(false);
                     message.error(failed.message);
+                    isAuth(failed);
                 }
             },
         );

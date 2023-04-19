@@ -9,6 +9,7 @@ import LoggedIn from "../../src/components/Layout/LoggedIn/LoggedIn";
 import CategoryTable from "../../src/components/Table/Category/CategoryTable/CategoryTable";
 import AddItemButton from "../../src/components/common/Button/AddItemButton/AddItemButton";
 import { Space, message, Typography } from "antd";
+import { isAuth } from "../../src/helpers/authHelper";
 
 const index = () => {
     const dispatch = useDispatch();
@@ -33,6 +34,7 @@ const index = () => {
                 setShowLoadingData(false);
                 message.error(r.message);
                 setShowTable(false);
+                isAuth(r);
             }
         });
     };

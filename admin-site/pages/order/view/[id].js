@@ -7,6 +7,7 @@ import OrderDataDisplay from "../../../src/components/DataDisplay/OrderDataDispl
 import RelatedMenuOrder from "../../../src/components/Table/Order/RelatedMenuOrderList/RelatedMenuOrder";
 import Content from "../../../src/components/Layout/Content/Content";
 import { Space, Spin, Typography, message } from "antd";
+import { isAuth } from "../../../src/helpers/authHelper";
 
 const id = () => {
     const dispatch = useDispatch();
@@ -31,6 +32,7 @@ const id = () => {
                 } else {
                     setShowLoading(false);
                     message.error(r.message);
+                    isAuth(r);
                 }
             });
         } else {

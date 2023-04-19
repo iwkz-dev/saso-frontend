@@ -10,6 +10,7 @@ import AddItemButton from "../../src/components/common/Button/AddItemButton/AddI
 import Content from "../../src/components/Layout/Content/Content";
 import { Button, message, Modal, Space, Typography } from "antd";
 import { FilterOutlined } from "@ant-design/icons";
+import { isAuth } from "../../src/helpers/authHelper";
 
 const index = () => {
     const dispatch = useDispatch();
@@ -50,6 +51,7 @@ const index = () => {
                 setShowTable(false);
                 setShowLoading(false);
                 message.error(failed.message);
+                isAuth(failed);
             }
         });
     };
