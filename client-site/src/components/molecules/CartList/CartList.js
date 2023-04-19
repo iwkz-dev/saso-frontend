@@ -1,7 +1,7 @@
 import { Button, Card, Space, Typography } from 'antd';
 import React from 'react';
 import ImagesPreview from '../ImagesPreview/ImagesPreview';
-import { MinusOutlined, PlusOutlined } from '@ant-design/icons';
+import { MinusOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons';
 import styles from './CartList.module.scss';
 
 const CartList = ({ cart, add, remove }) => {
@@ -25,19 +25,23 @@ const CartList = ({ cart, add, remove }) => {
                 </Space>
               </div>
               <div className={styles.itemAmount}>
-                <Button
-                  size="small"
-                  shape="circle"
-                  icon={<MinusOutlined />}
-                  onClick={() => remove(item.menu)}
-                />
-                <Typography.Text>{item.amount}</Typography.Text>
-                <Button
-                  size="small"
-                  shape="circle"
-                  icon={<PlusOutlined />}
-                  onClick={() => add(item.menu)}
-                />
+                <Space.Compact>
+                  <Button
+                    size="large"
+                    shape="circle"
+                    icon={item.amount <= 1 ? <DeleteOutlined /> : <MinusOutlined />}
+                    onClick={() => remove(item.menu)}
+                  />
+                  <div className={styles.amountText}>
+                    <Typography.Text>{item.amount}</Typography.Text>
+                  </div>
+                  <Button
+                    size='large'
+                    shape="circle"
+                    icon={<PlusOutlined />}
+                    onClick={() => add(item.menu)}
+                  />
+                </Space.Compact>
               </div>
             </div>
           </Card>
