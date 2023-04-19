@@ -1,5 +1,4 @@
 export const formatDate = (dateStr, withClock = false, withDay = false) => {
-    console.log(dateStr);
     const date = new Date(dateStr);
     const options = { year: "numeric", month: "long", day: "numeric" };
     let formatedDate = date.toLocaleDateString("id-Id", options);
