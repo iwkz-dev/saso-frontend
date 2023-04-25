@@ -41,7 +41,11 @@ const EventSummary = ({ event }) => {
         );
 
         let sum = 0;
-        paidOrders?.map((deliveredOrder) => {
+        paidOrders?.map((paidOrder) => {
+            sum += paidOrder.totalPrice;
+        });
+
+        deliveredOrders?.map((deliveredOrder) => {
             sum += deliveredOrder.totalPrice;
         });
 
