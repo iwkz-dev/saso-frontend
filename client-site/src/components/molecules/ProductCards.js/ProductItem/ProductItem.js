@@ -5,8 +5,11 @@ import { addOrder } from '../../../../stores/reducers/cart';
 import { isAuth } from '../../../../helpers/authHelper';
 import { useState } from 'react';
 import ImagesPreview from '../../ImagesPreview/ImagesPreview';
+import { useRouter } from 'next/router';
 
 const ProductItem = ({ product }) => {
+  const router = useRouter();
+
   const dispatch = useDispatch();
   const [visible, setVisible] = useState(false);
 
@@ -18,8 +21,12 @@ const ProductItem = ({ product }) => {
     dispatch(addOrder(product));
   };
 
+  function showDetailsHandler() {
+    router.push('/item/view/' + product.id);
+  }
+
   const productPreview = () => {
-    console.log('test');
+    showDetailsHandler
   };
 
   return (
@@ -28,7 +35,7 @@ const ProductItem = ({ product }) => {
       style={{
         width: 220,
       }}
-      onClick={productPreview}
+      onClick={showDetailsHandler}
       cover={
         <ImagesPreview
           productName={product.name}
