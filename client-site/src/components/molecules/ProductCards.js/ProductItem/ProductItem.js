@@ -8,6 +8,7 @@ import ImagesPreview from '../../ImagesPreview/ImagesPreview';
 import { useRouter } from 'next/router';
 
 const ProductItem = ({ product }) => {
+  console.log(product);
   const router = useRouter();
 
   const dispatch = useDispatch();
@@ -22,7 +23,7 @@ const ProductItem = ({ product }) => {
   };
 
   function showDetailsHandler() {
-    router.push('/item/view/' + product.id);
+    router.push('/item/view/' + product._id);
   }
 
   const productPreview = () => {

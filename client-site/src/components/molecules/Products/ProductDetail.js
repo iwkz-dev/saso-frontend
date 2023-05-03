@@ -2,7 +2,8 @@ import React from 'react';
 import { ShoppingCartOutlined } from '@ant-design/icons';
 import classes from '../../molecules/Products/ProductDetail.module.scss';
 import { Row, Col, Typography, Descriptions, Button } from 'antd';
-import { SingleProductContext } from '../../contexts';
+
+
 
 const { Text } = Typography;
 const { Item } = Descriptions;

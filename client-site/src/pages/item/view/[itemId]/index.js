@@ -21,7 +21,7 @@ export async function getStaticPaths() {
     paths: [
       {
         params: {
-          itemId: 'p1',
+          itemId: '643bf80e3f40e73ebb4b489d',
         },
       },
       {
@@ -31,7 +31,7 @@ export async function getStaticPaths() {
       },
     ]
   }
-  }
+}
 
 export async function getStaticProps(context) {
   const itemId = context.params.itemId;
