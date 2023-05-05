@@ -48,7 +48,7 @@ const RelatedMenuTable = ({ filterName, itemFilter, onDelete }) => {
     return (
         <Table
             onDelete={onDelete}
-            data={menus}
+            data={showTable ? menus : []}
             events={events}
             categories={categories}
             dataHead={tableHead}

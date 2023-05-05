@@ -46,7 +46,7 @@ const TableComponent = ({
                                 <Select
                                     key={record._id}
                                     style={{
-                                        width: "83.330%",
+                                        width: "95%",
                                     }}
                                     defaultValue={getDefaultValue(
                                         columnData.options,

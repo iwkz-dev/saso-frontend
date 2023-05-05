@@ -7,6 +7,7 @@ import OrderDataDisplay from "../../../src/components/DataDisplay/OrderDataDispl
 import RelatedMenuOrder from "../../../src/components/Table/Order/RelatedMenuOrderList/RelatedMenuOrder";
 import Content from "../../../src/components/Layout/Content/Content";
 import { Space, Spin, Typography, message } from "antd";
+import { isAuth } from "../../../src/helpers/authHelper";
 
 const id = () => {
     const dispatch = useDispatch();
@@ -31,6 +32,7 @@ const id = () => {
                 } else {
                     setShowLoading(false);
                     message.error(r.message);
+                    isAuth(r);
                 }
             });
         } else {
@@ -55,11 +57,11 @@ const id = () => {
         <LoggedIn title={pageTitle}>
             <Content>
                 <Spin spinning={showLoading} tip="Loading...">
-                    <Typography.Title level={2}>View Order</Typography.Title>
+                    <Typography.Title level={3}>View Order</Typography.Title>
                     {showDataDisplay ? (
                         <Space direction="vertical" style={{ display: "flex" }}>
                             <OrderDataDisplay order={orderDetail} />
-                            <Typography.Title level={2}>
+                            <Typography.Title level={3}>
                                 Ordered Menu
                             </Typography.Title>
                             <RelatedMenuOrder menus={orderDetail.menus} />

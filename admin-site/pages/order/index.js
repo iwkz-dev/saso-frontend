@@ -11,6 +11,7 @@ import { getAllEvents } from "../../src/store/reducers/eventReducer";
 import OrderFilterForm from "../../src/components/Form/Order/OrderFilterForm/OrderFilterForm";
 import Content from "../../src/components/Layout/Content/Content";
 import { Space, Typography, message } from "antd";
+import { isAuth } from "../../src/helpers/authHelper";
 
 const index = () => {
     const dispatch = useDispatch();
@@ -49,6 +50,7 @@ const index = () => {
                 setShowTable(false);
                 setShowLoadingData(false);
                 message.error(failed.message);
+                isAuth(failed);
             }
         });
     };
@@ -103,7 +105,7 @@ const index = () => {
     return (
         <LoggedIn title={pageTitle}>
             <Content>
-                <Typography.Title level={2}>Order</Typography.Title>
+                <Typography.Title level={3}>Order</Typography.Title>
                 <Space direction="vertical" style={{ display: "flex" }}>
                     <OrderFilterForm
                         filters={filters}

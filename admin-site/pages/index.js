@@ -5,7 +5,8 @@ import Content from "../src/components/Layout/Content/Content";
 import { useDispatch } from "react-redux";
 import { getAllEvents } from "../src/store/reducers/eventReducer";
 import { getAllOrders } from "../src/store/reducers/orderReducer";
-import { message, Spin, Typography } from "antd";
+import { message, Spin } from "antd";
+import { isAuth } from "../src/helpers/authHelper";
 
 const index = () => {
     const dispatch = useDispatch();
@@ -30,6 +31,7 @@ const index = () => {
                     setShowCard(false);
                     setShowLoading(false);
                     message.error(failed.message);
+                    isAuth(failed);
                 }
             },
         );
@@ -39,7 +41,6 @@ const index = () => {
         <LoggedIn title={pageTitle}>
             <Content>
                 <Spin spinning={showLoading} tip="Loading...">
-                    <Typography.Title level={2}>Dashboard</Typography.Title>
                     {showCard ? <DashboardCard /> : ""}
                 </Spin>
             </Content>

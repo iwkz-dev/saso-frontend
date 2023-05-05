@@ -10,6 +10,7 @@ import {
 } from "../../src/store/reducers/eventReducer";
 import { changeEventStatus } from "../../src/store/reducers/eventReducer";
 import { Space, Typography, message } from "antd";
+import { isAuth } from "../../src/helpers/authHelper";
 
 const event = () => {
     const dispatch = useDispatch();
@@ -34,6 +35,7 @@ const event = () => {
                 setShowLoadingData(false);
                 setShowTable(false);
                 message.error(r.message);
+                isAuth(r);
             }
         });
     };
@@ -88,7 +90,7 @@ const event = () => {
     return (
         <LoggedIn title={pageTitle}>
             <Content>
-                <Typography.Title level={2}>Event</Typography.Title>
+                <Typography.Title level={3}>Event</Typography.Title>
                 <Space direction="vertical" style={{ display: "flex" }}>
                     <AddItemButton hrefLink="/event/add" text="Add Event" />
                     <EventTable

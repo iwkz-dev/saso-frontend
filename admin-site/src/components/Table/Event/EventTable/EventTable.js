@@ -34,45 +34,6 @@ function EventTable({ onDelete, onChangeStatus, isLoading, showTable }) {
         created_at: "Created At",
         updated_at: "Updated At",
     };
-    /*
-    const tableHead = {
-        name: "Name",
-        description: "Description",
-        status: {
-            name: "Status",
-            editable: 1,
-            type: "select",
-            onChange: onChangeStatus,
-            options: [
-                {
-                    title: "Draft",
-                    value: "draft",
-                    code: 0,
-                },
-                {
-                    title: "Approved",
-                    value: "approved",
-                    code: 1,
-                },
-                {
-                    title: "Done",
-                    value: "done",
-                    code: 2,
-                },
-            ],
-        },
-        bankName: "Bank Name",
-        iban: "IBAN",
-        bic: "BIC",
-        usageNote: "VZW",
-        paypal: "Paypal",
-        started_at: "Started at",
-        startYear: "Start Year",
-        images: "Image",
-        created_at: "Created At",
-        updated_at: "Updated At",
-    };
-    */
 
     return (
         <Table

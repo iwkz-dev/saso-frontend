@@ -8,6 +8,8 @@ import RelatedMenuTable from "../../../src/components/Table/Event/RelatedMenuTab
 import AddItemButton from "../../../src/components/common/Button/AddItemButton/AddItemButton";
 import Content from "../../../src/components/Layout/Content/Content";
 import { Space, Spin, Typography, message } from "antd";
+import { isAuth } from "../../../src/helpers/authHelper";
+import EventSummary from "../../../src/components/Card/Event/EventSummary/EventSummary";
 
 const id = () => {
     const dispatch = useDispatch();
@@ -31,6 +33,7 @@ const id = () => {
                 } else {
                     setShowLoading(false);
                     message.error(r.message);
+                    isAuth(r);
                 }
             });
         }
@@ -40,11 +43,12 @@ const id = () => {
         <LoggedIn title={pageTitle}>
             <Content>
                 <Spin spinning={showLoading} tip="Loading...">
-                    <Typography.Title level={2}>
+                    <Typography.Title level={3}>
                         View Event &quot;{event.name}&quot;
                     </Typography.Title>
                     {showDataDisplay ? (
                         <Space direction="vertical" style={{ display: "flex" }}>
+                            <EventSummary event={event} />
                             <EventDataDisplay event={event} />
                             <Typography.Title level={3}>
                                 Related Menu

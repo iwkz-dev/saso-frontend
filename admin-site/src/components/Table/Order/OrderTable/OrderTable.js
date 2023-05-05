@@ -2,7 +2,7 @@ import React from "react";
 import { useSelector } from "react-redux";
 import Table from "../../Table";
 
-function OrderTable({ onDelete, onChangeStatus }) {
+function OrderTable({ onDelete, onChangeStatus, isLoading, showTable }) {
     const orders = useSelector((state) => state.order.orders);
     const events = useSelector((state) => state.event.events);
     const tableHead = {
@@ -121,11 +121,12 @@ function OrderTable({ onDelete, onChangeStatus }) {
     return (
         <Table
             onDelete={onDelete}
-            data={orders}
+            data={showTable ? orders : []}
             events={events}
             dataHead={tableHead}
             emptyMessage="Order is empty"
             actionsOff={true}
+            isLoading={isLoading}
         />
     );
 }

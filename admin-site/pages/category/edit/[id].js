@@ -6,6 +6,7 @@ import EditCategoryForm from "../../../src/components/Form/Category/EditCategory
 import LoggedIn from "../../../src/components/Layout/LoggedIn/LoggedIn";
 import Content from "../../../src/components/Layout/Content/Content";
 import { Spin, Typography, message } from "antd";
+import { isAuth } from "../../../src/helpers/authHelper";
 
 const id = () => {
     const dispatch = useDispatch();
@@ -28,6 +29,7 @@ const id = () => {
                 } else {
                     setShowLoading(false);
                     message.error(r.message);
+                    isAuth(r);
                 }
             });
         }
@@ -37,7 +39,7 @@ const id = () => {
         <LoggedIn title={pageTitle}>
             <Content>
                 <Spin spinning={showLoading} tip="Loading...">
-                    <Typography.Title level={2}>Edit category</Typography.Title>
+                    <Typography.Title level={3}>Edit category</Typography.Title>
                     {showForm ? <EditCategoryForm id={id} /> : ""}
                 </Spin>
             </Content>

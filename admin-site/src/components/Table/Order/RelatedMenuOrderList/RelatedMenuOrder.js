@@ -41,7 +41,7 @@ const RelatedMenuOrder = ({ menus }) => {
 
     return (
         <Table
-            data={menus}
+            data={showTable ? menus : []}
             dataHead={tableHead}
             events={events}
             categories={categories}

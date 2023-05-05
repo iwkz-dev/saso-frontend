@@ -1,7 +1,7 @@
 import { Image } from 'antd';
 import { useState } from 'react';
 
-const ImagesPreview = ({ productName, productImages }) => {
+const ImagesPreview = ({ productName, productImages, height }) => {
   const [visible, setVisible] = useState(false);
 
   const imagePreview = e => {
@@ -17,9 +17,9 @@ const ImagesPreview = ({ productName, productImages }) => {
           visible: false,
         }}
         onClick={e => imagePreview(e)}
-        height={200}
+        height={height}
         src={
-          productImages[0]?.imageUrl || 'https://via.placeholder.com/240x200'
+          productImages[0]?.imageUrl || 'https://via.placeholder.com/220x200'
         }
       />
       <div

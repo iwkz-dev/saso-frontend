@@ -32,7 +32,7 @@ const index = () => {
             pageData={pageData}
             isNotAllowed={currUser?.role !== 1}>
             <Content>
-                <Typography.Title level={2}>Add User</Typography.Title>
+                <Typography.Title level={3}>Add User</Typography.Title>
                 <AddUserForm />
             </Content>
         </LoggedIn>

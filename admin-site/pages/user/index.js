@@ -9,7 +9,7 @@ import {
     getAllUsers,
     getDetailUser,
 } from "../../src/store/reducers/userReducer";
-import { getUserId } from "../../src/helpers/authHelper";
+import { getUserId, isAuth } from "../../src/helpers/authHelper";
 import Content from "../../src/components/Layout/Content/Content";
 import { message, Space, Typography } from "antd";
 
@@ -38,6 +38,7 @@ const index = () => {
                 setShowLoading(false);
                 message.error(failed.message);
                 setShowTable(false);
+                isAuth(failed);
             }
         });
     };
@@ -69,7 +70,7 @@ const index = () => {
     return (
         <LoggedIn title={pageTitle}>
             <Content>
-                <Typography.Title level={2}>User</Typography.Title>
+                <Typography.Title level={3}>User</Typography.Title>
                 <Space direction="vertical" style={{ display: "flex" }}>
                     {currUser?.role == 1 ? (
                         <div>

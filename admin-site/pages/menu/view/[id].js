@@ -6,6 +6,7 @@ import LoggedIn from "../../../src/components/Layout/LoggedIn/LoggedIn";
 import MenuDataDisplay from "../../../src/components/DataDisplay/MenuDataDisplay/MenuDataDisplay";
 import Content from "../../../src/components/Layout/Content/Content";
 import { Spin, Typography, message } from "antd";
+import { isAuth } from "../../../src/helpers/authHelper";
 
 const id = () => {
     const dispatch = useDispatch();
@@ -29,6 +30,7 @@ const id = () => {
                 } else {
                     setShowLoading(false);
                     message.error(r.message);
+                    isAuth(r);
                 }
             });
         }
@@ -38,7 +40,7 @@ const id = () => {
         <LoggedIn title={pageTitle}>
             <Content>
                 <Spin spinning={showLoading} tip="Loading...">
-                    <Typography.Title level={2}>
+                    <Typography.Title level={3}>
                         View Menu &quot;{menu.name}&quot;
                     </Typography.Title>
                     {showDataDisplay ? <MenuDataDisplay menu={menu} /> : ""}
