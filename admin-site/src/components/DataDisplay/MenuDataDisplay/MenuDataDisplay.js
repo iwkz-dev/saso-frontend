@@ -9,6 +9,7 @@ const MenuDataDisplay = ({ menu }) => {
     const dataForm = {
         _id: "ID",
         name: "Name",
+        barcode: "Barcode",
         description: "Description",
         price: "Price (€)",
         quantity: "Quantity",

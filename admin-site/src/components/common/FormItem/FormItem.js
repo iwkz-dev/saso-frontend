@@ -1,4 +1,7 @@
 import React, { useState } from "react";
+import BarcodeScannerComponent from "react-qr-barcode-scanner";
+import style from "./FormItem.module.scss"
+
 import {
     DatePicker,
     Form,
@@ -8,13 +11,21 @@ import {
     InputNumber,
     message,
     Modal,
+    Space,
+    Button,
+    
 } from "antd";
-import { PlusOutlined } from "@ant-design/icons";
+import { PlusOutlined,CameraOutlined } from "@ant-design/icons";
+
+    
 
 const FormItem = ({ item, setImages, images }) => {
     const [previewOpen, setPreviewOpen] = useState(false);
     const [previewImage, setPreviewImage] = useState("");
     const [previewTitle, setPreviewTitle] = useState("");
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [data, setData] = React.useState("Not Found");
+
 
     const getBase64 = (file) =>
         new Promise((resolve, reject) => {
@@ -38,6 +49,12 @@ const FormItem = ({ item, setImages, images }) => {
     const handleCancel = () => setPreviewOpen(false);
     const handleChange = ({ fileList: newFileList }) => setImages(newFileList);
 
+    const onError = (error) => {
+        if (error.name === "NotAllowedError") {
+          // Handle messaging in our app after the user chooses to not allow the camera permissions
+        }
+      };
+
     const uploadButton = (
         <div>
             <PlusOutlined />
@@ -49,6 +66,21 @@ const FormItem = ({ item, setImages, images }) => {
             </div>
         </div>
     );
+
+    const showModal = ()=> {
+        setIsModalOpen(true);
+    }
+    const handleOk = () => {
+        setIsModalOpen(false);
+    };
+
+    const handleCancelModal = () => {
+        setIsModalOpen(false);
+    };
+
+    const getBarcode = (barcode)=>{
+        barcode
+    }
 
     const beforeUpload = (file) => {
         const isPNG = file.type === "image/png";
@@ -75,6 +107,46 @@ const FormItem = ({ item, setImages, images }) => {
                         <Input placeholder={item.placeholder} />
                     </Form.Item>
                 );
+            case "inputCamera":
+                    return (
+                        <Form.Item
+                            label={item.label}
+                            name={item.name}
+                            rules={[
+                                {
+                                    required: item.required,
+                                },
+                            ]}>
+                            <Space.Compact>
+                                <Input placeholder={item.placeholder} />
+                                <Button
+                                    icon={<CameraOutlined />}
+                                    onClick={showModal}
+                                />
+                            </Space.Compact>
+                            <Modal
+                                className={style.scannerModal}                             
+                                
+                                title="Basic Modal"
+                                open={isModalOpen}
+                                onOk={handleOk}
+                                onCancel={handleCancelModal}>
+                                
+                                <BarcodeScannerComponent
+                                    width={500}
+                                    height={500}
+                                    onUpdate={(err, result) => {
+                                  if (result) 
+                                  getBarcode(result.text);
+                                  else setData("Not Found");
+                                }}
+                                />
+                                <p>{data}</p>
+                         
+                            </Modal>
+                        </Form.Item>
+                    );
+    
             case "description":
                 return (
                     <Form.Item

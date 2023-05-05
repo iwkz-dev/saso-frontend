@@ -1,0 +1,6 @@
+.scannerModal{
+    width: 1000px;
+    :global(.ant-modal-content) {
+        width: 600px;
+    }
+}

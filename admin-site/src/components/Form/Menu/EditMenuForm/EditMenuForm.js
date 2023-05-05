@@ -26,6 +26,7 @@ const EditMenuForm = () => {
 
     const initialValues = {
         name: menu.name,
+        barcode: menu.barcode,
         quantity: menu.quantity,
         price: menu.price,
         event: menu.event,
@@ -80,6 +81,13 @@ const EditMenuForm = () => {
             label: "Name",
             type: "text",
             placeholder: "Name",
+            required: true,
+        },
+        {
+            name: "barcode",
+            label: "Barcode",
+            type: "text",
+            placeholder: "Barcode",
             required: true,
         },
         {
