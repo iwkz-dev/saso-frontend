@@ -46,7 +46,6 @@ export default function changePassword() {
           setIsChanged(true);
           setIsLoading(false);
         }
-        console.log();
       })
       .catch(err => {
         setIsLoading(false);
