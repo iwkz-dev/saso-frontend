@@ -12,7 +12,6 @@
     "dependencies": {
         "@headlessui/react": "^1.4.2",
         "@heroicons/react": "^1.0.5",
-        "@ionic-native/barcode-scanner": "^5.36.0",
         "@reduxjs/toolkit": "^1.6.2",
         "antd": "^5.3.2",
         "axios": "^0.24.0",
