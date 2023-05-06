@@ -60,7 +60,6 @@ const EventSummary = ({ event }) => {
     };
 
     const eventCardComponent = (event) => {
-        console.log("event", event);
         return (
             <Row gutter={[16, 16]}>
                 <Col span={4}>

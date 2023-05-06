@@ -8,13 +8,18 @@ import {
     InputNumber,
     message,
     Modal,
+    Space,
+    Button,
 } from "antd";
-import { PlusOutlined } from "@ant-design/icons";
+import { PlusOutlined, CameraOutlined } from "@ant-design/icons";
+import style from "./FormItem.module.scss";
+import BarcodeScanner from "../BarcodeScanner/BarcodeScanner";
 
-const FormItem = ({ item, setImages, images }) => {
+const FormItem = ({ item, setImages, images, form }) => {
     const [previewOpen, setPreviewOpen] = useState(false);
     const [previewImage, setPreviewImage] = useState("");
     const [previewTitle, setPreviewTitle] = useState("");
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const getBase64 = (file) =>
         new Promise((resolve, reject) => {
@@ -36,6 +41,7 @@ const FormItem = ({ item, setImages, images }) => {
     };
 
     const handleCancel = () => setPreviewOpen(false);
+
     const handleChange = ({ fileList: newFileList }) => setImages(newFileList);
 
     const uploadButton = (
@@ -49,6 +55,23 @@ const FormItem = ({ item, setImages, images }) => {
             </div>
         </div>
     );
+
+    const showModal = () => {
+        setIsModalOpen(true);
+    };
+    const handleOk = () => {
+        setIsModalOpen(false);
+    };
+
+    const handleCancelModal = () => {
+        setIsModalOpen(false);
+    };
+
+    const getBarcode = (barcode) => {
+        form.setFieldsValue({ barcode: barcode });
+        message.success("Barcode has been successfully detected!");
+        setIsModalOpen(false);
+    };
 
     const beforeUpload = (file) => {
         const isPNG = file.type === "image/png";
@@ -75,6 +98,34 @@ const FormItem = ({ item, setImages, images }) => {
                         <Input placeholder={item.placeholder} />
                     </Form.Item>
                 );
+            case "inputCamera":
+                return (
+                    <>
+                        <Form.Item label={item.label}>
+                            <Space.Compact direction="horizontal">
+                                <Form.Item
+                                    name={item.name}
+                                    style={{ margin: 0 }}>
+                                    <Input placeholder={item.placeholder} />
+                                </Form.Item>
+                                <Button
+                                    icon={<CameraOutlined />}
+                                    onClick={showModal}
+                                />
+                            </Space.Compact>
+                        </Form.Item>
+                        <Modal
+                            className={style.scannerModal}
+                            destroyOnClose={true}
+                            title="Scan barcode"
+                            open={isModalOpen}
+                            onOk={handleOk}
+                            onCancel={handleCancelModal}>
+                            <BarcodeScanner getBarcode={getBarcode} />
+                        </Modal>
+                    </>
+                );
+
             case "description":
                 return (
                     <Form.Item

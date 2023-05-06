@@ -4,6 +4,7 @@ import { createMenu } from "../../../../store/reducers/menuReducer";
 import { Form, message } from "antd";
 import Router, { useRouter } from "next/router";
 import FormComponent from "../../Form";
+//import { BarcodeScanner } from '@ionic-native/barcode-scanner';
 
 const AddMenuForm = () => {
     const dispatch = useDispatch();
@@ -25,7 +26,7 @@ const AddMenuForm = () => {
             const createData = async () => {
                 var data = new FormData();
                 for (var key in values) {
-                    data.append(key, values[key]);
+                    data.append(key, values[key] ?? "");
                 }
                 images.map((image) => {
                     data.append("imageUrls", image.originFileObj);
@@ -59,6 +60,14 @@ const AddMenuForm = () => {
             label: "Name",
             type: "text",
             placeholder: "Name",
+            required: true,
+        },
+
+        {
+            name: "barcode",
+            label: "Barcode",
+            type: "inputCamera",
+            placeholder: "Barcode",
             required: true,
         },
         {
@@ -104,7 +113,7 @@ const AddMenuForm = () => {
         {
             name: "description",
             label: "Description",
-            type: "text",
+            type: "description",
             placeholder: "Description",
             required: true,
         },
@@ -116,15 +125,17 @@ const AddMenuForm = () => {
     ];
 
     return (
-        <FormComponent
-            form={form}
-            name="menu"
-            submitForm={submitForm}
-            formItems={formItems}
-            onReset={onReset}
-            showUploading={showUploading}
-            images={images}
-            setImages={setImages}></FormComponent>
+        <>
+            <FormComponent
+                form={form}
+                name="menu"
+                submitForm={submitForm}
+                formItems={formItems}
+                onReset={onReset}
+                showUploading={showUploading}
+                images={images}
+                setImages={setImages}></FormComponent>
+        </>
     );
 };
 

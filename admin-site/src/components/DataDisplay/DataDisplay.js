@@ -45,7 +45,7 @@ const DataDisplay = ({ item, dataForm, events, categories, linkToEdit }) => {
         }
         return (
             <Descriptions.Item key={key + i} label={dataForm[key]}>
-                {value}
+                {value ?? ""}
             </Descriptions.Item>
         );
     };
