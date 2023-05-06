@@ -1,13 +1,10 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { createMenu } from "../../../../store/reducers/menuReducer";
 import { Form, message } from "antd";
 import Router, { useRouter } from "next/router";
 import FormComponent from "../../Form";
 //import { BarcodeScanner } from '@ionic-native/barcode-scanner';
-
-
-
 
 const AddMenuForm = () => {
     const dispatch = useDispatch();
@@ -17,9 +14,6 @@ const AddMenuForm = () => {
     const [showUploading, setShowUploading] = useState(false);
     const [images, setImages] = useState([]);
     const { query } = useRouter();
-    const video = useRef(null);
-    const canvas = useRef (null); 
-    const [data, setData] = React.useState("Not Found");
 
     useEffect(() => {
         form.setFieldsValue({ event: query.event, category: query.category });
@@ -50,8 +44,8 @@ const AddMenuForm = () => {
         .catch(err => console.log(err))
 
     }*/
-    
-   /* useEffect(() => {
+
+    /* useEffect(() => {
         navigator.mediaDevices.getUserMedia({video: {width: 1280, height: 720}})
         .then(stream => {
             video.current.srcObject = stream;
@@ -59,8 +53,6 @@ const AddMenuForm = () => {
         })
         .catch(err => console.log(err))
     }, [])*/
-
-
 
     const submitForm = (values) => {
         const text = confirm("Please confirm to add menu");
@@ -93,12 +85,9 @@ const AddMenuForm = () => {
         }
     };
 
-
     const onReset = () => {
         form.resetFields();
     };
-
-
 
     const formItems = [
         {
@@ -171,26 +160,18 @@ const AddMenuForm = () => {
     ];
 
     return (
-
-        
         <>
-
-
-
-        <FormComponent
-            form={form}
-            name="menu"
-            submitForm={submitForm}
-            formItems={formItems}
-            onReset={onReset}
-            showUploading={showUploading}
-            images={images}
-            setImages={setImages}></FormComponent>
-        
+            <FormComponent
+                form={form}
+                name="menu"
+                submitForm={submitForm}
+                formItems={formItems}
+                onReset={onReset}
+                showUploading={showUploading}
+                images={images}
+                setImages={setImages}></FormComponent>
         </>
     );
-
- 
 };
 
 export default AddMenuForm;
