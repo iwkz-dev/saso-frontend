@@ -27,6 +27,7 @@ const FormComponent = ({
             initialValues={initialValues}>
             {formItems.map((item) => (
                 <FormItem
+                    form={form}
                     key={item.name}
                     item={item}
                     images={images}

@@ -19,41 +19,6 @@ const AddMenuForm = () => {
         form.setFieldsValue({ event: query.event, category: query.category });
     }, [query.category, query.event]);
 
-    /*const openCam = () =>{
-        navigator.mediaDevices.getUserMedia({video: {width: 1280, height: 720}})
-        .then(stream => {
-            video.current.srcObject = stream;
-            video.current.play();
-
-            const ctx = canvas.current.getContext('2d');
-            const barcodeDetector = new BarcodeScanner({formats: ["ean_13"]});
-
-            setInterval(() => {
-                canvas.current.width = video.current.videoWidth;
-                canvas.current.height = video.current.videoHeight;
-                ctx.drawImage(video.current, 0, 0, video.current.videoWidth, video.current.videoHeight);
-                barcodeDetector.detect(canvas.current)
-                    .then(([data]) => {
-                        if (data){
-                            setBarcodeDetector(data.rawValue);
-                        }
-                    })//console.log(data))
-                    .catch(err => console.log(err))
-            }, 100)
-        })
-        .catch(err => console.log(err))
-
-    }*/
-
-    /* useEffect(() => {
-        navigator.mediaDevices.getUserMedia({video: {width: 1280, height: 720}})
-        .then(stream => {
-            video.current.srcObject = stream;
-            video.current.play();
-        })
-        .catch(err => console.log(err))
-    }, [])*/
-
     const submitForm = (values) => {
         const text = confirm("Please confirm to add menu");
         if (text) {
@@ -61,7 +26,7 @@ const AddMenuForm = () => {
             const createData = async () => {
                 var data = new FormData();
                 for (var key in values) {
-                    data.append(key, values[key]);
+                    data.append(key, values[key] ?? "");
                 }
                 images.map((image) => {
                     data.append("imageUrls", image.originFileObj);
@@ -148,7 +113,7 @@ const AddMenuForm = () => {
         {
             name: "description",
             label: "Description",
-            type: "text",
+            type: "description",
             placeholder: "Description",
             required: true,
         },

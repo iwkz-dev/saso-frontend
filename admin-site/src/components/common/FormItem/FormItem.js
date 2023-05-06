@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import BarcodeScannerComponent from "react-qr-barcode-scanner";
 import {
     DatePicker,
     Form,
@@ -14,13 +13,13 @@ import {
 } from "antd";
 import { PlusOutlined, CameraOutlined } from "@ant-design/icons";
 import style from "./FormItem.module.scss";
+import BarcodeScanner from "../BarcodeScanner/BarcodeScanner";
 
-const FormItem = ({ item, setImages, images }) => {
+const FormItem = ({ item, setImages, images, form }) => {
     const [previewOpen, setPreviewOpen] = useState(false);
     const [previewImage, setPreviewImage] = useState("");
     const [previewTitle, setPreviewTitle] = useState("");
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [data, setData] = React.useState("Not Found");
 
     const getBase64 = (file) =>
         new Promise((resolve, reject) => {
@@ -69,7 +68,9 @@ const FormItem = ({ item, setImages, images }) => {
     };
 
     const getBarcode = (barcode) => {
-        barcode;
+        form.setFieldsValue({ barcode: barcode });
+        message.success("Barcode has been successfully detected!");
+        setIsModalOpen(false);
     };
 
     const beforeUpload = (file) => {
@@ -99,38 +100,30 @@ const FormItem = ({ item, setImages, images }) => {
                 );
             case "inputCamera":
                 return (
-                    <Form.Item
-                        label={item.label}
-                        name={item.name}
-                        rules={[
-                            {
-                                required: item.required,
-                            },
-                        ]}>
-                        <Space.Compact>
-                            <Input placeholder={item.placeholder} />
-                            <Button
-                                icon={<CameraOutlined />}
-                                onClick={showModal}
-                            />
-                        </Space.Compact>
+                    <>
+                        <Form.Item label={item.label}>
+                            <Space.Compact direction="horizontal">
+                                <Form.Item
+                                    name={item.name}
+                                    style={{ margin: 0 }}>
+                                    <Input placeholder={item.placeholder} />
+                                </Form.Item>
+                                <Button
+                                    icon={<CameraOutlined />}
+                                    onClick={showModal}
+                                />
+                            </Space.Compact>
+                        </Form.Item>
                         <Modal
                             className={style.scannerModal}
-                            title="Basic Modal"
+                            destroyOnClose={true}
+                            title="Scan barcode"
                             open={isModalOpen}
                             onOk={handleOk}
                             onCancel={handleCancelModal}>
-                            <BarcodeScannerComponent
-                                width={500}
-                                height={500}
-                                onUpdate={(err, result) => {
-                                    if (result) getBarcode(result.text);
-                                    else setData("Not Found");
-                                }}
-                            />
-                            <p>{data}</p>
+                            <BarcodeScanner getBarcode={getBarcode} />
                         </Modal>
-                    </Form.Item>
+                    </>
                 );
 
             case "description":

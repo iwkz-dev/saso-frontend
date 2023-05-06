@@ -88,7 +88,7 @@ const EditMenuForm = () => {
             label: "Barcode",
             type: "text",
             placeholder: "Barcode",
-            required: true,
+            required: false,
         },
         {
             name: "quantity",
