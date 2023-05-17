@@ -1,10 +1,10 @@
-import sasoApi from '../api/SasoApi';
+import sasoApi from "../api/SasoApi";
 
-const getCategory = filter => {
-  return sasoApi.getData(`/customer/category${filter}`);
+const getCategory = (filter) => {
+    return sasoApi.getData(`/customer/category${filter}`);
 };
 
 const categoryService = {
-  getCategory,
+    getCategory,
 };
 export default categoryService;

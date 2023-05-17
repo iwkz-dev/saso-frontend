@@ -1,10 +1,12 @@
-import sasoApi from '../api/SasoApi';
+import sasoApi from "../api/SasoApi";
 
-const getEvent = status => {
-  return sasoApi.getData(`/customer/event${status ? '?status=' + status : ''}`);
+const getEvent = (status) => {
+    return sasoApi.getData(
+        `/customer/event${status ? "?status=" + status : ""}`,
+    );
 };
 
 const eventService = {
-  getEvent,
+    getEvent,
 };
 export default eventService;

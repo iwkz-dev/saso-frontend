@@ -1,0 +1,143 @@
+.checkoutSummary {
+    margin: 2rem 0;
+    .cartItems {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+        .titleText {
+            display: flex;
+            justify-content: space-evenly;
+            align-items: center;
+            padding: 0 1rem;
+            .text{
+                font-size: 1.1rem;
+                color: #4d4d4d;
+            }
+            .amount {
+                text-align: center;
+            }
+            .subPrice {
+                text-align: end;
+            }
+        }
+        .cartItem {
+            display: flex;
+            justify-content: space-evenly;
+            align-items: center;
+            padding: 1rem;
+            transition: all 0.3s;
+            border-radius: 3px;
+            &:hover {
+                background-color: #ededed;
+            }
+            .itemOverview {
+                display: flex;
+                gap: 1rem;
+                .imageWrapper {
+                    width: 5rem;
+                }
+            }
+            .itemAmountWrapper{
+                text-align: center;
+            }
+            .itemSumPriceWrapper {
+                text-align: end;
+            }
+            .itemAmount, .itemTitle {
+                font-size: 1.1rem;
+            }
+            .itemSumPrice {
+                font-size: 1.25rem;
+            }
+        }
+        .cartItemMobile {
+            display: none;
+        }
+    }
+    .flexLayout {
+        flex: 1 1 0;
+        width: 100%;
+    }
+    .totalPriceWrapper {
+        margin-top: 1rem;
+        padding: 0.5rem;
+        background-color: #ededed;
+        .totalText, .totalPrice {
+            margin: 0;
+        }
+    }
+}
+
+@media only screen and (max-width: 769px) {
+    .checkoutSummary {
+        .cartItems {
+            .cartItem {
+                padding: 0.5rem;
+                .itemOverview {
+                    align-self: center;
+                    .imageWrapper {
+                        width: 4rem;
+                        height: 4rem;
+                    }
+                }
+                .itemAmount, .itemTitle{
+                    font-size: 14px;
+                }
+                .itemSumPrice{
+                    font-size: 1.1rem
+                }
+            }
+        }
+        .titleText {
+            .text {
+                font-size: 1rem;
+            }
+        }
+    }
+}
+
+@media only screen and (max-width: 500px) {
+    .checkoutSummary {
+        .cartItems {
+            .titleText {
+                display: none;
+                .text {
+                    font-size: 1rem;
+                }
+            }
+            .cartItem {
+                display: none;
+            }
+            .cartItemMobile {
+                display: flex;
+                flex-direction: column;
+                gap: 0.5rem;
+                padding: 0.5rem;
+                &:hover {
+                    background-color: #ededed;
+                }
+                .itemOverview {
+                    display: flex;
+                    gap: 1rem;
+                    .imageWrapper {
+                        width: 4rem;
+                        height: 4rem;
+                    }
+                }
+                .amountAndPrice {
+                    display: flex;
+                }
+                .itemAmountWrapper, .itemSumPriceWrapper{
+                    text-align: center;
+                    align-self: center;
+                    .itemAmount, .itemTitle {
+                        font-size: 1rem;
+                    }
+                }
+                .itemSumPrice {
+                    font-size: 1.25rem;
+                }
+            }
+        }
+    }
+}
