@@ -1,53 +1,53 @@
-import { Button, Modal, Space } from 'antd';
-import React, { useState } from 'react';
-import SignUpFormModal from '../SignUpFormModal/SignUpFormModal';
-import SignInFormModal from '../SignInFormModal/SignInFormModal';
+import { Button, Modal, Space } from "antd";
+import React, { useState } from "react";
+import SignUpFormModal from "../SignUpFormModal/SignUpFormModal";
+import SignInFormModal from "../SignInFormModal/SignInFormModal";
 
 const LoginModal = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isSignIn, setIsSignIn] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isSignIn, setIsSignIn] = useState(false);
 
-  const showModal = state => {
-    setIsModalOpen(true);
-    setIsSignIn(state);
-  };
+    const showModal = (state) => {
+        setIsModalOpen(true);
+        setIsSignIn(state);
+    };
 
-  const ModalContent = () => {
-    if (isSignIn) {
-      return <SignInFormModal />;
-    }
+    const ModalContent = () => {
+        if (isSignIn) {
+            return <SignInFormModal />;
+        }
 
-    return <SignUpFormModal />;
-  };
+        return <SignUpFormModal />;
+    };
 
-  const handleCancel = () => {
-    setIsModalOpen(false);
-  };
+    const handleCancel = () => {
+        setIsModalOpen(false);
+    };
 
-  return (
-    <Space>
-      <Button size="small" onClick={() => showModal(false)}>
-        Sign up
-      </Button>
-      <Button size="small" type="primary" onClick={() => showModal(true)}>
-        Sign in
-      </Button>
-      <Modal
-        title={isSignIn ? 'Sign in' : 'Sign up'}
-        okButtonProps={{
-          form: isSignIn ? 'sign-in' : 'sign-up',
-          htmlType: 'submit',
-        }}
-        open={isModalOpen}
-        okText={isSignIn ? 'Sign in' : 'Sign up'}
-        onCancel={handleCancel}
-        closable={false}
-        destroyOnClose={true}
-      >
-        {ModalContent()}
-      </Modal>
-    </Space>
-  );
+    return (
+        <Space>
+            <Button size="small" onClick={() => showModal(false)}>
+                Sign up
+            </Button>
+            <Button size="small" type="primary" onClick={() => showModal(true)}>
+                Sign in
+            </Button>
+            <Modal
+                title={isSignIn ? "Sign in" : "Sign up"}
+                okButtonProps={{
+                    form: isSignIn ? "sign-in" : "sign-up",
+                    htmlType: "submit",
+                }}
+                open={isModalOpen}
+                okText={isSignIn ? "Sign in" : "Sign up"}
+                onCancel={handleCancel}
+                closable={false}
+                destroyOnClose={true}
+            >
+                {ModalContent()}
+            </Modal>
+        </Space>
+    );
 };
 
 export default LoginModal;
