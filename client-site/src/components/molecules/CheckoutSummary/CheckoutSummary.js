@@ -1,4 +1,4 @@
-import { Divider, Image, Space, Typography } from "antd";
+import { Divider, Space, Typography } from "antd";
 import React from "react";
 import { useSelector } from "react-redux";
 import style from "./CheckoutSummary.module.scss";
