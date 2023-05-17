@@ -1,4 +1,4 @@
-import { Image, Space, Typography } from "antd";
+import { Divider, Space, Typography } from "antd";
 import React from "react";
 import { useSelector } from "react-redux";
 import style from "./CheckoutSummary.module.scss";
@@ -106,6 +106,7 @@ const CheckoutSummary = () => {
                 {cartItemComponents()}
                 {cartItemComponentsMobile()}
             </div>
+            <Divider />
             <div className={style.totalPriceWrapper}>
                 <Typography.Title className={style.totalText} level={5}>
                     Total:

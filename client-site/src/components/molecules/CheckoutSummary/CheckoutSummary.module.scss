@@ -127,8 +127,13 @@
                 .amountAndPrice {
                     display: flex;
                 }
+                .itemSumPriceWrapper{
+                    text-align: end;
+                }
+                .itemAmountWrapper{
+                    text-align: start;
+                }
                 .itemAmountWrapper, .itemSumPriceWrapper{
-                    text-align: center;
                     align-self: center;
                     .itemAmount, .itemTitle {
                         font-size: 1rem;
