@@ -1,14 +1,14 @@
-import sasoApi from '../api/SasoApi';
+import sasoApi from "../api/SasoApi";
 
-const getMenu = filter => {
-  return sasoApi.getData(`/customer/menu${filter}`);
+const getMenu = (filter) => {
+    return sasoApi.getData(`/customer/menu${filter}`);
 };
-const getMenuWithCategory = category => {
-  // return sasoApi.postData('/customer/user/register', data);
+const getMenuWithCategory = (category) => {
+    // return sasoApi.postData('/customer/user/register', data);
 };
 
 const menuService = {
-  getMenu,
-  getMenuWithCategory,
+    getMenu,
+    getMenuWithCategory,
 };
 export default menuService;

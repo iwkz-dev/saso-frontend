@@ -1,13 +1,13 @@
-import { Image } from 'antd';
-import { useState } from 'react';
+import { Image } from "antd";
+import { useState } from "react";
 
 const ImagesPreview = ({ productName, productImages, height }) => {
-  const [visible, setVisible] = useState(false);
+    const [visible, setVisible] = useState(false);
 
-  const imagePreview = e => {
-    e.stopPropagation();
-    setVisible(true);
-  };
+    const imagePreview = (e) => {
+        e.stopPropagation();
+        setVisible(true);
+    };
 
   return (
     <>

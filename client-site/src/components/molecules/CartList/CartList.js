@@ -1,8 +1,8 @@
-import { Button, Card, Space, Typography } from 'antd';
-import React from 'react';
-import ImagesPreview from '../ImagesPreview/ImagesPreview';
-import { MinusOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons';
-import styles from './CartList.module.scss';
+import { Button, Card, Space, Typography } from "antd";
+import React from "react";
+import ImagesPreview from "../ImagesPreview/ImagesPreview";
+import { MinusOutlined, PlusOutlined, DeleteOutlined } from "@ant-design/icons";
+import styles from "./CartList.module.scss";
 
 const CartList = ({ cart, add, remove }) => {
   return (
