@@ -1,10 +1,11 @@
 import { Form, Input } from "antd";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { submitLogin } from "../../../stores/reducers/login";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 
 const SignInFormModal = () => {
     const dispatch = useDispatch();
+    const errorMessage = useSelector((state) => state.login.data.message.error);
 
     const onFinish = (values) => {
         dispatch(submitLogin(values));
@@ -41,6 +42,15 @@ const SignInFormModal = () => {
                     placeholder="Password"
                 />
             </Form.Item>
+            <div
+                style={{
+                    fontSize: 12,
+                    marginBottom: 24,
+                    color: "red",
+                }}
+            >
+                {errorMessage}
+            </div>
         </Form>
     );
 };

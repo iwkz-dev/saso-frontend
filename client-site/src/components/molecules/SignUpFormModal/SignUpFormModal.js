@@ -1,9 +1,10 @@
 import { Form, Input } from "antd";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { submitRegister } from "../../../stores/reducers/register";
 
 const SignUpFormModal = () => {
     const dispatch = useDispatch();
+    const errorMessage = useSelector((state) => state.register.data.message.error);
 
     const onFinish = (values) => {
         dispatch(submitRegister(values));
@@ -68,6 +69,15 @@ const SignUpFormModal = () => {
             >
                 <Input.Password />
             </Form.Item>
+            <div
+                style={{
+                    fontSize: 12,
+                    marginBottom: 24,
+                    color: "red",
+                }}
+            >
+                {errorMessage}
+            </div>
         </Form>
     );
 };
