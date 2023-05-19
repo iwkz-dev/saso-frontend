@@ -4,6 +4,7 @@ import SignUpFormModal from "../SignUpFormModal/SignUpFormModal";
 import SignInFormModal from "../SignInFormModal/SignInFormModal";
 import { useDispatch } from "react-redux";
 import { resetLoginMessage } from "../../../stores/reducers/login";
+import { resetRegisterMessage } from "../../../stores/reducers/register";
 
 const LoginModal = () => {
     const dispatch = useDispatch();
@@ -25,6 +26,7 @@ const LoginModal = () => {
 
     const handleCancel = () => {
         dispatch(resetLoginMessage());
+        dispatch(resetRegisterMessage());
         setIsModalOpen(false);
     };
 
