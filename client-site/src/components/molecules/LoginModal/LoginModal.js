@@ -2,8 +2,11 @@ import { Button, Modal, Space } from "antd";
 import React, { useState } from "react";
 import SignUpFormModal from "../SignUpFormModal/SignUpFormModal";
 import SignInFormModal from "../SignInFormModal/SignInFormModal";
+import { useDispatch } from "react-redux";
+import { resetLoginMessage } from "../../../stores/reducers/login";
 
 const LoginModal = () => {
+    const dispatch = useDispatch();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isSignIn, setIsSignIn] = useState(false);
 
@@ -21,6 +24,7 @@ const LoginModal = () => {
     };
 
     const handleCancel = () => {
+        dispatch(resetLoginMessage());
         setIsModalOpen(false);
     };
 
