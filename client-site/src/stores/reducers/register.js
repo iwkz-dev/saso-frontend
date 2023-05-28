@@ -18,7 +18,7 @@ const initialState = {
 
 export const resetRegisterMessage = () => (dispatch) => {
     return dispatch(resetRegister());
-}
+};
 
 export const submitRegister = (data) => (dispatch) => {
     return authService.register(data).then((response) => {

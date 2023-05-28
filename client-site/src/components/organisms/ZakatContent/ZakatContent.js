@@ -3,7 +3,7 @@ import { Typography } from "antd";
 import TabsComponent from "../../molecules/TabsComponent/Tabs";
 import ContentLayout from "../ContentLayout/ContentLayout";
 
-const SasoContent = ({ event }) => {
+const ZakatContent = ({ event }) => {
     return (
         <ContentLayout
             style={{
@@ -21,4 +21,4 @@ const SasoContent = ({ event }) => {
     );
 };
 
-export default SasoContent;
+export default ZakatContent;

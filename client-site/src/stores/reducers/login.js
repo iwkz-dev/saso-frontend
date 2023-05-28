@@ -16,8 +16,8 @@ const initialState = {
 };
 
 export const resetLoginMessage = () => (dispatch) => {
-    return dispatch(resetLogin())
-}
+    return dispatch(resetLogin());
+};
 
 export const submitLogin = (data) => (dispatch) => {
     return authService.login(data).then((response) => {
