@@ -1,11 +1,9 @@
 import React from "react";
-import { Layout, Typography } from "antd";
+import { Typography } from "antd";
 import TabsComponent from "../../molecules/TabsComponent/Tabs";
 import ContentLayout from "../ContentLayout/ContentLayout";
 
 const TokoContent = ({ event }) => {
-    const { Content } = Layout;
-
     return (
         <ContentLayout hasCarousel>
             <Typography>
