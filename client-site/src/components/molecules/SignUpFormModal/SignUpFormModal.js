@@ -4,7 +4,9 @@ import { submitRegister } from "../../../stores/reducers/register";
 
 const SignUpFormModal = () => {
     const dispatch = useDispatch();
-    const errorMessage = useSelector((state) => state.register.data.message.error);
+    const errorMessage = useSelector(
+        (state) => state.register.data.message.error,
+    );
 
     const onFinish = (values) => {
         dispatch(submitRegister(values));
