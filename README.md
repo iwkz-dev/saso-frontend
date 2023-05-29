@@ -15,7 +15,7 @@ Di dalam Github Repository ini terdapat 2 aplikasi, yaitu:
 1. Admin site: Website aplikasi untuk panitia yang mengatur client site. Di aplikasi ini panitia bisa membuat, menghapus, ataupun mengedit event, menu, kategori menu, dll.
 2. Client site: Website aplikasi untuk pengguna yang ingin berbelanja.
 
-## Kolaborasi
+## Kontribusi
 **Aplikasi ini menggunakan:**
 
 - Node: 18.4.0
