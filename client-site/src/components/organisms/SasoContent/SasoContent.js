@@ -6,6 +6,7 @@ import ContentLayout from "../ContentLayout/ContentLayout";
 const SasoContent = ({ event }) => {
     return (
         <ContentLayout
+            hasCarousel
             style={{
                 minHeight: "500px",
                 backgroundColor: "#ffffff",
