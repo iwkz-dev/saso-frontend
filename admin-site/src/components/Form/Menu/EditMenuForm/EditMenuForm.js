@@ -88,7 +88,7 @@ const EditMenuForm = () => {
             label: "Barcode",
             type: "inputCamera",
             placeholder: "Barcode",
-            required: true,
+            required: false,
         },
         {
             name: "quantity",
@@ -135,7 +135,7 @@ const EditMenuForm = () => {
             label: "Description",
             type: "description",
             placeholder: "Description",
-            required: true,
+            required: false,
         },
         {
             label: "images",
