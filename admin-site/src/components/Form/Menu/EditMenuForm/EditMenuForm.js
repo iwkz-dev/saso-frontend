@@ -86,9 +86,9 @@ const EditMenuForm = () => {
         {
             name: "barcode",
             label: "Barcode",
-            type: "text",
+            type: "inputCamera",
             placeholder: "Barcode",
-            required: false,
+            required: true,
         },
         {
             name: "quantity",
