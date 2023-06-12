@@ -4,14 +4,14 @@ import { Tabs } from "antd";
 import { getAllCategories } from "../../../stores/reducers/category";
 import ProductCards from "../ProductCards.js/ProductCards";
 
-const TabsComponent = ({ event }) => {
+const TabsComponent = ({ event, barcode }) => {
     const dispatch = useDispatch();
     const category = useSelector((state) => state.category);
 
     useEffect(() => {
         const filter = `?event=${event._id}`;
         dispatch(getAllCategories(filter));
-    }, []);
+    }, [barcode]);
 
     const items = [
         ...category.data.map((c, i) => {
@@ -19,7 +19,12 @@ const TabsComponent = ({ event }) => {
                 return {
                     key: i + 1,
                     label: c.name,
-                    children: <ProductCards productList={c.menus.data} />,
+                    children: (
+                        <ProductCards
+                            productList={c.menus.data}
+                            barcode={barcode}
+                        />
+                    ),
                 };
             }
         }),
