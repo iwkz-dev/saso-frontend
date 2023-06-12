@@ -7,8 +7,12 @@ const getMenuWithCategory = (category) => {
     // return sasoApi.postData('/customer/user/register', data);
 };
 
+const getMenuWithBarcode = (barcode) => {
+    return sasoApi.getData(`customer/${barcode}/detail-barcode`);
+};
+
 const menuService = {
     getMenu,
-    getMenuWithCategory,
+    getMenuWithBarcode,
 };
 export default menuService;
