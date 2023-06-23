@@ -12,6 +12,9 @@ const ImagesPreview = ({ productName, productImages, height }) => {
   return (
     <>
       <Image
+        style={{
+          objectFit: 'contain',
+        }}
         alt={productName}
         preview={{
           visible: false,

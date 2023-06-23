@@ -17,18 +17,9 @@ const ProductItem = ({ product }) => {
     message.success(product.name + ' Added');
     dispatch(addOrder(product));
   };
-
-  const productPreview = () => {
-    console.log('test');
-  };
-
   return (
     <Card
       hoverable
-      style={{
-        width: 220,
-      }}
-      onClick={productPreview}
       cover={
         <ImagesPreview
           height={200}

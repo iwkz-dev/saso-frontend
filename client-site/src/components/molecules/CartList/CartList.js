@@ -29,14 +29,16 @@ const CartList = ({ cart, add, remove }) => {
                   <Button
                     size="large"
                     shape="circle"
-                    icon={item.amount <= 1 ? <DeleteOutlined /> : <MinusOutlined />}
+                    icon={
+                      item.amount <= 1 ? <DeleteOutlined /> : <MinusOutlined />
+                    }
                     onClick={() => remove(item.menu)}
                   />
                   <div className={styles.amountText}>
                     <Typography.Text>{item.amount}</Typography.Text>
                   </div>
                   <Button
-                    size='large'
+                    size="large"
                     shape="circle"
                     icon={<PlusOutlined />}
                     onClick={() => add(item.menu)}
