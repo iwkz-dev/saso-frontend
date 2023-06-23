@@ -1,5 +1,4 @@
-import { Carousel, Typography } from "antd";
-import React from "react";
+import { Carousel, Typography } from 'antd';
 
 const MainCarousel = ({ eventName, images }) => {
     const contentStyle = {

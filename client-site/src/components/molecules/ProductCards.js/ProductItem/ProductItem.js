@@ -25,9 +25,6 @@ const ProductItem = ({ product }) => {
     return (
         <Card
             hoverable
-            style={{
-                width: 220,
-            }}
             onClick={productPreview}
             cover={
                 <ImagesPreview
