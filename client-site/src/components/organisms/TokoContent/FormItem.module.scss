@@ -1,5 +1,10 @@
-.scannerModal{
-    :global(.ant-modal-content) {
-        width: 550px;
+.contentLayout {
+    .productsContainer{
+        width: 100%;
+        .scannerModal{
+            :global(.ant-modal-content) {
+                width: 550px;
+            }
+        }
     }
 }

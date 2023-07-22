@@ -37,11 +37,11 @@ const TokoContent = ({ event }) => {
     <Space direction="vertical"></Space>;
 
     return (
-        <ContentLayout hasCarousel>
+        <ContentLayout className={style.contentLayout} hasCarousel>
             <Typography.Title level={2} style={{ textAlign: "center" }}>
                 Products
             </Typography.Title>
-            <Space direction="vertical" size="middle">
+            <Space className={style.productsContainer} direction="vertical" size="middle">
                 <Space.Compact direction="horizontal">
                     <Search
                         placeholder="input search text"
