@@ -1,9 +1,9 @@
 import React from "react";
 import { Typography } from "antd";
-import TabsComponent from "../../molecules/TabsComponent/Tabs";
+import ProductsTabs from "../../molecules/ProductsTabs/ProductsTabs";
 import ContentLayout from "../ContentLayout/ContentLayout";
 
-const ZakatContent = ({ event }) => {
+const SasoContent = ({ event }) => {
     return (
         <ContentLayout
             hasCarousel
@@ -17,9 +17,9 @@ const ZakatContent = ({ event }) => {
                     Products
                 </Typography.Title>
             </Typography>
-            <TabsComponent event={event} />
+            <ProductsTabs event={event} />
         </ContentLayout>
     );
 };
 
-export default ZakatContent;
+export default SasoContent;

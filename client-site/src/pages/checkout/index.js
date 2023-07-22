@@ -1,5 +1,5 @@
-import MainLayout from "../../components/organisms/MainLayout/MainLayout";
-import CheckoutContent from "../../components/organisms/CheckoutContent/CheckoutContent";
+import MainLayout from "../../components/organismus/MainLayout/MainLayout";
+import CheckoutContent from "../../components/organismus/CheckoutContent/CheckoutContent";
 
 const index = () => {
     return (
