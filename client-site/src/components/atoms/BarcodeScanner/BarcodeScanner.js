@@ -9,8 +9,6 @@ const BarcodeScanner = ({ getBarcode }) => {
 
     return (
         <BarcodeScannerComponent
-            width={500}
-            height={500}
             onUpdate={(err, result) => {
                 if (result) getBarcode(result.text);
             }}
