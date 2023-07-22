@@ -1,6 +1,6 @@
 import { Layout } from "antd";
 import React from "react";
-import MainCarousel from "../../molecules/MainCarousel/MainCarousel";
+import MainCarousel from "../../atoms/MainCarousel/MainCarousel";
 import { useSelector } from "react-redux";
 
 const ContentLayout = ({ children, hasCarousel, className }) => {

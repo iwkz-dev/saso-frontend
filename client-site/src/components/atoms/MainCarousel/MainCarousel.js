@@ -26,8 +26,8 @@ const MainCarousel = ({ eventName, images }) => {
                     </Typography.Title>
                 </Typography>
             </div>
-            {images?.map((image) => (
-                <div>
+            {images?.map((image, i) => (
+                <div key={i}>
                     <img
                         src={image.imageUrl}
                         style={{

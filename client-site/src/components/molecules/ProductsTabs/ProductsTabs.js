@@ -4,7 +4,7 @@ import { Tabs } from "antd";
 import { getAllCategories } from "../../../stores/reducers/category";
 import ProductCards from "../ProductCards.js/ProductCards";
 
-const TabsComponent = ({ event, barcode }) => {
+const ProductsTabs = ({ event, barcode }) => {
     const dispatch = useDispatch();
     const category = useSelector((state) => state.category);
 
@@ -33,4 +33,4 @@ const TabsComponent = ({ event, barcode }) => {
     return <Tabs defaultActiveKey="1" items={items} />;
 };
 
-export default TabsComponent;
+export default ProductsTabs;

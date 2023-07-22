@@ -3,8 +3,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { isAuth } from "../../../helpers/authHelper";
 import Unauthorized from "../../atoms/Unauthorized/Unauthorized";
 import styles from "./CartContent.module.scss";
-import CartList from "../../molecules/CartList/CartList";
-import CartSummary from "../../molecules/CartSummary/CartSummary";
+import CartList from "../../atoms/CartList/CartList";
+import CartSummary from "../../atoms/CartSummary/CartSummary";
 import { addOrder, removeOrder } from "../../../stores/reducers/cart";
 import ContentLayout from "../ContentLayout/ContentLayout";
 

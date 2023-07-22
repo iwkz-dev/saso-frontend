@@ -1,6 +1,6 @@
 import React from "react";
-import MainLayout from "../../components/organisms/MainLayout/MainLayout";
-import CartContent from "../../components/organisms/CartContent/CartContent";
+import MainLayout from "../../components/organismus/MainLayout/MainLayout";
+import CartContent from "../../components/organismus/CartContent/CartContent";
 
 const index = () => {
     return (

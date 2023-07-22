@@ -2,7 +2,7 @@ import { Divider, Space, Typography } from "antd";
 import React from "react";
 import { useSelector } from "react-redux";
 import style from "./CheckoutSummary.module.scss";
-import ImagesPreview from "../ImagesPreview/ImagesPreview";
+import ImagesPreview from "../../atoms/ImagesPreview/ImagesPreview";
 
 const CheckoutSummary = () => {
     const cart = useSelector((state) => state.cart.data);

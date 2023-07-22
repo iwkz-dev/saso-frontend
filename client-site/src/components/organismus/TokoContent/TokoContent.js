@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Tag, Typography, message } from "antd";
-import TabsComponent from "../../molecules/TabsComponent/Tabs";
+import ProductsTabs from "../../molecules/ProductsTabs/ProductsTabs";
 import ContentLayout from "../ContentLayout/ContentLayout";
 import BarcodeScanner from "../../atoms/BarcodeScanner/BarcodeScanner";
 import { Button, Input, Space, Modal } from "antd";
@@ -74,7 +74,7 @@ const TokoContent = ({ event }) => {
                     </Tag>
                 ) : null}
 
-                <TabsComponent event={event} barcode={barcode} />
+                <ProductsTabs event={event} barcode={barcode} />
             </Space>
         </ContentLayout>
     );

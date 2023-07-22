@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import { addOrder } from "../../../../stores/reducers/cart";
 import { isAuth } from "../../../../helpers/authHelper";
 import { useState } from "react";
-import ImagesPreview from "../../ImagesPreview/ImagesPreview";
+import ImagesPreview from "../../../atoms/ImagesPreview/ImagesPreview";
 
 const ProductItem = ({ product }) => {
     const dispatch = useDispatch();

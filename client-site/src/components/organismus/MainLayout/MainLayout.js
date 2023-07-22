@@ -1,7 +1,7 @@
 import React from "react";
 import Head from "next/head";
 import { Layout } from "antd";
-import Navbar from "../Navbar/Navbar";
+import Navbar from "../../molecules/Navbar/Navbar";
 import FooterComponent from "../../atoms/Footer/Footer";
 
 const MainLayout = ({ children }) => {

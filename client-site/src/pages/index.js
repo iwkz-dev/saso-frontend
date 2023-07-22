@@ -1,10 +1,10 @@
 import React, { useEffect } from "react";
 import { getEvent } from "../stores/reducers/event";
 import { useDispatch, useSelector } from "react-redux";
-import TokoContent from "../components/organisms/TokoContent/TokoContent";
-import SasoContent from "../components/organisms/SasoContent/SasoContent";
-import ZakatContent from "../components/organisms/ZakatContent/ZakatContent";
-import MainLayout from "../components/organisms/MainLayout/MainLayout";
+import TokoContent from "../components/organismus/TokoContent/TokoContent";
+import SasoContent from "../components/organismus/SasoContent/SasoContent";
+import ZakatContent from "../components/organismus/ZakatContent/ZakatContent";
+import MainLayout from "../components/organismus/MainLayout/MainLayout";
 
 export default function Home() {
     const dispatch = useDispatch();
