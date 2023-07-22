@@ -41,7 +41,11 @@ const TokoContent = ({ event }) => {
             <Typography.Title level={2} style={{ textAlign: "center" }}>
                 Products
             </Typography.Title>
-            <Space className={style.productsContainer} direction="vertical" size="middle">
+            <Space
+                className={style.productsContainer}
+                direction="vertical"
+                size="middle"
+            >
                 <Space.Compact direction="horizontal">
                     <Search
                         placeholder="input search text"
