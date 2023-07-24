@@ -85,40 +85,47 @@ const CheckoutSummary = () => {
 
     return (
         <div className={style.checkoutSummary}>
-            <div className={style.cartItems}>
-                <div className={style.titleText}>
-                    <div className={style.flexLayout}>
-                        <Typography.Text className={style.text}>
-                            Menu Ordered
-                        </Typography.Text>
+            <Space size="large" direction="vertical" style={{ width: "100%" }}>
+                <Typography.Title level={3} style={{ textAlign: "center" }}>
+                    Checkout summary
+                </Typography.Title>
+                <div className={style.cartItems}>
+                    <div className={style.titleText}>
+                        <div className={style.flexLayout}>
+                            <Typography.Text className={style.text}>
+                                Menu Ordered
+                            </Typography.Text>
+                        </div>
+                        <div className={`${style.amount} ${style.flexLayout}`}>
+                            <Typography.Text className={style.text}>
+                                Amount
+                            </Typography.Text>
+                        </div>
+                        <div
+                            className={`${style.subPrice} ${style.flexLayout}`}
+                        >
+                            <Typography.Text className={style.text}>
+                                Sub Price
+                            </Typography.Text>
+                        </div>
                     </div>
-                    <div className={`${style.amount} ${style.flexLayout}`}>
-                        <Typography.Text className={style.text}>
-                            Amount
-                        </Typography.Text>
-                    </div>
-                    <div className={`${style.subPrice} ${style.flexLayout}`}>
-                        <Typography.Text className={style.text}>
-                            Sub Price
-                        </Typography.Text>
-                    </div>
+                    {cartItemComponents()}
+                    {cartItemComponentsMobile()}
                 </div>
-                {cartItemComponents()}
-                {cartItemComponentsMobile()}
-            </div>
-            <Divider />
-            <div className={style.totalPriceWrapper}>
-                <Typography.Title className={style.totalText} level={5}>
-                    Total:
-                </Typography.Title>
-                <Typography.Title
-                    className={style.totalPrice}
-                    level={3}
-                    type="danger"
-                >
-                    {cart.totalPrice}€
-                </Typography.Title>
-            </div>
+                <Divider />
+                <div className={style.totalPriceWrapper}>
+                    <Typography.Title className={style.totalText} level={5}>
+                        Total:
+                    </Typography.Title>
+                    <Typography.Title
+                        className={style.totalPrice}
+                        level={3}
+                        type="danger"
+                    >
+                        {cart.totalPrice}€
+                    </Typography.Title>
+                </div>
+            </Space>
         </div>
     );
 };
