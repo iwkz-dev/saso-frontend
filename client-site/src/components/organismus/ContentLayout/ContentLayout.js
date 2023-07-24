@@ -10,10 +10,6 @@ const ContentLayout = ({ children, hasCarousel, className }) => {
     return (
         <Content
             className={className}
-            style={{
-                minHeight: "500px",
-                backgroundColor: "#ffffff",
-            }}
         >
             {hasCarousel ? (
                 <MainCarousel

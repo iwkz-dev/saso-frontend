@@ -1,11 +1,11 @@
 import React from "react";
 import MainLayout from "../../components/organismus/MainLayout/MainLayout";
-import CartContent from "../../components/organismus/CartContent/CartContent";
+import MyOrderContent from "../../components/organismus/MyOrderContent/MyOrderContent";
 
 const index = () => {
     return (
         <MainLayout>
-            <CartContent />
+            <MyOrderContent />
         </MainLayout>
     );
 };
