@@ -50,7 +50,7 @@ class SasoApi {
                     "content-type": getContentType(contentType),
                     Authorization: "Bearer " + getToken(),
                 },
-                responseType
+                responseType,
             });
             return res.data;
         } catch (err) {

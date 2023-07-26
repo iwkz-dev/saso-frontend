@@ -1,12 +1,14 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useState } from "react";
+import { SearchOutlined } from "@ant-design/icons";
+import { useSelector } from "react-redux";
 import style from "./MyOrderContent.module.scss";
 import { Button, Layout, Space, Table, Tag, Typography } from "antd";
 import BackToButton from "../../atoms/BackToButton/BackToButton";
-import { getOrderList, getOrderPdf } from "../../../stores/reducers/order";
+import { getOrderPdf } from "../../../stores/reducers/order";
 import { formatDate } from "../../../helpers/dateHelper";
 import { saveAs } from "file-saver";
 import { insertKeytoData } from "../../../helpers/dataHelper";
+import Router from "next/router";
 
 const MyOrderContent = () => {
     const { Content } = Layout;
@@ -59,6 +61,18 @@ const MyOrderContent = () => {
             dataIndex: "created_at",
             key: "created_at",
             render: (item) => formatDate(item, true, true),
+        },
+        {
+            title: "Action",
+            dataIndex: "_id",
+            key: "_id",
+            render: (item) => (
+                <Button
+                    shape="circle"
+                    icon={<SearchOutlined />}
+                    onClick={() => Router.push(`/my-order/detail/${item}`)}
+                />
+            ),
         },
     ];
 

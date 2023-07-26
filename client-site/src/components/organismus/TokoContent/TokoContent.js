@@ -4,11 +4,11 @@ import ProductsTabs from "../../molecules/ProductsTabs/ProductsTabs";
 import ContentLayout from "../ContentLayout/ContentLayout";
 import BarcodeScanner from "../../atoms/BarcodeScanner/BarcodeScanner";
 import { Button, Input, Space, Modal } from "antd";
-import style from "./FormItem.module.scss";
+import style from "./TokoContent.module.scss";
 import { CameraOutlined } from "@ant-design/icons";
 
-const { Search } = Input;
 const TokoContent = ({ event }) => {
+    const { Search } = Input;
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [barcode, setBarcode] = useState("");
 
@@ -33,8 +33,6 @@ const TokoContent = ({ event }) => {
     const onCloseBarcodeTag = () => {
         setBarcode("");
     };
-
-    <Space direction="vertical"></Space>;
 
     return (
         <ContentLayout className={style.contentLayout} hasCarousel>

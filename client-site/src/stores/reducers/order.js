@@ -36,11 +36,11 @@ export const getOrderList = () => async (dispatch) => {
 
 export const getOrderDetail = (id) => async (dispatch) => {
     return orderService.getOrderDetail(id).then((response) => {
-        if (response.data.status === "success") {
-            dispatch(getOrderDetailSuccess(response.data));
+        if (response?.data?.status === "success") {
+            dispatch(getOrderDetailSuccess(response?.data));
             return response;
         } else {
-            dispatch(getOrderDetailFailed(response.data));
+            dispatch(getOrderDetailFailed(response?.data));
             return response;
         }
     });
