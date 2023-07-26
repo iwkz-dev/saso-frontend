@@ -13,7 +13,12 @@ const getOrderDetail = (orderId) => {
 };
 
 const getOrderPdf = (orderId) => {
-    return sasoApi.postData(`/customer/order/${orderId}/generatePdf`);
+    return sasoApi.postData(
+        `/customer/order/${orderId}/generatePdf`,
+        true,
+        "text/html; charset=utf-8",
+        "blob",
+    );
 };
 
 const orderService = {

@@ -10,7 +10,7 @@ const initialState = {
     detailOrder: {},
 };
 
-export const submitOrder = (data) => (dispatch) => {
+export const submitOrder = (data) => async (dispatch) => {
     return orderService.postOrder(data).then((response) => {
         if (response.status === "success") {
             dispatch(submitOrderSuccess(response.message));
@@ -22,7 +22,7 @@ export const submitOrder = (data) => (dispatch) => {
     });
 };
 
-export const getOrderList = () => (dispatch) => {
+export const getOrderList = () => async (dispatch) => {
     return orderService.getOrderList().then((response) => {
         if (response.data.status === "success") {
             dispatch(getOrderListSuccess(response.data));
@@ -34,7 +34,7 @@ export const getOrderList = () => (dispatch) => {
     });
 };
 
-export const getOrderDetail = (id) => (dispatch) => {
+export const getOrderDetail = (id) => async (dispatch) => {
     return orderService.getOrderDetail(id).then((response) => {
         if (response.data.status === "success") {
             dispatch(getOrderDetailSuccess(response.data));
@@ -46,16 +46,8 @@ export const getOrderDetail = (id) => (dispatch) => {
     });
 };
 
-export const getOrderPdf = (id) => (dispatch) => {
-    return orderService.getOrderPdf(id).then((response) => {
-        if (response.status === "success") {
-            dispatch(submitOrderSuccess(response.message));
-            return response;
-        } else {
-            dispatch(submitOrderFailed(response.message));
-            return response;
-        }
-    });
+export const getOrderPdf = (id) => {
+    return orderService.getOrderPdf(id);
 };
 
 export const orderSlice = createSlice({

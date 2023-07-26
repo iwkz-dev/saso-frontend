@@ -1,8 +1,7 @@
-import { Button, Space } from "antd";
+import { Space } from "antd";
 import { Layout } from "antd";
-import Router from "next/router";
-import { LeftOutlined } from "@ant-design/icons";
 import CheckoutSummary from "../../molecules/CheckoutSummary/CheckoutSummary";
+import BackToButton from "../../atoms/BackToButton/BackToButton";
 
 const CheckoutContent = () => {
     const { Content } = Layout;
@@ -26,13 +25,7 @@ const CheckoutContent = () => {
                     direction="vertical"
                     style={{ width: "100%" }}
                 >
-                    <Button
-                        type="link"
-                        onClick={() => Router.push("/cart")}
-                        icon={<LeftOutlined />}
-                    >
-                        Back to cart
-                    </Button>
+                    <BackToButton targetURL="/cart" buttonText="Back to cart" />
                     {<CheckoutSummary />}
                 </Space>
             </div>

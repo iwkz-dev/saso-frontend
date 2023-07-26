@@ -28,3 +28,11 @@ export const logout = () => {
         Router.push("/");
     }
 };
+
+export const getContentType = (type) => {
+    if (!type) {
+        return "application/json; charset=utf-8";
+    }
+
+    return type;
+};
