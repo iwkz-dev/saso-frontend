@@ -33,12 +33,15 @@ const MyOrderContent = () => {
             title: "Invoice Nr.",
             dataIndex: "invoiceNumber",
             key: "invoiceNumber",
+            fixed: "left",
+            width: 110,
         },
         {
             title: "Status",
             dataIndex: "status",
             key: "status",
             render: (item) => reformStatus(item),
+            width: 180,
         },
         {
             title: "Download PDF",
@@ -63,11 +66,13 @@ const MyOrderContent = () => {
             render: (item) => formatDate(item, true, true),
         },
         {
-            title: "Action",
+            title: "View",
             dataIndex: "_id",
             key: "_id",
+            width: 70,
             render: (item) => (
                 <Button
+                    size="small"
                     shape="circle"
                     icon={<SearchOutlined />}
                     onClick={() => Router.push(`/my-order/detail/${item}`)}
@@ -108,9 +113,13 @@ const MyOrderContent = () => {
                         My order
                     </Typography.Title>
                     <Table
+                        size="small"
                         columns={columns}
                         bordered
                         dataSource={insertKeytoData(order.data.data)}
+                        scroll={{
+                            x: 768,
+                        }}
                     />
                 </Space>
             </div>

@@ -60,7 +60,7 @@ const MyOrderDetailContent = ({ detailOrder }) => {
                     <Typography.Title level={3} style={{ textAlign: "center" }}>
                         {detailOrder.invoiceNumber}
                     </Typography.Title>
-                    <Descriptions title="Order detail" bordered>
+                    <Descriptions title="Order detail" size="small" bordered>
                         <Descriptions.Item label="Customer">
                             {detailOrder.customerFullname}
                         </Descriptions.Item>
