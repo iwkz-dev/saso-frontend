@@ -1,6 +1,6 @@
 import Axios from "axios";
 import { BASE_URL_HOST } from "../config/config";
-import { getToken } from "../helpers/authHelper";
+import { getContentType, getToken } from "../helpers/authHelper";
 
 class SasoApi {
     constructor() {
@@ -38,13 +38,19 @@ class SasoApi {
             // throw err;
         }
     };
-    postData = async (url, data = null) => {
+    postData = async (
+        url,
+        data = null,
+        contentType = "",
+        responseType = "",
+    ) => {
         try {
             const res = await Axios.post(url, data, {
                 headers: {
-                    "content-type": "application/json",
+                    "content-type": getContentType(contentType),
                     Authorization: "Bearer " + getToken(),
                 },
+                responseType
             });
             return res.data;
         } catch (err) {

@@ -1,66 +1,82 @@
-import React from 'react';
-import style from './MyOrderContent.module.scss';
-import { Layout, Space, Table, Typography } from 'antd';
-import BackToButton from '../../atoms/BackToButton/BackToButton';
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import style from "./MyOrderContent.module.scss";
+import { Button, Layout, Space, Table, Tag, Typography } from "antd";
+import BackToButton from "../../atoms/BackToButton/BackToButton";
+import { getOrderList, getOrderPdf } from "../../../stores/reducers/order";
+import { formatDate } from "../../../helpers/dateHelper";
+import { saveAs } from "file-saver";
+import { insertKeytoData } from "../../../helpers/dataHelper";
 
 const MyOrderContent = () => {
     const { Content } = Layout;
+    const [isLoading, setIsLoading] = useState(false);
+    const order = useSelector((state) => state.order);
+
+    const downloadPDF = async (id) => {
+        setIsLoading(true);
+        try {
+            const data = await getOrderPdf(id);
+            setIsLoading(false);
+            const blob = new Blob([data], { type: "application/pdf" });
+            saveAs(blob, "invoice.pdf");
+        } catch (e) {
+            setIsLoading(false);
+            console.error(e);
+        }
+    };
+
     const columns = [
         {
-          title: 'Invoice Nr.',
-          dataIndex: 'name',
-          key: 'name',
+            title: "Invoice Nr.",
+            dataIndex: "invoiceNumber",
+            key: "invoiceNumber",
         },
         {
-          title: 'Status',
-          dataIndex: 'age',
-          key: 'age',
+            title: "Status",
+            dataIndex: "status",
+            key: "status",
+            render: (item) => reformStatus(item),
         },
         {
-          title: 'Download PDF',
-          dataIndex: 'address',
-          key: 'address',
-          render: () => <a>Download</a>,
+            title: "Download PDF",
+            dataIndex: "_id",
+            key: "_id",
+            render: (item) => (
+                <Button onClick={() => downloadPDF(item)} loading={isLoading}>
+                    Download
+                </Button>
+            ),
         },
         {
-          title: 'Created At',
-          dataIndex: 'name',
-          key: 'name',
-        },
-      ];
-      const data = [
-        {
-          key: 1,
-          name: 'John Brown',
-          age: "Paid",
-          address: 'New York No. 1 Lake Park',
-          description: 'My name is John Brown, I am 32 years old, living in New York No. 1 Lake Park.',
+            title: "Updated At",
+            dataIndex: "updated_at",
+            key: "updated_at",
+            render: (item) => formatDate(item, true, true),
         },
         {
-          key: 2,
-          name: 'Jim Green',
-          age: "Paid",
-          address: 'London No. 1 Lake Park',
-          description: 'My name is Jim Green, I am 42 years old, living in London No. 1 Lake Park.',
+            title: "Created At",
+            dataIndex: "created_at",
+            key: "created_at",
+            render: (item) => formatDate(item, true, true),
         },
-        {
-          key: 3,
-          name: 'Not Expandable',
-          age: "Wait for Confirmation",
-          address: 'Jiangsu No. 1 Lake Park',
-          description: 'This not expandable',
-        },
-        {
-          key: 4,
-          name: 'Joe Black',
-          age: "Canceled",
-          address: 'Sidney No. 1 Lake Park',
-          description: 'My name is Joe Black, I am 32 years old, living in Sidney No. 1 Lake Park.',
-        },
-      ];
+    ];
+
+    const reformStatus = (status) => {
+        if (status == 1) {
+            return <Tag color="processing">Paid</Tag>;
+        } else if (status == 2) {
+            return <Tag color="error">Refund/cancel</Tag>;
+        } else if (status == 3) {
+            return <Tag color="success">Done</Tag>;
+        } else {
+            return <Tag color="default">Waiting for Confirmation</Tag>;
+        }
+    };
+
     return (
         <Content className={style.myOrderContent}>
-             <div
+            <div
                 style={{
                     maxWidth: "1024px",
                     padding: "1rem",
@@ -72,29 +88,15 @@ const MyOrderContent = () => {
                     direction="vertical"
                     style={{ width: "100%" }}
                 >
-                    <BackToButton
-                        targetURL="/"
-                        buttonText="Back to home"
-                    />
-                
+                    <BackToButton targetURL="/" buttonText="Back to home" />
+
                     <Typography.Title level={3} style={{ textAlign: "center" }}>
                         My order
                     </Typography.Title>
                     <Table
                         columns={columns}
-                        expandable={{
-                        expandedRowRender: (record) => (
-                            <p
-                            style={{
-                                margin: 0,
-                            }}
-                            >
-                                {record.description}
-                            </p>
-                        ),
-                        rowExpandable: (record) => record.name !== 'Not Expandable',
-                        }}
-                        dataSource={data}
+                        bordered
+                        dataSource={insertKeytoData(order.data.data)}
                     />
                 </Space>
             </div>

@@ -8,9 +8,7 @@ const ContentLayout = ({ children, hasCarousel, className }) => {
     const events = useSelector((state) => state.event.data);
 
     return (
-        <Content
-            className={className}
-        >
+        <Content className={className}>
             {hasCarousel ? (
                 <MainCarousel
                     eventName={events[0].name}

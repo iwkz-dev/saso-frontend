@@ -25,7 +25,7 @@ const CheckoutContent = () => {
                     direction="vertical"
                     style={{ width: "100%" }}
                 >
-                    <BackToButton targetURL="/cart" buttonText="Back to cart"/>
+                    <BackToButton targetURL="/cart" buttonText="Back to cart" />
                     {<CheckoutSummary />}
                 </Space>
             </div>

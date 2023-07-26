@@ -17,8 +17,8 @@ const ProductCards = ({ productList }) => {
     return (
         <Row gutter={[16, 24]}>
             {productList.map((product) => (
-                <Col span={sectionNumbers}>
-                    <ProductItem key={product.name} product={product} />
+                <Col key={product.name} span={sectionNumbers}>
+                    <ProductItem product={product} />
                 </Col>
             ))}
         </Row>
