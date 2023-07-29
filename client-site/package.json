@@ -9,6 +9,7 @@
         "format": "prettier --write \"./**/*.{js,jsx,json}\" && eslint \"./**/*.{js,jsx}\" --fix && eslint \"./**/*.{js,jsx}\" --ext js,jsx,ts,tsx"
     },
     "dependencies": {
+        "@paypal/react-paypal-js": "^8.1.0",
         "@reduxjs/toolkit": "^1.7.1",
         "antd": "^5.4.0",
         "axios": "^0.24.0",

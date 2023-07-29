@@ -50,6 +50,23 @@ export const getOrderPdf = (id) => {
     return orderService.getOrderPdf(id);
 };
 
+export const deleteOrder = (id) => async (dispatch) => {
+    console.log("deleteOrder", id);
+    return orderService.deleteOrder(id);
+};
+
+export const approveOrder = (id) => async (dispatch) => {
+    return orderService.approveOrder(id).then((response) => {
+        if (response?.data?.status === "success") {
+            dispatch(approvedOrderSuccess(response?.data));
+            return response;
+        } else {
+            dispatch(approvedOrderFailed(response?.data));
+            return response;
+        }
+    });
+};
+
 export const orderSlice = createSlice({
     name: "order",
     initialState: {
@@ -90,6 +107,14 @@ export const orderSlice = createSlice({
             state.data.message.error = action.payload;
             state.data.message.success = "";
         },
+        approvedOrderSuccess: (state, action) => {
+            state.data.message.success = action.payload.message;
+            state.data.message.error = "";
+        },
+        approvedOrderFailed: (state, action) => {
+            state.data.message.error = action.payload;
+            state.data.message.success = "";
+        },
     },
 });
 
@@ -102,5 +127,7 @@ export const {
     getOrderPdfFailed,
     getOrderDetailSuccess,
     getOrderDetailFailed,
+    approvedOrderSuccess,
+    approvedOrderFailed,
 } = orderSlice.actions;
 export default orderSlice.reducer;

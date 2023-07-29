@@ -65,9 +65,14 @@ class SasoApi {
             throw err.response.data;
         }
     };
-    deleteData = async (url) => {
+    deleteData = async (url, contentType = "") => {
         try {
-            const res = await Axios.delete(url, data);
+            const res = await Axios.delete(url, {
+                headers: {
+                    "content-type": getContentType(contentType),
+                    Authorization: "Bearer " + getToken(),
+                },
+            });
             return res.data;
         } catch (err) {
             throw err.response.data;
