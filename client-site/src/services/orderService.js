@@ -21,10 +21,20 @@ const getOrderPdf = (orderId) => {
     );
 };
 
+const deleteOrder = (orderId) => {
+    return sasoApi.deleteData(`/customer/order/${orderId}`, orderId);
+};
+
+const approveOrder = (orderId) => {
+    return sasoApi.postData(`/customer/order/${orderId}/approve`);
+};
+
 const orderService = {
     postOrder,
     getOrderList,
     getOrderPdf,
     getOrderDetail,
+    deleteOrder,
+    approveOrder,
 };
 export default orderService;
