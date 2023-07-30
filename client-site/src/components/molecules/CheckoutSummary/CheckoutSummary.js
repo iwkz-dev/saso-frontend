@@ -59,13 +59,14 @@ const CheckoutSummary = () => {
             event: event,
             note: "",
             arrivedAt: "",
+            paymentType: "paypal",
             menus: menus,
         };
 
         return dispatch(submitOrder(orderData)).then(async (response) => {
             if (response.status == "success") {
                 setCurrOrder(response.data.createOrder);
-                return response.data.paypalResponse.id;
+                return response.data.paymentResponse.id;
             }
         });
     };
@@ -209,9 +210,13 @@ const CheckoutSummary = () => {
                         {cart.totalPrice}€
                     </Typography.Title>
                 </div>
-                <div className={style.payPalButtons}>
+                <div className={style.paypalButton}>
                     <PayPalButtons
                         fundingSource="paypal"
+                        style={{
+                            disableMaxWidth: true,
+                            label: "paypal",
+                        }}
                         createOrder={(data, actions) => {
                             return submitForm(actions);
                         }}
