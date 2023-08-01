@@ -26,7 +26,7 @@ const AddMenuForm = () => {
             const createData = async () => {
                 var data = new FormData();
                 for (var key in values) {
-                    data.append(key, values[key] ?? "");
+                    data.append(key, values[key] || "");
                 }
                 images.map((image) => {
                     data.append("imageUrls", image.originFileObj);
@@ -68,7 +68,6 @@ const AddMenuForm = () => {
             label: "Barcode",
             type: "inputCamera",
             placeholder: "Barcode",
-            required: true,
         },
         {
             name: "quantity",
@@ -115,12 +114,10 @@ const AddMenuForm = () => {
             label: "Description",
             type: "description",
             placeholder: "Description",
-            required: true,
         },
         {
             label: "images",
             type: "imageUploader",
-            required: false,
         },
     ];
 

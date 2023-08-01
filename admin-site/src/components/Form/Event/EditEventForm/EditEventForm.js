@@ -37,7 +37,7 @@ const EditEventForm = () => {
                     }`;
                 };
                 for (var key in values) {
-                    data.append(key, values[key]);
+                    data.append(key, values[key] || "");
                 }
                 data.set("started_at", getYearAndMonth(date));
 
@@ -112,47 +112,40 @@ const EditEventForm = () => {
             label: "Bank Name",
             type: "text",
             placeholder: "Bank name",
-            required: true,
         },
         {
             name: "iban",
             label: "IBAN",
             type: "text",
             placeholder: "IBAN",
-            required: true,
         },
         {
             name: "bic",
             label: "BIC",
             type: "text",
             placeholder: "BIC",
-            required: true,
         },
         {
             name: "usageNote",
             label: "VZW",
             type: "text",
             placeholder: "VZW",
-            required: true,
         },
         {
             name: "paypal",
             label: "Paypal",
             type: "text",
             placeholder: "Paypal",
-            required: true,
         },
         {
             name: "description",
             label: "Description",
-            type: "text",
+            type: "description",
             placeholder: "Description",
-            required: true,
         },
         {
             label: "images",
             type: "imageUploader",
-            required: false,
         },
     ];
 
