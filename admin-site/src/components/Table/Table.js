@@ -161,7 +161,7 @@ const TableComponent = ({
                             dataIndex={dataKey}
                             key={dataKey}
                             render={(el) => {
-                                return <>{el?.toString()}</>;
+                                return <>{el?.toString() || ""}</>;
                             }}
                         />
                     );
