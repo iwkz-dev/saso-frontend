@@ -27,6 +27,9 @@ const DashboardCard = () => {
         paidOrders?.map((deliveredOrder) => {
             sum += deliveredOrder.totalPrice;
         });
+        deliveredOrders?.map((deliveredOrder) => {
+            sum += deliveredOrder.totalPrice;
+        });
 
         const info = {
             totalOrders: eventOrders.length,
