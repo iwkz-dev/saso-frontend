@@ -83,7 +83,6 @@ const CheckoutSummary = () => {
 
         dispatch(submitOrder(orderData)).then(async (response) => {
             if (response.status == "success") {
-                console.log(response.data.createOrder);
                 setCurrOrder(response.data.createOrder);
                 setPayerName(response.data.createOrder.customerFullname);
             }
