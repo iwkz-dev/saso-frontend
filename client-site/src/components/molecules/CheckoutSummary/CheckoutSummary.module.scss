@@ -66,6 +66,12 @@
             margin: 0;
         }
     }
+    .bookOrPayButton{
+        width: 100%;
+        :global(.ant-space-item){
+            width: 100%;
+        }
+    }
 }
 
 @media only screen and (max-width: 769px) {
