@@ -37,17 +37,17 @@ const CheckoutSummary = () => {
     }, [currOrder, isCanceled]);
 
     useEffect(() => {
-        if (isApprove && currOrder?._id && payerName) {
+        if (currOrder?._id && payerName) {
             dispatch(resetCart());
-            dispatch(approveOrder(currOrder._id));
+            if (isApprove) {
+                dispatch(approveOrder(currOrder._id));
+            }
             openNotification(payerName, currOrder);
             Router.push("/");
         }
     }, [currOrder, isApprove, payerName]);
 
-    const submitForm = () => {
-        const event = events[0]._id;
-        setIsCanceled(false);
+    const createOrderData = (paymentType) => {
         const menus = [];
         cart.items.forEach((item) => {
             menus.push({
@@ -56,17 +56,35 @@ const CheckoutSummary = () => {
             });
         });
         const orderData = {
-            event: event,
+            event: events[0]._id,
             note: "",
             arrivedAt: "",
-            paymentType: "paypal",
+            paymentType,
             menus: menus,
         };
+        return orderData;
+    };
+
+    const submitPaypalForm = () => {
+        setIsCanceled(false);
+        const orderData = createOrderData("paypal");
 
         return dispatch(submitOrder(orderData)).then(async (response) => {
             if (response.status == "success") {
                 setCurrOrder(response.data.createOrder);
                 return response.data.paymentResponse.id;
+            }
+        });
+    };
+
+    const submitTransferForm = () => {
+        setIsCanceled(false);
+        const orderData = createOrderData("transfer");
+
+        dispatch(submitOrder(orderData)).then(async (response) => {
+            if (response.status == "success") {
+                setCurrOrder(response.data.createOrder);
+                setPayerName(response.data.createOrder.customerFullname);
             }
         });
     };
@@ -86,7 +104,7 @@ const CheckoutSummary = () => {
         );
         notification.open({
             message: "Purchasing completed",
-            description: `Thank you for purchanig. Your invoice number is: ${currOrder.invoiceNumber}`,
+            description: `Thank you ${name} for purchasing. Your invoice number is: ${currOrder.invoiceNumber}`,
             btn,
             key,
             icon: <SmileOutlined style={{ color: "#108ee9" }} />,
@@ -210,15 +228,18 @@ const CheckoutSummary = () => {
                         {cart.totalPrice}€
                     </Typography.Title>
                 </div>
-                <div className={style.paypalButton}>
+                <Space
+                    direction="vertical"
+                    align="center"
+                    className={style.bookOrPayButton}>
                     <PayPalButtons
                         fundingSource="paypal"
                         style={{
                             disableMaxWidth: true,
                             label: "paypal",
                         }}
-                        createOrder={(data, actions) => {
-                            return submitForm(actions);
+                        createOrder={() => {
+                            return submitPaypalForm();
                         }}
                         onCancel={() => {
                             setIsCanceled(true);
@@ -233,7 +254,17 @@ const CheckoutSummary = () => {
                             });
                         }}
                     />
-                </div>
+                    <p style={{ textAlign: "center", width: "100%" }}>or</p>
+                    <Button
+                        onClick={() => {
+                            submitTransferForm("transfer");
+                        }}
+                        style={{ width: "100%" }}
+                        type="primary"
+                        size="large">
+                        Pay later
+                    </Button>
+                </Space>
             </Space>
         </div>
     );
