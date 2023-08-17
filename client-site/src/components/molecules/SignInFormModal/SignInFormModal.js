@@ -8,6 +8,7 @@ const SignInFormModal = () => {
     const errorMessage = useSelector((state) => state.login.data.message.error);
 
     const onFinish = (values) => {
+        values.type = "client";
         dispatch(submitLogin(values));
     };
 
@@ -20,8 +21,7 @@ const SignInFormModal = () => {
                         required: true,
                         message: "Please input your email!",
                     },
-                ]}
-            >
+                ]}>
                 <Input
                     prefix={<UserOutlined className="site-form-item-icon" />}
                     placeholder="Email"
@@ -34,8 +34,7 @@ const SignInFormModal = () => {
                         required: true,
                         message: "Please input your password!",
                     },
-                ]}
-            >
+                ]}>
                 <Input.Password
                     prefix={<LockOutlined />}
                     type="password"
@@ -47,8 +46,7 @@ const SignInFormModal = () => {
                     fontSize: 12,
                     marginBottom: 24,
                     color: "red",
-                }}
-            >
+                }}>
                 {errorMessage}
             </div>
         </Form>
