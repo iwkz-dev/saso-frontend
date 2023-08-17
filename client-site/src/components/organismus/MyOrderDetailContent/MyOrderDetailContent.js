@@ -45,13 +45,11 @@ const MyOrderDetailContent = ({ detailOrder }) => {
                     maxWidth: "1024px",
                     padding: "1rem",
                     margin: "1rem auto",
-                }}
-            >
+                }}>
                 <Space
                     size="large"
                     direction="vertical"
-                    style={{ width: "100%" }}
-                >
+                    style={{ width: "100%" }}>
                     <BackToButton
                         targetURL="/my-order"
                         buttonText="Back to my order"
@@ -72,6 +70,9 @@ const MyOrderDetailContent = ({ detailOrder }) => {
                         </Descriptions.Item>
                         <Descriptions.Item label="Note">
                             {detailOrder.note}
+                        </Descriptions.Item>
+                        <Descriptions.Item label="Payment Type">
+                            {detailOrder.paymentType?.name}
                         </Descriptions.Item>
                         <Descriptions.Item label="Status">
                             {reformStatus(detailOrder.status)}
