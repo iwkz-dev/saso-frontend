@@ -12,6 +12,7 @@ import OrderFilterForm from "../../src/components/Form/Order/OrderFilterForm/Ord
 import Content from "../../src/components/Layout/Content/Content";
 import { Space, Typography, message } from "antd";
 import { isAuth } from "../../src/helpers/authHelper";
+import { getAllPaymentTypes } from "../../src/store/reducers/paymentTypeReducer";
 
 const index = () => {
     const dispatch = useDispatch();
@@ -40,6 +41,7 @@ const index = () => {
         setShowLoadingData(true);
         Promise.all([
             dispatch(getAllEvents()),
+            dispatch(getAllPaymentTypes()),
             dispatch(getAllOrders(filtersQueryBuilder())),
         ]).then((responses) => {
             const failed = responses.find((r) => r?.status === "failed");

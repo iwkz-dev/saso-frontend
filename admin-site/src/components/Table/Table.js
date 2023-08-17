@@ -13,6 +13,7 @@ const TableComponent = ({
     linkToEdit,
     categories,
     events,
+    paymentTypes,
     linkToView,
     actionsOff,
     deleteOff,
@@ -20,6 +21,10 @@ const TableComponent = ({
 }) => {
     const [tableHead, setTableHead] = useState([]);
     const { Column } = Table;
+    const updatedData = data.map((item) => {
+        const newItem = { ...item, key: item._id };
+        return newItem;
+    });
 
     useEffect(() => {
         setTableHead(dataHead);
@@ -79,7 +84,7 @@ const TableComponent = ({
         <Table
             className={styles.table}
             loading={isLoading}
-            dataSource={data}
+            dataSource={updatedData}
             scroll={{
                 x: 1500,
                 y: 800,
@@ -151,6 +156,20 @@ const TableComponent = ({
                                     (e) => e._id === eventId,
                                 );
                                 return <>{event?.name}</>;
+                            }}
+                        />
+                    );
+                } else if (dataKey === "paymentType") {
+                    return (
+                        <Column
+                            title={tableHead[dataKey]}
+                            dataIndex={dataKey}
+                            key={dataKey}
+                            render={(eventId) => {
+                                const paymentType = paymentTypes.find(
+                                    (e) => e._id === eventId,
+                                );
+                                return <>{paymentType?.type}</>;
                             }}
                         />
                     );
