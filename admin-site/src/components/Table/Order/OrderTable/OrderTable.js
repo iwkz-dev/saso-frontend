@@ -53,9 +53,10 @@ function OrderTable({ onDelete, onChangeStatus, isLoading, showTable }) {
             events={events}
             dataHead={tableHead}
             emptyMessage="Order is empty"
-            actionsOff={true}
+            linkToView="/order/view/"
             paymentTypes={paymentTypes}
             isLoading={isLoading}
+            deleteOff={true}
         />
     );
 }

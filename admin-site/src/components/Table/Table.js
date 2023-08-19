@@ -186,7 +186,7 @@ const TableComponent = ({
                     );
                 }
             })}
-            {actionsOff ? null : (
+            {actionsOff || (!linkToEdit && deleteOff) ? null : (
                 <Column
                     title="Actions"
                     key="action"
