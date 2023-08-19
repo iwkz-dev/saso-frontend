@@ -23,12 +23,14 @@ const SignInFormModal = () => {
                     },
                 ]}>
                 <Input
+                    id="email"
                     prefix={<UserOutlined className="site-form-item-icon" />}
                     placeholder="Email"
                 />
             </Form.Item>
             <Form.Item
                 name="password"
+                id="password"
                 rules={[
                     {
                         required: true,

@@ -10,8 +10,24 @@ const initialState = {
     detailOrder: {},
 };
 
-export const submitOrder = (data) => async (dispatch) => {
-    return orderService.postOrder(data).then((response) => {
+export const submitOrder = (data, isAuthRequired) => async (dispatch) => {
+    let postOrderService = orderService.postOrderGuest(data);
+    if (isAuthRequired) {
+        postOrderService = orderService.postOrder(data);
+    }
+    return postOrderService.then((response) => {
+        if (response.status === "success") {
+            dispatch(submitOrderSuccess(response.message));
+            return response;
+        } else {
+            dispatch(submitOrderFailed(response.message));
+            return response;
+        }
+    });
+};
+
+export const submitOrderGuest = (data) => async (dispatch) => {
+    return orderService.postOrderGuest(data).then((response) => {
         if (response.status === "success") {
             dispatch(submitOrderSuccess(response.message));
             return response;
@@ -24,11 +40,11 @@ export const submitOrder = (data) => async (dispatch) => {
 
 export const getOrderList = () => async (dispatch) => {
     return orderService.getOrderList().then((response) => {
-        if (response.data.status === "success") {
-            dispatch(getOrderListSuccess(response.data));
+        if (response?.data.status === "success") {
+            dispatch(getOrderListSuccess(response?.data));
             return response;
         } else {
-            dispatch(getOrderListFailed(response.data));
+            dispatch(getOrderListFailed(response?.data));
             return response;
         }
     });
@@ -51,7 +67,6 @@ export const getOrderPdf = (id) => {
 };
 
 export const deleteOrder = (id) => async (dispatch) => {
-    console.log("deleteOrder", id);
     return orderService.deleteOrder(id);
 };
 

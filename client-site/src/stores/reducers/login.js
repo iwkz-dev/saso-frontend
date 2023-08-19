@@ -28,7 +28,7 @@ export const submitLogin = (data) => (dispatch) => {
             };
             dispatch(loginSuccess(response.message));
             setToken(authData);
-            Router.push("/");
+            Router.reload();
         } else {
             dispatch(loginFailed(response.response.data.message));
         }

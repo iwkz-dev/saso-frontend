@@ -1,12 +1,10 @@
-import { Empty } from "antd";
 import { useDispatch, useSelector } from "react-redux";
-import { isAuth } from "../../../helpers/authHelper";
-import Unauthorized from "../../atoms/Unauthorized/Unauthorized";
-import styles from "./CartContent.module.scss";
+import { Empty } from "antd";
 import CartList from "../../atoms/CartList/CartList";
+import ContentLayout from "../ContentLayout/ContentLayout";
 import CartSummary from "../../atoms/CartSummary/CartSummary";
 import { addOrder, removeOrder } from "../../../stores/reducers/cart";
-import ContentLayout from "../ContentLayout/ContentLayout";
+import styles from "./CartContent.module.scss";
 
 const CartContent = () => {
     const dispatch = useDispatch();
@@ -19,14 +17,6 @@ const CartContent = () => {
     const remove = (menu) => {
         dispatch(removeOrder(menu));
     };
-
-    if (!isAuth()) {
-        return (
-            <ContentLayout>
-                <Unauthorized />
-            </ContentLayout>
-        );
-    }
 
     return (
         <ContentLayout className={styles.cartContent}>

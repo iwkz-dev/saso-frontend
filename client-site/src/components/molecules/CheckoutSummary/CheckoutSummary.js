@@ -1,119 +1,37 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { SmileOutlined } from "@ant-design/icons";
-import {
-    Divider,
-    Space,
-    Typography,
-    Button,
-    notification,
-    message,
-} from "antd";
+import React from "react";
+import { useSelector } from "react-redux";
+import { Divider, Space, Typography } from "antd";
 import ImagesPreview from "../../atoms/ImagesPreview/ImagesPreview";
-import { PayPalButtons } from "@paypal/react-paypal-js";
-import {
-    approveOrder,
-    deleteOrder,
-    submitOrder,
-} from "../../../stores/reducers/order";
-import { resetCart } from "../../../stores/reducers/cart";
 import Router from "next/router";
 import style from "./CheckoutSummary.module.scss";
+import { isAuth } from "../../../helpers/authHelper";
+import CheckoutGuestForm from "../CheckoutGuestForm/CheckoutGuestForm";
+import PaymentMethods from "../PaymentMethods/PaymentMethods";
 
 const CheckoutSummary = () => {
-    const dispatch = useDispatch();
-    const [currOrder, setCurrOrder] = useState({});
-    const [isCanceled, setIsCanceled] = useState(false);
-    const [isApprove, setIsApprove] = useState(false);
-    const [payerName, setPayerName] = useState("");
     const cart = useSelector((state) => state.cart.data);
-    const events = useSelector((state) => state.event.data);
 
-    useEffect(() => {
-        if (isCanceled && currOrder?._id) {
-            dispatch(deleteOrder(currOrder._id));
-            message.error("Transaction process is aborted");
+    const hasUndefinedValue = (obj) => {
+        for (const key in obj) {
+            if (obj.hasOwnProperty(key)) {
+                const value = obj[key];
+
+                if (
+                    value === undefined ||
+                    (typeof value === "string" && value.trim() === "")
+                ) {
+                    return true;
+                }
+
+                if (typeof value === "object" && !Array.isArray(value)) {
+                    if (hasUndefinedValue(value)) {
+                        return true;
+                    }
+                }
+            }
         }
-    }, [currOrder, isCanceled]);
 
-    useEffect(() => {
-        if (currOrder?._id && payerName) {
-            dispatch(resetCart());
-            if (isApprove) {
-                dispatch(approveOrder(currOrder._id));
-            }
-            openNotification(payerName, currOrder);
-            Router.push("/");
-        }
-    }, [currOrder, isApprove, payerName]);
-
-    const createOrderData = (paymentType) => {
-        const menus = [];
-        cart.items.forEach((item) => {
-            menus.push({
-                _id: item.menu._id,
-                totalPortion: item.amount,
-            });
-        });
-        const orderData = {
-            event: events[0]._id,
-            note: "",
-            arrivedAt: "",
-            paymentType,
-            menus: menus,
-        };
-        return orderData;
-    };
-
-    const submitPaypalForm = () => {
-        setIsCanceled(false);
-        const orderData = createOrderData("paypal");
-
-        return dispatch(submitOrder(orderData)).then(async (response) => {
-            if (response.status == "success") {
-                setCurrOrder(response.data.createOrder);
-                return response.data.paymentResponse.id;
-            }
-        });
-    };
-
-    const submitTransferForm = () => {
-        setIsCanceled(false);
-        const orderData = createOrderData("transfer");
-
-        dispatch(submitOrder(orderData)).then(async (response) => {
-            if (response.status == "success") {
-                setCurrOrder(response.data.createOrder);
-                setPayerName(response.data.createOrder.customerFullname);
-            }
-        });
-    };
-
-    const openNotification = (name, currOrder) => {
-        const key = `open${Date.now()}`;
-        const btn = (
-            <Button
-                type="primary"
-                size="small"
-                onClick={() => {
-                    notification.destroy(key);
-                    Router.push(`my-order/detail/${currOrder._id}`);
-                }}>
-                See order
-            </Button>
-        );
-        notification.open({
-            message: "Purchasing completed",
-            description: `Thank you ${name} for purchasing. Your invoice number is: ${currOrder.invoiceNumber}`,
-            btn,
-            key,
-            icon: <SmileOutlined style={{ color: "#108ee9" }} />,
-        });
-    };
-
-    const onApprove = (name) => {
-        setIsApprove(true);
-        setPayerName(name);
+        return false;
     };
 
     const cartItemComponents = () => {
@@ -135,6 +53,20 @@ const CheckoutSummary = () => {
                         </Typography.Text>
                     </Space>
                 </div>
+                <div className={style.amountAndPrice}>
+                    <div
+                        className={`${style.itemAmountWrapperMobile} ${style.flexLayout}`}>
+                        <Typography.Text className={style.itemAmount}>
+                            {cartItem.amount}x
+                        </Typography.Text>
+                    </div>
+                    <div
+                        className={`${style.itemSumPriceWrapperMobile} ${style.flexLayout}`}>
+                        <Typography.Text className={style.itemSumPrice}>
+                            {cartItem.sumPrice}€
+                        </Typography.Text>
+                    </div>
+                </div>
                 <div
                     className={`${style.itemAmountWrapper} ${style.flexLayout}`}>
                     <Typography.Text className={style.itemAmount}>
@@ -146,43 +78,6 @@ const CheckoutSummary = () => {
                     <Typography.Text className={style.itemSumPrice}>
                         {cartItem.sumPrice}€
                     </Typography.Text>
-                </div>
-            </div>
-        ));
-    };
-
-    const cartItemComponentsMobile = () => {
-        return cart.items.map((cartItem, i) => (
-            <div key={i} className={style.cartItemMobile}>
-                <div className={style.itemOverview}>
-                    <div className={style.imageWrapper}>
-                        <ImagesPreview
-                            productName={cartItem.menu.name}
-                            productImages={cartItem.menu.images}
-                        />
-                    </div>
-                    <Space direction="vertical">
-                        <Typography.Text className={style.itemTitle}>
-                            {cartItem.menu.name}
-                        </Typography.Text>
-                        <Typography.Text type="danger">
-                            {cartItem.menu.price} €
-                        </Typography.Text>
-                    </Space>
-                </div>
-                <div className={style.amountAndPrice}>
-                    <div
-                        className={`${style.itemAmountWrapper} ${style.flexLayout}`}>
-                        <Typography.Text className={style.itemAmount}>
-                            {cartItem.amount}x
-                        </Typography.Text>
-                    </div>
-                    <div
-                        className={`${style.itemSumPriceWrapper} ${style.flexLayout}`}>
-                        <Typography.Text className={style.itemSumPrice}>
-                            {cartItem.sumPrice}€
-                        </Typography.Text>
-                    </div>
                 </div>
             </div>
         ));
@@ -214,7 +109,6 @@ const CheckoutSummary = () => {
                         </div>
                     </div>
                     {cartItemComponents()}
-                    {cartItemComponentsMobile()}
                 </div>
                 <Divider />
                 <div className={style.totalPriceWrapper}>
@@ -228,43 +122,8 @@ const CheckoutSummary = () => {
                         {cart.totalPrice}€
                     </Typography.Title>
                 </div>
-                <Space
-                    direction="vertical"
-                    align="center"
-                    className={style.bookOrPayButton}>
-                    <PayPalButtons
-                        fundingSource="paypal"
-                        style={{
-                            disableMaxWidth: true,
-                            label: "paypal",
-                        }}
-                        createOrder={() => {
-                            return submitPaypalForm();
-                        }}
-                        onCancel={() => {
-                            setIsCanceled(true);
-                        }}
-                        onError={() => {
-                            setIsCanceled(true);
-                        }}
-                        onApprove={(data, actions) => {
-                            return actions.order.capture().then((details) => {
-                                const name = details.payer.name.given_name;
-                                onApprove(name);
-                            });
-                        }}
-                    />
-                    <p style={{ textAlign: "center", width: "100%" }}>or</p>
-                    <Button
-                        onClick={() => {
-                            submitTransferForm("transfer");
-                        }}
-                        style={{ width: "100%" }}
-                        type="primary"
-                        size="large">
-                        Pay later
-                    </Button>
-                </Space>
+                {!isAuth() ? <CheckoutGuestForm /> : ""}
+                {isAuth() ? <PaymentMethods /> : ""}
             </Space>
         </div>
     );

@@ -4,7 +4,7 @@ import CartContent from "../../components/organismus/CartContent/CartContent";
 
 const index = () => {
     return (
-        <MainLayout>
+        <MainLayout isAuthRequired={false}>
             <CartContent />
         </MainLayout>
     );

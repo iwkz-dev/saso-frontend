@@ -10,10 +10,11 @@ import {
     Modal,
     Space,
     Button,
+    Divider,
 } from "antd";
 import { PlusOutlined, CameraOutlined } from "@ant-design/icons";
-import style from "./FormItem.module.scss";
 import BarcodeScanner from "../BarcodeScanner/BarcodeScanner";
+import style from "./FormItem.module.scss";
 
 const FormItem = ({ item, setImages, images, form }) => {
     const [previewOpen, setPreviewOpen] = useState(false);
@@ -237,6 +238,8 @@ const FormItem = ({ item, setImages, images, form }) => {
                         <Input.Password placeholder={item.placeholder} />
                     </Form.Item>
                 );
+            case "divider":
+                return <Divider orientation="left">{item.name}</Divider>;
             default:
                 <Form.Item
                     label={item.label}

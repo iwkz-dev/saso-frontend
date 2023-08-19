@@ -2,7 +2,6 @@ import { Button, Card, Space, Typography, message } from "antd";
 import { ShoppingCartOutlined } from "@ant-design/icons";
 import { useDispatch } from "react-redux";
 import { addOrder } from "../../../../stores/reducers/cart";
-import { isAuth } from "../../../../helpers/authHelper";
 import { useState } from "react";
 import ImagesPreview from "../../../atoms/ImagesPreview/ImagesPreview";
 
@@ -32,8 +31,7 @@ const ProductItem = ({ product }) => {
                     productName={product.name}
                     productImages={product.images}
                 />
-            }
-        >
+            }>
             <Space direction="vertical">
                 <Meta
                     title={product.name}
@@ -50,13 +48,10 @@ const ProductItem = ({ product }) => {
                 </Typography.Text>
                 <Button
                     type="primary"
-                    disabled={
-                        product.quantity == product.quantityOrder || !isAuth()
-                    }
+                    disabled={product.quantity == product.quantityOrder}
                     onClick={(e) => handleClick(e)}
                     shape="round"
-                    icon={<ShoppingCartOutlined />}
-                >
+                    icon={<ShoppingCartOutlined />}>
                     Add to cart
                 </Button>
             </Space>

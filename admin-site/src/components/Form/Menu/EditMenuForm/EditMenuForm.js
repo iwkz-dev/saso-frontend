@@ -77,6 +77,10 @@ const EditMenuForm = () => {
 
     const formItems = [
         {
+            name: "General Information",
+            type: "divider",
+        },
+        {
             name: "name",
             label: "Name",
             type: "text",
@@ -128,6 +132,10 @@ const EditMenuForm = () => {
                 label: item.name,
             })),
             required: true,
+        },
+        {
+            name: "Additional Information",
+            type: "divider",
         },
         {
             name: "description",

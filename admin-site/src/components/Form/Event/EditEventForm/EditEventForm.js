@@ -79,6 +79,10 @@ const EditEventForm = () => {
 
     const formItems = [
         {
+            name: "General Information",
+            type: "divider",
+        },
+        {
             name: "name",
             label: "Name",
             type: "text",
@@ -106,6 +110,10 @@ const EditEventForm = () => {
             onChange: onChange,
             showTime: true,
             required: true,
+        },
+        {
+            name: "Payment Information",
+            type: "divider",
         },
         {
             name: "bankName",
@@ -136,6 +144,10 @@ const EditEventForm = () => {
             label: "Paypal",
             type: "text",
             placeholder: "Paypal",
+        },
+        {
+            name: "Additional Information",
+            type: "divider",
         },
         {
             name: "description",

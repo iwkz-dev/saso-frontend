@@ -4,6 +4,7 @@ import { getOrderDetail } from "../../../stores/reducers/order";
 import { useRouter } from "next/router";
 import MainLayout from "../../../components/organismus/MainLayout/MainLayout";
 import MyOrderDetailContent from "../../../components/organismus/MyOrderDetailContent/MyOrderDetailContent";
+import { isAuth } from "../../../helpers/authHelper";
 
 const index = () => {
     const dispatch = useDispatch();
@@ -12,13 +13,13 @@ const index = () => {
     const { id } = router.query;
 
     useEffect(() => {
-        if (id) {
+        if (id && isAuth()) {
             dispatch(getOrderDetail(id));
         }
     }, [id]);
 
     return (
-        <MainLayout>
+        <MainLayout isAuthRequired={true}>
             {detailOrder ? (
                 <MyOrderDetailContent detailOrder={detailOrder} />
             ) : null}

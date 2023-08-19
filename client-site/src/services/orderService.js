@@ -4,6 +4,10 @@ const postOrder = (data) => {
     return sasoApi.postData("/customer/order", data);
 };
 
+const postOrderGuest = (data) => {
+    return sasoApi.postData("/customer/order-guest", data);
+};
+
 const getOrderList = () => {
     return sasoApi.getData("/customer/order", true);
 };
@@ -36,5 +40,6 @@ const orderService = {
     getOrderDetail,
     deleteOrder,
     approveOrder,
+    postOrderGuest,
 };
 export default orderService;
