@@ -2,7 +2,6 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { Divider, Space, Typography } from "antd";
 import ImagesPreview from "../../atoms/ImagesPreview/ImagesPreview";
-import Router from "next/router";
 import style from "./CheckoutSummary.module.scss";
 import { isAuth } from "../../../helpers/authHelper";
 import CheckoutGuestForm from "../CheckoutGuestForm/CheckoutGuestForm";

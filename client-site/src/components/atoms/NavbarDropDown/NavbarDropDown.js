@@ -1,16 +1,19 @@
-import { Badge, Button, Dropdown, Modal } from "antd";
 import React from "react";
+import { Badge, Button, Dropdown } from "antd";
 import {
     UserOutlined,
     HistoryOutlined,
     ShoppingCartOutlined,
     LogoutOutlined,
     MenuOutlined,
+    SearchOutlined,
+    LoginOutlined,
+    UserAddOutlined,
 } from "@ant-design/icons";
 import Link from "next/link";
 import { isAuth } from "../../../helpers/authHelper";
 
-const NavbarDropDown = ({ onClick, cart, showModal }) => {
+const NavbarDropDown = ({ onClick, cart }) => {
     const getItems = () => {
         if (isAuth()) {
             return [
@@ -29,12 +32,17 @@ const NavbarDropDown = ({ onClick, cart, showModal }) => {
                     icon: <HistoryOutlined />,
                 },
                 {
+                    label: <Link href="/search-order">Search order</Link>,
+                    key: "2",
+                    icon: <SearchOutlined />,
+                },
+                {
                     type: "divider",
                 },
 
                 {
                     label: <div>Logout</div>,
-                    key: "2",
+                    key: "logout",
                     icon: <LogoutOutlined />,
                 },
             ];
@@ -42,12 +50,17 @@ const NavbarDropDown = ({ onClick, cart, showModal }) => {
         return [
             {
                 label: <Link href="/cart">Cart</Link>,
-                key: "1",
+                key: "0",
                 icon: (
                     <Badge count={cart.items.length} size="small">
                         <ShoppingCartOutlined />
                     </Badge>
                 ),
+            },
+            {
+                label: <Link href="/search-order">Search order</Link>,
+                key: "1",
+                icon: <SearchOutlined />,
             },
             {
                 type: "divider",
@@ -56,20 +69,25 @@ const NavbarDropDown = ({ onClick, cart, showModal }) => {
                 label: (
                     <Button
                         size="small"
-                        type="primary"
-                        onClick={() => showModal(true)}>
+                        type="link"
+                        onClick={() => onClick(true)}>
                         Sign in
                     </Button>
                 ),
-                key: "3",
+                icon: <LoginOutlined />,
+                key: "signIn",
             },
             {
                 label: (
-                    <Button size="small" onClick={() => showModal(false)}>
+                    <Button
+                        size="small"
+                        onClick={() => onClick(false)}
+                        type="link">
                         Sign up
                     </Button>
                 ),
-                key: "4",
+                icon: <UserAddOutlined />,
+                key: "signUp",
             },
         ];
     };

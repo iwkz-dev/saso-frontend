@@ -23,11 +23,13 @@ const MainLayout = ({ children, isAuthRequired }) => {
                 {isAuth() || !isAuthRequired ? (
                     children
                 ) : (
-                    <Result
-                        status="403"
-                        title="403"
-                        subTitle="Sorry, you are not authorized to access this page."
-                    />
+                    <Layout.Content>
+                        <Result
+                            status="403"
+                            title="403"
+                            subTitle="Sorry, you are not authorized to access this page."
+                        />
+                    </Layout.Content>
                 )}
                 <FooterComponent />
             </Layout>

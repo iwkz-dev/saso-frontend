@@ -18,23 +18,28 @@ const Navbar = () => {
     const { Header } = Layout;
 
     const onClick = ({ key }) => {
-        if (key === "2") {
+        if (key === "logout") {
             dispatch(resetCart());
             logout();
         }
 
-        if (key === "3") {
-            showModal(true);
+        if (key === "signIn") {
+            showSignInModal();
         }
 
-        if (key === "4") {
-            showModal(false);
+        if (key === "signUp") {
+            showSignUpModal(false);
         }
     };
 
-    const showModal = (state) => {
+    const showSignInModal = () => {
         setIsModalOpen(true);
-        setIsSignIn(state);
+        setIsSignIn(true);
+    };
+
+    const showSignUpModal = () => {
+        setIsModalOpen(true);
+        setIsSignIn(false);
     };
 
     const ModalContent = () => {
@@ -85,11 +90,7 @@ const Navbar = () => {
                     </Link>
                 </Col>
                 <Col style={{ textAlign: "right" }}>
-                    <NavbarDropDown
-                        onClick={onClick}
-                        cart={cart}
-                        showModal={showModal}
-                    />
+                    <NavbarDropDown onClick={onClick} cart={cart} />
                 </Col>
             </Row>
             {!isAuth() ? (

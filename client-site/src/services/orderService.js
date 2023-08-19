@@ -16,6 +16,12 @@ const getOrderDetail = (orderId) => {
     return sasoApi.getData(`/customer/order/${orderId}/detail`, true);
 };
 
+const getOrderDetailByInvoiceNumber = (data) => {
+    return sasoApi.getData(
+        `/customer/order-guest/search-order/?invoiceNumber=${data.invoiceNumber}&customerFullname=${data.customerFullname}`,
+    );
+};
+
 const getOrderPdf = (orderId) => {
     return sasoApi.postData(
         `/customer/order/${orderId}/generatePdf`,
@@ -33,6 +39,10 @@ const approveOrder = (orderId) => {
     return sasoApi.postData(`/customer/order/${orderId}/approve`);
 };
 
+const approveOrderGuest = (orderId) => {
+    return sasoApi.postData(`/customer/order-guest/${orderId}/approve-guest`);
+};
+
 const orderService = {
     postOrder,
     getOrderList,
@@ -40,6 +50,8 @@ const orderService = {
     getOrderDetail,
     deleteOrder,
     approveOrder,
+    approveOrderGuest,
     postOrderGuest,
+    getOrderDetailByInvoiceNumber,
 };
 export default orderService;

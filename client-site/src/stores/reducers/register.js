@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import authService from "../../services/authService";
 import { setToken } from "../../helpers/authHelper";
 import Router from "next/router";
+import { message } from "antd";
 
 const initialState = {
     user: {
@@ -32,6 +33,7 @@ export const submitRegister = (data) => (dispatch) => {
             setToken(authData);
             Router.push("/");
         } else {
+            message.error(response.response.data.message);
             dispatch(registerFailed(response.response.data.message));
         }
         return Promise.resolve();

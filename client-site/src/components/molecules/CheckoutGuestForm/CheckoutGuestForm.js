@@ -53,7 +53,6 @@ const CheckoutGuestForm = () => {
     };
 
     const stepsContent = () => {
-        console.log(current);
         switch (current) {
             case 0:
                 return (

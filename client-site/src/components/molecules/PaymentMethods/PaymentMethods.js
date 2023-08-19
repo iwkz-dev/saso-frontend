@@ -34,7 +34,7 @@ const PaymentMethods = ({ userData }) => {
         if (currOrder?._id && payerName) {
             dispatch(resetCart());
             if (isApprove) {
-                dispatch(approveOrder(currOrder._id));
+                dispatch(approveOrder(currOrder._id, isAuth()));
             }
             openNotification(payerName, currOrder);
             Router.push("/");
@@ -78,21 +78,25 @@ const PaymentMethods = ({ userData }) => {
 
     const openNotification = (name, currOrder) => {
         const key = `open${Date.now()}`;
-        const btn = (
-            <Button
-                type="primary"
-                size="small"
-                onClick={() => {
-                    notification.destroy(key);
-                    Router.push(`my-order/detail/${currOrder._id}`);
-                }}>
-                See order
-            </Button>
-        );
+        let btn = "";
+        if (isAuth()) {
+            btn = (
+                <Button
+                    type="primary"
+                    size="small"
+                    onClick={() => {
+                        notification.destroy(key);
+                        Router.push(`my-order/detail/${currOrder._id}`);
+                    }}>
+                    See order
+                </Button>
+            );
+        }
         notification.open({
             message: "Purchasing completed",
             description: `Thank you ${name} for purchasing. Your invoice number is: ${currOrder.invoiceNumber}`,
             btn,
+            duration: 0,
             key,
             icon: <SmileOutlined style={{ color: "#108ee9" }} />,
         });

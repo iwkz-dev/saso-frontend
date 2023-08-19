@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getOrderDetail } from "../../../stores/reducers/order";
+import { getOrderDetail, resetOrderData } from "../../../stores/reducers/order";
 import { useRouter } from "next/router";
 import MainLayout from "../../../components/organismus/MainLayout/MainLayout";
 import MyOrderDetailContent from "../../../components/organismus/MyOrderDetailContent/MyOrderDetailContent";
@@ -17,6 +17,12 @@ const index = () => {
             dispatch(getOrderDetail(id));
         }
     }, [id]);
+
+    useEffect(() => {
+        return () => {
+            dispatch(resetOrderData());
+        };
+    }, []);
 
     return (
         <MainLayout isAuthRequired={true}>

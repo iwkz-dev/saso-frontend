@@ -2,12 +2,10 @@ import { Button, Card, Space, Typography, message } from "antd";
 import { ShoppingCartOutlined } from "@ant-design/icons";
 import { useDispatch } from "react-redux";
 import { addOrder } from "../../../../stores/reducers/cart";
-import { useState } from "react";
 import ImagesPreview from "../../../atoms/ImagesPreview/ImagesPreview";
 
 const ProductItem = ({ product }) => {
     const dispatch = useDispatch();
-    const [visible, setVisible] = useState(false);
 
     const { Meta } = Card;
 
