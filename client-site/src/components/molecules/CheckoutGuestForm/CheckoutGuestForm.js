@@ -19,7 +19,7 @@ const CheckoutGuestForm = () => {
         phone: "",
     });
 
-    const showModal = (state) => {
+    const showModalForSignIn = (state) => {
         setIsModalOpen(true);
         setIsSignIn(state);
     };
@@ -65,7 +65,6 @@ const CheckoutGuestForm = () => {
                             initialValues={userData}
                             id="guest-information"
                             {...layout}
-                            size="small"
                             onFinish={onFinish}>
                             <Form.Item
                                 label="Full Name"
@@ -116,9 +115,20 @@ const CheckoutGuestForm = () => {
                             </Typography.Text>
                             <Button
                                 size="small"
-                                onClick={() => showModal(true)}
+                                onClick={() => showModalForSignIn(true)}
                                 type="link">
                                 Log in
+                            </Button>
+                        </Space>
+                        <Space>
+                            <Typography.Text>
+                                Or you can sign up
+                            </Typography.Text>
+                            <Button
+                                size="small"
+                                onClick={() => showModalForSignIn(false)}
+                                type="link">
+                                here
                             </Button>
                         </Space>
                     </Space>

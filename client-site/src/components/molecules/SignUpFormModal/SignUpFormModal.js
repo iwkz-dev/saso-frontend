@@ -9,9 +9,7 @@ const SignUpFormModal = () => {
     );
 
     const onFinish = (values) => {
-        dispatch(submitRegister(values)).then((response) => {
-            console.log(response);
-        });
+        dispatch(submitRegister(values));
     };
 
     const layout = {

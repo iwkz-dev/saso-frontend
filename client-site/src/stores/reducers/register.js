@@ -31,7 +31,7 @@ export const submitRegister = (data) => (dispatch) => {
             };
             dispatch(registerSuccess(response.message));
             setToken(authData);
-            Router.push("/");
+            Router.reload();
         } else {
             message.error(response.response.data.message);
             dispatch(registerFailed(response.response.data.message));
