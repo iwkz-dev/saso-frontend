@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { Button, Form, Input, Layout, Space, Typography, message } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
-import style from "./SearchOrder.module.scss";
+import style from "./SearchOrderContent.module.scss";
 import { useDispatch, useSelector } from "react-redux";
 import {
     getOrderDetailByInvoiceNumber,
@@ -9,7 +9,7 @@ import {
 } from "../../../stores/reducers/order";
 import MyOrderDetailContent from "../MyOrderDetailContent/MyOrderDetailContent";
 
-const SearchOrder = () => {
+const SearchOrderContent = () => {
     const dispatch = useDispatch();
     const detailOrder = useSelector((state) => state.order.data.detailOrder);
 
@@ -36,7 +36,7 @@ const SearchOrder = () => {
                     margin: "1rem auto",
                 }}>
                 <Space
-                    className={style.searchOrderContainer}
+                    className={style.searchOrderContent}
                     direction="vertical"
                     size="middle">
                     <Typography.Title level={3}>Search Order</Typography.Title>
@@ -110,4 +110,4 @@ const SearchOrder = () => {
     );
 };
 
-export default SearchOrder;
+export default SearchOrderContent;
