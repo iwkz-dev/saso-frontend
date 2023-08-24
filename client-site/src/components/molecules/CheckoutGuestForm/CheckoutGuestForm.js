@@ -7,6 +7,7 @@ import SignUpFormModal from "../SignUpFormModal/SignUpFormModal";
 import { resetLoginMessage } from "../../../stores/reducers/login";
 import { resetRegisterMessage } from "../../../stores/reducers/register";
 import PaymentMethods from "../PaymentMethods/PaymentMethods";
+import StepsContent from "./StepsContent/StepsContent";
 
 const CheckoutGuestForm = () => {
     const dispatch = useDispatch();
@@ -26,7 +27,7 @@ const CheckoutGuestForm = () => {
 
     const ModalContent = () => {
         if (isSignIn) {
-            return <SignInFormModal />;
+            return <SignInFormModal setShowModal={setIsModalOpen} />;
         }
 
         return <SignUpFormModal />;
@@ -43,95 +44,15 @@ const CheckoutGuestForm = () => {
         setCurrent(1);
     };
 
-    const layout = {
-        labelCol: {
-            span: 8,
-        },
-        wrapperCol: {
-            span: 16,
-        },
-    };
-
     const stepsContent = () => {
         switch (current) {
             case 0:
                 return (
-                    <Space
-                        direction="vertical"
-                        style={{
-                            width: "100%",
-                        }}>
-                        <Form
-                            initialValues={userData}
-                            id="guest-information"
-                            {...layout}
-                            onFinish={onFinish}>
-                            <Form.Item
-                                label="Full Name"
-                                name="fullname"
-                                rules={[
-                                    {
-                                        required: true,
-                                        message: "Please input your full name!",
-                                    },
-                                ]}>
-                                <Input id="fullname" placeholder="Full Name" />
-                            </Form.Item>
-                            <Form.Item
-                                label="Email"
-                                name="email"
-                                rules={[
-                                    {
-                                        required: true,
-                                        message: "Please input your email!",
-                                    },
-                                    {
-                                        type: "email",
-                                    },
-                                ]}>
-                                <Input id="email" placeholder="Email" />
-                            </Form.Item>
-                            <Form.Item
-                                label="Phone Nr."
-                                name="phone"
-                                rules={[
-                                    {
-                                        required: true,
-                                        message:
-                                            "Please input your phone number!",
-                                    },
-                                ]}>
-                                <Input id="phone" placeholder="Phone Number" />
-                            </Form.Item>
-                            <Form.Item>
-                                <Button type="primary" htmlType="submit">
-                                    Continue Payment
-                                </Button>
-                            </Form.Item>
-                        </Form>
-                        <Space>
-                            <Typography.Text>
-                                Already have an account?
-                            </Typography.Text>
-                            <Button
-                                size="small"
-                                onClick={() => showModalForSignIn(true)}
-                                type="link">
-                                Log in
-                            </Button>
-                        </Space>
-                        <Space>
-                            <Typography.Text>
-                                Or you can sign up
-                            </Typography.Text>
-                            <Button
-                                size="small"
-                                onClick={() => showModalForSignIn(false)}
-                                type="link">
-                                here
-                            </Button>
-                        </Space>
-                    </Space>
+                    <StepsContent
+                        userData={userData}
+                        onFinish={onFinish}
+                        showModalForSignIn={showModalForSignIn}
+                    />
                 );
             default:
                 return (

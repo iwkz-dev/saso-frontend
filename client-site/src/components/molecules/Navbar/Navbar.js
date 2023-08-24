@@ -44,7 +44,7 @@ const Navbar = () => {
 
     const ModalContent = () => {
         if (isSignIn) {
-            return <SignInFormModal />;
+            return <SignInFormModal setShowModal={setIsModalOpen} />;
         }
 
         return <SignUpFormModal />;
@@ -103,7 +103,6 @@ const Navbar = () => {
                     open={isModalOpen}
                     okText={isSignIn ? "Sign in" : "Sign up"}
                     onCancel={handleCancel}
-                    onOk={() => setIsModalOpen(false)}
                     closable={false}
                     destroyOnClose={true}>
                     {ModalContent()}

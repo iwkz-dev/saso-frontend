@@ -1,15 +1,27 @@
-import { Form, Input } from "antd";
+import { Button, Form, Input } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { submitLogin } from "../../../stores/reducers/login";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
+import Router from "next/router";
 
-const SignInFormModal = () => {
+const SignInFormModal = ({ setShowModal }) => {
     const dispatch = useDispatch();
     const errorMessage = useSelector((state) => state.login.data.message.error);
 
     const onFinish = (values) => {
         values.type = "client";
-        dispatch(submitLogin(values));
+        dispatch(submitLogin(values)).then((response) => {
+            if (response.status !== "success") {
+                setShowModal(true);
+            } else {
+                setShowModal(false);
+                Router.reload();
+            }
+        });
+    };
+
+    const forgotPasswordOnClick = () => {
+        Router.push("/forgot-password");
     };
 
     return (
@@ -43,6 +55,12 @@ const SignInFormModal = () => {
                     placeholder="Password"
                 />
             </Form.Item>
+            <Button
+                style={{ padding: 0 }}
+                type="link"
+                onClick={() => forgotPasswordOnClick()}>
+                Forgot password?
+            </Button>
             <div
                 style={{
                     fontSize: 12,

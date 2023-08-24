@@ -28,11 +28,11 @@ export const submitLogin = (data) => (dispatch) => {
             };
             dispatch(loginSuccess(response.message));
             setToken(authData);
-            Router.reload();
+            return response;
         } else {
             dispatch(loginFailed(response.response.data.message));
+            return response.response;
         }
-        return Promise.resolve();
     });
 };
 
