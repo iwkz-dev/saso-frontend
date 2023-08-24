@@ -7,12 +7,28 @@ const initialState = {
         error: "",
         success: "",
     },
-    detailOrder: {},
+    detailOrder: null,
 };
 
-export const submitOrder = (data) => async (dispatch) => {
-    return orderService.postOrder(data).then((response) => {
-        if (response.status === "success") {
+export const submitOrder = (data, isAuthRequired) => async (dispatch) => {
+    if (!isAuthRequired) {
+        return dispatch(submitOrderGuest(data));
+    } else {
+        return orderService.postOrder(data).then((response) => {
+            if (response.status === "success") {
+                dispatch(submitOrderSuccess(response.message));
+                return response;
+            } else {
+                dispatch(submitOrderFailed(response.message));
+                return response;
+            }
+        });
+    }
+};
+
+export const submitOrderGuest = (data) => async (dispatch) => {
+    return orderService.postOrderGuest(data).then((response) => {
+        if (response?.status === "success") {
             dispatch(submitOrderSuccess(response.message));
             return response;
         } else {
@@ -24,11 +40,11 @@ export const submitOrder = (data) => async (dispatch) => {
 
 export const getOrderList = () => async (dispatch) => {
     return orderService.getOrderList().then((response) => {
-        if (response.data.status === "success") {
-            dispatch(getOrderListSuccess(response.data));
+        if (response?.data.status === "success") {
+            dispatch(getOrderListSuccess(response?.data));
             return response;
         } else {
-            dispatch(getOrderListFailed(response.data));
+            dispatch(getOrderListFailed(response?.data));
             return response;
         }
     });
@@ -46,25 +62,52 @@ export const getOrderDetail = (id) => async (dispatch) => {
     });
 };
 
+export const getOrderDetailByInvoiceNumber = (data) => async (dispatch) => {
+    return orderService.getOrderDetailByInvoiceNumber(data).then((response) => {
+        if (response?.data?.status === "success") {
+            dispatch(getOrderDetailSuccess(response?.data));
+            return response;
+        } else {
+            dispatch(getOrderDetailFailed(response?.data));
+            return response;
+        }
+    });
+};
+
 export const getOrderPdf = (id) => {
     return orderService.getOrderPdf(id);
 };
 
 export const deleteOrder = (id) => async (dispatch) => {
-    console.log("deleteOrder", id);
     return orderService.deleteOrder(id);
 };
 
-export const approveOrder = (id) => async (dispatch) => {
-    return orderService.approveOrder(id).then((response) => {
-        if (response?.data?.status === "success") {
-            dispatch(approvedOrderSuccess(response?.data));
-            return response;
-        } else {
-            dispatch(approvedOrderFailed(response?.data));
-            return response;
-        }
-    });
+export const approveOrder = (id, isAuthRequired) => async (dispatch) => {
+    if (!isAuthRequired) {
+        return orderService.approveOrderGuest(id).then((response) => {
+            if (response?.data?.status === "success") {
+                dispatch(approvedOrderSuccess(response?.data));
+                return response;
+            } else {
+                dispatch(approvedOrderFailed(response?.data));
+                return response;
+            }
+        });
+    } else {
+        return orderService.approveOrder(id).then((response) => {
+            if (response?.data?.status === "success") {
+                dispatch(approvedOrderSuccess(response?.data));
+                return response;
+            } else {
+                dispatch(approvedOrderFailed(response?.data));
+                return response;
+            }
+        });
+    }
+};
+
+export const resetOrderData = () => async (dispatch) => {
+    dispatch(resetData());
 };
 
 export const orderSlice = createSlice({
@@ -104,6 +147,7 @@ export const orderSlice = createSlice({
             state.data.message.error = "";
         },
         getOrderDetailFailed: (state, action) => {
+            state.data.detailOrder = null;
             state.data.message.error = action.payload;
             state.data.message.success = "";
         },
@@ -114,6 +158,9 @@ export const orderSlice = createSlice({
         approvedOrderFailed: (state, action) => {
             state.data.message.error = action.payload;
             state.data.message.success = "";
+        },
+        resetData: (state, action) => {
+            state.data = initialState;
         },
     },
 });
@@ -129,5 +176,6 @@ export const {
     getOrderDetailFailed,
     approvedOrderSuccess,
     approvedOrderFailed,
+    resetData,
 } = orderSlice.actions;
 export default orderSlice.reducer;

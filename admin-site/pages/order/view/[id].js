@@ -61,7 +61,7 @@ const id = () => {
                     {showDataDisplay ? (
                         <Space direction="vertical" style={{ display: "flex" }}>
                             <OrderDataDisplay order={orderDetail} />
-                            <Typography.Title level={3}>
+                            <Typography.Title level={4}>
                                 Ordered Menu
                             </Typography.Title>
                             <RelatedMenuOrder menus={orderDetail.menus} />

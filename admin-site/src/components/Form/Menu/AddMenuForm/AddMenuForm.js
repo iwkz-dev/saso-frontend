@@ -56,6 +56,10 @@ const AddMenuForm = () => {
 
     const formItems = [
         {
+            name: "General Information",
+            type: "divider",
+        },
+        {
             name: "name",
             label: "Name",
             type: "text",
@@ -108,6 +112,10 @@ const AddMenuForm = () => {
                 label: item.name,
             })),
             required: true,
+        },
+        {
+            name: "Additional Information",
+            type: "divider",
         },
         {
             name: "description",

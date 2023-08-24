@@ -48,6 +48,9 @@
             .itemSumPrice {
                 font-size: 1.25rem;
             }
+            .amountAndPrice {
+                display: none;
+            }
         }
         .cartItemMobile {
             display: none;
@@ -64,12 +67,6 @@
         text-align: center;
         .totalText, .totalPrice {
             margin: 0;
-        }
-    }
-    .bookOrPayButton{
-        width: 100%;
-        :global(.ant-space-item){
-            width: 100%;
         }
     }
 }
@@ -92,6 +89,9 @@
                 .itemSumPrice{
                     font-size: 1.1rem
                 }
+                .amountAndPrice {
+                    display: none;
+                }
             }
         }
         .titleText {
@@ -112,9 +112,6 @@
                 }
             }
             .cartItem {
-                display: none;
-            }
-            .cartItemMobile {
                 display: flex;
                 flex-direction: column;
                 gap: 0.5rem;
@@ -130,23 +127,31 @@
                         height: 4rem;
                     }
                 }
-                .amountAndPrice {
-                    display: flex;
+                .itemAmountWrapper{
+                    display: none;
                 }
                 .itemSumPriceWrapper{
-                    text-align: end;
+                    display: none;
                 }
-                .itemAmountWrapper{
-                    text-align: start;
-                }
-                .itemAmountWrapper, .itemSumPriceWrapper{
-                    align-self: center;
-                    .itemAmount, .itemTitle {
-                        font-size: 1rem;
+                .amountAndPrice {
+                    display: flex;
+                    width: 100%;
+                    padding: 0 1rem;
+                    .itemSumPriceWrapperMobile{
+                        text-align: end;
                     }
-                }
-                .itemSumPrice {
-                    font-size: 1.25rem;
+                    .itemAmountWrapperMobile{
+                        text-align: start;
+                    }
+                    .itemAmountWrapperMobile, .itemSumPriceWrapperMobile{
+                        align-self: center;
+                        .itemAmount, .itemTitle {
+                            font-size: 1rem;
+                        }
+                    }
+                    .itemSumPrice {
+                        font-size: 1.25rem;
+                    }
                 }
             }
         }

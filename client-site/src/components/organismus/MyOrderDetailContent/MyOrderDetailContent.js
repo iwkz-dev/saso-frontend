@@ -5,7 +5,7 @@ import style from "./MyOrderDetailContent.module.scss";
 import { formatDate } from "../../../helpers/dateHelper";
 import { insertKeytoData } from "../../../helpers/dataHelper";
 
-const MyOrderDetailContent = ({ detailOrder }) => {
+const MyOrderDetailContent = ({ detailOrder, withoutBackButton }) => {
     const { Content } = Layout;
     const columns = [
         {
@@ -50,10 +50,12 @@ const MyOrderDetailContent = ({ detailOrder }) => {
                     size="large"
                     direction="vertical"
                     style={{ width: "100%" }}>
-                    <BackToButton
-                        targetURL="/my-order"
-                        buttonText="Back to my order"
-                    />
+                    {withoutBackButton ? null : (
+                        <BackToButton
+                            targetURL="/my-order"
+                            buttonText="Back to my order"
+                        />
+                    )}
 
                     <Typography.Title level={3} style={{ textAlign: "center" }}>
                         {detailOrder.invoiceNumber}

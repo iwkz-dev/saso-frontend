@@ -1,12 +1,11 @@
-import { Empty } from "antd";
 import { useDispatch, useSelector } from "react-redux";
-import { isAuth } from "../../../helpers/authHelper";
-import Unauthorized from "../../atoms/Unauthorized/Unauthorized";
-import styles from "./CartContent.module.scss";
+import { Empty, Space } from "antd";
 import CartList from "../../atoms/CartList/CartList";
+import ContentLayout from "../ContentLayout/ContentLayout";
 import CartSummary from "../../atoms/CartSummary/CartSummary";
 import { addOrder, removeOrder } from "../../../stores/reducers/cart";
-import ContentLayout from "../ContentLayout/ContentLayout";
+import styles from "./CartContent.module.scss";
+import BackToButton from "../../atoms/BackToButton/BackToButton";
 
 const CartContent = () => {
     const dispatch = useDispatch();
@@ -20,27 +19,25 @@ const CartContent = () => {
         dispatch(removeOrder(menu));
     };
 
-    if (!isAuth()) {
-        return (
-            <ContentLayout>
-                <Unauthorized />
-            </ContentLayout>
-        );
-    }
-
     return (
         <ContentLayout className={styles.cartContent}>
             {cart.items.length <= 0 ? (
                 <Empty />
             ) : (
-                <div className={styles.Cart}>
-                    <div className={styles.cartList}>
-                        <CartList cart={cart} add={add} remove={remove} />
+                <Space
+                    size="large"
+                    direction="vertical"
+                    style={{ width: "100%" }}>
+                    <BackToButton targetURL="/" buttonText="Back to home" />
+                    <div className={styles.Cart}>
+                        <div className={styles.cartList}>
+                            <CartList cart={cart} add={add} remove={remove} />
+                        </div>
+                        <div className={styles.cartSummary}>
+                            <CartSummary cart={cart} title="Order Summary" />
+                        </div>
                     </div>
-                    <div className={styles.cartSummary}>
-                        <CartSummary cart={cart} title="Order Summary" />
-                    </div>
-                </div>
+                </Space>
             )}
         </ContentLayout>
     );

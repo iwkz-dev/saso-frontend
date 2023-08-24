@@ -12,18 +12,18 @@ import Router from "next/router";
 
 const MyOrderContent = () => {
     const { Content } = Layout;
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoadingForIndex, setIsLoadingForIndex] = useState(-1);
     const order = useSelector((state) => state.order);
 
-    const downloadPDF = async (id) => {
-        setIsLoading(true);
+    const downloadPDF = async (id, index) => {
+        setIsLoadingForIndex(index);
         try {
             const data = await getOrderPdf(id);
-            setIsLoading(false);
+            setIsLoadingForIndex(-1);
             const blob = new Blob([data], { type: "application/pdf" });
             saveAs(blob, "invoice.pdf");
         } catch (e) {
-            setIsLoading(false);
+            setIsLoadingForIndex(-1);
             console.error(e);
         }
     };
@@ -47,8 +47,11 @@ const MyOrderContent = () => {
             title: "Download PDF",
             dataIndex: "_id",
             key: "_id",
-            render: (item) => (
-                <Button onClick={() => downloadPDF(item)} loading={isLoading}>
+            render: (item, record, index) => (
+                <Button
+                    key={item}
+                    onClick={() => downloadPDF(item, index)}
+                    loading={index === isLoadingForIndex}>
                     Download
                 </Button>
             ),
@@ -100,13 +103,11 @@ const MyOrderContent = () => {
                     maxWidth: "1024px",
                     padding: "1rem",
                     margin: "1rem auto",
-                }}
-            >
+                }}>
                 <Space
                     size="large"
                     direction="vertical"
-                    style={{ width: "100%" }}
-                >
+                    style={{ width: "100%" }}>
                     <BackToButton targetURL="/" buttonText="Back to home" />
 
                     <Typography.Title level={3} style={{ textAlign: "center" }}>

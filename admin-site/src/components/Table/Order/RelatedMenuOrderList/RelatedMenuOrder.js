@@ -32,11 +32,10 @@ const RelatedMenuOrder = ({ menus }) => {
 
     const tableHead = {
         name: "Name",
-        category: "Category",
         price: "Price (€)",
-        quantityOrder: "Quantity Order",
-        event: "Event",
         totalPortion: "Total Portion",
+        category: "Category",
+        event: "Event",
     };
 
     return (

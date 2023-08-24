@@ -58,25 +58,29 @@ const index = () => {
     };
 
     const onChangeStatus = async (value) => {
-        setShowLoadingData(true);
-        try {
-            const onChangeStatus = await dispatch(
-                changeOrderStatus(
-                    JSON.parse(value).id,
-                    JSON.parse(value).value,
-                ),
-            );
-            if (onChangeStatus.status !== "failed") {
+        value = JSON.parse(value);
+        const isConfirm = confirm(
+            `Please confirm this if you want to change status to ${value.value}`,
+        );
+
+        if (isConfirm) {
+            setShowLoadingData(true);
+            try {
+                const onChangeStatus = await dispatch(
+                    changeOrderStatus(value.id, value.value),
+                );
+                if (onChangeStatus.status !== "failed") {
+                    setShowLoadingData(false);
+                    message.success(onChangeStatus.message);
+                    getEventsOrders();
+                } else {
+                    setShowLoadingData(false);
+                    message.error(onChangeStatus.message);
+                }
+            } catch (error) {
                 setShowLoadingData(false);
-                message.success(onChangeStatus.message);
-                getEventsOrders();
-            } else {
-                setShowLoadingData(false);
-                message.error(onChangeStatus.message);
+                message.error(error);
             }
-        } catch (error) {
-            setShowLoadingData(false);
-            message.error(error);
         }
     };
 

@@ -31,11 +31,13 @@ const LoginModal = () => {
     };
 
     return (
-        <Space>
+        <Space
+            align="center"
+            style={{ width: "100%", justifyContent: "center" }}>
             <Button size="small" onClick={() => showModal(false)}>
                 Sign up
             </Button>
-            <Button size="small" type="primary" onClick={() => showModal(true)}>
+            <Button size="small" onClick={() => showModal(true)} type="link">
                 Sign in
             </Button>
             <Modal
@@ -48,8 +50,7 @@ const LoginModal = () => {
                 okText={isSignIn ? "Sign in" : "Sign up"}
                 onCancel={handleCancel}
                 closable={false}
-                destroyOnClose={true}
-            >
+                destroyOnClose={true}>
                 {ModalContent()}
             </Modal>
         </Space>

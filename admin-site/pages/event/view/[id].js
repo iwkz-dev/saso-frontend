@@ -50,7 +50,7 @@ const id = () => {
                         <Space direction="vertical" style={{ display: "flex" }}>
                             <EventSummary event={event} />
                             <EventDataDisplay event={event} />
-                            <Typography.Title level={3}>
+                            <Typography.Title level={4}>
                                 Related Menu
                             </Typography.Title>
                             <AddItemButton

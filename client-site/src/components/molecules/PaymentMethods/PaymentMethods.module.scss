@@ -1,0 +1,7 @@
+.bookOrPayButton{
+    width: 100%;
+    :global(.ant-space-item){
+        width: 100%;
+        max-width: 320px;
+    }
+}
