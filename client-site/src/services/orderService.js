@@ -35,12 +35,12 @@ const deleteOrder = (orderId) => {
     return sasoApi.deleteData(`/customer/order/${orderId}`, orderId);
 };
 
-const approveOrder = (orderId) => {
-    return sasoApi.postData(`/customer/order/${orderId}/approve`);
+const approveOrder = (data) => {
+    return sasoApi.postData(`/customer/order/approve`, data);
 };
 
-const approveOrderGuest = (orderId) => {
-    return sasoApi.postData(`/customer/order-guest/${orderId}/approve-guest`);
+const approveOrderGuest = (data) => {
+    return sasoApi.postData(`/customer/order-guest/approve-guest`, data);
 };
 
 const orderService = {
