@@ -14,7 +14,11 @@ import Router from "next/router";
 import { Typography } from "antd";
 import style from "./PaymentMethods.module.scss";
 
-const PaymentMethods = ({ userData }) => {
+const PaymentMethods = ({
+    userData,
+    createOrderCallback,
+    finishCreateOrderCallback,
+}) => {
     const dispatch = useDispatch();
     const cart = useSelector((state) => state.cart.data);
     const events = useSelector((state) => state.event.data);
@@ -41,7 +45,8 @@ const PaymentMethods = ({ userData }) => {
         }
     }, [currOrder, isApprove, payerName]);
 
-    const submitPaypalForm = () => {
+    const submitPaypalForm = async () => {
+        createOrderCallback();
         setIsCanceled(false);
         const orderData = createOrderData("paypal");
 
@@ -49,6 +54,7 @@ const PaymentMethods = ({ userData }) => {
             async (response) => {
                 if (response.status == "success") {
                     setCurrOrder(response.data.createOrder);
+                    finishCreateOrderCallback();
                     return response.data.paymentResponse.id;
                 }
             },

@@ -1,5 +1,14 @@
 import React, { useState } from "react";
-import { Button, Form, Input, Modal, Space, Steps, Typography } from "antd";
+import {
+    Button,
+    Form,
+    Input,
+    Modal,
+    Space,
+    Spin,
+    Steps,
+    Typography,
+} from "antd";
 import { LeftOutlined } from "@ant-design/icons";
 import { useDispatch } from "react-redux";
 import SignInFormModal from "../SignInFormModal/SignInFormModal";
@@ -13,6 +22,7 @@ const CheckoutGuestForm = () => {
     const dispatch = useDispatch();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isSignIn, setIsSignIn] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const [current, setCurrent] = useState(0);
     const [userData, setUserData] = useState({
         fullname: "",
@@ -68,7 +78,13 @@ const CheckoutGuestForm = () => {
                             icon={<LeftOutlined />}>
                             Back to contact information
                         </Button>
-                        <PaymentMethods userData={userData} />
+                        <PaymentMethods
+                            userData={userData}
+                            createOrderCallback={() => setIsLoading(true)}
+                            finishCreateOrderCallback={() =>
+                                setIsLoading(false)
+                            }
+                        />
                     </Space>
                 );
         }
@@ -81,39 +97,41 @@ const CheckoutGuestForm = () => {
                 maxWidth: "300px",
                 margin: "0 auto",
             }}>
-            <Space
-                direction="vertical"
-                size="large"
-                style={{
-                    width: "100%",
-                }}>
-                <Steps
-                    size="small"
-                    current={current}
-                    items={[
-                        {
-                            title: "Contact Information",
-                        },
-                        {
-                            title: "Payment",
-                        },
-                    ]}
-                />
-                {stepsContent()}
-            </Space>
-            <Modal
-                title={isSignIn ? "Sign in" : "Sign up"}
-                okButtonProps={{
-                    form: isSignIn ? "sign-in" : "sign-up",
-                    htmlType: "submit",
-                }}
-                open={isModalOpen}
-                okText={isSignIn ? "Sign in" : "Sign up"}
-                onCancel={handleCancel}
-                closable={false}
-                destroyOnClose={true}>
-                {ModalContent()}
-            </Modal>
+            <Spin spinning={isLoading}>
+                <Space
+                    direction="vertical"
+                    size="large"
+                    style={{
+                        width: "100%",
+                    }}>
+                    <Steps
+                        size="small"
+                        current={current}
+                        items={[
+                            {
+                                title: "Contact Information",
+                            },
+                            {
+                                title: "Payment",
+                            },
+                        ]}
+                    />
+                    {stepsContent()}
+                </Space>
+                <Modal
+                    title={isSignIn ? "Sign in" : "Sign up"}
+                    okButtonProps={{
+                        form: isSignIn ? "sign-in" : "sign-up",
+                        htmlType: "submit",
+                    }}
+                    open={isModalOpen}
+                    okText={isSignIn ? "Sign in" : "Sign up"}
+                    onCancel={handleCancel}
+                    closable={false}
+                    destroyOnClose={true}>
+                    {ModalContent()}
+                </Modal>
+            </Spin>
         </div>
     );
 };
