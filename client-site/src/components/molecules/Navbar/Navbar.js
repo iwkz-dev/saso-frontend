@@ -66,6 +66,7 @@ const Navbar = () => {
                 zIndex: 1,
                 paddingRight: "1rem",
                 paddingLeft: "1rem",
+                zIndex: 9999,
             }}>
             <Row
                 justify="space-between"
