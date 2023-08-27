@@ -63,10 +63,9 @@ const Navbar = () => {
                 borderBottom: "1px solid rgba(149, 157, 165, 0.2)",
                 position: "sticky",
                 top: 0,
-                zIndex: 1,
                 paddingRight: "1rem",
                 paddingLeft: "1rem",
-                zIndex: 9999,
+                zIndex: 999,
             }}>
             <Row
                 justify="space-between"

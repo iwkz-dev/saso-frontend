@@ -53,13 +53,20 @@ const PaymentMethods = ({ userData }) => {
                 async (response) => {
                     if (response.status == "success") {
                         setCurrOrder(response.data.createOrder);
+                        openNotification(
+                            response.data.createOrder.customerFullname,
+                            response.data.createOrder,
+                            true,
+                        );
+                        dispatch(resetCart());
+                        Router.push("/");
                     }
                 },
             );
         }
     };
 
-    const openNotification = (name, currOrder) => {
+    const openNotification = (name, currOrder, isTransfer = false) => {
         const key = `open${Date.now()}`;
         let btn = "";
         if (isAuth()) {
@@ -77,7 +84,9 @@ const PaymentMethods = ({ userData }) => {
         }
         notification.open({
             message: "Purchasing completed",
-            description: `Thank you ${name} for purchasing. Your invoice number is: ${currOrder.invoiceNumber}`,
+            description: `Thank you ${name} for ${
+                isTransfer ? "booking" : "purchasing"
+            }. Your invoice number is: ${currOrder?.invoiceNumber}`,
             btn,
             duration: 0,
             key,
