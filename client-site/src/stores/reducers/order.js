@@ -82,9 +82,9 @@ export const deleteOrder = (id) => async (dispatch) => {
     return orderService.deleteOrder(id);
 };
 
-export const approveOrder = (id, isAuthRequired) => async (dispatch) => {
+export const approveOrder = (data, isAuthRequired) => async (dispatch) => {
     if (!isAuthRequired) {
-        return orderService.approveOrderGuest(id).then((response) => {
+        return orderService.approveOrderGuest(data).then((response) => {
             if (response?.data?.status === "success") {
                 dispatch(approvedOrderSuccess(response?.data));
                 return response;
@@ -94,7 +94,7 @@ export const approveOrder = (id, isAuthRequired) => async (dispatch) => {
             }
         });
     } else {
-        return orderService.approveOrder(id).then((response) => {
+        return orderService.approveOrder(data).then((response) => {
             if (response?.data?.status === "success") {
                 dispatch(approvedOrderSuccess(response?.data));
                 return response;

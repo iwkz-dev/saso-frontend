@@ -11,6 +11,7 @@ const OrderDataDisplay = ({ order }) => {
         customerFullname: "Customer Fullname",
         customerEmail: "Customer Email",
         customerPhone: "Customer Phone Number",
+        paypalOrderId: "Paypal Order ID",
         totalPrice: "totalPrice",
         note: "Note",
         arrived_at: "Arrived At",

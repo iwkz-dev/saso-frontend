@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { SmileOutlined } from "@ant-design/icons";
-import { Space, Button, notification, message } from "antd";
+import { Space, Button, notification, message, Typography } from "antd";
 import { PayPalButtons } from "@paypal/react-paypal-js";
 import { isAuth } from "../../../helpers/authHelper";
 import {
@@ -11,7 +11,6 @@ import {
 } from "../../../stores/reducers/order";
 import { resetCart } from "../../../stores/reducers/cart";
 import Router from "next/router";
-import { Typography } from "antd";
 import style from "./PaymentMethods.module.scss";
 
 const PaymentMethods = ({ userData }) => {
@@ -19,8 +18,6 @@ const PaymentMethods = ({ userData }) => {
     const cart = useSelector((state) => state.cart.data);
     const events = useSelector((state) => state.event.data);
     const [currOrder, setCurrOrder] = useState({});
-    const [payerName, setPayerName] = useState("");
-    const [isApprove, setIsApprove] = useState(false);
     const [isCanceled, setIsCanceled] = useState(false);
 
     useEffect(() => {
@@ -29,17 +26,6 @@ const PaymentMethods = ({ userData }) => {
             message.error("Transaction process is aborted");
         }
     }, [currOrder, isCanceled]);
-
-    useEffect(() => {
-        if (currOrder?._id && payerName) {
-            dispatch(resetCart());
-            if (isApprove) {
-                dispatch(approveOrder(currOrder._id, isAuth()));
-            }
-            openNotification(payerName, currOrder);
-            Router.push("/");
-        }
-    }, [currOrder, isApprove, payerName]);
 
     const submitPaypalForm = () => {
         setIsCanceled(false);
@@ -67,16 +53,20 @@ const PaymentMethods = ({ userData }) => {
                 async (response) => {
                     if (response.status == "success") {
                         setCurrOrder(response.data.createOrder);
-                        setPayerName(
+                        openNotification(
                             response.data.createOrder.customerFullname,
+                            response.data.createOrder,
+                            true,
                         );
+                        dispatch(resetCart());
+                        Router.push("/");
                     }
                 },
             );
         }
     };
 
-    const openNotification = (name, currOrder) => {
+    const openNotification = (name, currOrder, isTransfer = false) => {
         const key = `open${Date.now()}`;
         let btn = "";
         if (isAuth()) {
@@ -94,7 +84,9 @@ const PaymentMethods = ({ userData }) => {
         }
         notification.open({
             message: "Purchasing completed",
-            description: `Thank you ${name} for purchasing. Your invoice number is: ${currOrder.invoiceNumber}`,
+            description: `Thank you ${name} for ${
+                isTransfer ? "booking" : "purchasing"
+            }. Your invoice number is: ${currOrder?.invoiceNumber}`,
             btn,
             duration: 0,
             key,
@@ -102,9 +94,14 @@ const PaymentMethods = ({ userData }) => {
         });
     };
 
-    const onApprove = (name) => {
-        setIsApprove(true);
-        setPayerName(name);
+    const onApprove = (data, details) => {
+        dispatch(approveOrder(data, isAuth())).then((response) => {
+            const order = response.data;
+            const payerName = details.payer.name.given_name;
+            openNotification(payerName, order);
+            dispatch(resetCart());
+            Router.push("/");
+        });
     };
 
     const createOrderData = (paymentType) => {
@@ -151,8 +148,7 @@ const PaymentMethods = ({ userData }) => {
                 }}
                 onApprove={(data, actions) => {
                     return actions.order.capture().then((details) => {
-                        const name = details.payer.name.given_name;
-                        onApprove(name);
+                        onApprove(data, details);
                     });
                 }}
             />
