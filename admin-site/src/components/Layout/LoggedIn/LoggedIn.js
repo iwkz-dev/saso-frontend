@@ -9,6 +9,7 @@ import {
     ReadOutlined,
     ShoppingOutlined,
     UnorderedListOutlined,
+    CreditCardOutlined,
 } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import { isAuth } from "../../../helpers/authHelper";
@@ -35,9 +36,10 @@ function LoggedIn({ children, title, isNotAllowed }) {
     const items = [
         getItem("Dashboard", "/", <PieChartOutlined />),
         getItem("Event", "/event", <CalendarOutlined />),
-        getItem("Menu", "/menu", <ReadOutlined />),
-        getItem("Order", "/order", <ShoppingOutlined />),
         getItem("Category", "/category", <UnorderedListOutlined />),
+        getItem("Menu", "/menu", <ReadOutlined />),
+        getItem("Payment Type", "/payment-type", <CreditCardOutlined />),
+        getItem("Order", "/order", <ShoppingOutlined />),
         getItem("User", "/user", <UserOutlined />),
     ];
 
