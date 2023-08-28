@@ -77,7 +77,8 @@ const ProductDetailContent = ({ detailMenu }) => {
                                     Stock:
                                 </Typography.Title>
                                 <Typography.Text>
-                                    {detailMenu.quantityOrder}
+                                    {detailMenu.quantity -
+                                        detailMenu.quantityOrder}
                                     <Typography.Text type="secondary">
                                         {" "}
                                         / {detailMenu.quantity}
