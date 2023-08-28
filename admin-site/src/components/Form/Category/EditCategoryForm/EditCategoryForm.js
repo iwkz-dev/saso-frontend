@@ -15,7 +15,7 @@ const EditCategoryForm = () => {
     };
 
     const submitForm = (values) => {
-        const text = confirm("Please confirm to add category");
+        const text = confirm("Please confirm to save your changes");
         if (text) {
             setShowUploading(true);
             const editData = async () => {

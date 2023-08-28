@@ -96,7 +96,7 @@ const TableComponent = ({
                             const link = linkToView + record._id;
                             Router.push(link);
                         } else {
-                            message.error("Cannot open order detail");
+                            message.error("Cannot open the detail");
                         }
                     },
                 };

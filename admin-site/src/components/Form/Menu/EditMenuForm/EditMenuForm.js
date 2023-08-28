@@ -35,7 +35,7 @@ const EditMenuForm = () => {
     };
 
     const submitForm = (values) => {
-        const text = confirm("Please confirm to add menu");
+        const text = confirm("Please confirm to save your changes");
         if (text) {
             setShowUploading(true);
             const createData = async () => {

@@ -3,10 +3,10 @@ import { ShoppingCartOutlined } from "@ant-design/icons";
 import { useDispatch } from "react-redux";
 import { addOrder } from "../../../../stores/reducers/cart";
 import ImagesPreview from "../../../atoms/ImagesPreview/ImagesPreview";
+import Router from "next/router";
 
 const ProductItem = ({ product }) => {
     const dispatch = useDispatch();
-
     const { Meta } = Card;
 
     const handleClick = (e) => {
@@ -16,7 +16,7 @@ const ProductItem = ({ product }) => {
     };
 
     const productPreview = () => {
-        console.log("test");
+        Router.push(`/product/${product._id}`);
     };
 
     return (
