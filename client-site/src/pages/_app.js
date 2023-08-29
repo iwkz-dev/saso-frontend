@@ -25,7 +25,8 @@ function MyApp({ Component, pageProps }) {
                         clientId: paypalClientId,
                         currency: "EUR",
                         intent: "capture",
-                    }}>
+                    }}
+                >
                     <Head>
                         <link
                             rel="stylesheet"

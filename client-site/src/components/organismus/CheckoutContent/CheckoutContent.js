@@ -13,7 +13,8 @@ const CheckoutContent = () => {
             style={{
                 minHeight: "500px",
                 backgroundColor: "#ffffff",
-            }}>
+            }}
+        >
             {cart.items.length <= 0 ? (
                 <Empty />
             ) : (
@@ -22,11 +23,13 @@ const CheckoutContent = () => {
                         maxWidth: "1024px",
                         padding: "1rem",
                         margin: "1rem auto",
-                    }}>
+                    }}
+                >
                     <Space
                         size="large"
                         direction="vertical"
-                        style={{ width: "100%" }}>
+                        style={{ width: "100%" }}
+                    >
                         <BackToButton
                             targetURL="/cart"
                             buttonText="Back to cart"

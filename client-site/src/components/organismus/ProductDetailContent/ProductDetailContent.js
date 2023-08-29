@@ -30,11 +30,13 @@ const ProductDetailContent = ({ detailMenu }) => {
                         maxWidth: "1024px",
                         padding: "1rem",
                         margin: "1rem auto",
-                    }}>
+                    }}
+                >
                     <Space
                         size="large"
                         direction="vertical"
-                        style={{ width: "100%" }}>
+                        style={{ width: "100%" }}
+                    >
                         <BackToButton targetURL="/" buttonText="Back to home" />
                         <Space
                             direction="vertical"
@@ -43,7 +45,8 @@ const ProductDetailContent = ({ detailMenu }) => {
                                 alignItems: "center",
                                 textAlign: "center",
                                 width: "100%",
-                            }}>
+                            }}
+                        >
                             <Typography.Title level={3}>
                                 {detailMenu.name}
                             </Typography.Title>
@@ -68,7 +71,8 @@ const ProductDetailContent = ({ detailMenu }) => {
                                     style={{
                                         textAlign: "justify",
                                         maxWidth: "550px",
-                                    }}>
+                                    }}
+                                >
                                     {detailMenu.description}
                                 </Typography.Paragraph>
                             </Space>
@@ -93,7 +97,8 @@ const ProductDetailContent = ({ detailMenu }) => {
                                 }
                                 onClick={handleClick}
                                 shape="round"
-                                icon={<ShoppingCartOutlined />}>
+                                icon={<ShoppingCartOutlined />}
+                            >
                                 Add to cart
                             </Button>
                         </Space>
@@ -106,7 +111,8 @@ const ProductDetailContent = ({ detailMenu }) => {
                             maxWidth: "1024px",
                             padding: "1rem",
                             margin: "1rem auto",
-                        }}>
+                        }}
+                    >
                         <Empty />
                     </div>
                 </Layout.Content>

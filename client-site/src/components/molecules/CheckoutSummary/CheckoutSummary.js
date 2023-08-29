@@ -54,26 +54,30 @@ const CheckoutSummary = () => {
                 </div>
                 <div className={style.amountAndPrice}>
                     <div
-                        className={`${style.itemAmountWrapperMobile} ${style.flexLayout}`}>
+                        className={`${style.itemAmountWrapperMobile} ${style.flexLayout}`}
+                    >
                         <Typography.Text className={style.itemAmount}>
                             {cartItem.amount}x
                         </Typography.Text>
                     </div>
                     <div
-                        className={`${style.itemSumPriceWrapperMobile} ${style.flexLayout}`}>
+                        className={`${style.itemSumPriceWrapperMobile} ${style.flexLayout}`}
+                    >
                         <Typography.Text className={style.itemSumPrice}>
                             {cartItem.sumPrice}€
                         </Typography.Text>
                     </div>
                 </div>
                 <div
-                    className={`${style.itemAmountWrapper} ${style.flexLayout}`}>
+                    className={`${style.itemAmountWrapper} ${style.flexLayout}`}
+                >
                     <Typography.Text className={style.itemAmount}>
                         {cartItem.amount}
                     </Typography.Text>
                 </div>
                 <div
-                    className={`${style.itemSumPriceWrapper} ${style.flexLayout}`}>
+                    className={`${style.itemSumPriceWrapper} ${style.flexLayout}`}
+                >
                     <Typography.Text className={style.itemSumPrice}>
                         {cartItem.sumPrice}€
                     </Typography.Text>
@@ -101,7 +105,8 @@ const CheckoutSummary = () => {
                             </Typography.Text>
                         </div>
                         <div
-                            className={`${style.subPrice} ${style.flexLayout}`}>
+                            className={`${style.subPrice} ${style.flexLayout}`}
+                        >
                             <Typography.Text className={style.text}>
                                 Sub Price
                             </Typography.Text>
@@ -117,7 +122,8 @@ const CheckoutSummary = () => {
                     <Typography.Title
                         className={style.totalPrice}
                         level={3}
-                        type="danger">
+                        type="danger"
+                    >
                         {cart.totalPrice}€
                     </Typography.Title>
                 </div>

@@ -16,12 +16,14 @@ const StepsContent = ({ userData, onFinish, showModalForSignIn }) => {
             direction="vertical"
             style={{
                 width: "100%",
-            }}>
+            }}
+        >
             <Form
                 initialValues={userData}
                 id="guest-information"
                 {...layout}
-                onFinish={onFinish}>
+                onFinish={onFinish}
+            >
                 <Form.Item
                     label="Full Name"
                     name="fullname"
@@ -30,7 +32,8 @@ const StepsContent = ({ userData, onFinish, showModalForSignIn }) => {
                             required: true,
                             message: "Please input your full name!",
                         },
-                    ]}>
+                    ]}
+                >
                     <Input id="fullname" placeholder="Full Name" />
                 </Form.Item>
                 <Form.Item
@@ -44,7 +47,8 @@ const StepsContent = ({ userData, onFinish, showModalForSignIn }) => {
                         {
                             type: "email",
                         },
-                    ]}>
+                    ]}
+                >
                     <Input id="email" placeholder="Email" />
                 </Form.Item>
                 <Form.Item
@@ -55,7 +59,8 @@ const StepsContent = ({ userData, onFinish, showModalForSignIn }) => {
                             required: true,
                             message: "Please input your phone number!",
                         },
-                    ]}>
+                    ]}
+                >
                     <Input id="phone" placeholder="Phone Number" />
                 </Form.Item>
                 <Form.Item>
@@ -69,7 +74,8 @@ const StepsContent = ({ userData, onFinish, showModalForSignIn }) => {
                 <Button
                     size="small"
                     onClick={() => showModalForSignIn(true)}
-                    type="link">
+                    type="link"
+                >
                     Log in
                 </Button>
             </Space>
@@ -78,7 +84,8 @@ const StepsContent = ({ userData, onFinish, showModalForSignIn }) => {
                 <Button
                     size="small"
                     onClick={() => showModalForSignIn(false)}
-                    type="link">
+                    type="link"
+                >
                     here
                 </Button>
             </Space>

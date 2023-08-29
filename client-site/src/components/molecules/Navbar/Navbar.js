@@ -66,13 +66,15 @@ const Navbar = () => {
                 paddingRight: "1rem",
                 paddingLeft: "1rem",
                 zIndex: 999,
-            }}>
+            }}
+        >
             <Row
                 justify="space-between"
                 style={{
                     maxWidth: "1024px",
                     margin: "auto",
-                }}>
+                }}
+            >
                 <Col
                     style={{
                         display: "flex",
@@ -80,7 +82,8 @@ const Navbar = () => {
                         alignItems: "center",
                         width: "3rem",
                         cursor: "pointer",
-                    }}>
+                    }}
+                >
                     <Link href="/">
                         <img
                             style={{ width: "100%" }}
@@ -104,7 +107,8 @@ const Navbar = () => {
                     okText={isSignIn ? "Sign in" : "Sign up"}
                     onCancel={handleCancel}
                     closable={false}
-                    destroyOnClose={true}>
+                    destroyOnClose={true}
+                >
                     {ModalContent()}
                 </Modal>
             ) : (

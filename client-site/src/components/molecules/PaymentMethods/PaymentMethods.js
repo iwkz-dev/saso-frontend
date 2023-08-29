@@ -77,7 +77,8 @@ const PaymentMethods = ({ userData }) => {
                     onClick={() => {
                         notification.destroy(key);
                         Router.push(`my-order/detail/${currOrder._id}`);
-                    }}>
+                    }}
+                >
                     See order
                 </Button>
             );
@@ -130,7 +131,8 @@ const PaymentMethods = ({ userData }) => {
         <Space
             direction="vertical"
             align="center"
-            className={style.bookOrPayButton}>
+            className={style.bookOrPayButton}
+        >
             <PayPalButtons
                 fundingSource="paypal"
                 style={{
@@ -159,7 +161,8 @@ const PaymentMethods = ({ userData }) => {
                 }}
                 style={{ width: "100%" }}
                 type="primary"
-                size="large">
+                size="large"
+            >
                 Pay Later
             </Button>
             <Typography.Text type="secondary" italic>

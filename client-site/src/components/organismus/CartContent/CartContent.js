@@ -27,7 +27,8 @@ const CartContent = () => {
                 <Space
                     size="large"
                     direction="vertical"
-                    style={{ width: "100%" }}>
+                    style={{ width: "100%" }}
+                >
                     <BackToButton targetURL="/" buttonText="Back to home" />
                     <div className={styles.Cart}>
                         <div className={styles.cartList}>
