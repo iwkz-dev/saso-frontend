@@ -4,11 +4,7 @@ import { SmileOutlined } from "@ant-design/icons";
 import { Space, Button, notification, message, Typography } from "antd";
 import { PayPalButtons } from "@paypal/react-paypal-js";
 import { isAuth } from "../../../helpers/authHelper";
-import {
-    approveOrder,
-    deleteOrder,
-    submitOrder,
-} from "../../../stores/reducers/order";
+import { approveOrder, submitOrder } from "../../../stores/reducers/order";
 import { resetCart } from "../../../stores/reducers/cart";
 import Router from "next/router";
 import style from "./PaymentMethods.module.scss";
@@ -22,8 +18,8 @@ const PaymentMethods = ({ userData }) => {
 
     useEffect(() => {
         if (isCanceled && currOrder?._id) {
-            dispatch(deleteOrder(currOrder._id));
             message.error("Transaction process is aborted");
+            dispatch(resetCart());
         }
     }, [currOrder, isCanceled]);
 
@@ -77,8 +73,7 @@ const PaymentMethods = ({ userData }) => {
                     onClick={() => {
                         notification.destroy(key);
                         Router.push(`my-order/detail/${currOrder._id}`);
-                    }}
-                >
+                    }}>
                     See order
                 </Button>
             );
@@ -131,8 +126,7 @@ const PaymentMethods = ({ userData }) => {
         <Space
             direction="vertical"
             align="center"
-            className={style.bookOrPayButton}
-        >
+            className={style.bookOrPayButton}>
             <PayPalButtons
                 fundingSource="paypal"
                 style={{
@@ -161,8 +155,7 @@ const PaymentMethods = ({ userData }) => {
                 }}
                 style={{ width: "100%" }}
                 type="primary"
-                size="large"
-            >
+                size="large">
                 Pay Later
             </Button>
             <Typography.Text type="secondary" italic>
