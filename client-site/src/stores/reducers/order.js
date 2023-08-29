@@ -78,10 +78,6 @@ export const getOrderPdf = (id) => {
     return orderService.getOrderPdf(id);
 };
 
-export const deleteOrder = (id) => async (dispatch) => {
-    return orderService.deleteOrder(id);
-};
-
 export const approveOrder = (data, isAuthRequired) => async (dispatch) => {
     if (!isAuthRequired) {
         return orderService.approveOrderGuest(data).then((response) => {
