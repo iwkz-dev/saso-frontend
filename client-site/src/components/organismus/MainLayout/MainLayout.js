@@ -18,7 +18,8 @@ const MainLayout = ({ children, isAuthRequired }) => {
                 style={{
                     backgroundColor: "#ffffff",
                     minHeight: "100vh",
-                }}>
+                }}
+            >
                 <Navbar />
                 {isAuth() || !isAuthRequired ? (
                     children

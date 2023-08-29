@@ -33,7 +33,8 @@ const SignInFormModal = ({ setShowModal }) => {
                         required: true,
                         message: "Please input your email!",
                     },
-                ]}>
+                ]}
+            >
                 <Input
                     id="email"
                     prefix={<UserOutlined className="site-form-item-icon" />}
@@ -48,7 +49,8 @@ const SignInFormModal = ({ setShowModal }) => {
                         required: true,
                         message: "Please input your password!",
                     },
-                ]}>
+                ]}
+            >
                 <Input.Password
                     prefix={<LockOutlined />}
                     type="password"
@@ -58,7 +60,8 @@ const SignInFormModal = ({ setShowModal }) => {
             <Button
                 style={{ padding: 0 }}
                 type="link"
-                onClick={() => forgotPasswordOnClick()}>
+                onClick={() => forgotPasswordOnClick()}
+            >
                 Forgot password?
             </Button>
             <div
@@ -66,7 +69,8 @@ const SignInFormModal = ({ setShowModal }) => {
                     fontSize: 12,
                     marginBottom: 24,
                     color: "red",
-                }}>
+                }}
+            >
                 {errorMessage}
             </div>
         </Form>

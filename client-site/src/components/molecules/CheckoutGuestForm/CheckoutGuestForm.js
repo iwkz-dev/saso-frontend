@@ -61,11 +61,13 @@ const CheckoutGuestForm = () => {
                         size="large"
                         style={{
                             width: "100%",
-                        }}>
+                        }}
+                    >
                         <Button
                             type="link"
                             onClick={() => setCurrent(0)}
-                            icon={<LeftOutlined />}>
+                            icon={<LeftOutlined />}
+                        >
                             Back to contact information
                         </Button>
                         <PaymentMethods userData={userData} />
@@ -80,13 +82,15 @@ const CheckoutGuestForm = () => {
                 width: "100%",
                 maxWidth: "300px",
                 margin: "0 auto",
-            }}>
+            }}
+        >
             <Space
                 direction="vertical"
                 size="large"
                 style={{
                     width: "100%",
-                }}>
+                }}
+            >
                 <Steps
                     size="small"
                     current={current}
@@ -111,7 +115,8 @@ const CheckoutGuestForm = () => {
                 okText={isSignIn ? "Sign in" : "Sign up"}
                 onCancel={handleCancel}
                 closable={false}
-                destroyOnClose={true}>
+                destroyOnClose={true}
+            >
                 {ModalContent()}
             </Modal>
         </div>

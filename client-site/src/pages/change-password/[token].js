@@ -47,12 +47,14 @@ export default function changePassword() {
                         maxWidth: "1024px",
                         padding: "1rem",
                         margin: "1rem auto",
-                    }}>
+                    }}
+                >
                     <Space
                         direction="vertical"
                         size="middle"
                         align="center"
-                        style={{ width: "100%" }}>
+                        style={{ width: "100%" }}
+                    >
                         {isChanged ? (
                             <Typography.Paragraph>
                                 Your password has been change. Click this{" "}
@@ -70,12 +72,14 @@ export default function changePassword() {
                                     width: "100vw",
                                     maxWidth: "500px",
                                 }}
-                                autoComplete="off">
+                                autoComplete="off"
+                            >
                                 <div
                                     style={{
                                         maxWidth: "500px",
                                         margin: "0 auto",
-                                    }}>
+                                    }}
+                                >
                                     <Form.Item
                                         label="New Password"
                                         name="newPassword"
@@ -88,18 +92,21 @@ export default function changePassword() {
                                             {
                                                 type: "password",
                                             },
-                                        ]}>
+                                        ]}
+                                    >
                                         <Input placeholder="Input password" />
                                     </Form.Item>
                                     <Form.Item
                                         style={{
                                             width: "fit-content",
                                             margin: "auto",
-                                        }}>
+                                        }}
+                                    >
                                         <Button
                                             type="primary"
                                             htmlType="submit"
-                                            loading={isLoading}>
+                                            loading={isLoading}
+                                        >
                                             Reset password
                                         </Button>
                                     </Form.Item>

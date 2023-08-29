@@ -42,12 +42,14 @@ const index = () => {
                         maxWidth: "1024px",
                         padding: "1rem",
                         margin: "1rem auto",
-                    }}>
+                    }}
+                >
                     <Space
                         direction="vertical"
                         size="middle"
                         align="center"
-                        style={{ width: "100%" }}>
+                        style={{ width: "100%" }}
+                    >
                         <Typography.Title level={3}>
                             Forgot your password?
                         </Typography.Title>
@@ -67,9 +69,11 @@ const index = () => {
                                 width: "100vw",
                                 maxWidth: "500px",
                             }}
-                            autoComplete="off">
+                            autoComplete="off"
+                        >
                             <div
-                                style={{ maxWidth: "500px", margin: "0 auto" }}>
+                                style={{ maxWidth: "500px", margin: "0 auto" }}
+                            >
                                 <Form.Item
                                     label="Email"
                                     name="email"
@@ -81,18 +85,21 @@ const index = () => {
                                         {
                                             type: "email",
                                         },
-                                    ]}>
+                                    ]}
+                                >
                                     <Input placeholder="Input email" />
                                 </Form.Item>
                                 <Form.Item
                                     style={{
                                         width: "fit-content",
                                         margin: "auto",
-                                    }}>
+                                    }}
+                                >
                                     <Button
                                         type="primary"
                                         htmlType="submit"
-                                        loading={isLoading}>
+                                        loading={isLoading}
+                                    >
                                         Send Email
                                     </Button>
                                 </Form.Item>

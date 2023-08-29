@@ -31,7 +31,8 @@ const SignUpFormModal = () => {
                         required: true,
                         message: "Please input your full name!",
                     },
-                ]}>
+                ]}
+            >
                 <Input />
             </Form.Item>
             <Form.Item
@@ -42,7 +43,8 @@ const SignUpFormModal = () => {
                         required: true,
                         message: "Please input your phone number!",
                     },
-                ]}>
+                ]}
+            >
                 <Input />
             </Form.Item>
             <Form.Item
@@ -53,7 +55,8 @@ const SignUpFormModal = () => {
                         required: true,
                         message: "Please input your email!",
                     },
-                ]}>
+                ]}
+            >
                 <Input />
             </Form.Item>
             <Form.Item
@@ -64,7 +67,8 @@ const SignUpFormModal = () => {
                         required: true,
                         message: "Please input your password!",
                     },
-                ]}>
+                ]}
+            >
                 <Input.Password />
             </Form.Item>
             <div
@@ -72,7 +76,8 @@ const SignUpFormModal = () => {
                     fontSize: 12,
                     marginBottom: 24,
                     color: "red",
-                }}>
+                }}
+            >
                 {errorMessage}
             </div>
         </Form>

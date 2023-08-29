@@ -29,7 +29,8 @@ const ProductItem = ({ product }) => {
                     productName={product.name}
                     productImages={product.images}
                 />
-            }>
+            }
+        >
             <Space direction="vertical">
                 <Meta
                     title={product.name}
@@ -49,7 +50,8 @@ const ProductItem = ({ product }) => {
                     disabled={product.quantity == product.quantityOrder}
                     onClick={(e) => handleClick(e)}
                     shape="round"
-                    icon={<ShoppingCartOutlined />}>
+                    icon={<ShoppingCartOutlined />}
+                >
                     Add to cart
                 </Button>
             </Space>

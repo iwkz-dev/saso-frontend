@@ -51,7 +51,8 @@ const MyOrderContent = () => {
                 <Button
                     key={item}
                     onClick={() => downloadPDF(item, index)}
-                    loading={index === isLoadingForIndex}>
+                    loading={index === isLoadingForIndex}
+                >
                     Download
                 </Button>
             ),
@@ -103,11 +104,13 @@ const MyOrderContent = () => {
                     maxWidth: "1024px",
                     padding: "1rem",
                     margin: "1rem auto",
-                }}>
+                }}
+            >
                 <Space
                     size="large"
                     direction="vertical"
-                    style={{ width: "100%" }}>
+                    style={{ width: "100%" }}
+                >
                     <BackToButton targetURL="/" buttonText="Back to home" />
 
                     <Typography.Title level={3} style={{ textAlign: "center" }}>
