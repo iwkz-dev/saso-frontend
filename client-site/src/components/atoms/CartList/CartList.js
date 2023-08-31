@@ -20,8 +20,7 @@ const CartList = ({ cart, add, remove }) => {
                                 <Space direction="vertical">
                                     <Typography.Text
                                         strong
-                                        style={{ fontSize: "1.1rem" }}
-                                    >
+                                        style={{ fontSize: "1.1rem" }}>
                                         {item.menu.name}
                                     </Typography.Text>
                                     <Typography.Text>

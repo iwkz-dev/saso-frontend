@@ -10,10 +10,11 @@ const ImagesPreview = ({ productName, productImages, height }) => {
     };
 
     return (
-        <>
+        <div>
             <Image
                 style={{
                     objectFit: "contain",
+                    width: "auto",
                 }}
                 alt={productName}
                 preview={{
@@ -29,20 +30,18 @@ const ImagesPreview = ({ productName, productImages, height }) => {
             <div
                 style={{
                     display: "none",
-                }}
-            >
+                }}>
                 <Image.PreviewGroup
                     preview={{
                         visible,
                         onVisibleChange: (vis) => setVisible(vis),
-                    }}
-                >
+                    }}>
                     {productImages.map((img) => (
                         <Image key={img.imageUrl} src={img.imageUrl} />
                     ))}
                 </Image.PreviewGroup>
             </div>
-        </>
+        </div>
     );
 };
 
