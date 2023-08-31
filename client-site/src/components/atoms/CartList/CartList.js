@@ -14,6 +14,7 @@ const CartList = ({ cart, add, remove }) => {
                             <div className={styles.itemDescription}>
                                 <ImagesPreview
                                     height={80}
+                                    width="auto"
                                     productName={item.menu.name}
                                     productImages={item.menu.images}
                                 />

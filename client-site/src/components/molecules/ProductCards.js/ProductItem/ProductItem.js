@@ -4,6 +4,7 @@ import { useDispatch } from "react-redux";
 import { addOrder } from "../../../../stores/reducers/cart";
 import ImagesPreview from "../../../atoms/ImagesPreview/ImagesPreview";
 import Router from "next/router";
+import style from "./ProductItem.module.scss";
 
 const ProductItem = ({ product }) => {
     const dispatch = useDispatch();
@@ -21,6 +22,7 @@ const ProductItem = ({ product }) => {
 
     return (
         <Card
+            className={style.productItem}
             hoverable
             onClick={productPreview}
             cover={
@@ -29,8 +31,7 @@ const ProductItem = ({ product }) => {
                     productName={product.name}
                     productImages={product.images}
                 />
-            }
-        >
+            }>
             <Space direction="vertical">
                 <Meta
                     title={product.name}
@@ -50,8 +51,7 @@ const ProductItem = ({ product }) => {
                     disabled={product.quantity == product.quantityOrder}
                     onClick={(e) => handleClick(e)}
                     shape="round"
-                    icon={<ShoppingCartOutlined />}
-                >
+                    icon={<ShoppingCartOutlined />}>
                     Add to cart
                 </Button>
             </Space>

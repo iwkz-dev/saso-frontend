@@ -42,9 +42,9 @@ const SasoContent = ({ event }) => {
             <Space
                 className={style.productsContainer}
                 direction="vertical"
-                size="middle"
-            >
-                <Space.Compact direction="horizontal">
+                size="middle">
+                {/* WILL BE USED LATER!
+                 <Space.Compact direction="horizontal">
                     <Search
                         placeholder="input search text"
                         allowClear
@@ -71,6 +71,7 @@ const SasoContent = ({ event }) => {
                         Barcode: {barcode}
                     </Tag>
                 ) : null}
+                */}
 
                 <ProductsTabs event={event} barcode={barcode} />
             </Space>
