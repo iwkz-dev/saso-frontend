@@ -1,7 +1,7 @@
 import { Image } from "antd";
 import { useState } from "react";
 
-const ImagesPreview = ({ productName, productImages, height }) => {
+const ImagesPreview = ({ productName, productImages, height, width }) => {
     const [visible, setVisible] = useState(false);
 
     const imagePreview = (e) => {
@@ -10,11 +10,11 @@ const ImagesPreview = ({ productName, productImages, height }) => {
     };
 
     return (
-        <div>
+        <>
             <Image
                 style={{
                     objectFit: "contain",
-                    width: "auto",
+                    width: width || "",
                 }}
                 alt={productName}
                 preview={{
@@ -41,7 +41,7 @@ const ImagesPreview = ({ productName, productImages, height }) => {
                     ))}
                 </Image.PreviewGroup>
             </div>
-        </div>
+        </>
     );
 };
 
