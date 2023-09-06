@@ -1,5 +1,11 @@
 .productItem {
-    :global(.ant-card-meta-title) {
-        white-space: unset;
+    :global(.ant-card-body) {
+        padding: 0;
+        .cardBody {
+            padding: 1rem;
+        }
+        :global(.ant-card-meta-title) {
+            white-space: unset;
+        }
     }
 }
