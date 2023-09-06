@@ -24,7 +24,6 @@ const ProductItem = ({ product }) => {
         <Card
             className={style.productItem}
             hoverable
-            onClick={productPreview}
             cover={
                 <ImagesPreview
                     height={200}
@@ -32,29 +31,31 @@ const ProductItem = ({ product }) => {
                     productImages={product.images}
                 />
             }>
-            <Space direction="vertical">
-                <Meta
-                    title={product.name}
-                    description={
-                        product.quantity == product.quantityOrder
-                            ? "Sold out"
-                            : `Left Stock: ${
-                                  product.quantity - product.quantityOrder
-                              }`
-                    }
-                />
-                <Typography.Text style={{ fontSize: "1.5rem" }}>
-                    {product.price} €
-                </Typography.Text>
-                <Button
-                    type="primary"
-                    disabled={product.quantity == product.quantityOrder}
-                    onClick={(e) => handleClick(e)}
-                    shape="round"
-                    icon={<ShoppingCartOutlined />}>
-                    Add to cart
-                </Button>
-            </Space>
+            <div className={style.cardBody} onClick={productPreview}>
+                <Space direction="vertical">
+                    <Meta
+                        title={product.name}
+                        description={
+                            product.quantity == product.quantityOrder
+                                ? "Sold out"
+                                : `Left Stock: ${
+                                      product.quantity - product.quantityOrder
+                                  }`
+                        }
+                    />
+                    <Typography.Text style={{ fontSize: "1.5rem" }}>
+                        {product.price} €
+                    </Typography.Text>
+                    <Button
+                        type="primary"
+                        disabled={product.quantity == product.quantityOrder}
+                        onClick={(e) => handleClick(e)}
+                        shape="round"
+                        icon={<ShoppingCartOutlined />}>
+                        Add to cart
+                    </Button>
+                </Space>
+            </div>
         </Card>
     );
 };
