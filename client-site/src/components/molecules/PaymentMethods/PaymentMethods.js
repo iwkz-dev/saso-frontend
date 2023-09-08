@@ -43,7 +43,7 @@ const PaymentMethods = ({ userData }) => {
     const submitTransferForm = () => {
         setIsSpinning(true);
         const isConfirm = confirm(
-            "Please confirm if you plan to pay later. Ensure payment is made within 24 hours and send the proof to the designated contact person.",
+            "Please confirm if you plan to pay later. Ensure payment is made within 2x24 hours and send the proof to the designated contact person.",
         );
         if (isConfirm) {
             setIsCanceled(false);
@@ -177,7 +177,7 @@ const PaymentMethods = ({ userData }) => {
                     Pay Later
                 </Button>
                 <Typography.Text type="secondary" italic>
-                    Choose 'Pay Later' to complete payment within 24 hours and
+                    Choose 'Pay Later' to complete payment within 2x24 hours and
                     send proof to the contact.
                 </Typography.Text>
             </Space>
