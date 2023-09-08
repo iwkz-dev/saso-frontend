@@ -6,20 +6,22 @@ import FooterComponent from "../../atoms/Footer/Footer";
 import { isAuth } from "../../../helpers/authHelper";
 
 const MainLayout = ({ children, isAuthRequired }) => {
-    const { Footer } = Layout;
     return (
         <>
             <Head>
                 <title>IWKZ E-Commerce</title>
                 <meta name="description" content="Saso Application" />
+                <meta
+                    name="viewport"
+                    content="width=device-width, initial-scale=1"
+                />
                 <link rel="icon" href="/favicon.ico" />
             </Head>
             <Layout
                 style={{
                     backgroundColor: "#ffffff",
                     minHeight: "100vh",
-                }}
-            >
+                }}>
                 <Navbar />
                 {isAuth() || !isAuthRequired ? (
                     children
