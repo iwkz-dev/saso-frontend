@@ -67,12 +67,6 @@ function LoggedIn({ children, title, isNotAllowed }) {
         <Layout style={{ minHeight: "100vh" }}>
             <Head>
                 <title>{title}</title>
-                <meta name="description" content="Saso Application" />
-                <meta
-                    name="viewport"
-                    content="width=device-width, initial-scale=1"
-                />
-                <link rel="icon" href="/admin/favicon.ico" />
             </Head>
             <Sider
                 collapsible
