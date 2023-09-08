@@ -8,15 +8,6 @@ import { isAuth } from "../../../helpers/authHelper";
 const MainLayout = ({ children, isAuthRequired }) => {
     return (
         <>
-            <Head>
-                <title>IWKZ E-Commerce</title>
-                <meta name="description" content="Saso Application" />
-                <meta
-                    name="viewport"
-                    content="width=device-width, initial-scale=1"
-                />
-                <link rel="icon" href="/favicon.ico" />
-            </Head>
             <Layout
                 style={{
                     backgroundColor: "#ffffff",
