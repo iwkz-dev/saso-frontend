@@ -142,6 +142,7 @@ const EditMenuForm = () => {
             label: "Description",
             type: "description",
             placeholder: "Description",
+            required: true,
         },
         {
             label: "images",
