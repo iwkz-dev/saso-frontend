@@ -90,7 +90,7 @@ const PaymentMethods = ({ userData }) => {
                 isTransfer ? "booking" : "purchasing"
             }. Your invoice number is: ${currOrder?.invoiceNumber}`,
             btn,
-            duration: 0,
+            duration: 10,
             key,
             icon: <SmileOutlined style={{ color: "#108ee9" }} />,
         });
@@ -166,6 +166,10 @@ const PaymentMethods = ({ userData }) => {
                         });
                     }}
                 />
+                <Typography.Text type="secondary" italic>
+                    Payment with PayPal may incur a slight price adjustment to
+                    cover transaction fees.
+                </Typography.Text>
                 <p style={{ textAlign: "center", width: "100%" }}>or</p>
                 <Button
                     onClick={() => {
