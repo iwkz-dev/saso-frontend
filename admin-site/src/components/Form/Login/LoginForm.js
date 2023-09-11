@@ -19,7 +19,6 @@ function LoginForm() {
 
     const onFinish = (values) => {
         values.type = "admin";
-        console.log(values);
         dispatch(submitLogin(values));
     };
 

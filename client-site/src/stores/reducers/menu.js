@@ -45,13 +45,11 @@ export const menuSlice = createSlice({
             state.message.error = action.payload.data.message;
         },
         menuDetailSuccess: (state, action) => {
-            console.log(action.payload.data);
             state.menuDetail = action.payload.data;
             state.message.success = action.payload.message;
             state.message.error = "";
         },
         menuDetailFailed: (state, action) => {
-            console.log(action.payload);
             state.message.error = "Fetch menu detail failed";
             state.menuDetail = null;
         },

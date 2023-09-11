@@ -19,7 +19,7 @@ const MyOrderDetailContent = ({ detailOrder, withoutBackButton }) => {
             key: "totalPortion",
         },
         {
-            title: "Price",
+            title: "Price per Unit",
             dataIndex: "price",
             key: "price",
             render: (item) => `${item} €`,
@@ -45,13 +45,11 @@ const MyOrderDetailContent = ({ detailOrder, withoutBackButton }) => {
                     maxWidth: "1024px",
                     padding: "1rem",
                     margin: "1rem auto",
-                }}
-            >
+                }}>
                 <Space
                     size="large"
                     direction="vertical"
-                    style={{ width: "100%" }}
-                >
+                    style={{ width: "100%" }}>
                     {withoutBackButton ? null : (
                         <BackToButton
                             targetURL="/my-order"
