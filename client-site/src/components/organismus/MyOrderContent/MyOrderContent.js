@@ -42,7 +42,7 @@ const MyOrderContent = () => {
             key: "status",
             render: (item) => reformStatus(item),
             width: 180,
-        },
+        } /*
         {
             title: "Download PDF",
             dataIndex: "_id",
@@ -56,7 +56,7 @@ const MyOrderContent = () => {
                     Download
                 </Button>
             ),
-        },
+        },*/,
         {
             title: "Updated At",
             dataIndex: "updated_at",
@@ -104,13 +104,11 @@ const MyOrderContent = () => {
                     maxWidth: "1024px",
                     padding: "1rem",
                     margin: "1rem auto",
-                }}
-            >
+                }}>
                 <Space
                     size="large"
                     direction="vertical"
-                    style={{ width: "100%" }}
-                >
+                    style={{ width: "100%" }}>
                     <BackToButton targetURL="/" buttonText="Back to home" />
 
                     <Typography.Title level={3} style={{ textAlign: "center" }}>

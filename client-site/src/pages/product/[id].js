@@ -12,7 +12,6 @@ const productDetail = () => {
     const { id } = router.query;
 
     useEffect(() => {
-        console.log(id);
         if (id) {
             dispatch(getMenuWithId(id));
         }
