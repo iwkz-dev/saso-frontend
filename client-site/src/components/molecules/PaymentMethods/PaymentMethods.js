@@ -182,7 +182,7 @@ const PaymentMethods = ({ userData }) => {
                 </Button>
                 <Typography.Text type="secondary" italic>
                     Choose 'Pay Later' to complete payment within 2x24 hours and
-                    send proof to the contact.
+                    send proof to the contact person.
                 </Typography.Text>
             </Space>
         </Spin>
