@@ -1,5 +1,4 @@
-import { Button, Layout } from "antd";
-import { WhatsAppOutlined } from "@ant-design/icons";
+import { Layout } from "antd";
 import React from "react";
 import MainCarousel from "../../atoms/MainCarousel/MainCarousel";
 import { useSelector } from "react-redux";
@@ -24,20 +23,6 @@ const ContentLayout = ({ children, hasCarousel, className }) => {
                     margin: "1rem auto",
                 }}>
                 {children}
-            </div>
-            <div
-                style={{
-                    width: "100%",
-                    display: "flex",
-                    justifyContent: "center",
-                    marginBottom: "1rem",
-                }}>
-                <Button
-                    type="link"
-                    href="https://wa.me/+491783588811"
-                    icon={<WhatsAppOutlined />}>
-                    Need help? Ask Almira
-                </Button>
             </div>
         </Content>
     );

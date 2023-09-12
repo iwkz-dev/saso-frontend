@@ -5,6 +5,8 @@ import TokoContent from "../components/organismus/TokoContent/TokoContent";
 import SasoContent from "../components/organismus/SasoContent/SasoContent";
 import ZakatContent from "../components/organismus/ZakatContent/ZakatContent";
 import MainLayout from "../components/organismus/MainLayout/MainLayout";
+import { WhatsAppOutlined } from "@ant-design/icons";
+import { Button } from "antd";
 
 export default function Home() {
     const dispatch = useDispatch();
@@ -28,6 +30,21 @@ export default function Home() {
     return (
         <MainLayout>
             {events[0] ? ContentComponent(events[0]) : null}
+            <div
+                style={{
+                    width: "100%",
+                    display: "flex",
+                    justifyContent: "center",
+                    marginBottom: "1rem",
+                }}>
+                <Button
+                    type="link"
+                    href="https://wa.me/+491783588811"
+                    target="_blank"
+                    icon={<WhatsAppOutlined />}>
+                    Need help? Ask Almira
+                </Button>
+            </div>
         </MainLayout>
     );
 }
