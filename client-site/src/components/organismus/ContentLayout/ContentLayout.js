@@ -21,8 +21,7 @@ const ContentLayout = ({ children, hasCarousel, className }) => {
                     maxWidth: "1024px",
                     padding: "1rem",
                     margin: "1rem auto",
-                }}
-            >
+                }}>
                 {children}
             </div>
         </Content>
