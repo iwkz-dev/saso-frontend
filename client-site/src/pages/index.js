@@ -41,8 +41,19 @@ export default function Home() {
                     type="link"
                     href="https://wa.me/+491783588811"
                     target="_blank"
+                    size="large"
+                    style={{
+                        position: "fixed",
+                        height: "60px",
+                        bottom: "5%",
+                        right: "10%",
+                        height: "fit-content",
+                        width: "fit-content",
+                        backgroundColor: "#fff",
+                        boxShadow: "rgba(0, 0, 0, 0.16) 0px 1px 4px",
+                    }}
                     icon={<WhatsAppOutlined />}>
-                    Need help? Ask Almira
+                    Ask Almira
                 </Button>
             </div>
         </MainLayout>

@@ -145,32 +145,6 @@ const PaymentMethods = ({ userData }) => {
                 direction="vertical"
                 align="center"
                 className={style.bookOrPayButton}>
-                <PayPalButtons
-                    fundingSource="paypal"
-                    style={{
-                        disableMaxWidth: true,
-                        label: "paypal",
-                    }}
-                    createOrder={() => {
-                        return submitPaypalForm();
-                    }}
-                    onCancel={() => {
-                        onCancel();
-                    }}
-                    onError={() => {
-                        onError();
-                    }}
-                    onApprove={(data, actions) => {
-                        return actions.order.capture().then((details) => {
-                            onApprove(data, details);
-                        });
-                    }}
-                />
-                <Typography.Text type="secondary" italic>
-                    Payment with PayPal may incur a slight price adjustment to
-                    cover transaction fees.
-                </Typography.Text>
-                <p style={{ textAlign: "center", width: "100%" }}>or</p>
                 <Button
                     onClick={() => {
                         submitTransferForm("transfer");
