@@ -39,7 +39,7 @@ export default function Home() {
                 }}>
                 <Button
                     type="link"
-                    href="https://wa.me/+491783588811"
+                    href="https://wa.me/"
                     target="_blank"
                     size="large"
                     style={{
@@ -53,7 +53,7 @@ export default function Home() {
                         boxShadow: "rgba(0, 0, 0, 0.16) 0px 1px 4px",
                     }}
                     icon={<WhatsAppOutlined />}>
-                    Ask Almira
+                    Ask CP
                 </Button>
             </div>
         </MainLayout>
