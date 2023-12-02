@@ -15,21 +15,35 @@ const index = () => {
     const pageTitle = "Saso App | Menu";
 
     useEffect(() => {
-        setShowLoading(true);
-        setShowForm(false);
-        Promise.all([
-            dispatch(getAllEvents()),
-            dispatch(getAllCategories()),
-        ]).then((responses) => {
-            const failed = responses.find((r) => r?.status === "failed");
-            if (failed) {
-                message.error(failed.message);
-                isAuth(failed);
-            } else {
-                setShowForm(true);
+        const fetchData = async () => {
+            setShowLoading(true);
+
+            try {
+                const [eventsResponse, categoriesResponse] = await Promise.all([
+                    dispatch(getAllEvents()),
+                    dispatch(getAllCategories()),
+                ]);
+
+                const failedResponse = [
+                    eventsResponse,
+                    categoriesResponse,
+                ].find((response) => response?.status === "failed");
+
+                if (failedResponse) {
+                    message.error(failedResponse.message);
+                    isAuth(failedResponse);
+                } else {
+                    setShowForm(true);
+                }
+            } catch (error) {
+                console.error("Error fetching data:", error);
+                message.error(error.message);
+            } finally {
+                setShowLoading(false);
             }
-            setShowLoading(false);
-        });
+        };
+
+        fetchData();
     }, []);
 
     return (

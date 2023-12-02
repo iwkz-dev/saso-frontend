@@ -34,40 +34,39 @@ const EditMenuForm = () => {
         description: menu.description,
     };
 
-    const submitForm = (values) => {
-        const text = confirm("Please confirm to save your changes");
-        if (text) {
-            setShowUploading(true);
-            const createData = async () => {
-                var data = new FormData();
-                for (var key in values) {
-                    data.append(key, values[key] || "");
-                }
+    const submitForm = async (values) => {
+        const confirmed = confirm("Please confirm to save your changes");
 
-                images.map((image) => {
-                    if (image.originFileObj) {
-                        data.append("imageUrls", image.originFileObj);
-                    } else {
-                        data.append("eTags", image.eTag);
-                    }
-                });
+        if (!confirmed) {
+            return;
+        }
 
-                return dispatch(editDetailMenu(menu._id, data));
-            };
-            createData()
-                .then((r) => {
-                    if (r?.status === "failed") {
-                        setShowUploading(false);
-                        message.error(r.message);
-                    } else {
-                        setShowUploading(false);
-                        message.success(r.message);
-                        Router.push("/menu");
-                    }
-                })
-                .catch(() => {
-                    setShowUploading(false);
-                });
+        setShowUploading(true);
+
+        try {
+            const data = new FormData();
+
+            for (const key in values) {
+                data.append(key, values[key] || "");
+            }
+
+            images.forEach((image) => {
+                const file = image.originFileObj || image.eTag;
+                data.append("imageUrls", file);
+            });
+
+            const response = await dispatch(editDetailMenu(menu._id, data));
+
+            if (response?.status === "failed") {
+                setShowUploading(false);
+                message.error(response.message);
+            } else {
+                setShowUploading(false);
+                message.success(response.message);
+                Router.push("/menu");
+            }
+        } catch (error) {
+            setShowUploading(false);
         }
     };
 
@@ -142,7 +141,6 @@ const EditMenuForm = () => {
             label: "Description",
             type: "description",
             placeholder: "Description",
-            required: true,
         },
         {
             label: "images",

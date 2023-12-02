@@ -22,44 +22,45 @@ const event = () => {
         getEvents();
     }, []);
 
-    const getEvents = () => {
+    const getEvents = async () => {
         setShowLoadingData(true);
-        const getEvents = async () => {
-            return dispatch(getAllEvents());
-        };
-        getEvents().then((r) => {
-            if (r.status === "success") {
+        try {
+            const response = await dispatch(getAllEvents());
+            if (response.status === "success") {
                 setShowLoadingData(false);
                 setShowTable(true);
             } else {
                 setShowLoadingData(false);
                 setShowTable(false);
-                message.error(r.message);
-                isAuth(r);
+                message.error(response.message);
+                isAuth(response);
             }
-        });
+        } catch (error) {
+            setShowLoadingData(false);
+            console.error("Error fetching events:", error);
+        }
     };
 
     const onChangeStatus = async (value) => {
         setShowLoadingData(true);
         try {
-            const onChangeStatus = await dispatch(
+            const { status, message: statusMessage } = await dispatch(
                 changeEventStatus(
                     JSON.parse(value).id,
                     JSON.parse(value).value,
                 ),
             );
-            if (onChangeStatus.status !== "failed") {
-                setShowLoadingData(false);
-                message.success(onChangeStatus.message);
+
+            setShowLoadingData(false);
+            if (status !== "failed") {
+                message.success(statusMessage);
                 getEvents();
             } else {
-                setShowLoadingData(false);
-                message.error(onChangeStatus.message);
+                message.error(statusMessage);
             }
         } catch (error) {
             setShowLoadingData(false);
-            message.error(onChangeStatus.message);
+            console.error("Error changing event status:", error);
         }
     };
 
@@ -67,22 +68,25 @@ const event = () => {
         const isConfirm = confirm(
             `Please confirm this if you want to delete "${item.name}"`,
         );
+
         if (isConfirm) {
             setShowLoadingData(true);
+
             try {
-                const onDelete = await dispatch(deleteEvent(item["_id"]));
-                if (onDelete.status !== "failed") {
-                    setShowLoadingData(false);
-                    message.success(onDelete.message);
+                const result = await dispatch(deleteEvent(item["_id"]));
+                setShowLoadingData(false);
+
+                const { status, message: msg } = result;
+
+                status !== "failed" ? message.success(msg) : message.error(msg);
+
+                if (status !== "failed") {
                     getEvents();
-                } else {
-                    setShowLoadingData(false);
-                    message.error(onDelete.message);
                 }
             } catch (e) {
-                //TODO: handle error here
+                // TODO: handle error here
                 setShowLoadingData(false);
-                message.error(e.mnessage);
+                message.error(e.message);
             }
         }
     };

@@ -17,28 +17,28 @@ const EditPaymentTypeForm = () => {
         type: paymentType.type,
     };
 
-    const submitForm = (values) => {
+    const submitForm = async (values) => {
         const text = confirm("Please confirm to save your changes");
+
         if (text) {
             setShowUploading(true);
-            const editData = async () => {
-                return dispatch(editDetailPaymentType(paymentType._id, values));
-            };
-            editData()
-                .then((r) => {
-                    if (r?.status === "failed") {
-                        setShowUploading(false);
-                        message.error(r.message);
-                    } else {
-                        setShowUploading(false);
-                        message.success(r.message);
-                        Router.push("/payment-type");
-                    }
-                })
-                .catch((e) => {
-                    setShowUploading(false);
-                    message.error(e.message);
-                });
+
+            try {
+                const response = await dispatch(
+                    editDetailPaymentType(paymentType._id, values),
+                );
+
+                if (response?.status === "failed") {
+                    message.error(response.message);
+                } else {
+                    message.success(response.message);
+                    Router.push("/payment-type");
+                }
+            } catch (error) {
+                message.error(error.message);
+            } finally {
+                setShowUploading(false);
+            }
         }
     };
 

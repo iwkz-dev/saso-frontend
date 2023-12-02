@@ -17,21 +17,28 @@ const RelatedMenuTable = ({ filterName, itemFilter, onDelete }) => {
         getAllData();
     }, []);
 
-    const getAllData = () => {
-        const filter = `?${filterName}=${itemFilter._id}`;
-        Promise.all([
-            dispatch(getAllEvents()),
-            dispatch(getAllCategories()),
-            dispatch(getAllMenus(filter)),
-        ]).then((responses) => {
-            const failed = responses.find((r) => r?.status === "failed");
-            if (!failed) {
+    const getAllData = async () => {
+        try {
+            const filter = `?${filterName}=${itemFilter._id}`;
+            const responses = await Promise.all([
+                dispatch(getAllEvents()),
+                dispatch(getAllCategories()),
+                dispatch(getAllMenus(filter)),
+            ]);
+
+            if (!responses.some((r) => r?.status === "failed")) {
                 setShowTable(true);
             } else {
                 setShowTable(false);
-                message.error(failed.message);
+                const failedResponse = responses.find(
+                    (r) => r?.status === "failed",
+                );
+                message.error(failedResponse?.message);
             }
-        });
+        } catch (error) {
+            // Handle unexpected errors here
+            console.error("Unexpected error:", error);
+        }
     };
 
     const tableHead = {

@@ -21,38 +21,36 @@ const id = () => {
 
     //TODO view order
     useEffect(() => {
-        setShowLoading(true);
-        const getOrders = async () => {
-            return dispatch(getAllOrders());
-        };
-        if (orders.length === 0) {
-            getOrders().then((r) => {
-                if (r.status === "success") {
+        const fetchData = async () => {
+            setShowLoading(true);
+            try {
+                if (orders.length === 0) {
+                    const response = await dispatch(getAllOrders());
+                    if (response.status === "success") {
+                        setShowLoading(false);
+                    } else {
+                        throw new Error(response.message);
+                    }
+                } else if (id) {
+                    const order = orders.find((o) => o["_id"] === id);
+                    if (order) {
+                        setOrderDetail(order);
+                        setShowDataDisplay(true);
+                    } else {
+                        throw new Error("Order detail not found");
+                    }
                     setShowLoading(false);
-                } else {
-                    setShowLoading(false);
-                    message.error(r.message);
-                    isAuth(r);
                 }
-            });
-        } else {
-            if (id) {
-                const order = orders.find((o) => {
-                    return o["_id"] === id;
-                });
-                if (order) {
-                    setOrderDetail(order);
-                    setShowDataDisplay(true);
-                    setShowLoading(false);
-                } else {
-                    setShowLoading(false);
-                    message.error(
-                        "Unfortunately, your searched order detail is not found",
-                    );
-                }
+            } catch (error) {
+                setShowLoading(false);
+                message.error(error.message);
+                isAuth(error);
             }
-        }
+        };
+
+        fetchData();
     }, [id, orders]);
+
     return (
         <LoggedIn title={pageTitle}>
             <Content>

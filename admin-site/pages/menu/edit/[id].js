@@ -19,25 +19,30 @@ const id = () => {
     const pageTitle = "Saso App | Menu";
 
     useEffect(() => {
-        setShowLoading(true);
-        setShowForm(false);
-        if (id) {
-            Promise.all([
-                dispatch(getAllEvents()),
-                dispatch(getAllCategories()),
-                dispatch(getDetailMenu(id)),
-            ]).then((responses) => {
-                const failed = responses.find((r) => r?.status === "failed");
-                if (failed) {
-                    message.error(failed.message);
-                    isAuth(failed);
-                } else {
-                    setShowForm(true);
-                }
+        const fetchData = async () => {
+            setShowLoading(true);
+            setShowForm(false);
+
+            try {
+                await Promise.all([
+                    dispatch(getAllEvents()),
+                    dispatch(getAllCategories()),
+                    dispatch(getDetailMenu(id)),
+                ]);
+
+                setShowForm(true);
+            } catch (error) {
+                message.error(error.message);
+                isAuth(error);
+            } finally {
                 setShowLoading(false);
-            });
+            }
+        };
+
+        if (id) {
+            fetchData();
         }
-    }, [id]);
+    }, [id, dispatch]);
 
     return (
         <LoggedIn title={pageTitle}>

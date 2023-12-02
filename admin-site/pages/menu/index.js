@@ -36,60 +36,74 @@ const index = () => {
         return "";
     };
 
-    const getEventsCategoriesMenus = () => {
-        setShowLoading(true);
-        Promise.all([
-            dispatch(getAllEvents()),
-            dispatch(getAllCategories()),
-            dispatch(getAllMenus(filtersQueryBuilder())),
-        ]).then((responses) => {
-            const failed = responses.find((r) => r?.status === "failed");
-            if (!failed) {
-                setShowTable(true);
-                setShowLoading(false);
-            } else {
-                setShowTable(false);
-                setShowLoading(false);
-                message.error(failed.message);
-                isAuth(failed);
+    const getEventsCategoriesMenus = async () => {
+        try {
+            setShowLoading(true);
+
+            const [eventsResponse, categoriesResponse, menusResponse] =
+                await Promise.all([
+                    dispatch(getAllEvents()),
+                    dispatch(getAllCategories()),
+                    dispatch(getAllMenus(filtersQueryBuilder())),
+                ]);
+
+            // Check for failed responses
+            if (
+                [eventsResponse, categoriesResponse, menusResponse].some(
+                    (r) => r?.status === "failed",
+                )
+            ) {
+                throw new Error("One or more requests failed");
             }
-        });
+
+            // If all responses are successful
+            setShowTable(true);
+        } catch (error) {
+            setShowTable(false);
+            message.error(error.message);
+            isAuth(error);
+        } finally {
+            setShowLoading(false);
+        }
     };
 
     const handleChange = (value) => {
-        if (value) {
-            const data = JSON.parse(value);
-            const filterIndex = filters.findIndex((f) => f.name === data.name);
-            if (!(filterIndex > -1)) {
-                setFilters([...filters, data]);
-            } else {
-                const tempFilters = [...filters];
-                tempFilters[filterIndex].id = data.id;
-                setFilters([...tempFilters]);
-            }
+        if (!value) return;
+
+        const data = JSON.parse(value);
+        const filterIndex = filters.findIndex((f) => f.name === data.name);
+
+        if (filterIndex === -1) {
+            setFilters([...filters, data]);
+        } else {
+            const updatedFilters = [...filters];
+            updatedFilters[filterIndex].id = data.id;
+            setFilters(updatedFilters);
         }
     };
 
     const onDelete = async (item) => {
-        const isConfirm = confirm(
+        const isConfirmed = window.confirm(
             `Please confirm this if you want to delete "${item.name}"`,
         );
-        if (isConfirm) {
+
+        if (isConfirmed) {
             setShowLoading(true);
+
             try {
-                const onDelete = await dispatch(deleteMenu(item["_id"]));
-                if (onDelete.status !== "failed") {
-                    setShowLoading(false);
-                    message.success(onDelete.message);
+                const onDeleteResult = await dispatch(deleteMenu(item["_id"]));
+
+                if (onDeleteResult.status !== "failed") {
+                    message.success(onDeleteResult.message);
                     getEventsCategoriesMenus();
                 } else {
-                    setShowLoading(false);
-                    message.error(onDelete.message);
+                    message.error(onDeleteResult.message);
                 }
-            } catch (e) {
-                //TODO: handle error here
+            } catch (error) {
+                // TODO: Handle error here
+                message.error(error.message);
+            } finally {
                 setShowLoading(false);
-                message.error(e.message);
             }
         }
     };

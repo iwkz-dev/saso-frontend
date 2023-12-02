@@ -37,24 +37,24 @@ const index = () => {
         return "";
     };
 
-    const getEventsOrders = () => {
+    const getEventsOrders = async () => {
         setShowLoadingData(true);
-        Promise.all([
-            dispatch(getAllEvents()),
-            dispatch(getAllPaymentTypes()),
-            dispatch(getAllOrders(filtersQueryBuilder())),
-        ]).then((responses) => {
-            const failed = responses.find((r) => r?.status === "failed");
-            if (!failed) {
-                setShowTable(true);
-                setShowLoadingData(false);
-            } else {
-                setShowTable(false);
-                setShowLoadingData(false);
-                message.error(failed.message);
-                isAuth(failed);
-            }
-        });
+
+        try {
+            await Promise.all([
+                dispatch(getAllEvents()),
+                dispatch(getAllPaymentTypes()),
+                dispatch(getAllOrders(filtersQueryBuilder())),
+            ]);
+
+            setShowTable(true);
+            setShowLoadingData(false);
+        } catch (error) {
+            setShowTable(false);
+            setShowLoadingData(false);
+            message.error(error.message);
+            isAuth(error);
+        }
     };
 
     const onChangeStatus = async (value) => {

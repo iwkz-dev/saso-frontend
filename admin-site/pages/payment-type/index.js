@@ -21,44 +21,45 @@ const index = () => {
         getPaymentTypes();
     }, []);
 
-    const getPaymentTypes = () => {
+    const getPaymentTypes = async () => {
         setShowLoadingData(true);
-        const getEvents = async () => {
-            return dispatch(getAllPaymentTypes());
-        };
-        getEvents().then((r) => {
-            if (r.status === "success") {
-                setShowLoadingData(false);
+        try {
+            const response = await dispatch(getAllPaymentTypes());
+            if (response.status === "success") {
                 setShowTable(true);
             } else {
-                setShowLoadingData(false);
-                message.error(r.message);
+                message.error(response.message);
+                isAuth(response);
                 setShowTable(false);
-                isAuth(r);
             }
-        });
+        } finally {
+            setShowLoadingData(false);
+        }
     };
 
     const onDelete = async (item) => {
         const isConfirm = confirm(
             `Please confirm this if you want to delete "${item.name}"`,
         );
+
         if (isConfirm) {
             setShowLoadingData(true);
             try {
-                const onDelete = await dispatch(deletePaymentType(item["_id"]));
-                if (onDelete.status !== "failed") {
-                    setShowLoadingData(false);
-                    message.success(onDelete.message);
-                    getPaymentTypes();
+                const onDeleteResponse = await dispatch(
+                    deletePaymentType(item["_id"]),
+                );
+
+                if (onDeleteResponse.status !== "failed") {
+                    message.success(onDeleteResponse.message);
+                    await getPaymentTypes();
                 } else {
-                    setShowLoadingData(false);
-                    message.error(onDelete.message);
+                    message.error(onDeleteResponse.message);
                 }
             } catch (e) {
-                //TODO: handle error here
-                setShowLoadingData(false);
+                // TODO: handle error here
                 message.error(e);
+            } finally {
+                setShowLoadingData(false);
             }
         }
     };

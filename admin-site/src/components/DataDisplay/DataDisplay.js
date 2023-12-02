@@ -1,4 +1,4 @@
-import { Button, Descriptions, Image, Space } from "antd";
+import { Button, Descriptions, Image, Space, Typography } from "antd";
 import React from "react";
 import { formatDate } from "../../helpers/dateHelper";
 
@@ -34,6 +34,23 @@ const DataDisplay = ({ item, dataForm, events, categories, linkToEdit }) => {
         } else if (key === "event") {
             const event = events.find((e) => e._id === item[key]);
             value = event?.name;
+        } else if (key === "description") {
+            value = (
+                <Typography.Paragraph
+                    style={{
+                        "white-space": "unset",
+                    }}
+                    ellipsis={{
+                        rows: 2,
+                        expandable: true,
+                        onEllipsis: (ellipsis) => {
+                            console.log("Ellipsis changed:", ellipsis);
+                        },
+                    }}
+                    title={item[key]}>
+                    {item[key]}
+                </Typography.Paragraph>
+            );
         } else if (key === "status") {
             value = getStatusTitle(item[key]);
         } else if (key === "started_at") {

@@ -10,28 +10,28 @@ const AddPaymentTypeForm = () => {
     const [form] = Form.useForm();
     const [showUploading, setShowUploading] = useState(false);
 
-    const submitForm = (values) => {
-        const text = confirm("Please confirm to add Payment Type");
-        if (text) {
+    const submitForm = async (values) => {
+        const shouldAddPaymentType = confirm(
+            "Please confirm to add Payment Type",
+        );
+
+        if (shouldAddPaymentType) {
             setShowUploading(true);
-            const createData = async () => {
-                return dispatch(createPaymentType(values));
-            };
-            createData()
-                .then((r) => {
-                    if (r?.status === "failed") {
-                        setShowUploading(false);
-                        message.error(r.message);
-                    } else {
-                        setShowUploading(false);
-                        message.success(r.message);
-                        Router.push("/payment-type");
-                    }
-                })
-                .catch((e) => {
-                    setShowUploading(false);
-                    message.error(e.message);
-                });
+
+            try {
+                const response = await dispatch(createPaymentType(values));
+
+                if (response?.status === "failed") {
+                    message.error(response.message);
+                } else {
+                    message.success(response.message);
+                    Router.push("/payment-type");
+                }
+            } catch (error) {
+                message.error(error.message);
+            } finally {
+                setShowUploading(false);
+            }
         }
     };
 

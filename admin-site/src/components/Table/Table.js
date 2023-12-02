@@ -5,6 +5,7 @@ import { Table, Select, Space, message } from "antd";
 import { DeleteTwoTone, EditTwoTone } from "@ant-design/icons";
 import Router from "next/router";
 import styles from "./Table.module.scss";
+import { Typography } from "antd";
 
 const TableComponent = ({
     onDelete,
@@ -92,7 +93,7 @@ const TableComponent = ({
             onRow={(record) => {
                 return {
                     onDoubleClick: () => {
-                        if (!actionsOff) {
+                        if (linkToView && !actionsOff) {
                             const link = linkToView + record._id;
                             Router.push(link);
                         } else {
@@ -156,6 +157,32 @@ const TableComponent = ({
                                     (e) => e._id === eventId,
                                 );
                                 return <>{event?.name}</>;
+                            }}
+                        />
+                    );
+                } else if (dataKey === "description") {
+                    return (
+                        <Column
+                            title={tableHead[dataKey]}
+                            dataIndex={dataKey}
+                            key={dataKey}
+                            render={(desc) => {
+                                return (
+                                    <Typography.Paragraph
+                                        ellipsis={{
+                                            rows: 1,
+                                            expandable: true,
+                                            onEllipsis: (ellipsis) => {
+                                                console.log(
+                                                    "Ellipsis changed:",
+                                                    ellipsis,
+                                                );
+                                            },
+                                        }}
+                                        title={desc}>
+                                        {desc}
+                                    </Typography.Paragraph>
+                                );
                             }}
                         />
                     );

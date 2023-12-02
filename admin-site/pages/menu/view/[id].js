@@ -18,23 +18,28 @@ const id = () => {
     const menu = useSelector((state) => state.menu.detailMenu);
 
     useEffect(() => {
-        setShowLoading(true);
-        if (id) {
-            const getData = async () => {
-                return await dispatch(getDetailMenu(id));
-            };
-            getData().then((r) => {
-                if (r.status === "success") {
+        const fetchData = async () => {
+            setShowLoading(true);
+            try {
+                const response = await dispatch(getDetailMenu(id));
+                if (response.status === "success") {
                     setShowDataDisplay(true);
-                    setShowLoading(false);
                 } else {
-                    setShowLoading(false);
-                    message.error(r.message);
-                    isAuth(r);
+                    message.error(response.message);
+                    isAuth(response);
                 }
-            });
+            } catch (error) {
+                console.error("Error fetching data:", error);
+                // Handle error as needed
+            } finally {
+                setShowLoading(false);
+            }
+        };
+
+        if (id) {
+            fetchData();
         }
-    }, [id]);
+    }, [id, dispatch]);
 
     return (
         <LoggedIn title={pageTitle}>

@@ -12,35 +12,43 @@ const AddEventForm = () => {
     const [images, setImages] = useState([]);
     const [date, setDate] = useState("");
 
-    const submitForm = (values) => {
+    const submitForm = async (values) => {
         const text = confirm("Please confirm to add event");
+
         if (text) {
             setShowUploading(true);
+
             const createData = async () => {
-                var data = new FormData();
-                for (var key in values) {
-                    data.append(key, values[key] || "");
+                const data = new FormData();
+                for (const [key, value] of Object.entries(values)) {
+                    data.append(key, value || "");
                 }
+
                 data.set("started_at", date);
-                images.map((image) => {
-                    data.append("imageUrls", image.originFileObj);
-                });
+
+                await Promise.all(
+                    images.map((image) => {
+                        return data.append("imageUrls", image.originFileObj);
+                    }),
+                );
+
                 return dispatch(createEvent(data));
             };
-            createData()
-                .then((r) => {
-                    if (r?.status === "failed") {
-                        setShowUploading(false);
-                        message.error(r.message);
-                    } else {
-                        setShowUploading(false);
-                        message.success(r.message);
-                        Router.push("/event");
-                    }
-                })
-                .catch(() => {
+
+            try {
+                const result = await createData();
+
+                if (result?.status === "failed") {
                     setShowUploading(false);
-                });
+                    message.error(result.message);
+                } else {
+                    setShowUploading(false);
+                    message.success(result.message);
+                    Router.push("/event");
+                }
+            } catch (error) {
+                setShowUploading(false);
+            }
         }
     };
 
