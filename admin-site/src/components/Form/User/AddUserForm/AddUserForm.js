@@ -10,27 +10,29 @@ const AddUserForm = () => {
     const [form] = Form.useForm();
     const [showUploading, setShowUploading] = useState(false);
 
-    const submitForm = (values) => {
-        const text = confirm("Please confirm to add user");
-        if (text) {
-            setShowUploading(true);
-            const createData = async () => {
-                return dispatch(createUser(values));
-            };
-            createData()
-                .then((r) => {
-                    if (r?.status === "failed") {
-                        setShowUploading(false);
-                        message.error(r.message);
-                    } else {
-                        setShowUploading(false);
-                        message.success(r.message);
-                        Router.push("/user");
-                    }
-                })
-                .catch(() => {
-                    setShowUploading(false);
-                });
+    const submitForm = async (values) => {
+        const shouldAddUser = window.confirm("Please confirm to add user");
+
+        if (!shouldAddUser) {
+            return;
+        }
+
+        setShowUploading(true);
+
+        try {
+            const response = await dispatch(createUser(values));
+
+            if (response?.status === "failed") {
+                message.error(response.message);
+            } else {
+                message.success(response.message);
+                Router.push("/user");
+            }
+        } catch (error) {
+            console.error("Error submitting form:", error);
+            message.error("An error occurred while submitting the form");
+        } finally {
+            setShowUploading(false);
         }
     };
 

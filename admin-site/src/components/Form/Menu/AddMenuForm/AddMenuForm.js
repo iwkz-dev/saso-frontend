@@ -19,34 +19,36 @@ const AddMenuForm = () => {
         form.setFieldsValue({ event: query.event, category: query.category });
     }, [query.category, query.event]);
 
-    const submitForm = (values) => {
-        const text = confirm("Please confirm to add menu");
-        if (text) {
-            setShowUploading(true);
-            const createData = async () => {
-                var data = new FormData();
-                for (var key in values) {
-                    data.append(key, values[key] || "");
-                }
-                images.map((image) => {
-                    data.append("imageUrls", image.originFileObj);
-                });
-                return dispatch(createMenu(data));
-            };
-            createData()
-                .then((r) => {
-                    if (r?.status === "failed") {
-                        setShowUploading(false);
-                        message.error(r.message);
-                    } else {
-                        setShowUploading(false);
-                        message.success(r.message);
-                        Router.push("/menu");
-                    }
-                })
-                .catch(() => {
-                    setShowUploading(false);
-                });
+    const submitForm = async (values) => {
+        if (!confirm("Please confirm to add menu")) {
+            return;
+        }
+
+        setShowUploading(true);
+
+        try {
+            const data = new FormData();
+
+            for (const [key, value] of Object.entries(values)) {
+                data.append(key, value || "");
+            }
+
+            images.forEach((image) => {
+                data.append("imageUrls", image.originFileObj);
+            });
+
+            const r = await dispatch(createMenu(data));
+
+            if (r?.status === "failed") {
+                setShowUploading(false);
+                message.error(r.message);
+            } else {
+                setShowUploading(false);
+                message.success(r.message);
+                Router.push("/menu");
+            }
+        } catch (error) {
+            setShowUploading(false);
         }
     };
 
@@ -122,7 +124,6 @@ const AddMenuForm = () => {
             label: "Description",
             type: "description",
             placeholder: "Description",
-            required: true,
         },
         {
             label: "images",

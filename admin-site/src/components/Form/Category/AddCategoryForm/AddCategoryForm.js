@@ -9,28 +9,26 @@ const AddCategoryForm = () => {
     const [form] = Form.useForm();
     const [showUploading, setShowUploading] = useState(false);
 
-    const submitForm = (values) => {
-        const text = confirm("Please confirm to add category");
-        if (text) {
+    const submitForm = async (values) => {
+        const shouldAddCategory = confirm("Please confirm to add category");
+
+        if (shouldAddCategory) {
             setShowUploading(true);
-            const createData = async () => {
-                return dispatch(createCategory(values));
-            };
-            createData()
-                .then((r) => {
-                    if (r?.status === "failed") {
-                        setShowUploading(false);
-                        message.error(r.message);
-                    } else {
-                        setShowUploading(false);
-                        message.success(r.message);
-                        Router.push("/category");
-                    }
-                })
-                .catch((e) => {
-                    setShowUploading(false);
-                    message.error(e.message);
-                });
+
+            try {
+                const response = await dispatch(createCategory(values));
+
+                if (response?.status === "failed") {
+                    message.error(response.message);
+                } else {
+                    message.success(response.message);
+                    Router.push("/category");
+                }
+            } catch (error) {
+                message.error(error.message);
+            } finally {
+                setShowUploading(false);
+            }
         }
     };
 

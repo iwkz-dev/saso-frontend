@@ -14,28 +14,32 @@ const EditCategoryForm = () => {
         name: category.name,
     };
 
-    const submitForm = (values) => {
-        const text = confirm("Please confirm to save your changes");
-        if (text) {
-            setShowUploading(true);
-            const editData = async () => {
-                return dispatch(editDetailCategory(category._id, values));
-            };
-            editData()
-                .then((r) => {
-                    if (r?.status === "failed") {
-                        setShowUploading(false);
-                        message.error(r.message);
-                    } else {
-                        setShowUploading(false);
-                        message.success(r.message);
-                        Router.push("/category");
-                    }
-                })
-                .catch((e) => {
-                    setShowUploading(false);
-                    message.error(e.message);
-                });
+    const submitForm = async (values) => {
+        const shouldSaveChanges = confirm(
+            "Please confirm to save your changes",
+        );
+
+        if (!shouldSaveChanges) {
+            return;
+        }
+
+        setShowUploading(true);
+
+        try {
+            const response = await dispatch(
+                editDetailCategory(category._id, values),
+            );
+
+            if (response?.status === "failed") {
+                message.error(response.message);
+            } else {
+                message.success(response.message);
+                Router.push("/category");
+            }
+        } catch (error) {
+            message.error(error.message);
+        } finally {
+            setShowUploading(false);
         }
     };
 

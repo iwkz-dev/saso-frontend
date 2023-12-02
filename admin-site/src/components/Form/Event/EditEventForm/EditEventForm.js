@@ -24,48 +24,52 @@ const EditEventForm = () => {
     const [images, setImages] = useState(getFileList(event.images));
     const [date, setDate] = useState(event.started_at);
 
-    const submitForm = (values) => {
-        const text = confirm("Please confirm to save your changes");
-        if (text) {
+    const submitForm = async (values) => {
+        const shouldSaveChanges = confirm(
+            "Please confirm to save your changes",
+        );
+
+        if (!shouldSaveChanges) {
+            return;
+        }
+
+        try {
             setShowUploading(true);
-            const createData = async () => {
-                var data = new FormData();
 
-                const getYearAndMonth = (date) => {
-                    return `${dayjs(date).get("year")}-${
-                        parseInt(dayjs(date).get("month")) + 1
-                    }`;
-                };
-                for (var key in values) {
-                    data.append(key, values[key] || "");
-                }
-                data.set("started_at", getYearAndMonth(date));
-
-                images.map((image) => {
-                    if (image.originFileObj) {
-                        data.append("imageUrls", image.originFileObj);
-                    } else {
-                        data.append("eTags", image.eTag);
-                    }
-                });
-
-                return dispatch(editDetailEvent(event._id, data));
+            const getYearAndMonth = (date) => {
+                return `${dayjs(date).get("year")}-${
+                    dayjs(date).get("month") + 1
+                }`;
             };
-            createData()
-                .then((r) => {
-                    if (r?.status === "failed") {
-                        setShowUploading(false);
-                        message.error(r.message);
-                    } else {
-                        setShowUploading(false);
-                        message.success(r.message);
-                        Router.push("/event");
-                    }
-                })
-                .catch((e) => {
-                    setShowUploading(false);
-                    message.error(e.message);
-                });
+
+            const data = new FormData();
+
+            for (const [key, value] of Object.entries(values)) {
+                data.append(key, value || "");
+            }
+
+            data.set("started_at", getYearAndMonth(date));
+
+            images.forEach((image) => {
+                const file = image.originFileObj || image.eTag;
+                data.append("imageUrls", file);
+            });
+
+            console.log(data);
+
+            const response = await dispatch(editDetailEvent(event._id, data));
+
+            if (response?.status === "failed") {
+                setShowUploading(false);
+                message.error(response.message);
+            } else {
+                setShowUploading(false);
+                message.success(response.message);
+                Router.push("/event");
+            }
+        } catch (error) {
+            setShowUploading(false);
+            message.error(error.message);
         }
     };
 
@@ -95,9 +99,9 @@ const EditEventForm = () => {
             type: "select",
             placeholder: "Status",
             options: [
-                { label: "draft", value: 0 },
-                { label: "approved", value: 1 },
-                { label: "done", value: 2 },
+                { label: "draft", value: "0" },
+                { label: "approved", value: "1" },
+                { label: "done", value: "2" },
             ],
             required: true,
         },
@@ -173,7 +177,7 @@ const EditEventForm = () => {
             setImages={setImages}
             initialValues={{
                 name: event.name,
-                status: event.status,
+                status: event.status.toString(),
                 started_at: dayjs(event.started_at),
                 bankName: event.bankName,
                 iban: event.iban,

@@ -15,19 +15,30 @@ const RelatedMenuOrder = ({ menus }) => {
         getAllData();
     }, []);
 
-    const getAllData = () => {
-        Promise.all([
-            dispatch(getAllEvents()),
-            dispatch(getAllCategories()),
-        ]).then((responses) => {
-            const failed = responses.find((r) => r?.status === "failed");
-            if (!failed) {
+    const getAllData = async () => {
+        try {
+            const [eventsResponse, categoriesResponse] = await Promise.all([
+                dispatch(getAllEvents()),
+                dispatch(getAllCategories()),
+            ]);
+
+            if (
+                eventsResponse.status !== "failed" &&
+                categoriesResponse.status !== "failed"
+            ) {
                 setShowTable(true);
             } else {
                 setShowTable(false);
-                message.error(failed.message);
+                const errorMessage =
+                    eventsResponse.status === "failed"
+                        ? eventsResponse.message
+                        : categoriesResponse.message;
+                message.error(errorMessage);
             }
-        });
+        } catch (error) {
+            console.error("An error occurred:", error);
+            // Handle the error appropriately, e.g., show a user-friendly message
+        }
     };
 
     const tableHead = {
