@@ -4,7 +4,7 @@
     "scripts": {
         "dev": "next dev",
         "build": "next build",
-        "start": "next start -p 3000",
+        "start": "next start -p 3001",
         "lint": "eslint \"./**/*.{js,jsx}\" --fix && eslint \"./**/*.{js,jsx}\" --ext js,jsx,ts,tsx",
         "pretty": "prettier --write \"./**/*.{js,jsx,json}\"",
         "format": "prettier --write \"./**/*.{js,jsx,json}\" && eslint \"./**/*.{js,jsx}\" --fix && eslint \"./**/*.{js,jsx}\" --ext js,jsx,ts,tsx"
