@@ -30,32 +30,34 @@ export default function Home() {
     return (
         <MainLayout>
             {events[0] ? ContentComponent(events[0]) : null}
-            <div
-                style={{
-                    width: "100%",
-                    display: "flex",
-                    justifyContent: "center",
-                    marginBottom: "1rem",
-                }}>
-                <Button
-                    type="link"
-                    href="https://wa.me/"
-                    target="_blank"
-                    size="large"
+            {events[0] ? (
+                <div
                     style={{
-                        position: "fixed",
-                        height: "60px",
-                        bottom: "5%",
-                        right: "10%",
-                        height: "fit-content",
-                        width: "fit-content",
-                        backgroundColor: "#fff",
-                        boxShadow: "rgba(0, 0, 0, 0.16) 0px 1px 4px",
-                    }}
-                    icon={<WhatsAppOutlined />}>
-                    Ask CP
-                </Button>
-            </div>
+                        width: "100%",
+                        display: "flex",
+                        justifyContent: "center",
+                        marginBottom: "1rem",
+                    }}>
+                    <Button
+                        type="link"
+                        href={`https://wa.me/${events[0].contactPersons[0].phoneNumber}`}
+                        target="_blank"
+                        size="large"
+                        style={{
+                            position: "fixed",
+                            height: "60px",
+                            bottom: "5%",
+                            right: "10%",
+                            height: "fit-content",
+                            width: "fit-content",
+                            backgroundColor: "#fff",
+                            boxShadow: "rgba(0, 0, 0, 0.16) 0px 1px 4px",
+                        }}
+                        icon={<WhatsAppOutlined />}>
+                        Ask {events[0].contactPersons[0].name}
+                    </Button>
+                </div>
+            ) : null}
         </MainLayout>
     );
 }

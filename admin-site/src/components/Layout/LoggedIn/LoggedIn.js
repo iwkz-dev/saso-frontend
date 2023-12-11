@@ -10,6 +10,7 @@ import {
     ShoppingOutlined,
     UnorderedListOutlined,
     CreditCardOutlined,
+    ContactsOutlined,
 } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import { isAuth } from "../../../helpers/authHelper";
@@ -40,6 +41,7 @@ function LoggedIn({ children, title, isNotAllowed }) {
         getItem("Menu", "/menu", <ReadOutlined />),
         getItem("Payment Type", "/payment-type", <CreditCardOutlined />),
         getItem("Order", "/order", <ShoppingOutlined />),
+        getItem("ContactPerson", "/contact-person", <ContactsOutlined />),
         getItem("User", "/user", <UserOutlined />),
     ];
 
