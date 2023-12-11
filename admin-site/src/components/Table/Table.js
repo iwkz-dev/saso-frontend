@@ -19,6 +19,7 @@ const TableComponent = ({
     actionsOff,
     deleteOff,
     isLoading,
+    expandable,
 }) => {
     const [tableHead, setTableHead] = useState([]);
     const { Column } = Table;
@@ -90,6 +91,13 @@ const TableComponent = ({
                 x: 1500,
                 y: 800,
             }}
+            expandable={
+                expandable
+                    ? {
+                          expandedRowRender: expandable,
+                      }
+                    : null
+            }
             onRow={(record) => {
                 return {
                     onDoubleClick: () => {

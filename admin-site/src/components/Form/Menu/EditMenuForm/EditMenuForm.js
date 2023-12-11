@@ -32,6 +32,7 @@ const EditMenuForm = () => {
         event: menu.event,
         category: menu.category,
         description: menu.description,
+        note: menu.note,
     };
 
     const submitForm = async (values) => {
@@ -135,6 +136,12 @@ const EditMenuForm = () => {
         {
             name: "Additional Information",
             type: "divider",
+        },
+        {
+            name: "note",
+            label: "Note",
+            type: "text",
+            placeholder: "Note",
         },
         {
             name: "description",

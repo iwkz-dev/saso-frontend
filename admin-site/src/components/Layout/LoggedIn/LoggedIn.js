@@ -41,7 +41,7 @@ function LoggedIn({ children, title, isNotAllowed }) {
         getItem("Menu", "/menu", <ReadOutlined />),
         getItem("Payment Type", "/payment-type", <CreditCardOutlined />),
         getItem("Order", "/order", <ShoppingOutlined />),
-        getItem("ContactPerson", "/contact-person", <ContactsOutlined />),
+        getItem("Contact Person", "/contact-person", <ContactsOutlined />),
         getItem("User", "/user", <UserOutlined />),
     ];
 
