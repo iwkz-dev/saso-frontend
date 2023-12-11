@@ -40,30 +40,44 @@ const PaymentMethods = ({ userData }) => {
         );
     };
 
-    const submitTransferForm = () => {
-        setIsSpinning(true);
-        const isConfirm = confirm(
-            "Please confirm if you plan to pay later. Ensure payment is made within 2x24 hours and send the proof to the designated contact person.",
-        );
-        if (isConfirm) {
-            setIsCanceled(false);
-            const orderData = createOrderData("transfer", true);
+    const submitTransferForm = async () => {
+        try {
+            setIsSpinning(true);
 
-            dispatch(submitOrder(orderData, isAuth())).then(
-                async (response) => {
-                    if (response.status == "success") {
-                        setCurrOrder(response.data.createOrder);
-                        openNotification(
-                            response.data.createOrder.customerFullname,
-                            response.data.createOrder,
-                            true,
-                        );
-                        dispatch(resetCart());
-                        Router.push("/");
-                    }
-                },
+            const isConfirm = window.confirm(
+                "Please confirm if you plan to pay later. Ensure payment is made within 2x24 hours and send the proof to the designated contact person.",
             );
-        } else {
+
+            if (isConfirm) {
+                setIsCanceled(false);
+
+                const orderData = createOrderData("transfer", true);
+                console.log(orderData);
+
+                const response = await dispatch(
+                    submitOrder(orderData, isAuth()),
+                );
+
+                if (response.status === "success") {
+                    const newCurrOrder = response.data.createOrder;
+
+                    setCurrOrder(newCurrOrder);
+
+                    openNotification(
+                        newCurrOrder.customerFullname,
+                        newCurrOrder,
+                        true,
+                    );
+
+                    dispatch(resetCart());
+                    Router.push("/");
+                }
+            } else {
+                setIsSpinning(false);
+            }
+        } catch (error) {
+            console.error("Error submitting transfer form:", error);
+            // Handle errors as needed
             setIsSpinning(false);
         }
     };
@@ -123,6 +137,7 @@ const PaymentMethods = ({ userData }) => {
             menus.push({
                 _id: item.menu._id,
                 totalPortion: item.amount,
+                note: item.note,
             });
         });
         const orderData = {

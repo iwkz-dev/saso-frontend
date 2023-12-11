@@ -15,26 +15,46 @@ const index = () => {
     const [showCard, setShowCard] = useState(false);
 
     useEffect(() => {
-        getAllData();
+        fetchData();
     }, []);
 
-    const getAllData = () => {
-        setShowLoading(true);
+    const fetchData = async () => {
+        try {
+            setShowLoading(true);
+            setShowCard(false);
+
+            const [eventsResponse, ordersResponse] = await Promise.all([
+                dispatch(getAllEvents()),
+                dispatch(getAllOrders()),
+            ]);
+
+            const failedResponse = [eventsResponse, ordersResponse].find(
+                (response) => response?.status === "failed",
+            );
+
+            if (!failedResponse) {
+                setShowCard(true);
+            } else {
+                handleFailedRequest(failedResponse);
+            }
+
+            setShowLoading(false);
+        } catch (error) {
+            handleFetchError(error);
+        }
+    };
+
+    const handleFailedRequest = (response) => {
         setShowCard(false);
-        Promise.all([dispatch(getAllEvents()), dispatch(getAllOrders())]).then(
-            (responses) => {
-                const failed = responses.find((r) => r?.status === "failed");
-                if (!failed) {
-                    setShowCard(true);
-                    setShowLoading(false);
-                } else {
-                    setShowCard(false);
-                    setShowLoading(false);
-                    message.error(failed.message);
-                    isAuth(failed);
-                }
-            },
-        );
+        setShowLoading(false);
+        message.error(response.message);
+        isAuth(response);
+    };
+
+    const handleFetchError = (error) => {
+        // TODO: handle error here
+        setShowLoading(false);
+        message.error(error.message);
     };
 
     return (

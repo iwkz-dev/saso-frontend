@@ -11,6 +11,7 @@ const MenuDataDisplay = ({ menu }) => {
         name: "Name",
         barcode: "Barcode",
         description: "Description",
+        note: "Note",
         price: "Price (€)",
         quantity: "Quantity",
         quantityOrder: "Ordered Quantity",

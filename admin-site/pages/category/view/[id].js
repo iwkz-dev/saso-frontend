@@ -20,22 +20,29 @@ const id = () => {
     const category = useSelector((state) => state.category.detailCategory);
 
     useEffect(() => {
-        setShowLoading(true);
-        if (id) {
-            const getData = async () => {
-                return await dispatch(getDetailCategory(id));
-            };
-            getData().then((r) => {
-                if (r.status === "success") {
-                    setShowDataDisplay(true);
+        const fetchData = async () => {
+            setShowLoading(true);
+
+            if (id) {
+                try {
+                    const response = await dispatch(getDetailCategory(id));
+
+                    if (response.status === "success") {
+                        setShowDataDisplay(true);
+                    } else {
+                        message.error(response.message);
+                        isAuth(response);
+                    }
+                } catch (error) {
+                    // Handle any error that might occur during the API call
+                    message.error(error.message);
+                } finally {
                     setShowLoading(false);
-                } else {
-                    setShowLoading(false);
-                    message.error(r.message);
-                    isAuth(r);
                 }
-            });
-        }
+            }
+        };
+
+        fetchData();
     }, [id]);
 
     return (

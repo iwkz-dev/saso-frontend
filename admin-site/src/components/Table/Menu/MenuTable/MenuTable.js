@@ -14,6 +14,7 @@ function MenuTable({ onDelete, isLoading, showTable }) {
         quantity: "Quantity",
         quantityOrder: "Ordered Quantity",
         event: "Event",
+        note: "Note",
         created_at: "Created At",
         updated_at: "Updated At",
     };

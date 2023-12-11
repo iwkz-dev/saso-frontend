@@ -1,6 +1,7 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import Table from "../../Table";
+import { Typography } from "antd";
 
 function OrderTable({ onDelete, onChangeStatus, isLoading, showTable }) {
     const orders = useSelector((state) => state.order.orders);
@@ -46,6 +47,18 @@ function OrderTable({ onDelete, onChangeStatus, isLoading, showTable }) {
         updated_at: "Updated At",
     };
 
+    const expandOrderedMenu = (record) => (
+        <Typography.Text style={{ margin: 0, whiteSpace: "pre-line" }}>
+            {record.menus
+                .map((menu, i) => {
+                    return `${i + 1}. ${menu.name} (${menu.totalPortion})${
+                        menu.note ? ", note: " + menu.note : ""
+                    }`;
+                })
+                .join(`\n`)}
+        </Typography.Text>
+    );
+
     return (
         <Table
             onDelete={onDelete}
@@ -57,6 +70,7 @@ function OrderTable({ onDelete, onChangeStatus, isLoading, showTable }) {
             paymentTypes={paymentTypes}
             isLoading={isLoading}
             deleteOff={true}
+            expandable={expandOrderedMenu}
         />
     );
 }
