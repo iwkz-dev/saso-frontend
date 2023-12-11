@@ -8,7 +8,6 @@ import { approveOrder, submitOrder } from "../../../stores/reducers/order";
 import { resetCart } from "../../../stores/reducers/cart";
 import Router from "next/router";
 import style from "./PaymentMethods.module.scss";
-import { create } from "../../../../../../saso-backend/src/models/order";
 
 const PaymentMethods = ({ userData }) => {
     const dispatch = useDispatch();
