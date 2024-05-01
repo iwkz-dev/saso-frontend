@@ -2,9 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { SmileOutlined } from "@ant-design/icons";
 import { Space, Button, notification, message, Typography, Spin } from "antd";
-import { PayPalButtons } from "@paypal/react-paypal-js";
 import { isAuth } from "../../../helpers/authHelper";
-import { approveOrder, submitOrder } from "../../../stores/reducers/order";
+import { submitOrder } from "../../../stores/reducers/order";
 import { resetCart } from "../../../stores/reducers/cart";
 import Router from "next/router";
 import style from "./PaymentMethods.module.scss";
@@ -25,21 +24,6 @@ const PaymentMethods = ({ userData }) => {
         }
     }, [currOrder, isCanceled]);
 
-    const submitPaypalForm = () => {
-        setIsSpinning(true);
-        setIsCanceled(false);
-        const orderData = createOrderData("paypal");
-
-        return dispatch(submitOrder(orderData, isAuth())).then(
-            async (response) => {
-                if (response.status == "success") {
-                    setCurrOrder(response.data.createOrder);
-                    return response.data.paymentResponse.id;
-                }
-            },
-        );
-    };
-
     const submitTransferForm = async () => {
         try {
             setIsSpinning(true);
@@ -52,7 +36,6 @@ const PaymentMethods = ({ userData }) => {
                 setIsCanceled(false);
 
                 const orderData = createOrderData("transfer", true);
-                console.log(orderData);
 
                 const response = await dispatch(
                     submitOrder(orderData, isAuth()),
@@ -108,27 +91,6 @@ const PaymentMethods = ({ userData }) => {
             key,
             icon: <SmileOutlined style={{ color: "#108ee9" }} />,
         });
-    };
-
-    const onApprove = (data, details) => {
-        dispatch(approveOrder(data, isAuth())).then((response) => {
-            const order = response.data;
-            const payerName = details.payer.name.given_name;
-            openNotification(payerName, order);
-            dispatch(resetCart());
-            setIsSpinning(false);
-            Router.push("/");
-        });
-    };
-
-    const onCancel = () => {
-        setIsSpinning(false);
-        setIsCanceled(true);
-    };
-
-    const onError = () => {
-        setIsSpinning(false);
-        setIsCanceled(true);
     };
 
     const createOrderData = (paymentType) => {

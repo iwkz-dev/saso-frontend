@@ -138,12 +138,6 @@ const EditMenuForm = () => {
             type: "divider",
         },
         {
-            name: "note",
-            label: "Note",
-            type: "text",
-            placeholder: "Note",
-        },
-        {
             name: "description",
             label: "Description",
             type: "description",
