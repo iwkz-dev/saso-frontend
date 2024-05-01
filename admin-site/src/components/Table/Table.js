@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { formatDate } from "../../helpers/dateHelper";
-import { Table, Select, Space, message } from "antd";
-import { DeleteTwoTone, EditTwoTone } from "@ant-design/icons";
-import Router from "next/router";
+import { Table, Select, Space } from "antd";
+import { DeleteTwoTone, EditTwoTone, SearchOutlined } from "@ant-design/icons";
 import styles from "./Table.module.scss";
 import { Typography } from "antd";
 
@@ -97,19 +96,7 @@ const TableComponent = ({
                           expandedRowRender: expandable,
                       }
                     : null
-            }
-            onRow={(record) => {
-                return {
-                    onDoubleClick: () => {
-                        if (linkToView && !actionsOff) {
-                            const link = linkToView + record._id;
-                            Router.push(link);
-                        } else {
-                            message.error("Cannot open the detail");
-                        }
-                    },
-                };
-            }}>
+            }>
             {Object.keys(tableHead).map((dataKey) => {
                 if (typeof tableHead[dataKey] !== "string") {
                     return editableRow(tableHead[dataKey], dataKey);
@@ -221,7 +208,7 @@ const TableComponent = ({
                     );
                 }
             })}
-            {actionsOff || (!linkToEdit && deleteOff) ? null : (
+            {actionsOff || (!linkToEdit && deleteOff && !linkToView) ? null : (
                 <Column
                     title="Actions"
                     key="action"
@@ -229,12 +216,16 @@ const TableComponent = ({
                     render={(_, record) => {
                         return (
                             <Space size={24}>
+                                {linkToView ? (
+                                    <Link href={linkToView + record._id}>
+                                        <SearchOutlined />
+                                    </Link>
+                                ) : null}
                                 {linkToEdit ? (
                                     <Link href={linkToEdit + record._id}>
                                         <EditTwoTone />
                                     </Link>
                                 ) : null}
-
                                 {deleteOff ? null : (
                                     <DeleteTwoTone
                                         twoToneColor="#eb2f96"

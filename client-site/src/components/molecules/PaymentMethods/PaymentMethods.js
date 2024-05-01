@@ -99,7 +99,6 @@ const PaymentMethods = ({ userData }) => {
             menus.push({
                 _id: item.menu._id,
                 totalPortion: item.amount,
-                note: item.note,
             });
         });
         const orderData = {
