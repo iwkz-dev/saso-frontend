@@ -1,6 +1,6 @@
 import { Button, Card, Input, Space, Typography } from "antd";
-import React, { useState } from "react";
 import ImagesPreview from "../ImagesPreview/ImagesPreview";
+import React from "react";
 import { MinusOutlined, PlusOutlined, DeleteOutlined } from "@ant-design/icons";
 import styles from "./CartList.module.scss";
 import { addNote } from "../../../stores/reducers/cart";
@@ -65,21 +65,6 @@ const CartList = ({ cart, add, remove }) => {
                                 </Space.Compact>
                             </div>
                         </div>
-                        {item.menu.note ? (
-                            <div className={styles.note}>
-                                <Typography.Text strong type="danger">
-                                    Please add note for this item:
-                                </Typography.Text>
-                                <Input.TextArea
-                                    key={item.menu._id}
-                                    placeholder={item.menu.note}
-                                    onChange={(e) =>
-                                        handleChange(e, item)
-                                    }></Input.TextArea>
-                            </div>
-                        ) : (
-                            ""
-                        )}
                     </Card>
                 ))}
             </Space>

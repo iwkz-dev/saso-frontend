@@ -43,9 +43,6 @@ const DataDisplay = ({ item, dataForm, events, categories, linkToEdit }) => {
                     ellipsis={{
                         rows: 2,
                         expandable: true,
-                        onEllipsis: (ellipsis) => {
-                            console.log("Ellipsis changed:", ellipsis);
-                        },
                     }}
                     title={item[key]}>
                     {item[key]}

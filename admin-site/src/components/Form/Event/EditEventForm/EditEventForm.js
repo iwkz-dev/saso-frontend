@@ -55,8 +55,6 @@ const EditEventForm = () => {
                 data.append("imageUrls", file);
             });
 
-            console.log(data);
-
             const response = await dispatch(editDetailEvent(event._id, data));
 
             if (response?.status === "failed") {

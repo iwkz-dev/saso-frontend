@@ -53,14 +53,6 @@ export const cartSlice = createSlice({
             state.data.totalAmount = totalAmount;
             state.data.totalPrice = parseFloat(totalPrice).toFixed(2);
         },
-        addNote: (state, action) => {
-            const id = action.payload._id;
-            const itemIndex = state.data.items.findIndex(
-                (item) => item.menu._id == id,
-            );
-            state.data.items[itemIndex].note = action.payload.note;
-            console.log(state.data.items[itemIndex]);
-        },
         removeOrder: (state, action) => {
             const id = action.payload._id;
             const itemIndex = state.data.items.findIndex(
@@ -109,5 +101,5 @@ export const cartSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { resetCart, addOrder, removeOrder, addNote } = cartSlice.actions;
+export const { resetCart, addOrder, removeOrder } = cartSlice.actions;
 export default cartSlice.reducer;
