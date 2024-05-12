@@ -12,6 +12,7 @@ const RelatedMenuTable = ({ filterName, itemFilter, onDelete }) => {
     const categories = useSelector((state) => state.category.categories);
     const events = useSelector((state) => state.event.events);
     const [showTable, setShowTable] = useState(false);
+    const [tableHead, setTableHead] = useState([]);
 
     useEffect(() => {
         getAllData();
@@ -41,16 +42,82 @@ const RelatedMenuTable = ({ filterName, itemFilter, onDelete }) => {
         }
     };
 
-    const tableHead = {
-        name: "Name",
-        description: "Description",
-        category: "Category",
-        price: "Price (€)",
-        quantity: "Quantity",
-        event: "Event",
-        created_at: "Created At",
-        updated_at: "Updated At",
-    };
+    useEffect(() => {
+        setTableHead([
+            {
+                key: "name",
+                dataIndex: "name",
+                title: "Name",
+            },
+            {
+                key: "description",
+                dataIndex: "description",
+                title: "Description",
+            },
+            {
+                key: "category",
+                dataIndex: "category",
+                title: "Category",
+                filterMode: "menu",
+                filterSearch: true,
+                filters: categories.map((category) => {
+                    return {
+                        text: category.name,
+                        value: category._id,
+                    };
+                }),
+                onFilter: (value, record) => {
+                    return record.category.includes(value);
+                },
+            },
+            {
+                key: "price",
+                dataIndex: "price",
+                title: "Price (€)",
+            },
+            {
+                key: "quantity",
+                dataIndex: "quantity",
+                title: "Quantity",
+            },
+            {
+                key: "quantityOrder",
+                dataIndex: "quantityOrder",
+                title: "Ordered Quantity",
+            },
+            {
+                key: "event",
+                dataIndex: "event",
+                title: "Event",
+                filterMode: "menu",
+                filterSearch: true,
+                filters: events.map((event) => {
+                    return {
+                        text: event.name,
+                        value: event._id,
+                    };
+                }),
+                onFilter: (value, record) => {
+                    return record.event.includes(value);
+                },
+            },
+            {
+                key: "note",
+                dataIndex: "note",
+                title: "Note",
+            },
+            {
+                key: "created_at",
+                dataIndex: "created_at",
+                title: "Created At",
+            },
+            {
+                key: "updated_at",
+                dataIndex: "updated_at",
+                title: "Updated At",
+            },
+        ]);
+    }, [events, menus]);
 
     return (
         <Table
