@@ -41,13 +41,62 @@ const RelatedMenuOrder = ({ menus }) => {
         }
     };
 
-    const tableHead = {
-        name: "Name",
-        price: "Price (€)",
-        totalPortion: "Total Portion",
-        category: "Category",
-        event: "Event",
-    };
+    const [tableHead, setTableHead] = useState([]);
+
+    useEffect(() => {
+        setTableHead([
+            {
+                key: "name",
+                dataIndex: "name",
+                title: "Name",
+            },
+            {
+                key: "price",
+                dataIndex: "price",
+                title: "Price (€)",
+            },
+
+            {
+                key: "totalPortion",
+                dataIndex: "totalPortion",
+                title: "Total Portion",
+            },
+            {
+                key: "category",
+                dataIndex: "category",
+                title: "Category",
+                filterMode: "menu",
+                filterSearch: true,
+                filters: categories.map((category) => {
+                    return {
+                        text: category.name,
+                        value: category._id,
+                    };
+                }),
+                onFilter: (value, record) => {
+                    return record.category.includes(value);
+                },
+            },
+            {
+                key: "event",
+                dataIndex: "event",
+                title: "Event",
+                filterMode: "menu",
+                filterSearch: true,
+                filters: events.map((event) => {
+                    return {
+                        text: event.name,
+                        value: event._id,
+                    };
+                }),
+                onFilter: (value, record) => {
+                    return record.event.includes(value);
+                },
+            },
+        ]);
+    }, [events, categories, menus]);
+
+    console.log(tableHead);
 
     return (
         <Table

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Link from "next/link";
 import { formatDate } from "../../helpers/dateHelper";
 import { Table, Select, Space } from "antd";
@@ -20,16 +20,11 @@ const TableComponent = ({
     isLoading,
     expandable,
 }) => {
-    const [tableHead, setTableHead] = useState([]);
     const { Column } = Table;
     const updatedData = data.map((item) => {
         const newItem = { ...item, key: item._id };
         return newItem;
     });
-
-    useEffect(() => {
-        setTableHead(dataHead);
-    }, []);
 
     const getDefaultValue = (options, statuses, id) => {
         return JSON.stringify({
@@ -38,15 +33,32 @@ const TableComponent = ({
         });
     };
 
-    const editableRow = (columnData, dataKey) => {
-        const type = columnData.type;
+    const getActionColumnWidth = (linkToEdit, deleteOff, linkToView) => {
+        return (
+            75 +
+            (linkToEdit ? 30 : 0) +
+            (!deleteOff ? 30 : 0) +
+            (linkToView ? 30 : 0)
+        );
+    };
+
+    const editableRow = (tH) => {
+        const type = tH.type;
         switch (type) {
             case "select":
                 return (
                     <Column
-                        title={columnData.name}
-                        dataIndex={dataKey}
-                        key={dataKey}
+                        title={tH.title}
+                        dataIndex={tH.dataIndex}
+                        key={tH.key}
+                        filterSearch={tH.filterSearch}
+                        onFilter={tH.onFilter}
+                        filters={tH.options.map((option) => {
+                            return {
+                                text: option.title,
+                                value: option.code,
+                            };
+                        })}
                         render={(statuses, record) => {
                             return (
                                 <Select
@@ -55,12 +67,12 @@ const TableComponent = ({
                                         width: "95%",
                                     }}
                                     defaultValue={getDefaultValue(
-                                        columnData.options,
+                                        tH.options,
                                         statuses,
                                         record._id,
                                     )}
-                                    onChange={columnData.onChange}>
-                                    {columnData.options.map((statusOption) => (
+                                    onChange={tH.onChange}>
+                                    {tH.options.map((statusOption) => (
                                         <Select.Option
                                             key={statusOption.title}
                                             value={JSON.stringify({
@@ -97,29 +109,36 @@ const TableComponent = ({
                       }
                     : null
             }>
-            {Object.keys(tableHead).map((dataKey) => {
-                if (typeof tableHead[dataKey] !== "string") {
-                    return editableRow(tableHead[dataKey], dataKey);
-                } else if (
-                    dataKey === "created_at" ||
-                    dataKey === "updated_at"
-                ) {
+            {dataHead.map((tH) => {
+                const {
+                    title,
+                    dataIndex,
+                    key,
+                    filterMode,
+                    filterSearch,
+                    onFilter,
+                    filters,
+                    editable,
+                } = tH;
+                if (editable) {
+                    return editableRow(tH);
+                } else if (key === "created_at" || key === "updated_at") {
                     return (
                         <Column
-                            title={tableHead[dataKey]}
-                            dataIndex={dataKey}
-                            key={dataKey}
+                            title={title}
+                            dataIndex={dataIndex}
+                            key={key}
                             render={(dates) => {
                                 return <>{formatDate(dates, true)}</>;
                             }}
                         />
                     );
-                } else if (dataKey === "started_at") {
+                } else if (tH.key === "started_at") {
                     return (
                         <Column
-                            title={tableHead[dataKey]}
-                            dataIndex={dataKey}
-                            key={dataKey}
+                            title={title}
+                            dataIndex={dataIndex}
+                            key={key}
                             render={(startedAt) => {
                                 return (
                                     <>{formatDate(startedAt, false, true)}</>
@@ -127,12 +146,16 @@ const TableComponent = ({
                             }}
                         />
                     );
-                } else if (dataKey === "category") {
+                } else if (tH.key === "category") {
                     return (
                         <Column
-                            title={tableHead[dataKey]}
-                            dataIndex={dataKey}
-                            key={dataKey}
+                            title={title}
+                            dataIndex={dataIndex}
+                            key={key}
+                            filterSearch={filterSearch}
+                            filters={filters}
+                            onFilter={onFilter}
+                            filterMode={filterMode}
                             render={(categoryId) => {
                                 const category = categories.find(
                                     (c) => c._id === categoryId,
@@ -141,12 +164,16 @@ const TableComponent = ({
                             }}
                         />
                     );
-                } else if (dataKey === "event") {
+                } else if (tH.key === "event") {
                     return (
                         <Column
-                            title={tableHead[dataKey]}
-                            dataIndex={dataKey}
-                            key={dataKey}
+                            title={title}
+                            dataIndex={dataIndex}
+                            key={key}
+                            filterSearch={filterSearch}
+                            filters={filters}
+                            onFilter={onFilter}
+                            filterMode={filterMode}
                             render={(eventId) => {
                                 const event = events.find(
                                     (e) => e._id === eventId,
@@ -155,12 +182,12 @@ const TableComponent = ({
                             }}
                         />
                     );
-                } else if (dataKey === "description") {
+                } else if (tH.key === "description") {
                     return (
                         <Column
-                            title={tableHead[dataKey]}
-                            dataIndex={dataKey}
-                            key={dataKey}
+                            title={title}
+                            dataIndex={dataIndex}
+                            key={key}
                             render={(desc) => {
                                 return (
                                     <Typography.Paragraph
@@ -181,12 +208,12 @@ const TableComponent = ({
                             }}
                         />
                     );
-                } else if (dataKey === "paymentType") {
+                } else if (tH.key === "paymentType") {
                     return (
                         <Column
-                            title={tableHead[dataKey]}
-                            dataIndex={dataKey}
-                            key={dataKey}
+                            title={title}
+                            dataIndex={dataIndex}
+                            key={key}
                             render={(eventId) => {
                                 const paymentType = paymentTypes.find(
                                     (e) => e._id === eventId,
@@ -198,9 +225,12 @@ const TableComponent = ({
                 } else {
                     return (
                         <Column
-                            title={tableHead[dataKey]}
-                            dataIndex={dataKey}
-                            key={dataKey}
+                            title={title}
+                            dataIndex={dataIndex}
+                            key={key}
+                            filterSearch={filterSearch}
+                            onFilter={onFilter}
+                            filters={filters}
                             render={(el) => {
                                 return <>{el?.toString() || ""}</>;
                             }}
@@ -213,26 +243,33 @@ const TableComponent = ({
                     title="Actions"
                     key="action"
                     fixed="right"
+                    width={getActionColumnWidth(
+                        linkToEdit,
+                        deleteOff,
+                        linkToView,
+                    )}
                     render={(_, record) => {
                         return (
-                            <Space size={24}>
-                                {linkToView ? (
-                                    <Link href={linkToView + record._id}>
-                                        <SearchOutlined />
-                                    </Link>
-                                ) : null}
-                                {linkToEdit ? (
-                                    <Link href={linkToEdit + record._id}>
-                                        <EditTwoTone />
-                                    </Link>
-                                ) : null}
-                                {deleteOff ? null : (
-                                    <DeleteTwoTone
-                                        twoToneColor="#eb2f96"
-                                        onClick={() => onDelete(record)}
-                                    />
-                                )}
-                            </Space>
+                            <div className={styles.actionCell}>
+                                <Space size={16} align="center" split={true}>
+                                    {linkToView ? (
+                                        <Link href={linkToView + record._id}>
+                                            <SearchOutlined />
+                                        </Link>
+                                    ) : null}
+                                    {linkToEdit ? (
+                                        <Link href={linkToEdit + record._id}>
+                                            <EditTwoTone />
+                                        </Link>
+                                    ) : null}
+                                    {deleteOff ? null : (
+                                        <DeleteTwoTone
+                                            twoToneColor="#eb2f96"
+                                            onClick={() => onDelete(record)}
+                                        />
+                                    )}
+                                </Space>
+                            </div>
                         );
                     }}
                 />

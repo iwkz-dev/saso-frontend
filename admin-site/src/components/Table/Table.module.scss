@@ -2,4 +2,9 @@
     :global(.ant-table-row) {
         cursor: pointer;
     }
+    .actionCell {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }
 }
