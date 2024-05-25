@@ -25,42 +25,42 @@ const PaymentMethods = ({ userData }) => {
     }, [currOrder, isCanceled]);
 
     const submitTransferForm = async () => {
+        setIsSpinning(true);
+
+        const isConfirm = window.confirm(
+            "Please confirm if you plan to pay later. Ensure payment is made within 2x24 hours and send the proof to the designated contact person.",
+        );
+
+        if (!isConfirm) {
+            setIsSpinning(false);
+            return;
+        }
+
         try {
-            setIsSpinning(true);
+            setIsCanceled(false);
 
-            const isConfirm = window.confirm(
-                "Please confirm if you plan to pay later. Ensure payment is made within 2x24 hours and send the proof to the designated contact person.",
-            );
+            const orderData = createOrderData("transfer", true);
+            const response = await dispatch(submitOrder(orderData, isAuth()));
 
-            if (isConfirm) {
-                setIsCanceled(false);
+            if (response.status === "success") {
+                const newCurrOrder = response.data.createOrder;
 
-                const orderData = createOrderData("transfer", true);
-
-                const response = await dispatch(
-                    submitOrder(orderData, isAuth()),
+                setCurrOrder(newCurrOrder);
+                openNotification(
+                    newCurrOrder.customerFullname,
+                    newCurrOrder,
+                    true,
                 );
 
-                if (response.status === "success") {
-                    const newCurrOrder = response.data.createOrder;
-
-                    setCurrOrder(newCurrOrder);
-
-                    openNotification(
-                        newCurrOrder.customerFullname,
-                        newCurrOrder,
-                        true,
-                    );
-
-                    dispatch(resetCart());
-                    Router.push("/");
-                }
+                dispatch(resetCart());
+                Router.push("/");
             } else {
-                setIsSpinning(false);
+                throw new Error("Order submission failed");
             }
         } catch (error) {
-            console.error("Error submitting transfer form:", error);
-            // Handle errors as needed
+            console.error(error);
+            message.error(error.message);
+        } finally {
             setIsSpinning(false);
         }
     };
