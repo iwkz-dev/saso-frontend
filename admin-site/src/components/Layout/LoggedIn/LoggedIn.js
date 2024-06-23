@@ -95,7 +95,7 @@ function LoggedIn({ children, title, isNotAllowed }) {
                 collapsible
                 collapsed={collapsed}
                 onCollapse={(value) => setCollapsed(value)}
-                theme="light">
+                theme="dark">
                 <div
                     style={{
                         height: 64,
@@ -118,6 +118,7 @@ function LoggedIn({ children, title, isNotAllowed }) {
                     selectedKeys={[current]}
                     items={items}
                     mode="inline"
+                    theme="dark"
                 />
             </Sider>
             <Layout className="site-layout">
