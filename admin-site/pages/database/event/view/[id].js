@@ -64,7 +64,7 @@ const id = () => {
                 <Space direction="vertical" style={{ display: "flex" }}>
                     <Typography.Title level={4}>Related Menu</Typography.Title>
                     <AddItemButton
-                        hrefLink={`/menu/add?event=${event._id}`}
+                        hrefLink={`/database/menu/add?event=${event._id}`}
                         text="Add Menu for this Event"
                     />
                     <RelatedMenuTable filterName="event" itemFilter={event} />
