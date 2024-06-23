@@ -26,7 +26,7 @@ const AddUserForm = () => {
                 message.error(response.message);
             } else {
                 message.success(response.message);
-                Router.push("/user");
+                Router.push("/database/user");
             }
         } catch (error) {
             console.error("Error submitting form:", error);

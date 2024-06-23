@@ -11,6 +11,7 @@ import {
     UnorderedListOutlined,
     CreditCardOutlined,
     ContactsOutlined,
+    DatabaseOutlined,
 } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import { isAuth } from "../../../helpers/authHelper";
@@ -22,7 +23,9 @@ function LoggedIn({ children, title, isNotAllowed }) {
     const { Header, Footer, Sider, Content } = Layout;
 
     useEffect(() => {
-        setCurrent("/" + Router.pathname.split("/")[1]);
+        const pathChunks = Router.pathname.split("/");
+        pathChunks.shift();
+        setCurrent("/" + pathChunks.join("/"));
     }, []);
 
     function getItem(label, key, icon, children) {
@@ -36,13 +39,30 @@ function LoggedIn({ children, title, isNotAllowed }) {
 
     const items = [
         getItem("Dashboard", "/", <PieChartOutlined />),
-        getItem("Event", "/event", <CalendarOutlined />),
-        getItem("Category", "/category", <UnorderedListOutlined />),
-        getItem("Menu", "/menu", <ReadOutlined />),
-        getItem("Payment Type", "/payment-type", <CreditCardOutlined />),
-        getItem("Order", "/order", <ShoppingOutlined />),
-        getItem("Contact Person", "/contact-person", <ContactsOutlined />),
-        getItem("User", "/user", <UserOutlined />),
+        {
+            type: "divider",
+        },
+        getItem("database", "Database", <DatabaseOutlined />, [
+            getItem("Event", "/database/event", <CalendarOutlined />),
+            getItem(
+                "Category",
+                "/database/category",
+                <UnorderedListOutlined />,
+            ),
+            getItem("Menu", "/database/menu", <ReadOutlined />),
+            getItem(
+                "Payment Type",
+                "/database/payment-type",
+                <CreditCardOutlined />,
+            ),
+            getItem("Order", "/database/order", <ShoppingOutlined />),
+            getItem(
+                "Contact Person",
+                "/database/contact-person",
+                <ContactsOutlined />,
+            ),
+            getItem("User", "/database/user", <UserOutlined />),
+        ]),
     ];
 
     useEffect(() => {
@@ -61,6 +81,7 @@ function LoggedIn({ children, title, isNotAllowed }) {
 
     const onClick = (e) => {
         const key = e.key;
+        console.log(key);
         Router.push(key);
         setCurrent(key);
     };
@@ -92,11 +113,12 @@ function LoggedIn({ children, title, isNotAllowed }) {
                     />
                 </div>
                 <Menus
-                    theme="dark"
-                    defaultSelectedKeys={["1"]}
+                    defaultSelectedKeys={["/dashboard"]}
                     onClick={onClick}
                     selectedKeys={[current]}
                     items={items}
+                    mode="inline"
+                    theme="dark"
                 />
             </Sider>
             <Layout className="site-layout">

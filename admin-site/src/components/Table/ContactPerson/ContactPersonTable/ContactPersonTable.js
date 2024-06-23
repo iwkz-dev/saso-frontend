@@ -57,7 +57,7 @@ const ContactPersonTable = ({ onDelete, isLoading, showTable }) => {
             dataHead={tableHead}
             events={events}
             emptyMessage="Contact Person is empty"
-            linkToEdit="/contact-person/edit/"
+            linkToEdit="/database/contact-person/edit/"
             isLoading={isLoading}
         />
     );

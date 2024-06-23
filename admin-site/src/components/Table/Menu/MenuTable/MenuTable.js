@@ -89,8 +89,8 @@ function MenuTable({ onDelete, isLoading, showTable }) {
             categories={categories}
             dataHead={tableHead}
             emptyMessage="Menu is empty"
-            linkToEdit="/menu/edit/"
-            linkToView="/menu/view/"
+            linkToEdit="/database/menu/edit/"
+            linkToView="/database/menu/view/"
             isLoading={isLoading}
         />
     );

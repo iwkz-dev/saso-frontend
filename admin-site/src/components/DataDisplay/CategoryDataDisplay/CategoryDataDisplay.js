@@ -14,7 +14,7 @@ const CategoryDataDisplay = ({ category }) => {
         <DataDisplay
             item={category}
             dataForm={dataForm}
-            linkToEdit={`/admin/category/edit/${category._id}`}
+            linkToEdit={`/admin/database/category/edit/${category._id}`}
         />
     );
 };

@@ -31,7 +31,7 @@ const PaymentTypeTable = ({ onDelete }) => {
             data={paymentTypes}
             dataHead={tableHead}
             emptyMessage="Payment type is empty"
-            linkToEdit="/payment-type/edit/"
+            linkToEdit="/database/payment-type/edit/"
             onDelete={onDelete}
         />
     );

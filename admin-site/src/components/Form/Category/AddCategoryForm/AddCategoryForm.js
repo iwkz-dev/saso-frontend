@@ -22,7 +22,7 @@ const AddCategoryForm = () => {
                     message.error(response.message);
                 } else {
                     message.success(response.message);
-                    Router.push("/category");
+                    Router.push("/database/category");
                 }
             } catch (error) {
                 message.error(error.message);

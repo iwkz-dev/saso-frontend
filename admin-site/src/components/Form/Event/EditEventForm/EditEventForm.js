@@ -63,7 +63,7 @@ const EditEventForm = () => {
             } else {
                 setShowUploading(false);
                 message.success(response.message);
-                Router.push("/event");
+                Router.push("/database/event");
             }
         } catch (error) {
             setShowUploading(false);

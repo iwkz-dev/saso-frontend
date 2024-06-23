@@ -44,7 +44,7 @@ const AddEventForm = () => {
                 } else {
                     setShowUploading(false);
                     message.success(result.message);
-                    Router.push("/event");
+                    Router.push("/database/event");
                 }
             } catch (error) {
                 setShowUploading(false);

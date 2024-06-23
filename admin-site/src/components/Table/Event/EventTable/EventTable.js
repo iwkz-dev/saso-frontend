@@ -67,8 +67,8 @@ function EventTable({ onDelete, onChangeStatus, isLoading, showTable }) {
             data={showTable ? events : []}
             dataHead={tableHead}
             emptyMessage="Event is empty"
-            linkToEdit="/event/edit/"
-            linkToView="/event/view/"
+            linkToEdit="/database/event/edit/"
+            linkToView="/database/event/view/"
             isLoading={isLoading}
         />
     );
