@@ -215,9 +215,15 @@ const TableComponent = ({
                             dataIndex={dataIndex}
                             key={key}
                             render={(record) => {
-                                const paymentType = paymentTypes.find(
+                                let paymentType = paymentTypes.find(
                                     (e) => e.type === record,
                                 );
+
+                                if (!paymentType) {
+                                    paymentType = paymentTypes.find(
+                                        (e) => e._id === record,
+                                    );
+                                }
                                 return <>{paymentType?.type}</>;
                             }}
                         />
