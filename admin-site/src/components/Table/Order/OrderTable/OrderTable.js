@@ -146,7 +146,7 @@ function OrderTable({ onDelete, onChangeStatus, isLoading, showTable }) {
             events={events}
             dataHead={tableHead}
             emptyMessage="Order is empty"
-            linkToView="/order/view/"
+            linkToView="/database/order/view/"
             paymentTypes={paymentTypes}
             isLoading={isLoading}
             deleteOff={true}

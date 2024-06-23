@@ -45,7 +45,7 @@ const AddMenuForm = () => {
             } else {
                 setShowUploading(false);
                 message.success(r.message);
-                Router.push("/menu");
+                Router.push("/database/menu");
             }
         } catch (error) {
             setShowUploading(false);

@@ -11,6 +11,7 @@ import {
     UnorderedListOutlined,
     CreditCardOutlined,
     ContactsOutlined,
+    DatabaseOutlined,
 } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import { isAuth } from "../../../helpers/authHelper";
@@ -36,13 +37,35 @@ function LoggedIn({ children, title, isNotAllowed }) {
 
     const items = [
         getItem("Dashboard", "/", <PieChartOutlined />),
-        getItem("Event", "/event", <CalendarOutlined />),
-        getItem("Category", "/category", <UnorderedListOutlined />),
-        getItem("Menu", "/menu", <ReadOutlined />),
-        getItem("Payment Type", "/payment-type", <CreditCardOutlined />),
-        getItem("Order", "/order", <ShoppingOutlined />),
-        getItem("Contact Person", "/contact-person", <ContactsOutlined />),
-        getItem("User", "/user", <UserOutlined />),
+        {
+            type: "divider",
+        },
+        {
+            type: "group",
+            label: "Database",
+            icon: <DatabaseOutlined />,
+            children: [
+                getItem("Event", "/database/event", <CalendarOutlined />),
+                getItem(
+                    "Category",
+                    "/database/category",
+                    <UnorderedListOutlined />,
+                ),
+                getItem("Menu", "/database/menu", <ReadOutlined />),
+                getItem(
+                    "Payment Type",
+                    "/database/payment-type",
+                    <CreditCardOutlined />,
+                ),
+                getItem("Order", "/order", <ShoppingOutlined />),
+                getItem(
+                    "Contact Person",
+                    "/database/contact-person",
+                    <ContactsOutlined />,
+                ),
+                getItem("User", "/database/user", <UserOutlined />),
+            ],
+        },
     ];
 
     useEffect(() => {
@@ -74,7 +97,7 @@ function LoggedIn({ children, title, isNotAllowed }) {
                 collapsible
                 collapsed={collapsed}
                 onCollapse={(value) => setCollapsed(value)}
-                theme="dark">
+                theme="light">
                 <div
                     style={{
                         height: 64,
@@ -92,7 +115,6 @@ function LoggedIn({ children, title, isNotAllowed }) {
                     />
                 </div>
                 <Menus
-                    theme="dark"
                     defaultSelectedKeys={["1"]}
                     onClick={onClick}
                     selectedKeys={[current]}

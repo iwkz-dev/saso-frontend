@@ -23,7 +23,7 @@ const EventDataDisplay = ({ event }) => {
         <DataDisplay
             item={event}
             dataForm={dataForm}
-            linkToEdit={`/admin/event/edit/${event._id}`}
+            linkToEdit={`/admin/database/event/edit/${event._id}`}
         />
     );
 };

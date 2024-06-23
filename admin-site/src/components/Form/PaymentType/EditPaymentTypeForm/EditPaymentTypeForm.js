@@ -32,7 +32,7 @@ const EditPaymentTypeForm = () => {
                     message.error(response.message);
                 } else {
                     message.success(response.message);
-                    Router.push("/payment-type");
+                    Router.push("/database/payment-type");
                 }
             } catch (error) {
                 message.error(error.message);

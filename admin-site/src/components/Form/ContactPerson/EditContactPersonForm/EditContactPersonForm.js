@@ -40,7 +40,7 @@ const EditContactPersonForm = () => {
                 message.error(response.message);
             } else {
                 message.success(response.message);
-                Router.push("/contact-person");
+                Router.push("/database/contact-person");
             }
         } catch (error) {
             message.error(error.message);
