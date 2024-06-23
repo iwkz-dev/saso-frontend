@@ -7,9 +7,10 @@ import EventDataDisplay from "../../../../src/components/DataDisplay/EventDataDi
 import RelatedMenuTable from "../../../../src/components/Table/Event/RelatedMenuTable/RelatedMenuTable";
 import AddItemButton from "../../../../src/components/common/Button/AddItemButton/AddItemButton";
 import Content from "../../../../src/components/Layout/Content/Content";
-import { Space, Spin, Typography, message } from "antd";
+import { Space, Spin, Tabs, Typography, message } from "antd";
 import { isAuth } from "../../../../src/helpers/authHelper";
 import EventSummary from "../../../../src/components/Card/Event/EventSummary/EventSummary";
+import RelatedOrdersTable from "../../../../src/components/Table/Event/RelatedOrders/RelatedOrdersTable";
 
 const id = () => {
     const dispatch = useDispatch();
@@ -45,27 +46,56 @@ const id = () => {
         }
     }, [id, dispatch]);
 
+    const items = [
+        {
+            key: "1",
+            label: "Event Details",
+            children: (
+                <>
+                    <EventSummary event={event} />
+                    <EventDataDisplay event={event} />
+                </>
+            ),
+        },
+        {
+            key: "2",
+            label: "Menu",
+            children: (
+                <Space direction="vertical" style={{ display: "flex" }}>
+                    <Typography.Title level={4}>Related Menu</Typography.Title>
+                    <AddItemButton
+                        hrefLink={`/menu/add?event=${event._id}`}
+                        text="Add Menu for this Event"
+                    />
+                    <RelatedMenuTable filterName="event" itemFilter={event} />
+                </Space>
+            ),
+        },
+        {
+            key: "3",
+            label: "Orders",
+            children: (
+                <Space direction="vertical" style={{ display: "flex" }}>
+                    <Typography.Title level={4}>
+                        Related Orders
+                    </Typography.Title>
+                    <RelatedOrdersTable filterName="event" itemFilter={event} />
+                </Space>
+            ),
+        },
+    ];
+
     return (
         <LoggedIn title={pageTitle}>
             <Content>
                 <Spin spinning={showLoading} tip="Loading...">
-                    <Typography.Title level={3}>
-                        View Event &quot;{event.name}&quot;
-                    </Typography.Title>
+                    <Typography.Title level={3}>{event.name}</Typography.Title>
                     {showDataDisplay ? (
                         <Space direction="vertical" style={{ display: "flex" }}>
-                            <EventSummary event={event} />
-                            <EventDataDisplay event={event} />
-                            <Typography.Title level={4}>
-                                Related Menu
-                            </Typography.Title>
-                            <AddItemButton
-                                hrefLink={`/menu/add?event=${event._id}`}
-                                text="Add Menu for this Event"
-                            />
-                            <RelatedMenuTable
-                                filterName="event"
-                                itemFilter={event}
+                            <Tabs
+                                defaultActiveKey="1"
+                                items={items}
+                                destroyInactiveTabPane={true}
                             />
                         </Space>
                     ) : (

@@ -214,9 +214,9 @@ const TableComponent = ({
                             title={title}
                             dataIndex={dataIndex}
                             key={key}
-                            render={(eventId) => {
+                            render={(record) => {
                                 const paymentType = paymentTypes.find(
-                                    (e) => e._id === eventId,
+                                    (e) => e.type === record,
                                 );
                                 return <>{paymentType?.type}</>;
                             }}

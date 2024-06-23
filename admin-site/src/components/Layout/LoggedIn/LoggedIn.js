@@ -42,7 +42,7 @@ function LoggedIn({ children, title, isNotAllowed }) {
         {
             type: "divider",
         },
-        getItem("database", "Database", <DatabaseOutlined />, [
+        getItem("Database", "database", <DatabaseOutlined />, [
             getItem("Event", "/database/event", <CalendarOutlined />),
             getItem(
                 "Category",
