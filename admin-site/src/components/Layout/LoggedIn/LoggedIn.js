@@ -11,7 +11,6 @@ import {
     UnorderedListOutlined,
     CreditCardOutlined,
     ContactsOutlined,
-    DatabaseOutlined,
 } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import { isAuth } from "../../../helpers/authHelper";
@@ -42,27 +41,31 @@ function LoggedIn({ children, title, isNotAllowed }) {
         {
             type: "divider",
         },
-        getItem("Database", "database", <DatabaseOutlined />, [
-            getItem("Event", "/database/event", <CalendarOutlined />),
-            getItem(
-                "Category",
-                "/database/category",
-                <UnorderedListOutlined />,
-            ),
-            getItem("Menu", "/database/menu", <ReadOutlined />),
-            getItem(
-                "Payment Type",
-                "/database/payment-type",
-                <CreditCardOutlined />,
-            ),
-            getItem("Order", "/database/order", <ShoppingOutlined />),
-            getItem(
-                "Contact Person",
-                "/database/contact-person",
-                <ContactsOutlined />,
-            ),
-            getItem("User", "/database/user", <UserOutlined />),
-        ]),
+        {
+            type: "group",
+            label: "Database",
+            children: [
+                getItem("Event", "/database/event", <CalendarOutlined />),
+                getItem(
+                    "Category",
+                    "/database/category",
+                    <UnorderedListOutlined />,
+                ),
+                getItem("Menu", "/database/menu", <ReadOutlined />),
+                getItem(
+                    "Payment Type",
+                    "/database/payment-type",
+                    <CreditCardOutlined />,
+                ),
+                getItem("Order", "/database/order", <ShoppingOutlined />),
+                getItem(
+                    "Contact Person",
+                    "/database/contact-person",
+                    <ContactsOutlined />,
+                ),
+                getItem("User", "/database/user", <UserOutlined />),
+            ],
+        },
     ];
 
     useEffect(() => {
