@@ -115,15 +115,15 @@ const RelatedOrdersTable = ({ filterName, itemFilter, onDelete }) => {
                 onFilter: (value, record) => {
                     return record.invoiceNumber.includes(value);
                 },
-                icon: (record) => {
+                coloredText: (record) => {
                     if (
                         record.status === 0 &&
                         dayjs().diff(dayjs(record.created_at), "d") >= 2
                     ) {
-                        return true;
+                        return "danger";
                     }
 
-                    return false;
+                    return "";
                 },
             },
             {
@@ -151,6 +151,17 @@ const RelatedOrdersTable = ({ filterName, itemFilter, onDelete }) => {
                 filterSearch: true,
                 onFilter: (value, record) => {
                     return record.status === value;
+                },
+                disabled: (record, events) => {
+                    const getEvent = events.find(
+                        (event) => event._id === record.event,
+                    );
+
+                    if (getEvent && getEvent.status !== 1) {
+                        return true;
+                    }
+
+                    return false;
                 },
                 options: [
                     {
