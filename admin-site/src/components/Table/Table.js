@@ -1,7 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import { formatDate } from "../../helpers/dateHelper";
-import { Table, Select, Space } from "antd";
+import { Table, Select, Space, Badge } from "antd";
 import { DeleteTwoTone, EditTwoTone, SearchOutlined } from "@ant-design/icons";
 import styles from "./Table.module.scss";
 import { Typography } from "antd";
@@ -42,6 +42,101 @@ const TableComponent = ({
         );
     };
 
+    const renderDateColumn = (title, dataIndex, key, formatFunc) => (
+        <Column
+            title={title}
+            dataIndex={dataIndex}
+            key={key}
+            render={(dates) => <>{formatFunc(dates)}</>}
+        />
+    );
+
+    const renderFilterableColumn = (title, dataIndex, key, tH, renderFunc) => (
+        <Column
+            title={title}
+            dataIndex={dataIndex}
+            key={key}
+            filterSearch={tH.filterSearch}
+            filters={tH.filters}
+            onFilter={tH.onFilter}
+            filterMode={tH.filterMode}
+            defaultFilteredValue={tH.defaultFilteredValue}
+            render={renderFunc}
+        />
+    );
+
+    const renderDescriptionColumn = (title, dataIndex, key) => (
+        <Column
+            title={title}
+            dataIndex={dataIndex}
+            key={key}
+            render={(desc) => (
+                <Typography.Paragraph
+                    ellipsis={{
+                        rows: 1,
+                        expandable: true,
+                    }}
+                    title={desc}>
+                    {desc}
+                </Typography.Paragraph>
+            )}
+        />
+    );
+
+    const renderPaymentTypeColumn = (title, dataIndex, key, paymentTypes) => (
+        <Column
+            title={title}
+            dataIndex={dataIndex}
+            key={key}
+            render={(record) => {
+                let paymentType =
+                    paymentTypes.find((e) => e.type === record) ||
+                    paymentTypes.find((e) => e._id === record);
+                return <>{paymentType?.type}</>;
+            }}
+        />
+    );
+
+    const renderColoredTextColumn = (title, dataIndex, key, tH) => (
+        <Column
+            title={title}
+            dataIndex={dataIndex}
+            key={key}
+            filterSearch={tH.filterSearch}
+            onFilter={tH.onFilter}
+            filters={tH.filters}
+            defaultFilteredValue={tH.defaultFilteredValue}
+            render={(el, record) => {
+                if (!tH.coloredText) {
+                    return <>{el?.toString() || ""}</>;
+                }
+
+                const colorTextType = tH.coloredText(record);
+                switch (colorTextType) {
+                    case "danger":
+                        return (
+                            <Typography.Text type={colorTextType}>
+                                <Badge status="error" /> {el?.toString() || ""}
+                            </Typography.Text>
+                        );
+                    case "success":
+                        return (
+                            <Typography.Text type={colorTextType}>
+                                <Badge status="success" />{" "}
+                                {el?.toString() || ""}
+                            </Typography.Text>
+                        );
+                    default:
+                        return (
+                            <Typography.Text type={colorTextType}>
+                                {el?.toString() || ""}
+                            </Typography.Text>
+                        );
+                }
+            }}
+        />
+    );
+
     const editableRow = (tH) => {
         const type = tH.type;
         switch (type) {
@@ -72,7 +167,12 @@ const TableComponent = ({
                                         statuses,
                                         record._id,
                                     )}
-                                    onChange={tH.onChange}>
+                                    onChange={tH.onChange}
+                                    disabled={
+                                        tH.disabled
+                                            ? tH.disabled(record, events)
+                                            : false
+                                    }>
                                     {tH.options.map((statusOption) => (
                                         <Select.Option
                                             key={statusOption.title}
@@ -111,147 +211,56 @@ const TableComponent = ({
                     : null
             }>
             {dataHead.map((tH) => {
-                const {
-                    title,
-                    dataIndex,
-                    key,
-                    filterMode,
-                    filterSearch,
-                    onFilter,
-                    filters,
-                    editable,
-                    defaultFilteredValue,
-                    icon,
-                } = tH;
+                const { title, dataIndex, key, editable } = tH;
 
                 if (editable) {
                     return editableRow(tH);
                 } else if (key === "created_at" || key === "updated_at") {
-                    return (
-                        <Column
-                            title={title}
-                            dataIndex={dataIndex}
-                            key={key}
-                            render={(dates) => {
-                                return <>{formatDate(dates, true)}</>;
-                            }}
-                        />
+                    return renderDateColumn(title, dataIndex, key, (dates) =>
+                        formatDate(dates, true),
                     );
-                } else if (tH.key === "started_at") {
-                    return (
-                        <Column
-                            title={title}
-                            dataIndex={dataIndex}
-                            key={key}
-                            render={(startedAt) => {
-                                return (
-                                    <>{formatDate(startedAt, false, true)}</>
-                                );
-                            }}
-                        />
+                } else if (key === "started_at") {
+                    return renderDateColumn(
+                        title,
+                        dataIndex,
+                        key,
+                        (startedAt) => formatDate(startedAt, false, true),
                     );
-                } else if (tH.key === "category") {
-                    return (
-                        <Column
-                            title={title}
-                            dataIndex={dataIndex}
-                            key={key}
-                            filterSearch={filterSearch}
-                            filters={filters}
-                            onFilter={onFilter}
-                            filterMode={filterMode}
-                            defaultFilteredValue={defaultFilteredValue}
-                            render={(categoryId) => {
-                                const category = categories.find(
-                                    (c) => c._id === categoryId,
-                                );
-                                return <>{category?.name}</>;
-                            }}
-                        />
+                } else if (key === "category") {
+                    return renderFilterableColumn(
+                        title,
+                        dataIndex,
+                        key,
+                        tH,
+                        (categoryId) => {
+                            const category = categories.find(
+                                (c) => c._id === categoryId,
+                            );
+                            return <>{category?.name}</>;
+                        },
                     );
-                } else if (tH.key === "event") {
-                    return (
-                        <Column
-                            title={title}
-                            dataIndex={dataIndex}
-                            key={key}
-                            filterSearch={filterSearch}
-                            filters={filters}
-                            onFilter={onFilter}
-                            filterMode={filterMode}
-                            defaultFilteredValue={defaultFilteredValue}
-                            render={(eventId) => {
-                                const event = events.find(
-                                    (e) => e._id === eventId,
-                                );
-                                return <>{event?.name}</>;
-                            }}
-                        />
+                } else if (key === "event") {
+                    return renderFilterableColumn(
+                        title,
+                        dataIndex,
+                        key,
+                        tH,
+                        (eventId) => {
+                            const event = events.find((e) => e._id === eventId);
+                            return <>{event?.name}</>;
+                        },
                     );
-                } else if (tH.key === "description") {
-                    return (
-                        <Column
-                            title={title}
-                            dataIndex={dataIndex}
-                            key={key}
-                            render={(desc) => {
-                                return (
-                                    <Typography.Paragraph
-                                        ellipsis={{
-                                            rows: 1,
-                                            expandable: true,
-                                        }}
-                                        title={desc}>
-                                        {desc}
-                                    </Typography.Paragraph>
-                                );
-                            }}
-                        />
-                    );
-                } else if (tH.key === "paymentType") {
-                    return (
-                        <Column
-                            title={title}
-                            dataIndex={dataIndex}
-                            key={key}
-                            render={(record) => {
-                                let paymentType = paymentTypes.find(
-                                    (e) => e.type === record,
-                                );
-
-                                if (!paymentType) {
-                                    paymentType = paymentTypes.find(
-                                        (e) => e._id === record,
-                                    );
-                                }
-                                return <>{paymentType?.type}</>;
-                            }}
-                        />
+                } else if (key === "description") {
+                    return renderDescriptionColumn(title, dataIndex, key);
+                } else if (key === "paymentType") {
+                    return renderPaymentTypeColumn(
+                        title,
+                        dataIndex,
+                        key,
+                        paymentTypes,
                     );
                 } else {
-                    return (
-                        <Column
-                            title={title}
-                            dataIndex={dataIndex}
-                            key={key}
-                            filterSearch={filterSearch}
-                            onFilter={onFilter}
-                            filters={filters}
-                            defaultFilteredValue={defaultFilteredValue}
-                            render={(el, record) => {
-                                if (icon) {
-                                    const withIcon = icon(record);
-                                    return (
-                                        <Typography.Text
-                                            type={withIcon ? "danger" : ""}>
-                                            {el?.toString() || ""}
-                                        </Typography.Text>
-                                    );
-                                }
-                                return <>{el?.toString() || ""}</>;
-                            }}
-                        />
-                    );
+                    return renderColoredTextColumn(title, dataIndex, key, tH);
                 }
             })}
             {actionsOff || (!linkToEdit && deleteOff && !linkToView) ? null : (

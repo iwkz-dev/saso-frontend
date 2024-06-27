@@ -16,15 +16,15 @@ function OrderTable({ onDelete, onChangeStatus, isLoading, showTable }) {
                 key: "invoiceNumber",
                 dataIndex: "invoiceNumber",
                 title: "Invoice Number",
-                icon: (record) => {
+                coloredText: (record) => {
                     if (
                         record.status === 0 &&
                         dayjs().diff(dayjs(record.created_at), "d") >= 2
                     ) {
-                        return true;
+                        return "danger";
                     }
 
-                    return false;
+                    return "";
                 },
                 filterSearch: true,
                 filters: orders.map((order) => {
@@ -65,6 +65,17 @@ function OrderTable({ onDelete, onChangeStatus, isLoading, showTable }) {
                 filterSearch: true,
                 onFilter: (value, record) => {
                     return record.status === value;
+                },
+                disabled: (record, events) => {
+                    const getEvent = events.find(
+                        (event) => event._id === record.event,
+                    );
+
+                    if (getEvent && getEvent.status !== 1) {
+                        return true;
+                    }
+
+                    return false;
                 },
                 options: [
                     {
