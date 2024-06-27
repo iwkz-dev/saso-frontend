@@ -170,7 +170,6 @@ const TableComponent = ({
                         />
                     );
                 } else if (tH.key === "event") {
-                    console.log("test", defaultFilteredValue);
                     return (
                         <Column
                             title={title}
@@ -201,12 +200,6 @@ const TableComponent = ({
                                         ellipsis={{
                                             rows: 1,
                                             expandable: true,
-                                            onEllipsis: (ellipsis) => {
-                                                console.log(
-                                                    "Ellipsis changed:",
-                                                    ellipsis,
-                                                );
-                                            },
                                         }}
                                         title={desc}>
                                         {desc}

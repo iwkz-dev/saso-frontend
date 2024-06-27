@@ -84,7 +84,6 @@ function LoggedIn({ children, title, isNotAllowed }) {
 
     const onClick = (e) => {
         const key = e.key;
-        console.log(key);
         Router.push(key);
         setCurrent(key);
     };

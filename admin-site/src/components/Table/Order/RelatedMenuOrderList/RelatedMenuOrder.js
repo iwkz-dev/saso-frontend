@@ -96,8 +96,6 @@ const RelatedMenuOrder = ({ menus }) => {
         ]);
     }, [events, categories, menus]);
 
-    console.log(tableHead);
-
     return (
         <Table
             data={showTable ? menus : []}
