@@ -9,6 +9,7 @@ import {
 } from "../../../../store/reducers/orderReducer";
 import { getAllPaymentTypes } from "../../../../store/reducers/paymentTypeReducer";
 import { isAuth } from "../../../../helpers/authHelper";
+import dayjs from "dayjs";
 
 const RelatedOrdersTable = ({ filterName, itemFilter, onDelete }) => {
     const dispatch = useDispatch();
@@ -104,7 +105,6 @@ const RelatedOrdersTable = ({ filterName, itemFilter, onDelete }) => {
                 key: "invoiceNumber",
                 dataIndex: "invoiceNumber",
                 title: "Invoice Number",
-                filterMode: "tree",
                 filterSearch: true,
                 filters: orders.map((order) => {
                     return {
@@ -115,12 +115,21 @@ const RelatedOrdersTable = ({ filterName, itemFilter, onDelete }) => {
                 onFilter: (value, record) => {
                     return record.invoiceNumber.includes(value);
                 },
+                icon: (record) => {
+                    if (
+                        record.status === 0 &&
+                        dayjs().diff(dayjs(record.created_at), "d") >= 2
+                    ) {
+                        return true;
+                    }
+
+                    return false;
+                },
             },
             {
                 key: "event",
                 dataIndex: "event",
                 title: "Event",
-                filterMode: "tree",
                 filterSearch: true,
                 filters: events.map((event) => {
                     return {
@@ -139,10 +148,8 @@ const RelatedOrdersTable = ({ filterName, itemFilter, onDelete }) => {
                 editable: true,
                 type: "select",
                 onChange: onChangeStatus,
-                filterMode: "tree",
                 filterSearch: true,
                 onFilter: (value, record) => {
-                    console.log(value, record);
                     return record.status === value;
                 },
                 options: [
