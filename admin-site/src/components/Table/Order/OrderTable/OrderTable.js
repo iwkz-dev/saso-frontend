@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import Table from "../../Table";
 import { Typography } from "antd";
+import dayjs from "dayjs";
 
 function OrderTable({ onDelete, onChangeStatus, isLoading, showTable }) {
     const orders = useSelector((state) => state.order.orders);
@@ -15,7 +16,16 @@ function OrderTable({ onDelete, onChangeStatus, isLoading, showTable }) {
                 key: "invoiceNumber",
                 dataIndex: "invoiceNumber",
                 title: "Invoice Number",
-                filterMode: "tree",
+                icon: (record) => {
+                    if (
+                        record.status === 0 &&
+                        dayjs().diff(dayjs(record.created_at), "d") >= 2
+                    ) {
+                        return true;
+                    }
+
+                    return false;
+                },
                 filterSearch: true,
                 filters: orders.map((order) => {
                     return {
@@ -31,7 +41,6 @@ function OrderTable({ onDelete, onChangeStatus, isLoading, showTable }) {
                 key: "event",
                 dataIndex: "event",
                 title: "Event",
-                filterMode: "tree",
                 filterSearch: true,
                 filters: events.map((event) => {
                     return {
@@ -42,6 +51,9 @@ function OrderTable({ onDelete, onChangeStatus, isLoading, showTable }) {
                 onFilter: (value, record) => {
                     return record.event.includes(value);
                 },
+                defaultFilteredValue: events
+                    .filter((filter) => filter.status === 1)
+                    .map((event) => event._id),
             },
             {
                 key: "status",
@@ -50,10 +62,8 @@ function OrderTable({ onDelete, onChangeStatus, isLoading, showTable }) {
                 editable: true,
                 type: "select",
                 onChange: onChangeStatus,
-                filterMode: "tree",
                 filterSearch: true,
                 onFilter: (value, record) => {
-                    console.log(value, record);
                     return record.status === value;
                 },
                 options: [
@@ -83,6 +93,11 @@ function OrderTable({ onDelete, onChangeStatus, isLoading, showTable }) {
                 key: "customerFullname",
                 dataIndex: "customerFullname",
                 title: "Customer Fullname",
+            },
+            {
+                key: "customerPhone",
+                dataIndex: "customerPhone",
+                title: "Customer Phone Number",
             },
             {
                 key: "customerEmail",
@@ -136,8 +151,6 @@ function OrderTable({ onDelete, onChangeStatus, isLoading, showTable }) {
             );
         });
     };
-
-    console.log(tableHead);
 
     return (
         <Table

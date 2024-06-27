@@ -59,6 +59,7 @@ const TableComponent = ({
                                 value: option.code,
                             };
                         })}
+                        defaultFilteredValue={[tH.defaultFilteredValue]}
                         render={(statuses, record) => {
                             return (
                                 <Select
@@ -119,7 +120,10 @@ const TableComponent = ({
                     onFilter,
                     filters,
                     editable,
+                    defaultFilteredValue,
+                    icon,
                 } = tH;
+
                 if (editable) {
                     return editableRow(tH);
                 } else if (key === "created_at" || key === "updated_at") {
@@ -156,6 +160,7 @@ const TableComponent = ({
                             filters={filters}
                             onFilter={onFilter}
                             filterMode={filterMode}
+                            defaultFilteredValue={defaultFilteredValue}
                             render={(categoryId) => {
                                 const category = categories.find(
                                     (c) => c._id === categoryId,
@@ -174,6 +179,7 @@ const TableComponent = ({
                             filters={filters}
                             onFilter={onFilter}
                             filterMode={filterMode}
+                            defaultFilteredValue={defaultFilteredValue}
                             render={(eventId) => {
                                 const event = events.find(
                                     (e) => e._id === eventId,
@@ -194,12 +200,6 @@ const TableComponent = ({
                                         ellipsis={{
                                             rows: 1,
                                             expandable: true,
-                                            onEllipsis: (ellipsis) => {
-                                                console.log(
-                                                    "Ellipsis changed:",
-                                                    ellipsis,
-                                                );
-                                            },
                                         }}
                                         title={desc}>
                                         {desc}
@@ -237,7 +237,17 @@ const TableComponent = ({
                             filterSearch={filterSearch}
                             onFilter={onFilter}
                             filters={filters}
-                            render={(el) => {
+                            defaultFilteredValue={defaultFilteredValue}
+                            render={(el, record) => {
+                                if (icon) {
+                                    const withIcon = icon(record);
+                                    return (
+                                        <Typography.Text
+                                            type={withIcon ? "danger" : ""}>
+                                            {el?.toString() || ""}
+                                        </Typography.Text>
+                                    );
+                                }
                                 return <>{el?.toString() || ""}</>;
                             }}
                         />
