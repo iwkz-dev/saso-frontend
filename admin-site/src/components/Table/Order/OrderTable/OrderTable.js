@@ -38,24 +38,6 @@ function OrderTable({ onDelete, onChangeStatus, isLoading, showTable }) {
                 },
             },
             {
-                key: "event",
-                dataIndex: "event",
-                title: "Event",
-                filterSearch: true,
-                filters: events.map((event) => {
-                    return {
-                        text: event.name,
-                        value: event._id,
-                    };
-                }),
-                onFilter: (value, record) => {
-                    return record.event.includes(value);
-                },
-                defaultFilteredValue: events
-                    .filter((filter) => filter.status === 1)
-                    .map((event) => event._id),
-            },
-            {
                 key: "status",
                 dataIndex: "status",
                 title: "Status",
@@ -99,6 +81,24 @@ function OrderTable({ onDelete, onChangeStatus, isLoading, showTable }) {
                         code: 3,
                     },
                 ],
+            },
+            {
+                key: "event",
+                dataIndex: "event",
+                title: "Event",
+                filterSearch: true,
+                filters: events.map((event) => {
+                    return {
+                        text: event.name,
+                        value: event._id,
+                    };
+                }),
+                onFilter: (value, record) => {
+                    return record.event.includes(value);
+                },
+                defaultFilteredValue: events
+                    .filter((filter) => filter.status === 1)
+                    .map((event) => event._id),
             },
             {
                 key: "customerFullname",
@@ -145,6 +145,12 @@ function OrderTable({ onDelete, onChangeStatus, isLoading, showTable }) {
 
     const expandOrderedMenu = (record) => (
         <div>
+            <Typography.Text
+                strong
+                style={{ margin: 0, whiteSpace: "pre-line" }}>
+                {record.customerFullname}
+            </Typography.Text>
+            <br />
             <Typography.Text style={{ margin: 0, whiteSpace: "pre-line" }}>
                 Ordered Menu:
             </Typography.Text>

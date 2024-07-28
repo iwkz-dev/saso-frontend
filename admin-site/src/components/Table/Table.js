@@ -1,8 +1,13 @@
 import React from "react";
-import Link from "next/link";
 import { formatDate } from "../../helpers/dateHelper";
-import { Table, Select, Space, Badge } from "antd";
-import { DeleteTwoTone, EditTwoTone, SearchOutlined } from "@ant-design/icons";
+import { Table, Select, Badge, Dropdown, Button, message } from "antd";
+import { useRouter } from "next/router";
+import {
+    DeleteTwoTone,
+    EditTwoTone,
+    SearchOutlined,
+    EllipsisOutlined,
+} from "@ant-design/icons";
 import styles from "./Table.module.scss";
 import { Typography } from "antd";
 
@@ -21,25 +26,70 @@ const TableComponent = ({
     expandable,
 }) => {
     const { Column } = Table;
+    const router = useRouter();
     const updatedData = data.map((item) => {
         const newItem = { ...item, key: item._id };
         return newItem;
     });
+
+    const getActionItems = () => {
+        const items = [];
+
+        if (linkToView) {
+            items.push({
+                label: "View",
+                key: "1",
+                icon: <SearchOutlined />,
+            });
+        }
+
+        if (linkToEdit) {
+            items.push({
+                label: "Edit",
+                key: "2",
+                icon: <EditTwoTone />,
+            });
+        }
+
+        if (!deleteOff) {
+            items.push({
+                label: "Delete",
+                key: "3",
+                icon: <DeleteTwoTone twoToneColor="#eb2f96" />,
+            });
+        }
+
+        return items;
+    };
+
+    const handleItemClick = (e, record) => {
+        const { key } = e;
+
+        switch (key) {
+            // View
+            case "1":
+                router.push(linkToView + record._id);
+                break;
+            // Edit
+            case "2":
+                router.push(linkToEdit + record._id);
+                break;
+            // Delete
+            case "3":
+                onDelete(record);
+                break;
+            // Error
+            default:
+                message.error("Error trigger action");
+                break;
+        }
+    };
 
     const getDefaultValue = (options, statuses, id) => {
         return JSON.stringify({
             id: id,
             value: options.find((option) => option.code === statuses)?.value,
         });
-    };
-
-    const getActionColumnWidth = (linkToEdit, deleteOff, linkToView) => {
-        return (
-            75 +
-            (linkToEdit ? 30 : 0) +
-            (!deleteOff ? 30 : 0) +
-            (linkToView ? 30 : 0)
-        );
     };
 
     const renderDateColumn = (title, dataIndex, key, formatFunc) => (
@@ -200,9 +250,10 @@ const TableComponent = ({
             loading={isLoading}
             dataSource={updatedData}
             scroll={{
-                x: 1500,
+                x: dataHead.length * 150,
                 y: 800,
             }}
+            size="small"
             expandable={
                 expandable
                     ? {
@@ -268,32 +319,20 @@ const TableComponent = ({
                     title="Actions"
                     key="action"
                     fixed="right"
-                    width={getActionColumnWidth(
-                        linkToEdit,
-                        deleteOff,
-                        linkToView,
-                    )}
+                    width={80}
                     render={(_, record) => {
                         return (
                             <div className={styles.actionCell}>
-                                <Space size={16} align="center" split={true}>
-                                    {linkToView ? (
-                                        <Link href={linkToView + record._id}>
-                                            <SearchOutlined />
-                                        </Link>
-                                    ) : null}
-                                    {linkToEdit ? (
-                                        <Link href={linkToEdit + record._id}>
-                                            <EditTwoTone />
-                                        </Link>
-                                    ) : null}
-                                    {deleteOff ? null : (
-                                        <DeleteTwoTone
-                                            twoToneColor="#eb2f96"
-                                            onClick={() => onDelete(record)}
-                                        />
-                                    )}
-                                </Space>
+                                <Dropdown
+                                    menu={{
+                                        items: getActionItems(),
+                                        onClick: (e) =>
+                                            handleItemClick(e, record),
+                                    }}>
+                                    <Button>
+                                        <EllipsisOutlined />
+                                    </Button>
+                                </Dropdown>
                             </div>
                         );
                     }}
