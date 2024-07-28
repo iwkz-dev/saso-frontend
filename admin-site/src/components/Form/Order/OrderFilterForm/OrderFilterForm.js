@@ -55,6 +55,9 @@ const OrderFilterForm = ({ filters, setFilters }) => {
                 onOk={handleOk}
                 onCancel={handleCancelModal}>
                 <QrReader
+                    constraints={{
+                        facingMode: { facingMode: "environment" },
+                    }}
                     onResult={(result, error) => {
                         if (result) {
                             message.success(
