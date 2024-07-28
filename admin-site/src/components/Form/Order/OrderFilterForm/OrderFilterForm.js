@@ -38,42 +38,40 @@ const OrderFilterForm = ({ filters, setFilters }) => {
     };
 
     return (
-        <>
-            <Space.Compact block>
-                <Search
-                    placeholder="input search text"
-                    onSearch={handleChange}
-                    allowClear
-                    enterButton
-                    value={inputValue}
+        <Space.Compact block>
+            <Search
+                placeholder="input search text"
+                onSearch={handleChange}
+                allowClear
+                enterButton
+                value={inputValue}
+            />
+
+            <Button icon={<QrcodeOutlined />} onClick={showModal}></Button>
+            <Modal
+                destroyOnClose={true}
+                title="Scan barcode"
+                open={isModalOpen}
+                onOk={handleOk}
+                onCancel={handleCancelModal}>
+                <QrReader
+                    onResult={(result, error) => {
+                        if (result) {
+                            message.success(
+                                `Recieved QR-Code: ${result?.text}`,
+                            );
+                            handleChange(result?.text);
+                            setIsModalOpen(false);
+                        }
+
+                        if (error) {
+                            console.info(error);
+                        }
+                    }}
+                    style={{ width: "100%" }}
                 />
-
-                <Button icon={<QrcodeOutlined />} onClick={showModal}></Button>
-                <Modal
-                    destroyOnClose={true}
-                    title="Scan barcode"
-                    open={isModalOpen}
-                    onOk={handleOk}
-                    onCancel={handleCancelModal}>
-                    <QrReader
-                        onResult={(result, error) => {
-                            if (result) {
-                                message.success(
-                                    `Recieved QR-Code: ${result?.text}`,
-                                );
-                                handleChange(result?.text);
-                                setIsModalOpen(false);
-                            }
-
-                            if (error) {
-                                console.info(error);
-                            }
-                        }}
-                        style={{ width: "100%" }}
-                    />
-                </Modal>
-            </Space.Compact>
-        </>
+            </Modal>
+        </Space.Compact>
     );
 };
 
