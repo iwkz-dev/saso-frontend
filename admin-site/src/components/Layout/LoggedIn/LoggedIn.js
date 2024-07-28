@@ -17,7 +17,7 @@ import { isAuth } from "../../../helpers/authHelper";
 import { Button, Layout, Menu as Menus } from "antd";
 
 function LoggedIn({ children, title, isNotAllowed }) {
-    const [collapsed, setCollapsed] = useState(false);
+    const [collapsed, setCollapsed] = useState(true);
     const [current, setCurrent] = useState("");
     const { Header, Footer, Sider, Content } = Layout;
 
