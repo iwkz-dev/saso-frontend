@@ -3,34 +3,34 @@ import { Button, Input, message, Modal, Space } from "antd";
 import { QrcodeOutlined } from "@ant-design/icons";
 import { QrReader } from "react-qr-reader";
 
-const OrderFilterForm = ({ filters, setFilters }) => {
+const OrderFilterForm = ({ filterValues, setFilterValues }) => {
     const Search = Input.Search;
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [inputValue, setInputValue] = useState("");
 
-    const handleChange = (value) => {
+    const handleSearch = (value) => {
         setInputValue(value);
         const data = {
             id: value,
             name: "invoiceNumber",
         };
 
-        const filterIndex = filters.findIndex((f) => f.name === data.name);
+        const filterIndex = filterValues.findIndex((f) => f.name === data.name);
         if (!(filterIndex > -1)) {
-            setFilters([...filters, data]);
+            setFilterValues([...filterValues, data]);
         } else {
-            const tempFilters = [...filters];
+            const tempFilters = [...filterValues];
             tempFilters[filterIndex].id = data.id;
-            setFilters([...tempFilters]);
+            setFilterValues([...tempFilters]);
         }
+    };
+
+    const handleChange = (e) => {
+        handleSearch(e.target.value);
     };
 
     const showModal = () => {
         setIsModalOpen(true);
-    };
-
-    const handleOk = () => {
-        setIsModalOpen(false);
     };
 
     const handleCancelModal = () => {
@@ -41,18 +41,20 @@ const OrderFilterForm = ({ filters, setFilters }) => {
         <Space.Compact block>
             <Search
                 placeholder="input search text"
-                onSearch={handleChange}
+                onSearch={handleSearch}
+                onChange={handleChange}
                 allowClear
                 enterButton
                 value={inputValue}
             />
-
-            <Button icon={<QrcodeOutlined />} onClick={showModal}></Button>
+            <Button icon={<QrcodeOutlined />} onClick={showModal}>
+                Scan
+            </Button>
             <Modal
                 destroyOnClose={true}
                 title="Scan barcode"
                 open={isModalOpen}
-                onOk={handleOk}
+                footer={[]}
                 onCancel={handleCancelModal}>
                 <QrReader
                     constraints={{
@@ -63,7 +65,7 @@ const OrderFilterForm = ({ filters, setFilters }) => {
                             message.success(
                                 `Recieved QR-Code: ${result?.text}`,
                             );
-                            handleChange(result?.text);
+                            handleSearch(result?.text);
                             setIsModalOpen(false);
                         }
 

@@ -11,6 +11,7 @@ import { Space, Spin, Tabs, Typography, message } from "antd";
 import { isAuth } from "../../../../src/helpers/authHelper";
 import EventSummary from "../../../../src/components/Card/Event/EventSummary/EventSummary";
 import RelatedOrdersTable from "../../../../src/components/Table/Event/RelatedOrders/RelatedOrdersTable";
+import OrderFilterForm from "../../../../src/components/Form/Order/OrderFilterForm/OrderFilterForm";
 
 const id = () => {
     const dispatch = useDispatch();
@@ -19,6 +20,7 @@ const id = () => {
     const pageTitle = "Saso App | Event";
     const [showDataDisplay, setShowDataDisplay] = useState(false);
     const [showLoading, setShowLoading] = useState(false);
+    const [filterValues, setFilterValues] = useState([]);
     const event = useSelector((state) => state.event.detailEvent);
 
     useEffect(() => {
@@ -79,7 +81,15 @@ const id = () => {
                     <Typography.Title level={4}>
                         Related Orders
                     </Typography.Title>
-                    <RelatedOrdersTable filterName="event" itemFilter={event} />
+                    <OrderFilterForm
+                        filterValues={filterValues}
+                        setFilterValues={setFilterValues}
+                    />
+                    <RelatedOrdersTable
+                        filterName="event"
+                        itemFilter={event}
+                        filterValues={filterValues}
+                    />
                 </Space>
             ),
         },
