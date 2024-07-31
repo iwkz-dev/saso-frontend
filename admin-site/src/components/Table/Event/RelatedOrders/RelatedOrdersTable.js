@@ -11,7 +11,12 @@ import { getAllPaymentTypes } from "../../../../store/reducers/paymentTypeReduce
 import { isAuth } from "../../../../helpers/authHelper";
 import dayjs from "dayjs";
 
-const RelatedOrdersTable = ({ filterName, itemFilter, onDelete }) => {
+const RelatedOrdersTable = ({
+    filterName,
+    itemFilter,
+    onDelete,
+    filterValues,
+}) => {
     const dispatch = useDispatch();
     const orders = useSelector((state) => state.order.orders);
     const events = useSelector((state) => state.event.events);
@@ -22,7 +27,7 @@ const RelatedOrdersTable = ({ filterName, itemFilter, onDelete }) => {
 
     useEffect(() => {
         getAllData();
-    }, []);
+    }, [filterValues]);
 
     const getEventsOrders = async () => {
         setShowLoadingData(true);
@@ -72,10 +77,24 @@ const RelatedOrdersTable = ({ filterName, itemFilter, onDelete }) => {
         }
     };
 
+    const filtersQueryBuilder = (filterValues) => {
+        const queries = [];
+        if (filterValues.length > 0) {
+            filterValues.map((f) => {
+                const filtersQuery = `${f.name}=${f.id}`;
+                queries.push(filtersQuery);
+            });
+            return `${queries.join("&")}`;
+        }
+        return "";
+    };
+
     const getAllData = async () => {
         setShowLoadingData(true);
+        const filterByInvoiceNumber = filtersQueryBuilder(filterValues);
+
         try {
-            const filter = `?${filterName}=${itemFilter._id}`;
+            const filter = `?${filterByInvoiceNumber}&${filterName}=${itemFilter._id}`;
             const responses = await Promise.all([
                 dispatch(getAllEvents()),
                 dispatch(getAllOrders(filter)),

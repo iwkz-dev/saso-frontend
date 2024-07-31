@@ -19,32 +19,33 @@ const index = () => {
     const pageTitle = "Saso App | Order";
     const [showTable, setShowTable] = useState(false);
     const [showLoadingData, setShowLoadingData] = useState(false);
-    const [filters, setFilters] = useState([]);
+    const [filterValues, setFilterValues] = useState([]);
 
     useEffect(() => {
         getEventsOrders();
-    }, [filters]);
+    }, [filterValues]);
 
-    const filtersQueryBuilder = () => {
+    const filtersQueryBuilder = (filters) => {
         const queries = [];
         if (filters.length > 0) {
             filters.map((f) => {
                 const filtersQuery = `${f.name}=${f.id}`;
                 queries.push(filtersQuery);
             });
-            return `?${queries.join("&")}`;
+            return `${queries.join("&")}`;
         }
         return "";
     };
 
     const getEventsOrders = async () => {
         setShowLoadingData(true);
+        const filters = `?${filtersQueryBuilder(filterValues)}`;
 
         try {
             await Promise.all([
                 dispatch(getAllEvents()),
                 dispatch(getAllPaymentTypes()),
-                dispatch(getAllOrders(filtersQueryBuilder())),
+                dispatch(getAllOrders(filters)),
             ]);
 
             setShowTable(true);
@@ -114,8 +115,8 @@ const index = () => {
                 <Typography.Title level={3}>Order</Typography.Title>
                 <Space direction="vertical" style={{ display: "flex" }}>
                     <OrderFilterForm
-                        filters={filters}
-                        setFilters={setFilters}
+                        filterValues={filterValues}
+                        setFilterValues={setFilterValues}
                     />
                     <OrderTable
                         onDelete={onDelete}
