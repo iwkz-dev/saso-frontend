@@ -4,6 +4,7 @@ import MyOrderContent from "../../components/organismus/MyOrderContent/MyOrderCo
 import { getOrderList } from "../../stores/reducers/order";
 import { useDispatch } from "react-redux";
 import { isAuth } from "../../helpers/authHelper";
+import { getEvent } from "../../stores/reducers/event";
 
 const index = () => {
     const dispatch = useDispatch();
@@ -11,6 +12,7 @@ const index = () => {
     useEffect(() => {
         if (isAuth()) {
             dispatch(getOrderList());
+            dispatch(getEvent("approved"));
         }
     }, []);
 

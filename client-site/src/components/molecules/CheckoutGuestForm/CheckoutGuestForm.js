@@ -7,7 +7,7 @@ import SignUpFormModal from "../SignUpFormModal/SignUpFormModal";
 import { resetLoginMessage } from "../../../stores/reducers/login";
 import { resetRegisterMessage } from "../../../stores/reducers/register";
 import PaymentMethods from "../PaymentMethods/PaymentMethods";
-import StepsContent from "./StepsContent/StepsContent";
+import FormStepContent from "./StepsContent/FormStepContent";
 
 const CheckoutGuestForm = () => {
     const dispatch = useDispatch();
@@ -48,7 +48,7 @@ const CheckoutGuestForm = () => {
         switch (current) {
             case 0:
                 return (
-                    <StepsContent
+                    <FormStepContent
                         userData={userData}
                         onFinish={onFinish}
                         showModalForSignIn={showModalForSignIn}
@@ -61,13 +61,11 @@ const CheckoutGuestForm = () => {
                         size="large"
                         style={{
                             width: "100%",
-                        }}
-                    >
+                        }}>
                         <Button
                             type="link"
                             onClick={() => setCurrent(0)}
-                            icon={<LeftOutlined />}
-                        >
+                            icon={<LeftOutlined />}>
                             Back to contact information
                         </Button>
                         <PaymentMethods userData={userData} />
@@ -80,20 +78,23 @@ const CheckoutGuestForm = () => {
         <div
             style={{
                 width: "100%",
-                maxWidth: "300px",
+                maxWidth: 480,
                 margin: "0 auto",
-            }}
-        >
+            }}>
             <Space
                 direction="vertical"
                 size="large"
                 style={{
                     width: "100%",
-                }}
-            >
+                }}>
                 <Steps
                     size="small"
                     current={current}
+                    style={{
+                        width: "100%",
+                        maxWidth: 320,
+                        margin: "auto",
+                    }}
                     items={[
                         {
                             title: "Contact Information",
@@ -115,8 +116,7 @@ const CheckoutGuestForm = () => {
                 okText={isSignIn ? "Sign in" : "Sign up"}
                 onCancel={handleCancel}
                 closable={false}
-                destroyOnClose={true}
-            >
+                destroyOnClose={true}>
                 {ModalContent()}
             </Modal>
         </div>

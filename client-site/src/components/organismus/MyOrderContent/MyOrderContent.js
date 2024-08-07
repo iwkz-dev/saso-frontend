@@ -14,6 +14,7 @@ const MyOrderContent = () => {
     const { Content } = Layout;
     const [isLoadingForIndex, setIsLoadingForIndex] = useState(-1);
     const order = useSelector((state) => state.order);
+    const events = useSelector((state) => state.event.data);
 
     const downloadPDF = async (id, index) => {
         setIsLoadingForIndex(index);
@@ -118,7 +119,12 @@ const MyOrderContent = () => {
                         size="small"
                         columns={columns}
                         bordered
-                        dataSource={insertKeytoData(order.data.data)}
+                        dataSource={insertKeytoData(
+                            order.data.data.filter(
+                                (orderData) =>
+                                    orderData.event === events[0]?._id,
+                            ),
+                        )}
                         scroll={{
                             x: 768,
                         }}
