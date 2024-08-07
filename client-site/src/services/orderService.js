@@ -18,7 +18,7 @@ const getOrderDetail = (orderId) => {
 
 const getOrderDetailByInvoiceNumber = (data) => {
     return sasoApi.getData(
-        `/customer/order-guest/search-order/?invoiceNumber=${data.invoiceNumber}&customerFullname=${data.customerFullname}`,
+        `/customer/order-guest/search-order/?invoiceNumber=${data.invoiceNumber}&customerFullname=${data.customerFullname}&eventId=${data.eventId}`,
     );
 };
 
