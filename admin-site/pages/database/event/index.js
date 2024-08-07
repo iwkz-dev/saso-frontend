@@ -1,6 +1,6 @@
 import LoggedIn from "../../../src/components/Layout/LoggedIn/LoggedIn";
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import EventTable from "../../../src/components/Table/Event/EventTable/EventTable";
 import AddItemButton from "../../../src/components/common/Button/AddItemButton/AddItemButton";
 import Content from "../../../src/components/Layout/Content/Content";
@@ -15,52 +15,41 @@ import { isAuth } from "../../../src/helpers/authHelper";
 const event = () => {
     const dispatch = useDispatch();
     const pageTitle = "Saso App | Event";
+    const { events, loading, status, error, success } = useSelector(
+        (state) => state.event,
+    );
     const [showTable, setShowTable] = useState(false);
     const [showLoadingData, setShowLoadingData] = useState(false);
 
     useEffect(() => {
-        getEvents();
+        dispatch(getAllEvents());
     }, []);
 
-    const getEvents = async () => {
-        setShowLoadingData(true);
-        try {
-            const response = await dispatch(getAllEvents());
-            if (response.status === "success") {
-                setShowLoadingData(false);
-                setShowTable(true);
-            } else {
-                setShowLoadingData(false);
-                setShowTable(false);
-                message.error(response.message);
-                isAuth(response);
-            }
-        } catch (error) {
-            setShowLoadingData(false);
-            console.error("Error fetching events:", error);
+    useEffect(() => {
+        if (status === "failed") {
+            message.error(error);
         }
-    };
+
+        if (status === "success") {
+            message.success(success);
+        }
+    }, [status]);
+
+    console.log(status);
+
+    if (status === "failed") {
+        message.error(error);
+    }
 
     const onChangeStatus = async (value) => {
-        setShowLoadingData(true);
-        try {
-            const { status, message: statusMessage } = await dispatch(
-                changeEventStatus(
-                    JSON.parse(value).id,
-                    JSON.parse(value).value,
-                ),
-            );
-
-            setShowLoadingData(false);
-            if (status !== "failed") {
-                message.success(statusMessage);
-                getEvents();
-            } else {
-                message.error(statusMessage);
-            }
-        } catch (error) {
-            setShowLoadingData(false);
-            console.error("Error changing event status:", error);
+        const data = {
+            id: JSON.parse(value).id,
+            status: JSON.parse(value).value,
+        };
+        await dispatch(changeEventStatus(data));
+        await dispatch(getAllEvents());
+        if (status === "success") {
+            message.success(success);
         }
     };
 
@@ -101,9 +90,10 @@ const event = () => {
                         text="Add Event"
                     />
                     <EventTable
+                        events={events}
                         onDelete={onDelete}
                         onChangeStatus={onChangeStatus}
-                        isLoading={showLoadingData}
+                        isLoading={loading}
                         showTable={showTable}
                     />
                 </Space>

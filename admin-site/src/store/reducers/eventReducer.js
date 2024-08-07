@@ -1,47 +1,74 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import eventService from "../../services/eventService";
 
-export const getAllEvents = () => (dispatch) => {
-    return eventService
-        .getAllEvents()
-        .then((response) => {
-            dispatch(getEventsSuccess(response.data.data));
+export const getAllEvents = createAsyncThunk(
+    "events/getAllEvents",
+    async (_, { rejectWithValue }) => {
+        try {
+            const response = await eventService.getAllEvents();
             return response;
-        })
-        .catch((e) => {
-            if (e) {
-                dispatch(getEventsFailed(e.data.message));
-                return e.data;
-            }
-            const error = {
-                message: "Server Error",
-                status: "failed",
-            };
-            dispatch(getEventsFailed(error.message));
-            return error;
-        });
-};
+        } catch (error) {
+            console.error(error.data.message);
+            throw rejectWithValue(error.data);
+        }
+    },
+);
 
-export const changeEventStatus = (id, status) => (dispatch) => {
-    return eventService
-        .changeEventStatus(id, status)
-        .then((response) => {
-            dispatch(changeEventStatusSuccess(response.data.data));
+export const changeEventStatus = createAsyncThunk(
+    "events/changeEventStatus",
+    async (data, { rejectWithValue }) => {
+        const { id, status } = data;
+        console.log(id, status);
+        try {
+            const response = await eventService.changeEventStatus(id, status);
             return response;
-        })
-        .catch((e) => {
-            if (e) {
-                dispatch(changeEventStatusFailed(e.data.message));
-                return e.data;
-            }
-            const error = {
-                message: "Server Error",
-                status: "failed",
-            };
-            dispatch(getEventsFailed(error.message));
-            return error;
-        });
-};
+        } catch (error) {
+            console.error(error.data.message);
+            throw rejectWithValue(error.data);
+        }
+    },
+);
+
+// export const getAllEvents = () => (dispatch) => {
+//     return eventService
+//         .getAllEvents()
+//         .then((response) => {
+//             dispatch(getEventsSuccess(response.data.data));
+//             return response;
+//         })
+//         .catch((e) => {
+//             if (e) {
+//                 dispatch(getEventsFailed(e.data.message));
+//                 return e.data;
+//             }
+//             const error = {
+//                 message: "Server Error",
+//                 status: "failed",
+//             };
+//             dispatch(getEventsFailed(error.message));
+//             return error;
+//         });
+// };
+
+// export const changeEventStatus = (id, status) => (dispatch) => {
+//     return eventService
+//         .changeEventStatus(id, status)
+//         .then((response) => {
+//             dispatch(changeEventStatusSuccess(response.data.data));
+//             return response;
+//         })
+//         .catch((e) => {
+//             if (e) {
+//                 dispatch(changeEventStatusFailed(e.data.message));
+//                 return e.data;
+//             }
+//             const error = {
+//                 message: "Server Error",
+//                 status: "failed",
+//             };
+//             return error;
+//         });
+// };
 
 export const deleteEvent = (id) => async (dispatch) => {
     return eventService
@@ -152,13 +179,51 @@ export const editDetailEventImages =
 export const eventSlice = createSlice({
     name: "event",
     initialState: {
-        success: false,
-        message: {
-            error: "",
-            success: "",
-        },
         events: [],
         detailEvent: {},
+        changedEvent: {},
+        loading: false,
+        status: "",
+        error: "",
+        success: "",
+    },
+    extraReducers: (builder) => {
+        builder
+            .addCase(getAllEvents.pending, (state) => {
+                state.loading = true;
+                state.status = "pending";
+                state.error = "";
+            })
+            .addCase(getAllEvents.fulfilled, (state, action) => {
+                state.loading = false;
+                state.events = [...action.payload.data.data];
+                state.status = "success";
+                state.error = "";
+                state.success = action.payload.message;
+            })
+            .addCase(getAllEvents.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload.message;
+                state.status = "failed";
+            })
+            .addCase(changeEventStatus.pending, (state) => {
+                state.loading = true;
+                state.status = "pending";
+                state.error = "";
+            })
+            .addCase(changeEventStatus.fulfilled, (state, action) => {
+                state.loading = false;
+                state.changedEvent = action.payload;
+                state.status = "success";
+                state.error = "";
+                console.log(action.payload);
+                state.success = action.payload.message;
+            })
+            .addCase(changeEventStatus.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload.message;
+                state.status = "failed";
+            });
     },
     reducers: {
         getEventsSuccess: (state, action) => {
@@ -214,8 +279,6 @@ export const eventSlice = createSlice({
 });
 
 export const {
-    getEventsSuccess,
-    getEventsFailed,
     deleteEventSuccess,
     deleteEventFailed,
     createEventSuccess,
@@ -227,4 +290,5 @@ export const {
     changeEventStatusSuccess,
     changeEventStatusFailed,
 } = eventSlice.actions;
+
 export default eventSlice.reducer;

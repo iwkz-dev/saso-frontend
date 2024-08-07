@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
 import Table from "../../Table";
 
-function EventTable({ onDelete, onChangeStatus, isLoading, showTable }) {
-    const events = useSelector((state) => state.event.events);
+function EventTable({
+    events,
+    onDelete,
+    onChangeStatus,
+    isLoading,
+    showTable,
+}) {
     const [tableHead, setTableHead] = useState([]);
 
     useEffect(() => {
@@ -59,12 +63,13 @@ function EventTable({ onDelete, onChangeStatus, isLoading, showTable }) {
                 title: "Updated At",
             },
         ]);
+        console.log(events);
     }, [events]);
 
     return (
         <Table
             onDelete={onDelete}
-            data={showTable ? events : []}
+            data={events}
             dataHead={tableHead}
             emptyMessage="Event is empty"
             linkToEdit="/database/event/edit/"
