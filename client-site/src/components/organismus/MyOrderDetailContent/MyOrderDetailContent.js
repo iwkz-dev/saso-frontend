@@ -118,12 +118,12 @@ const MyOrderDetailContent = ({ detailOrder, withoutBackButton, events }) => {
                     <Descriptions size="medium">
                         <Descriptions.Item label="CP Name">
                             <Paragraph copyable>
-                                {events[0].contactPersons[0].name}
+                                {events[0]?.contactPersons[0]?.name}
                             </Paragraph>
                         </Descriptions.Item>
                         <Descriptions.Item label="CP WA Number">
                             <Paragraph copyable>
-                                {events[0].contactPersons[0].phoneNumber}
+                                {events[0]?.contactPersons[0]?.phoneNumber}
                             </Paragraph>
                         </Descriptions.Item>
                         <Descriptions.Item label="Paypal">
