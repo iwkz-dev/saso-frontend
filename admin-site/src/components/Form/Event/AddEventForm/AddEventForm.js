@@ -83,6 +83,23 @@ const AddEventForm = () => {
             required: true,
         },
         {
+            name: "po_closed",
+            label: "PO Closed",
+            type: "select",
+            placeholder: "PO Closed",
+            options: [
+                {
+                    value: false,
+                    label: "No",
+                },
+                {
+                    value: true,
+                    label: "Yes",
+                },
+            ],
+            required: true,
+        },
+        {
             name: "Payment Information",
             type: "divider",
         },

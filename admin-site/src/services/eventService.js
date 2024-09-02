@@ -98,6 +98,30 @@ const changeEventStatus = (id, status) => {
     });
 };
 
+const changeEventPOClosed = (id, status) => {
+    return new Promise((resolve, reject) => {
+        const headers = {
+            accept: "application/JSON",
+            Authorization: getToken(),
+        };
+        api({
+            method: "PATCH",
+            url: `/event/${id}/${status}/change-po-closed`,
+            headers,
+        })
+            .then((response) => {
+                if (response.data.status === "success") {
+                    resolve(response.data);
+                } else {
+                    reject(response.data);
+                }
+            })
+            .catch((error) => {
+                reject(error.response);
+            });
+    });
+};
+
 const getDetailEvent = (id) => {
     return new Promise((resolve, reject) => {
         const headers = {
@@ -180,6 +204,7 @@ const eventService = {
     editDetailEventImages,
     editDetailEvent,
     changeEventStatus,
+    changeEventPOClosed,
 };
 
 export default eventService;

@@ -43,6 +43,27 @@ export const changeEventStatus = (id, status) => (dispatch) => {
         });
 };
 
+export const changeEventPOClosed = (id, status) => (dispatch) => {
+    return eventService
+        .changeEventPOClosed(id, status)
+        .then((response) => {
+            dispatch(changeEventPOClosedSuccess(response.data.data));
+            return response;
+        })
+        .catch((e) => {
+            if (e) {
+                dispatch(changeEventPOClosedFailed(e.data.message));
+                return e.data;
+            }
+            const error = {
+                message: "Server Error",
+                status: "failed",
+            };
+            dispatch(getEventsFailed(error.message));
+            return error;
+        });
+};
+
 export const deleteEvent = (id) => async (dispatch) => {
     return eventService
         .deleteEvent(id)
@@ -210,6 +231,14 @@ export const eventSlice = createSlice({
             state.message.error = action.payload;
             state.success = false;
         },
+        changeEventPOClosedSuccess: (state, action) => {
+            state.message.error = action.payload;
+            state.success = false;
+        },
+        changeEventPOClosedFailed: (state, action) => {
+            state.message.error = action.payload;
+            state.success = false;
+        },
     },
 });
 
@@ -226,5 +255,7 @@ export const {
     editEventDetailFailed,
     changeEventStatusSuccess,
     changeEventStatusFailed,
+    changeEventPOClosedSuccess,
+    changeEventPOClosedFailed,
 } = eventSlice.actions;
 export default eventSlice.reducer;

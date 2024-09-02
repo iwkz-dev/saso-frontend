@@ -8,7 +8,10 @@ import {
     deleteEvent,
     getAllEvents,
 } from "../../../src/store/reducers/eventReducer";
-import { changeEventStatus } from "../../../src/store/reducers/eventReducer";
+import {
+    changeEventStatus,
+    changeEventPOClosed,
+} from "../../../src/store/reducers/eventReducer";
 import { Space, Typography, message } from "antd";
 import { isAuth } from "../../../src/helpers/authHelper";
 
@@ -64,6 +67,29 @@ const event = () => {
         }
     };
 
+    const onChangePOClosed = async (value) => {
+        setShowLoadingData(true);
+        try {
+            const { status, message: statusMessage } = await dispatch(
+                changeEventPOClosed(
+                    JSON.parse(value).id,
+                    JSON.parse(value).value,
+                ),
+            );
+
+            setShowLoadingData(false);
+            if (status !== "failed") {
+                message.success(statusMessage);
+                getEvents();
+            } else {
+                message.error(statusMessage);
+            }
+        } catch (error) {
+            setShowLoadingData(false);
+            console.error("Error changing event PO Closed status:", error);
+        }
+    };
+
     const onDelete = async (item) => {
         const isConfirm = confirm(
             `Please confirm this if you want to delete "${item.name}"`,
@@ -103,6 +129,7 @@ const event = () => {
                     <EventTable
                         onDelete={onDelete}
                         onChangeStatus={onChangeStatus}
+                        onChangePOClosed={onChangePOClosed}
                         isLoading={showLoadingData}
                         showTable={showTable}
                     />
