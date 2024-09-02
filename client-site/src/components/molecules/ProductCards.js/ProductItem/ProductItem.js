@@ -1,6 +1,6 @@
 import { Button, Card, Space, Typography, message } from "antd";
 import { ShoppingCartOutlined } from "@ant-design/icons";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addOrder } from "../../../../stores/reducers/cart";
 import ImagesPreview from "../../../atoms/ImagesPreview/ImagesPreview";
 import Router from "next/router";
@@ -8,6 +8,7 @@ import style from "./ProductItem.module.scss";
 
 const ProductItem = ({ product }) => {
     const dispatch = useDispatch();
+    const events = useSelector((state) => state.event.data);
     const { Meta } = Card;
 
     const handleClick = (e) => {
@@ -48,7 +49,10 @@ const ProductItem = ({ product }) => {
                     </Typography.Text>
                     <Button
                         type="primary"
-                        disabled={product.quantity == product.quantityOrder}
+                        disabled={
+                            product.quantity == product.quantityOrder ||
+                            events[0].po_closed
+                        }
                         onClick={(e) => handleClick(e)}
                         shape="round"
                         icon={<ShoppingCartOutlined />}>
