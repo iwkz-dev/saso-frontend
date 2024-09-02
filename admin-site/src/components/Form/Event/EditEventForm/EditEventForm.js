@@ -104,6 +104,17 @@ const EditEventForm = () => {
             required: true,
         },
         {
+            name: "po_closed",
+            label: "PO Closed",
+            type: "select",
+            placeholder: "PO Closed",
+            options: [
+                { label: "No", value: false },
+                { label: "Yes", value: true },
+            ],
+            required: true,
+        },
+        {
             name: "started_at",
             label: "Started At",
             type: "datePicker",
@@ -176,6 +187,7 @@ const EditEventForm = () => {
             initialValues={{
                 name: event.name,
                 status: event.status.toString(),
+                po_closed: event.po_closed,
                 started_at: dayjs(event.started_at),
                 bankName: event.bankName,
                 iban: event.iban,

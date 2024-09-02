@@ -2,7 +2,13 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import Table from "../../Table";
 
-function EventTable({ onDelete, onChangeStatus, isLoading, showTable }) {
+function EventTable({
+    onDelete,
+    onChangeStatus,
+    onChangePOClosed,
+    isLoading,
+    showTable,
+}) {
     const events = useSelector((state) => state.event.events);
     const [tableHead, setTableHead] = useState([]);
 
@@ -40,6 +46,26 @@ function EventTable({ onDelete, onChangeStatus, isLoading, showTable }) {
                         title: "Done",
                         value: "done",
                         code: 2,
+                    },
+                ],
+            },
+            {
+                key: "po_closed",
+                dataIndex: "po_closed",
+                title: "PO Closed",
+                type: "select",
+                editable: true,
+                onChange: onChangePOClosed,
+                options: [
+                    {
+                        title: "No",
+                        value: "no",
+                        code: false,
+                    },
+                    {
+                        title: "Yes",
+                        value: "yes",
+                        code: true,
                     },
                 ],
             },
