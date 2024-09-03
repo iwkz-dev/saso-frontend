@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import { Button, Input, message, Modal, Space } from "antd";
+import { Button, Input, message, Modal, Space, Popconfirm } from "antd";
 import { QrcodeOutlined } from "@ant-design/icons";
 import { QrReader } from "react-qr-reader";
+import { UploadOutlined } from "@ant-design/icons";
 
-const OrderFilterForm = ({ filterValues, setFilterValues }) => {
+const OrderFilterForm = ({ filterValues, setFilterValues, exportToXlsx }) => {
     const Search = Input.Search;
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [inputValue, setInputValue] = useState("");
@@ -76,6 +77,14 @@ const OrderFilterForm = ({ filterValues, setFilterValues }) => {
                     style={{ width: "100%" }}
                 />
             </Modal>
+            <Popconfirm
+                title="Export to xlsx file"
+                description="Are you sure want to export order to xlsx file?"
+                onConfirm={exportToXlsx}
+                okText="Yes"
+                cancelText="No">
+                <Button icon={<UploadOutlined />} />
+            </Popconfirm>
         </Space.Compact>
     );
 };
