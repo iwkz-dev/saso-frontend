@@ -12,6 +12,7 @@ import { isAuth } from "../../../../src/helpers/authHelper";
 import EventSummary from "../../../../src/components/Card/Event/EventSummary/EventSummary";
 import RelatedOrdersTable from "../../../../src/components/Table/Event/RelatedOrders/RelatedOrdersTable";
 import OrderFilterForm from "../../../../src/components/Form/Order/OrderFilterForm/OrderFilterForm";
+import * as XLSX from "xlsx";
 
 const id = () => {
     const dispatch = useDispatch();
@@ -22,6 +23,7 @@ const id = () => {
     const [showLoading, setShowLoading] = useState(false);
     const [filterValues, setFilterValues] = useState([]);
     const event = useSelector((state) => state.event.detailEvent);
+    const orders = useSelector((state) => state.order.orders);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -47,6 +49,74 @@ const id = () => {
             fetchData();
         }
     }, [id, dispatch]);
+
+    const getStatusDescription = (status) => {
+        switch (status) {
+            case 0:
+                return "Waiting for Confirmation";
+            case 1:
+                return "Paid";
+            case 2:
+                return "Cancel / Refund";
+            case 3:
+                return "Done";
+            default:
+                return "Unknown Status";
+        }
+    };
+
+    const exportToXlsx = () => {
+        // Extract all unique menu names from the data
+        const allMenuNames = new Set();
+        orders.forEach((order) => {
+            order.menus.forEach((menu) => {
+                allMenuNames.add(menu.name);
+            });
+        });
+
+        // Convert Set to Array
+        const menuNamesArray = Array.from(allMenuNames);
+
+        // Prepare the main order data
+        const orderSheetData = orders.map((order) => {
+            // Create an object with the order details
+            const orderDetails = {
+                OrderID: order._id,
+                InvoiceNumber: order.invoiceNumber,
+                Status: getStatusDescription(order.status),
+                CustomerName: order.customerFullname,
+                CustomerEmail: order.customerEmail,
+                CustomerPhone: order.customerPhone,
+                PaymentType: order.paymentType,
+                TotalPrice: order.totalPrice,
+                Event: event.name,
+                Note: order.note,
+                CreatedAt: order.created_at,
+                UpdatedAt: order.updated_at,
+            };
+
+            // Add menu total portions to the order details
+            menuNamesArray.forEach((menuName) => {
+                const menu = order.menus.find((m) => m.name === menuName);
+                orderDetails[menuName] =
+                    menu && menu.totalPortion !== 0 ? menu.totalPortion : ""; // Use empty string if totalPortion is 0 or menu is not found
+            });
+
+            return orderDetails;
+        });
+
+        // Create a new workbook
+        const workbook = XLSX.utils.book_new();
+
+        // Convert the data to a worksheet object
+        const orderSheet = XLSX.utils.json_to_sheet(orderSheetData);
+
+        // Append the worksheet to the workbook
+        XLSX.utils.book_append_sheet(workbook, orderSheet, "Orders");
+
+        // Export the workbook
+        XLSX.writeFile(workbook, `${event.name}-order.xlsx`);
+    };
 
     const items = [
         {
@@ -84,6 +154,7 @@ const id = () => {
                     <OrderFilterForm
                         filterValues={filterValues}
                         setFilterValues={setFilterValues}
+                        exportToXlsx={exportToXlsx}
                     />
                     <RelatedOrdersTable
                         filterName="event"

@@ -25,7 +25,8 @@
         "react-qr-barcode-scanner": "^1.0.6",
         "react-qr-reader": "^3.0.0-beta-1",
         "react-redux": "^7.2.6",
-        "sass": "^1.60.0"
+        "sass": "^1.60.0",
+        "xlsx": "^0.18.5"
     },
     "devDependencies": {
         "eslint": "^7.32.0",
