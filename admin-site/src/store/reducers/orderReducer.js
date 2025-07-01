@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import orderService from "../../services/orderService";
 
 export const getAllOrders = (requestURL) => async (dispatch) => {
@@ -42,6 +42,22 @@ export const getOrderByInvoiceNumber = (invoiceNumber) => async (dispatch) => {
             return error;
         });
 };
+
+export const confirmOrderedMenu = createAsyncThunk(
+    "order/confirmOrderedMenu",
+    async ({ orderId, vendorId }, thunkAPI) => {
+        try {
+            const response =
+                await orderService.confirmOrderedMenuStatusByVendors(
+                    orderId,
+                    vendorId,
+                );
+            return response; // your backend returns { status: "success", data: ... }
+        } catch (error) {
+            return thunkAPI.rejectWithValue(error?.data || "Unknown error");
+        }
+    },
+);
 
 export const deleteOrder = (id) => async (dispatch) => {
     return orderService
@@ -95,6 +111,8 @@ export const orderSlice = createSlice({
         },
         orders: [],
         detailOrder: {},
+        confirmedMenus: [],
+        loading: false,
     },
     reducers: {
         getOrdersSuccess: (state, action) => {
@@ -114,8 +132,8 @@ export const orderSlice = createSlice({
             state.success = false;
         },
         changeOrderStatusSuccess: (state, action) => {
-            state.message.error = action.payload;
-            state.success = false;
+            state.message.success = action.payload;
+            state.success = true;
         },
         changeOrderStatusFailed: (state, action) => {
             state.message.error = action.payload;
@@ -129,6 +147,26 @@ export const orderSlice = createSlice({
             state.message.error = action.payload;
             state.success = false;
         },
+    },
+    extraReducers: (builder) => {
+        builder
+            .addCase(confirmOrderedMenu.pending, (state) => {
+                state.loading = true;
+                state.message.error = "";
+                state.success = false;
+            })
+            .addCase(confirmOrderedMenu.fulfilled, (state, action) => {
+                state.loading = false;
+                state.confirmedMenus = action.payload.data; // adjust if your backend returns { data: menus }
+                state.success = true;
+                state.message.success = "Ordered menus confirmed.";
+            })
+            .addCase(confirmOrderedMenu.rejected, (state, action) => {
+                state.loading = false;
+                state.success = false;
+                state.message.error =
+                    action.payload || "Failed to confirm ordered menus.";
+            });
     },
 });
 

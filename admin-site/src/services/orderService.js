@@ -77,6 +77,32 @@ const getOrderByInvoiceNumber = (invoiceNumber) => {
     });
 };
 
+const confirmOrderedMenuStatusByVendors = (orderId, vendorId) => {
+    return new Promise((resolve, reject) => {
+        const headers = {
+            accept: "application/JSON",
+            Authorization: getToken(),
+        };
+
+        api({
+            method: "PATCH",
+            url: `/order/${orderId}/vendor/${vendorId}/confirm`,
+            headers,
+        })
+            .then((response) => {
+                if (response.data.status === "success") {
+                    console.log(response.data);
+                    resolve(response.data);
+                } else {
+                    reject(response.data);
+                }
+            })
+            .catch((error) => {
+                reject(error.response);
+            });
+    });
+};
+
 const changeOrderStatus = (id, status) => {
     return new Promise((resolve, reject) => {
         const headers = {
@@ -107,5 +133,6 @@ const orderService = {
     getOrderByInvoiceNumber,
     deleteOrder,
     changeOrderStatus,
+    confirmOrderedMenuStatusByVendors,
 };
 export default orderService;

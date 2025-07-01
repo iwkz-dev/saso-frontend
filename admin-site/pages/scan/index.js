@@ -14,6 +14,7 @@ import Content from "../../src/components/Layout/Content/Content";
 import LoggedIn from "../../src/components/Layout/LoggedIn/LoggedIn";
 import { getOrderByInvoiceNumber } from "../../src/store/reducers/orderReducer";
 import { getAllVendors } from "../../src/store/reducers/vendorReducer";
+import { confirmOrderedMenu } from "../../src/store/reducers/orderReducer";
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -38,7 +39,6 @@ const index = () => {
             const response = await dispatch(getAllVendors());
             if (response.status === "success") {
                 setVendors(response.data.data);
-                console.log("Vendors fetched:", response.data);
                 setCameraOn(false);
             } else {
                 message.error("Order not found.");
@@ -85,10 +85,24 @@ const index = () => {
     };
 
     const handleConfirm = () => {
-        message.success("Order confirmed!");
-        setOrder(null);
-        setScanned(false);
-        setCameraOn(false);
+        dispatch(
+            confirmOrderedMenu({
+                orderId: order._id,
+                vendorId: selectedVendor,
+            }),
+        )
+            .unwrap()
+            .then(() => {
+                message.success("Order confirmed!");
+
+                setOrder(null);
+                setScanned(false);
+                setCameraOn(false);
+            })
+            .catch((error) => {
+                console.error(error);
+                message.error(error?.message || "Failed to confirm order.");
+            });
     };
 
     const toggleCamera = () => {
@@ -168,17 +182,30 @@ const index = () => {
                                 <Descriptions.Item label="Items">
                                     {order.menus.map((item, idx) => (
                                         <div key={idx}>
-                                            {item.name} x {item.quantity}
+                                            {item.name} x {item.totalPortion}
                                         </div>
                                     ))}
                                 </Descriptions.Item>
                             </Descriptions>
-                            <Button
-                                type="primary"
-                                style={{ marginTop: 16 }}
-                                onClick={handleConfirm}>
-                                Confirm Order
-                            </Button>
+
+                            <div
+                                style={{
+                                    marginTop: 16,
+                                    display: "flex",
+                                    gap: 8,
+                                }}>
+                                <Button type="primary" onClick={handleConfirm}>
+                                    Confirm Order
+                                </Button>
+                                <Button
+                                    onClick={() => {
+                                        setOrder(null);
+                                        setScanned(false);
+                                        setCameraOn(true);
+                                    }}>
+                                    Go Back
+                                </Button>
+                            </div>
                         </Card>
                     )}
                 </div>
