@@ -21,6 +21,7 @@ const EditMenuForm = () => {
     const menu = useSelector((state) => state.menu.detailMenu);
     const events = useSelector((state) => state.event.events);
     const categories = useSelector((state) => state.category.categories);
+    const vendors = useSelector((state) => state.vendor.vendors);
     const [showUploading, setShowUploading] = useState(false);
     const [images, setImages] = useState(getFileList(menu.images));
 
@@ -31,6 +32,7 @@ const EditMenuForm = () => {
         price: menu.price,
         event: menu.event,
         category: menu.category,
+        vendor: menu.vendor,
         description: menu.description,
         note: menu.note,
     };
@@ -128,6 +130,17 @@ const EditMenuForm = () => {
             type: "select",
             placeholder: "Category",
             options: categories.map((item) => ({
+                value: item._id,
+                label: item.name,
+            })),
+            required: true,
+        },
+        {
+            name: "vendor",
+            label: "Vendor",
+            type: "select",
+            placeholder: "Vendor",
+            options: vendors.map((item) => ({
                 value: item._id,
                 label: item.name,
             })),

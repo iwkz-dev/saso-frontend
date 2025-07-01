@@ -1,16 +1,15 @@
 import api from "../api";
 import { getToken } from "../helpers/authHelper";
 
-const getAllOrders = (requestURL = "") => {
+const getAllVendors = () => {
     return new Promise((resolve, reject) => {
         const headers = {
             accept: "application/JSON",
             Authorization: getToken(),
         };
-
         api({
             method: "GET",
-            url: `/order${requestURL}`,
+            url: "/vendor",
             headers,
         })
             .then((response) => {
@@ -26,16 +25,15 @@ const getAllOrders = (requestURL = "") => {
     });
 };
 
-const deleteOrder = (id) => {
+const deleteVendor = (id) => {
     return new Promise((resolve, reject) => {
         const headers = {
             accept: "application/JSON",
             Authorization: getToken(),
         };
-
         api({
             method: "DELETE",
-            url: `/order/${id}`,
+            url: `/vendor/${id}`,
             headers,
         })
             .then((response) => {
@@ -51,16 +49,40 @@ const deleteOrder = (id) => {
     });
 };
 
-const getOrderByInvoiceNumber = (invoiceNumber) => {
+const createVendor = (requestedData) => {
     return new Promise((resolve, reject) => {
         const headers = {
             accept: "application/JSON",
             Authorization: getToken(),
         };
+        api({
+            method: "POST",
+            url: `/vendor`,
+            data: requestedData,
+            headers,
+        })
+            .then((response) => {
+                if (response.data.status === "success") {
+                    resolve(response.data);
+                } else {
+                    reject(response.data);
+                }
+            })
+            .catch((error) => {
+                reject(error.response);
+            });
+    });
+};
 
+const getDetailVendor = (id) => {
+    return new Promise((resolve, reject) => {
+        const headers = {
+            accept: "application/JSON",
+            Authorization: getToken(),
+        };
         api({
             method: "GET",
-            url: `/order/invoiceNumber/${invoiceNumber}`,
+            url: `/vendor/${id}/detail`,
             headers,
         })
             .then((response) => {
@@ -76,16 +98,16 @@ const getOrderByInvoiceNumber = (invoiceNumber) => {
     });
 };
 
-const confirmOrderedMenuStatusByVendors = (orderId, vendorId) => {
+const editDetailVendor = (id, requestedData) => {
     return new Promise((resolve, reject) => {
         const headers = {
             accept: "application/JSON",
             Authorization: getToken(),
         };
-
         api({
-            method: "PATCH",
-            url: `/order/${orderId}/vendor/${vendorId}/confirm`,
+            method: "PUT",
+            url: `/vendor/${id}`,
+            data: requestedData,
             headers,
         })
             .then((response) => {
@@ -101,36 +123,12 @@ const confirmOrderedMenuStatusByVendors = (orderId, vendorId) => {
     });
 };
 
-const changeOrderStatus = (id, status) => {
-    return new Promise((resolve, reject) => {
-        const headers = {
-            accept: "application/JSON",
-            Authorization: getToken(),
-        };
-
-        api({
-            method: "PATCH",
-            url: `/order/${id}/${status}`,
-            headers,
-        })
-            .then((response) => {
-                if (response.data.status === "success") {
-                    resolve(response.data);
-                } else {
-                    reject(response.data);
-                }
-            })
-            .catch((error) => {
-                reject(error.response);
-            });
-    });
+const vendorService = {
+    getAllVendors,
+    deleteVendor,
+    createVendor,
+    getDetailVendor,
+    editDetailVendor,
 };
 
-const orderService = {
-    getAllOrders,
-    getOrderByInvoiceNumber,
-    deleteOrder,
-    changeOrderStatus,
-    confirmOrderedMenuStatusByVendors,
-};
-export default orderService;
+export default vendorService;

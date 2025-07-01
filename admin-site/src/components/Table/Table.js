@@ -17,6 +17,7 @@ const TableComponent = ({
     dataHead,
     linkToEdit,
     categories,
+    vendors,
     events,
     paymentTypes,
     linkToView,
@@ -288,6 +289,19 @@ const TableComponent = ({
                                 (c) => c._id === categoryId,
                             );
                             return <>{category?.name}</>;
+                        },
+                    );
+                } else if (key === "vendor") {
+                    return renderFilterableColumn(
+                        title,
+                        dataIndex,
+                        key,
+                        tH,
+                        (vendorId) => {
+                            const vendor = vendors.find(
+                                (c) => c._id === vendorId,
+                            );
+                            return <>{vendor?.name}</>;
                         },
                     );
                 } else if (key === "event") {

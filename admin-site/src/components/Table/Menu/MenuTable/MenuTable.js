@@ -6,7 +6,7 @@ function MenuTable({ onDelete, isLoading, showTable }) {
     const menus = useSelector((state) => state.menu.menus);
     const events = useSelector((state) => state.event.events);
     const categories = useSelector((state) => state.category.categories);
-
+    const vendors = useSelector((state) => state.vendor.vendors);
     const [tableHead, setTableHead] = useState([]);
 
     useEffect(() => {
@@ -30,6 +30,22 @@ function MenuTable({ onDelete, isLoading, showTable }) {
                 }),
                 onFilter: (value, record) => {
                     return record.category.includes(value);
+                },
+            },
+            {
+                key: "vendor",
+                dataIndex: "vendor",
+                title: "Vendor",
+                filterMode: "menu",
+                filterSearch: true,
+                filters: vendors.map((v) => {
+                    return {
+                        text: v.name,
+                        value: v._id,
+                    };
+                }),
+                onFilter: (value, record) => {
+                    return record.vendor.includes(value);
                 },
             },
             {
@@ -87,6 +103,7 @@ function MenuTable({ onDelete, isLoading, showTable }) {
             data={showTable ? menus : []}
             events={events}
             categories={categories}
+            vendors={vendors}
             dataHead={tableHead}
             emptyMessage="Menu is empty"
             linkToEdit="/database/menu/edit/"

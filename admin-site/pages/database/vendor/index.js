@@ -2,29 +2,29 @@ import React, { useEffect, useState } from "react";
 import Content from "../../../src/components/Layout/Content/Content";
 import { useDispatch } from "react-redux";
 import {
-    deleteCategory,
-    getAllCategories,
-} from "../../../src/store/reducers/categoryReducer";
+    deleteVendor,
+    getAllVendors,
+} from "../../../src/store/reducers/vendorReducer";
 import LoggedIn from "../../../src/components/Layout/LoggedIn/LoggedIn";
-import CategoryTable from "../../../src/components/Table/Category/CategoryTable/CategoryTable";
+import VendorTable from "../../../src/components/Table/Vendor/VendorTable/VendorTable";
 import AddItemButton from "../../../src/components/common/Button/AddItemButton/AddItemButton";
 import { Space, message, Typography } from "antd";
 import { isAuth } from "../../../src/helpers/authHelper";
 
 const index = () => {
     const dispatch = useDispatch();
-    const pageTitle = "Saso App | Category";
+    const pageTitle = "Saso App | Vendor";
     const [showTable, setShowTable] = useState(false);
     const [showLoadingData, setShowLoadingData] = useState(false);
 
     useEffect(() => {
-        fetchCategories();
+        fetchVendors();
     }, []);
 
-    const fetchCategories = async () => {
+    const fetchVendors = async () => {
         try {
             setShowLoadingData(true);
-            const result = await dispatch(getAllCategories());
+            const result = await dispatch(getAllVendors());
 
             if (result.status === "success") {
                 setShowLoadingData(false);
@@ -45,6 +45,7 @@ const index = () => {
     };
 
     const handleFetchError = (error) => {
+        // TODO: handle error here
         setShowLoadingData(false);
         message.error(error.message);
     };
@@ -58,13 +59,13 @@ const index = () => {
             try {
                 setShowLoadingData(true);
                 const deleteResponse = await dispatch(
-                    deleteCategory(item["_id"]),
+                    deleteVendor(item["_id"]),
                 );
 
                 if (deleteResponse.status !== "failed") {
                     setShowLoadingData(false);
                     message.success(deleteResponse.message);
-                    fetchCategories();
+                    fetchVendors();
                 } else {
                     handleFailedRequest(deleteResponse);
                 }
@@ -77,13 +78,13 @@ const index = () => {
     return (
         <LoggedIn title={pageTitle}>
             <Content>
-                <Typography.Title level={3}>Category</Typography.Title>
+                <Typography.Title level={3}>Vendor</Typography.Title>
                 <Space direction="vertical" style={{ display: "flex" }}>
                     <AddItemButton
-                        hrefLink="/database/category/add"
-                        text="Add Category"
+                        hrefLink="/database/vendor/add"
+                        text="Add Vendor"
                     />
-                    <CategoryTable
+                    <VendorTable
                         onDelete={onDelete}
                         isLoading={showLoadingData}
                         showTable={showTable}

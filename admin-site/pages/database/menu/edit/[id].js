@@ -9,6 +9,7 @@ import { getAllEvents } from "../../../../src/store/reducers/eventReducer";
 import { getAllCategories } from "../../../../src/store/reducers/categoryReducer";
 import { message, Spin, Typography } from "antd";
 import { isAuth } from "../../../../src/helpers/authHelper";
+import { getAllVendors } from "../../../../src/store/reducers/vendorReducer";
 
 const id = () => {
     const dispatch = useDispatch();
@@ -27,6 +28,7 @@ const id = () => {
                 await Promise.all([
                     dispatch(getAllEvents()),
                     dispatch(getAllCategories()),
+                    dispatch(getAllVendors()),
                     dispatch(getDetailMenu(id)),
                 ]);
 

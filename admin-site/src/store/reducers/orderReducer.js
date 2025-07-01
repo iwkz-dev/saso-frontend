@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import orderService from "../../services/orderService";
 
 export const getAllOrders = (requestURL) => async (dispatch) => {
@@ -21,6 +21,43 @@ export const getAllOrders = (requestURL) => async (dispatch) => {
             return error;
         });
 };
+
+export const getOrderByInvoiceNumber = (invoiceNumber) => async (dispatch) => {
+    return orderService
+        .getOrderByInvoiceNumber(invoiceNumber)
+        .then((response) => {
+            dispatch(getOrderByInvoiceNumberSuccess(response.data.data));
+            return response;
+        })
+        .catch((e) => {
+            if (e) {
+                dispatch(getOrderByInvoiceNumberFailed(e.data.message));
+                return e.data;
+            }
+            const error = {
+                message: "Server Error",
+                status: "failed",
+            };
+            dispatch(getOrderByInvoiceNumberFailed(error.message));
+            return error;
+        });
+};
+
+export const confirmOrderedMenu = createAsyncThunk(
+    "order/confirmOrderedMenu",
+    async ({ orderId, vendorId }, thunkAPI) => {
+        try {
+            const response =
+                await orderService.confirmOrderedMenuStatusByVendors(
+                    orderId,
+                    vendorId,
+                );
+            return response; // your backend returns { status: "success", data: ... }
+        } catch (error) {
+            return thunkAPI.rejectWithValue(error?.data || "Unknown error");
+        }
+    },
+);
 
 export const deleteOrder = (id) => async (dispatch) => {
     return orderService
@@ -74,6 +111,8 @@ export const orderSlice = createSlice({
         },
         orders: [],
         detailOrder: {},
+        confirmedMenus: [],
+        loading: false,
     },
     reducers: {
         getOrdersSuccess: (state, action) => {
@@ -93,13 +132,41 @@ export const orderSlice = createSlice({
             state.success = false;
         },
         changeOrderStatusSuccess: (state, action) => {
-            state.message.error = action.payload;
-            state.success = false;
+            state.message.success = action.payload;
+            state.success = true;
         },
         changeOrderStatusFailed: (state, action) => {
             state.message.error = action.payload;
             state.success = false;
         },
+        getOrderByInvoiceNumberSuccess: (state, action) => {
+            state.detailOrder = action.payload;
+            state.success = true;
+        },
+        getOrderByInvoiceNumberFailed: (state, action) => {
+            state.message.error = action.payload;
+            state.success = false;
+        },
+    },
+    extraReducers: (builder) => {
+        builder
+            .addCase(confirmOrderedMenu.pending, (state) => {
+                state.loading = true;
+                state.message.error = "";
+                state.success = false;
+            })
+            .addCase(confirmOrderedMenu.fulfilled, (state, action) => {
+                state.loading = false;
+                state.confirmedMenus = action.payload.data; // adjust if your backend returns { data: menus }
+                state.success = true;
+                state.message.success = "Ordered menus confirmed.";
+            })
+            .addCase(confirmOrderedMenu.rejected, (state, action) => {
+                state.loading = false;
+                state.success = false;
+                state.message.error =
+                    action.payload || "Failed to confirm ordered menus.";
+            });
     },
 });
 
@@ -110,5 +177,7 @@ export const {
     deleteOrderFailed,
     changeOrderStatusSuccess,
     changeOrderStatusFailed,
+    getOrderByInvoiceNumberSuccess,
+    getOrderByInvoiceNumberFailed,
 } = orderSlice.actions;
 export default orderSlice.reducer;

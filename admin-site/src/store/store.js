@@ -6,6 +6,7 @@ import contactPersonReducer from "./reducers/contactPersonReducer";
 import userReducer from "./reducers/userReducer";
 import orderReducer from "./reducers/orderReducer";
 import paymentTypeReducer from "./reducers/paymentTypeReducer";
+import vendorReducer from "./reducers/vendorReducer";
 import { configureStore } from "@reduxjs/toolkit";
 // Add reducers here!
 export default configureStore({
@@ -15,6 +16,7 @@ export default configureStore({
         event: eventReducer,
         order: orderReducer,
         category: categoryReducer,
+        vendor: vendorReducer,
         contactPerson: contactPersonReducer,
         paymentType: paymentTypeReducer,
         user: userReducer,

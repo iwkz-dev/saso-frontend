@@ -11,6 +11,8 @@ import {
     UnorderedListOutlined,
     CreditCardOutlined,
     ContactsOutlined,
+    ShopOutlined,
+    ScanOutlined,
 } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import { isAuth } from "../../../helpers/authHelper";
@@ -38,6 +40,7 @@ function LoggedIn({ children, title, isNotAllowed }) {
 
     const items = [
         getItem("Dashboard", "/", <PieChartOutlined />),
+        getItem("Scan", "/scan", <ScanOutlined />),
         {
             type: "divider",
         },
@@ -51,6 +54,7 @@ function LoggedIn({ children, title, isNotAllowed }) {
                     "/database/category",
                     <UnorderedListOutlined />,
                 ),
+                getItem("Vendor", "/database/vendor", <ShopOutlined />),
                 getItem("Menu", "/database/menu", <ReadOutlined />),
                 getItem(
                     "Payment Type",

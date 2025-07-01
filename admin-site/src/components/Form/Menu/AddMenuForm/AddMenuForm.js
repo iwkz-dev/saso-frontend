@@ -11,6 +11,7 @@ const AddMenuForm = () => {
     const [form] = Form.useForm();
     const events = useSelector((state) => state.event.events);
     const categories = useSelector((state) => state.category.categories);
+    const vendors = useSelector((state) => state.vendor.vendors);
     const [showUploading, setShowUploading] = useState(false);
     const [images, setImages] = useState([]);
     const { query } = useRouter();
@@ -110,6 +111,17 @@ const AddMenuForm = () => {
             type: "select",
             placeholder: "Category",
             options: categories.map((item) => ({
+                value: item._id,
+                label: item.name,
+            })),
+            required: true,
+        },
+        {
+            name: "vendor",
+            label: "Vendor",
+            type: "select",
+            placeholder: "Vendor",
+            options: vendors.map((item) => ({
                 value: item._id,
                 label: item.name,
             })),
