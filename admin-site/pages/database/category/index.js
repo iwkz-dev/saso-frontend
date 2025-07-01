@@ -45,7 +45,6 @@ const index = () => {
     };
 
     const handleFetchError = (error) => {
-        // TODO: handle error here
         setShowLoadingData(false);
         message.error(error.message);
     };

@@ -22,6 +22,27 @@ export const getAllOrders = (requestURL) => async (dispatch) => {
         });
 };
 
+export const getOrderByInvoiceNumber = (invoiceNumber) => async (dispatch) => {
+    return orderService
+        .getOrderByInvoiceNumber(invoiceNumber)
+        .then((response) => {
+            dispatch(getOrderByInvoiceNumberSuccess(response.data.data));
+            return response;
+        })
+        .catch((e) => {
+            if (e) {
+                dispatch(getOrderByInvoiceNumberFailed(e.data.message));
+                return e.data;
+            }
+            const error = {
+                message: "Server Error",
+                status: "failed",
+            };
+            dispatch(getOrderByInvoiceNumberFailed(error.message));
+            return error;
+        });
+};
+
 export const deleteOrder = (id) => async (dispatch) => {
     return orderService
         .deleteOrder(id)
@@ -100,6 +121,14 @@ export const orderSlice = createSlice({
             state.message.error = action.payload;
             state.success = false;
         },
+        getOrderByInvoiceNumberSuccess: (state, action) => {
+            state.detailOrder = action.payload;
+            state.success = true;
+        },
+        getOrderByInvoiceNumberFailed: (state, action) => {
+            state.message.error = action.payload;
+            state.success = false;
+        },
     },
 });
 
@@ -110,5 +139,7 @@ export const {
     deleteOrderFailed,
     changeOrderStatusSuccess,
     changeOrderStatusFailed,
+    getOrderByInvoiceNumberSuccess,
+    getOrderByInvoiceNumberFailed,
 } = orderSlice.actions;
 export default orderSlice.reducer;

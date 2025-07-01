@@ -51,6 +51,32 @@ const deleteOrder = (id) => {
     });
 };
 
+const getOrderByInvoiceNumber = (invoiceNumber) => {
+    return new Promise((resolve, reject) => {
+        const headers = {
+            accept: "application/JSON",
+            Authorization: getToken(),
+        };
+
+        api({
+            method: "GET",
+            url: `/order/invoiceNumber/${invoiceNumber}`,
+            headers,
+        })
+            .then((response) => {
+                if (response.data.status === "success") {
+                    console.log(response.data);
+                    resolve(response.data);
+                } else {
+                    reject(response.data);
+                }
+            })
+            .catch((error) => {
+                reject(error.response);
+            });
+    });
+};
+
 const changeOrderStatus = (id, status) => {
     return new Promise((resolve, reject) => {
         const headers = {
@@ -78,6 +104,7 @@ const changeOrderStatus = (id, status) => {
 
 const orderService = {
     getAllOrders,
+    getOrderByInvoiceNumber,
     deleteOrder,
     changeOrderStatus,
 };
