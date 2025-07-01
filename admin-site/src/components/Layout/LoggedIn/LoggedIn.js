@@ -11,6 +11,7 @@ import {
     UnorderedListOutlined,
     CreditCardOutlined,
     ContactsOutlined,
+    ShopOutlined,
 } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import { isAuth } from "../../../helpers/authHelper";
@@ -51,6 +52,7 @@ function LoggedIn({ children, title, isNotAllowed }) {
                     "/database/category",
                     <UnorderedListOutlined />,
                 ),
+                getItem("Vendor", "/database/vendor", <ShopOutlined />),
                 getItem("Menu", "/database/menu", <ReadOutlined />),
                 getItem(
                     "Payment Type",

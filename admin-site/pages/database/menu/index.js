@@ -12,6 +12,7 @@ import AddItemButton from "../../../src/components/common/Button/AddItemButton/A
 import Content from "../../../src/components/Layout/Content/Content";
 import { message, Space, Typography } from "antd";
 import { isAuth } from "../../../src/helpers/authHelper";
+import { getAllVendors } from "../../../src/store/reducers/vendorReducer";
 
 const index = () => {
     const dispatch = useDispatch();
@@ -20,25 +21,29 @@ const index = () => {
     const [showLoading, setShowLoading] = useState(false);
 
     useEffect(() => {
-        getEventsCategoriesMenus();
+        getEventsCategoriesMenusVendors();
     }, []);
 
-    const getEventsCategoriesMenus = async () => {
+    const getEventsCategoriesMenusVendors = async () => {
         try {
             setShowLoading(true);
 
-            const [eventsResponse, categoriesResponse, menusResponse] =
+            const [eventsResponse, categoriesResponse, menusResponse, vendors] =
                 await Promise.all([
                     dispatch(getAllEvents()),
                     dispatch(getAllCategories()),
                     dispatch(getAllMenus()),
+                    dispatch(getAllVendors()),
                 ]);
 
             // Check for failed responses
             if (
-                [eventsResponse, categoriesResponse, menusResponse].some(
-                    (r) => r?.status === "failed",
-                )
+                [
+                    eventsResponse,
+                    categoriesResponse,
+                    menusResponse,
+                    vendors,
+                ].some((r) => r?.status === "failed")
             ) {
                 throw new Error("One or more requests failed");
             }
@@ -67,7 +72,7 @@ const index = () => {
 
                 if (onDeleteResult.status !== "failed") {
                     message.success(onDeleteResult.message);
-                    getEventsCategoriesMenus();
+                    getEventsCategoriesMenusVendors();
                 } else {
                     message.error(onDeleteResult.message);
                 }

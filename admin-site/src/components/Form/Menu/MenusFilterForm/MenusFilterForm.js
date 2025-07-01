@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 const MenusFilterForm = ({ handleChange, filters }) => {
     const events = useSelector((state) => state.event.events);
     const categories = useSelector((state) => state.category.categories);
+    const vendors = useSelector((state) => state.vendor.vendors);
 
     return (
         <Space>
@@ -41,6 +42,21 @@ const MenusFilterForm = ({ handleChange, filters }) => {
                                 name: "category",
                             }),
                             label: category.name,
+                        }))}></Select>
+                </Space>
+                <Space>
+                    <Select
+                        onChange={handleChange}
+                        placeholder="Choose vendor"
+                        defaultValue={JSON.stringify(
+                            filters.find((f) => f.name === "vendor"),
+                        )}
+                        options={vendors.map((vendor) => ({
+                            value: JSON.stringify({
+                                id: vendor._id,
+                                name: "vendor",
+                            }),
+                            label: vendor.name,
                         }))}></Select>
                 </Space>
             </Space>

@@ -7,6 +7,7 @@ import { getAllCategories } from "../../../../src/store/reducers/categoryReducer
 import { useDispatch } from "react-redux";
 import { message, Spin, Typography } from "antd";
 import { isAuth } from "../../../../src/helpers/authHelper";
+import { getAllVendors } from "../../../../src/store/reducers/vendorReducer";
 
 const index = () => {
     const dispatch = useDispatch();
@@ -19,14 +20,17 @@ const index = () => {
             setShowLoading(true);
 
             try {
-                const [eventsResponse, categoriesResponse] = await Promise.all([
-                    dispatch(getAllEvents()),
-                    dispatch(getAllCategories()),
-                ]);
+                const [eventsResponse, categoriesResponse, vendorResponse] =
+                    await Promise.all([
+                        dispatch(getAllEvents()),
+                        dispatch(getAllCategories()),
+                        dispatch(getAllVendors()),
+                    ]);
 
                 const failedResponse = [
                     eventsResponse,
                     categoriesResponse,
+                    vendorResponse,
                 ].find((response) => response?.status === "failed");
 
                 if (failedResponse) {
