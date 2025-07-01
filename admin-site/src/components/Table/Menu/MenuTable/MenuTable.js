@@ -7,8 +7,6 @@ function MenuTable({ onDelete, isLoading, showTable }) {
     const events = useSelector((state) => state.event.events);
     const categories = useSelector((state) => state.category.categories);
     const vendors = useSelector((state) => state.vendor.vendors);
-
-    console.log("MenuTable", menus, events, categories, vendors);
     const [tableHead, setTableHead] = useState([]);
 
     useEffect(() => {

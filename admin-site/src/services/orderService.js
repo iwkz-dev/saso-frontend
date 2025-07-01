@@ -65,7 +65,6 @@ const getOrderByInvoiceNumber = (invoiceNumber) => {
         })
             .then((response) => {
                 if (response.data.status === "success") {
-                    console.log(response.data);
                     resolve(response.data);
                 } else {
                     reject(response.data);
@@ -91,7 +90,6 @@ const confirmOrderedMenuStatusByVendors = (orderId, vendorId) => {
         })
             .then((response) => {
                 if (response.data.status === "success") {
-                    console.log(response.data);
                     resolve(response.data);
                 } else {
                     reject(response.data);
