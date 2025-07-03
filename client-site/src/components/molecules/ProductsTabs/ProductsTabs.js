@@ -30,6 +30,11 @@ const ProductsTabs = ({ event, barcode }) => {
         }),
     ];
 
+    if(!!items) {
+        return (<div>empty</div>)
+    }
+
+    console.log(items, category);
     return <Tabs defaultActiveKey="1" items={items} destroyOnHidden={true} />;
 };
 
