@@ -13,28 +13,19 @@ const ProductsTabs = ({ event, barcode }) => {
         dispatch(getAllCategories(filter));
     }, [barcode]);
 
-    const items = [
-        ...category.data.map((c, i) => {
-            if (c.menus.data.length > 0) {
-                return {
-                    key: i + 1,
-                    label: c.name,
-                    children: (
-                        <ProductCards
-                            productList={c.menus.data}
-                            barcode={barcode}
-                        />
-                    ),
-                };
-            }
-        }),
-    ];
+    const items = category.data
+    .filter((c) => c.menus.data.length > 0)
+    .map((c, i) => ({
+        key: i + 1,
+        label: c.name,
+        children: (
+            <ProductCards
+                productList={c.menus.data}
+                barcode={barcode}
+            />
+        ),
+    }));
 
-    if(!!items) {
-        return (<div>empty</div>)
-    }
-
-    console.log(items, category);
     return <Tabs defaultActiveKey="1" items={items} destroyOnHidden={true} />;
 };
 
