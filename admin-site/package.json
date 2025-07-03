@@ -1,6 +1,9 @@
 {
     "name": "admin-site",
     "private": true,
+    "engine": {
+        "node": "18.4.0"
+    },
     "scripts": {
         "dev": "next dev",
         "build": "next build",

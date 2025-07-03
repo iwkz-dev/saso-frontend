@@ -8,18 +8,25 @@ import {
     Descriptions,
     message,
     Select,
+    Form,
+    Space,
+    Empty,
+    Modal,
 } from "antd";
 import { QrReader } from "react-qr-reader";
+import { CameraOutlined, CheckCircleOutlined } from "@ant-design/icons";
 import Content from "../../src/components/Layout/Content/Content";
 import LoggedIn from "../../src/components/Layout/LoggedIn/LoggedIn";
-import { getOrderByInvoiceNumber } from "../../src/store/reducers/orderReducer";
+import {
+    getOrderByInvoiceNumber,
+    confirmOrderedMenu,
+} from "../../src/store/reducers/orderReducer";
 import { getAllVendors } from "../../src/store/reducers/vendorReducer";
-import { confirmOrderedMenu } from "../../src/store/reducers/orderReducer";
 
 const { Title } = Typography;
 const { Option } = Select;
 
-const index = () => {
+const Index = () => {
     const pageTitle = "Saso App | Scan";
     const dispatch = useDispatch();
     const [loading, setLoading] = useState(false);
@@ -31,7 +38,8 @@ const index = () => {
 
     const handleVendorChange = (value) => {
         setSelectedVendor(value);
-        setCameraOn(false);
+        setScanned(false);
+        setOrder(null);
     };
 
     useEffect(() => {
@@ -39,43 +47,39 @@ const index = () => {
             const response = await dispatch(getAllVendors());
             if (response.status === "success") {
                 setVendors(response.data.data);
-                setCameraOn(false);
             } else {
-                message.error("Order not found.");
-                setScanned(false);
+                message.error("Failed to load vendors.");
             }
         };
 
         getVendors();
-    }, []);
+    }, [dispatch]);
 
     const handleScan = async (result, error) => {
         if (result) {
-            if (!scanned && selectedVendor) {
-                setScanned(true);
-                setLoading(true);
+            setScanned(true);
+            setCameraOn(false);
+            setLoading(true);
 
-                const invoiceNumber = result?.text;
+            const invoiceNumber = result?.text;
 
-                try {
-                    const response = await dispatch(
-                        getOrderByInvoiceNumber(invoiceNumber),
-                    );
+            try {
+                const response = await dispatch(
+                    getOrderByInvoiceNumber(invoiceNumber),
+                );
 
-                    if (response.status === "success") {
-                        setOrder(response.data);
-                        setCameraOn(false);
-                    } else {
-                        message.error("Order not found.");
-                        setScanned(false);
-                    }
-                } catch (err) {
-                    console.error(err);
-                    message.error("Failed to fetch order details.");
+                if (response.status === "success") {
+                    setOrder(response.data);
+                } else {
+                    message.error("Order not found.");
                     setScanned(false);
-                } finally {
-                    setLoading(false);
                 }
+            } catch (err) {
+                console.error(err);
+                message.error("Failed to fetch order details.");
+                setScanned(false);
+            } finally {
+                setLoading(false);
             }
         }
 
@@ -85,6 +89,7 @@ const index = () => {
     };
 
     const handleConfirm = () => {
+        setLoading(true);
         dispatch(
             confirmOrderedMenu({
                 orderId: order._id,
@@ -94,7 +99,6 @@ const index = () => {
             .unwrap()
             .then(() => {
                 message.success("Order confirmed!");
-
                 setOrder(null);
                 setScanned(false);
                 setCameraOn(false);
@@ -102,116 +106,165 @@ const index = () => {
             .catch((error) => {
                 console.error(error);
                 message.error(error?.message || "Failed to confirm order.");
+            })
+            .finally(() => {
+                setLoading(false);
             });
     };
 
+    const handleGoBack = () => {
+        setOrder(null);
+        setScanned(false);
+    };
+
     const toggleCamera = () => {
-        setCameraOn((prev) => !prev);
+        setCameraOn(!cameraOn);
         if (!cameraOn) {
-            setScanned(false); // Reset scanned when turning camera ON
+            setScanned(false);
         }
     };
 
     return (
         <LoggedIn title={pageTitle}>
             <Content>
-                <div style={{ maxWidth: 600, margin: "0 auto", padding: 24 }}>
-                    <Title level={3}>QR Code Scanner</Title>
+                <Spin spinning={loading} tip="Loading...">
+                    <div
+                        style={{
+                            maxWidth: 600,
+                            margin: "0 auto",
+                            padding: 24,
+                        }}>
+                        <Title level={3}>QR Code Scanner</Title>
 
-                    {vendors.length !== 0 ? (
-                        <div style={{ marginBottom: 16 }}>
-                            <Select
-                                placeholder="Select Vendor"
-                                value={selectedVendor}
-                                onChange={handleVendorChange}
-                                style={{ width: "100%" }}>
-                                {vendors?.map((vendor) => (
-                                    <Option key={vendor._id} value={vendor._id}>
-                                        {vendor.name}
-                                    </Option>
-                                ))}
-                            </Select>
-                        </div>
-                    ) : (
-                        ""
-                    )}
+                        <Space
+                            direction="vertical"
+                            size="middle"
+                            style={{ width: "100%" }}>
+                            {vendors.length > 0 && (
+                                <Form layout="vertical">
+                                    <Form.Item label="Select Vendor" required>
+                                        <Select
+                                            placeholder="Select Vendor"
+                                            value={selectedVendor}
+                                            onChange={handleVendorChange}
+                                            allowClear>
+                                            {vendors.map((vendor) => (
+                                                <Option
+                                                    key={vendor._id}
+                                                    value={vendor._id}>
+                                                    {vendor.name}
+                                                </Option>
+                                            ))}
+                                        </Select>
+                                    </Form.Item>
+                                </Form>
+                            )}
 
-                    {selectedVendor && (
-                        <div style={{ marginBottom: 16, textAlign: "center" }}>
-                            <Button
-                                type={cameraOn ? "default" : "primary"}
-                                danger={cameraOn}
-                                onClick={toggleCamera}>
-                                {cameraOn
-                                    ? "Turn Camera OFF"
-                                    : "Turn Camera ON"}
-                            </Button>
-                        </div>
-                    )}
-
-                    {cameraOn && !order && selectedVendor && (
-                        <div
-                            style={{
-                                border: "2px dashed #1890ff",
-                                borderRadius: 8,
-                                overflow: "hidden",
-                                marginBottom: 24,
-                            }}>
-                            <QrReader
-                                constraints={{ facingMode: "environment" }}
-                                onResult={handleScan}
-                                style={{ width: "100%" }}
-                            />
-                        </div>
-                    )}
-
-                    {!selectedVendor && (
-                        <p style={{ textAlign: "center", color: "#999" }}>
-                            Please select a vendor to start scanning.
-                        </p>
-                    )}
-
-                    {loading && <Spin tip="Fetching order details..." />}
-
-                    {order && (
-                        <Card title={`Order Overview - ${order.invoiceNumber}`}>
-                            <Descriptions column={1} bordered>
-                                <Descriptions.Item label="Customer">
-                                    {order.customerFullname}
-                                </Descriptions.Item>
-                                <Descriptions.Item label="Items">
-                                    {order.menus.map((item, idx) => (
-                                        <div key={idx}>
-                                            {item.name} x {item.totalPortion}
-                                        </div>
-                                    ))}
-                                </Descriptions.Item>
-                            </Descriptions>
-
-                            <div
-                                style={{
-                                    marginTop: 16,
-                                    display: "flex",
-                                    gap: 8,
-                                }}>
-                                <Button type="primary" onClick={handleConfirm}>
-                                    Confirm Order
-                                </Button>
+                            {selectedVendor && !scanned && (
                                 <Button
-                                    onClick={() => {
-                                        setOrder(null);
-                                        setScanned(false);
-                                        setCameraOn(true);
-                                    }}>
-                                    Go Back
+                                    type="primary"
+                                    icon={<CameraOutlined />}
+                                    block
+                                    onClick={toggleCamera}>
+                                    Open Camera
                                 </Button>
-                            </div>
-                        </Card>
-                    )}
-                </div>
+                            )}
+
+                            {!selectedVendor && (
+                                <Empty description="Please select a vendor to start scanning." />
+                            )}
+
+                            {order && (
+                                <Card
+                                    title={`Order Overview - ${order.invoiceNumber}`}
+                                    actions={[
+                                        <Button
+                                            key="confirm"
+                                            type="primary"
+                                            onClick={handleConfirm}>
+                                            Confirm Order
+                                        </Button>,
+                                        <Button
+                                            key="back"
+                                            onClick={handleGoBack}>
+                                            Scan Again
+                                        </Button>,
+                                    ]}>
+                                    <Descriptions
+                                        column={1}
+                                        bordered
+                                        size="small">
+                                        <Descriptions.Item label="Customer">
+                                            {order.customerFullname}
+                                        </Descriptions.Item>
+                                        <Descriptions.Item label="Items">
+                                            {order.menus.map((item, idx) => (
+                                                <div
+                                                    key={idx}
+                                                    style={{
+                                                        backgroundColor:
+                                                            item.status === 1
+                                                                ? "#f6ffed"
+                                                                : "transparent",
+                                                        border:
+                                                            item.status === 1
+                                                                ? "1px solid #b7eb8f"
+                                                                : "1px solid #f0f0f0",
+                                                        borderRadius: 4,
+                                                        padding: "4px 8px",
+                                                        marginBottom: 4,
+                                                    }}>
+                                                    {item.name} x{" "}
+                                                    {item.totalPortion}{" "}
+                                                    {item.status === 1 && (
+                                                        <span
+                                                            style={{
+                                                                color: "#52c41a",
+                                                                marginLeft: 8,
+                                                            }}>
+                                                            <CheckCircleOutlined />{" "}
+                                                            Confirmed
+                                                        </span>
+                                                    )}
+                                                </div>
+                                            ))}
+                                        </Descriptions.Item>
+                                    </Descriptions>
+                                </Card>
+                            )}
+
+                            <Modal
+                                open={cameraOn}
+                                onCancel={() => setCameraOn(false)}
+                                footer={null}
+                                destroyOnClose
+                                title="Scan QR Code">
+                                <div
+                                    style={{
+                                        border: "2px dashed #1890ff",
+                                        borderRadius: 8,
+                                        overflow: "hidden",
+                                        padding: 16,
+                                        textAlign: "center",
+                                    }}>
+                                    <QrReader
+                                        constraints={{
+                                            facingMode: "environment",
+                                        }}
+                                        onResult={handleScan}
+                                        style={{ width: "100%" }}
+                                    />
+                                    <p style={{ marginTop: 12 }}>
+                                        Align the QR code within the frame
+                                    </p>
+                                </div>
+                            </Modal>
+                        </Space>
+                    </div>
+                </Spin>
             </Content>
         </LoggedIn>
     );
 };
 
-export default index;
+export default Index;
