@@ -30,7 +30,7 @@ const ProductsTabs = ({ event, barcode }) => {
         }),
     ];
 
-    return <Tabs defaultActiveKey="1" items={items} />;
+    return <Tabs defaultActiveKey="1" items={items} destroyOnHidden={true} />;
 };
 
 export default ProductsTabs;
