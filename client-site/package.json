@@ -1,6 +1,9 @@
 {
     "name": "client-site",
     "private": true,
+    "engines": {
+        "node": "18.4.0"
+    },
     "scripts": {
         "dev": "next dev",
         "build": "next build",
