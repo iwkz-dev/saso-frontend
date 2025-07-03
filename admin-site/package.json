@@ -1,7 +1,7 @@
 {
     "name": "admin-site",
     "private": true,
-    "engines": {
+    "engine": {
         "node": "18.4.0"
     },
     "scripts": {
