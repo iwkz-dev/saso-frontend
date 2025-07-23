@@ -37,7 +37,7 @@ const ProductItem = ({ product }) => {
                     <Meta
                         title={product.name}
                         description={
-                            product.quantity == product.quantityOrder
+                            product.quantity <= product.quantityOrder
                                 ? "Sold out"
                                 : `Left Stock: ${
                                       product.quantity - product.quantityOrder
