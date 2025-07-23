@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import Table from "../../Table";
-import { Typography } from "antd";
+import { Typography, Tag, Divider } from "antd";
 import dayjs from "dayjs";
+import { CheckCircleOutlined, CloseCircleOutlined } from "@ant-design/icons";
 
 function OrderTable({ onDelete, onChangeStatus, isLoading, showTable }) {
     const orders = useSelector((state) => state.order.orders);
     const events = useSelector((state) => state.event.events);
     const paymentTypes = useSelector((state) => state.paymentType.paymentTypes);
     const [tableHead, setTableHead] = useState([]);
+    const { Text } = Typography;
 
     useEffect(() => {
         setTableHead([
@@ -144,26 +146,66 @@ function OrderTable({ onDelete, onChangeStatus, isLoading, showTable }) {
     }, [events, orders, paymentTypes]);
 
     const expandOrderedMenu = (record) => (
-        <div>
-            <Typography.Text
+        <div style={{ padding: "8px 0" }}>
+            <Text
                 strong
-                style={{ margin: 0, whiteSpace: "pre-line" }}>
+                style={{
+                    display: "block",
+                    fontSize: 16,
+                    whiteSpace: "pre-line",
+                }}>
                 {record.customerFullname}
-            </Typography.Text>
-            <br />
-            <Typography.Text style={{ margin: 0, whiteSpace: "pre-line" }}>
-                Ordered Menu:
-            </Typography.Text>
-            <ol>{listItemElement(record.menus)}</ol>
+            </Text>
+
+            <Divider style={{ margin: "8px 0" }} />
+
+            <Text style={{ fontWeight: 500 }}>Ordered Menu:</Text>
+            <ol style={{ paddingLeft: "20px", marginTop: "4px" }}>
+                {listItemElement(record.menus)}
+            </ol>
         </div>
     );
 
     const listItemElement = (items) => {
         return items.map((item) => {
+            const isConfirmed = item.status === 1;
+
             return (
-                <li key={item.key}>
-                    {item.name} ({item.totalPortion})
-                    {item.note ? ", note: " + item.note : ""}
+                <li
+                    key={item.key}
+                    style={{
+                        display: "flex",
+                        alignItems: "flex-start",
+                        gap: "8px",
+                        padding: "8px 0",
+                        borderBottom: "1px solid #f0f0f0",
+                    }}>
+                    <div style={{ paddingTop: 4 }}>
+                        {isConfirmed ? (
+                            <CheckCircleOutlined
+                                style={{ color: "#52c41a", fontSize: 18 }}
+                            />
+                        ) : (
+                            <CloseCircleOutlined
+                                style={{ color: "#bfbfbf", fontSize: 18 }}
+                            />
+                        )}
+                    </div>
+                    <div>
+                        <Text strong>
+                            {item.name} ({item.totalPortion})
+                        </Text>
+                        {item.note && (
+                            <div style={{ fontSize: "12px", color: "#8c8c8c" }}>
+                                Note: {item.note}
+                            </div>
+                        )}
+                        <div style={{ marginTop: 4 }}>
+                            <Tag color={isConfirmed ? "green" : "default"}>
+                                {isConfirmed ? "Confirmed" : "Not Confirmed"}
+                            </Tag>
+                        </div>
+                    </div>
                 </li>
             );
         });
