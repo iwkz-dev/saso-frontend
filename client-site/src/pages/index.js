@@ -52,6 +52,7 @@ export default function Home() {
                             width: "fit-content",
                             backgroundColor: "#fff",
                             boxShadow: "rgba(0, 0, 0, 0.16) 0px 1px 4px",
+                            padding: "0.5rem 0.5rem",
                         }}
                         icon={<WhatsAppOutlined />}>
                         Ask {events[0].contactPersons[0].name}
