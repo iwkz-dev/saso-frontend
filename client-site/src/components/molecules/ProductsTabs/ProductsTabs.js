@@ -165,16 +165,16 @@ const ProductsTabs = ({ event, barcode, headerOffset = 56 }) => {
                 items={items}
                 activeKey={activeKey || items[0]?.key}
                 onChange={setActiveKey}
-                destroyOnHidden
                 animated
                 tabBarGutter={TOKENS.gap}
                 tabBarStyle={{ padding: 0, margin: 0 }}
+                destroyOnHidden
                 renderTabBar={(props, DefaultTabBar) => (
                     <div
                         style={{
                             position: "sticky",
                             top: "var(--navbar-h, 56px)",
-                            zIndex: 1000,
+                            zIndex: 900,
                             background: TOKENS.surface,
                             boxShadow: TOKENS.shadow,
                             borderRadius: TOKENS.radius,
@@ -199,16 +199,32 @@ const ProductsTabs = ({ event, barcode, headerOffset = 56 }) => {
                             </div>
 
                             <div aria-hidden style={{ pointerEvents: "none", position: "absolute", inset: 0 }}>
-                                <div style={{
-                                    position: "absolute", left: 0, top: 0, bottom: 0, width: 16,
-                                    background: "linear-gradient(to right, rgba(255,255,255,1), rgba(255,255,255,0))",
-                                    borderTopLeftRadius: TOKENS.radius, borderBottomLeftRadius: TOKENS.radius
-                                }} />
-                                <div style={{
-                                    position: "absolute", right: 0, top: 0, bottom: 0, width: 16,
-                                    background: "linear-gradient(to left, rgba(255,255,255,1), rgba(255,255,255,0))",
-                                    borderTopRightRadius: TOKENS.radius, borderBottomRightRadius: TOKENS.radius
-                                }} />
+                                <div
+                                    style={{
+                                        position: "absolute",
+                                        left: 0,
+                                        top: 0,
+                                        bottom: 0,
+                                        width: 16,
+                                        background:
+                                            "linear-gradient(to right, rgba(255,255,255,1), rgba(255,255,255,0))",
+                                        borderTopLeftRadius: TOKENS.radius,
+                                        borderBottomLeftRadius: TOKENS.radius,
+                                    }}
+                                />
+                                <div
+                                    style={{
+                                        position: "absolute",
+                                        right: 0,
+                                        top: 0,
+                                        bottom: 0,
+                                        width: 16,
+                                        background:
+                                            "linear-gradient(to left, rgba(255,255,255,1), rgba(255,255,255,0))",
+                                        borderTopRightRadius: TOKENS.radius,
+                                        borderBottomRightRadius: TOKENS.radius,
+                                    }}
+                                />
                             </div>
                         </div>
                     </div>
