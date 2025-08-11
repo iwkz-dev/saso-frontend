@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Layout, Modal } from "antd";
 import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
@@ -13,10 +13,34 @@ import { clearRegisterMessage } from "../../../stores/reducers/register";
 const Navbar = () => {
     const dispatch = useDispatch();
     const cart = useSelector((state) => state.cart.data);
+    const headerRef = useRef(null);
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isSignIn, setIsSignIn] = useState(false);
+
     const [scrolled, setScrolled] = useState(false);
+
+    useEffect(() => {
+        const onScroll = () => setScrolled(window.scrollY > 8);
+        window.addEventListener("scroll", onScroll, { passive: true });
+        onScroll();
+        return () => window.removeEventListener("scroll", onScroll);
+    }, []);
+
+    useEffect(() => {
+        if (!headerRef.current) return;
+        const el = headerRef.current;
+
+        const apply = () => {
+            const h = el.getBoundingClientRect().height || 56;
+            document.documentElement.style.setProperty("--navbar-h", `${h}px`);
+        };
+        apply();
+
+        const ro = new ResizeObserver(apply);
+        ro.observe(el);
+        return () => ro.disconnect();
+    }, []);
 
     useEffect(() => {
         const onScroll = () => setScrolled(window.scrollY > 8);
@@ -58,10 +82,12 @@ const Navbar = () => {
 
     return (
         <Layout.Header
+            id="app-navbar"
+            ref={headerRef}
             style={{
                 position: "sticky",
                 top: 0,
-                zIndex: 999,
+                zIndex: 1100,
                 width: "100%",
                 background: scrolled ? "rgba(255,255,255,0.95)" : "rgba(255,255,255,0.75)",
                 backdropFilter: "blur(12px) saturate(180%)",
@@ -120,10 +146,10 @@ const Navbar = () => {
                     }}
                     maskClosable={false}
                     closable={false}
-                    destroyOnClose
+                    destroyOnHidden
                     centered
                     width={420}
-                    bodyStyle={{
+                    style={{
                         padding: 12,
                     }}
                 >
