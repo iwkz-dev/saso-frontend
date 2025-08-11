@@ -1,43 +1,67 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import eventService from "../../services/eventService";
 
 const initialState = {
     data: [],
-    message: {
-        error: "",
-        success: "",
-    },
+    status: "idle",
+    error: null,
+    successMessage: null,
 };
 
-export const getEvent = (status) => (dispatch) => {
-    return eventService.getEvent(status).then((response) => {
-        if (response.data.status === "success") {
-            dispatch(eventSuccess(response.data));
-        } else {
-            dispatch(eventFailed(response.data));
+// ============== Thunks ==============
+
+export const fetchEvents = createAsyncThunk(
+    "event/fetchEvents",
+    async (status, { rejectWithValue }) => {
+        try {
+            const res = await eventService.getEvent(status);
+            if (res.data?.status !== "success") {
+                return rejectWithValue(res.data?.message || "Failed to fetch events");
+            }
+            return { events: res.data.data?.data ?? [], message: res.data.message };
+        } catch (err) {
+            return rejectWithValue(
+                err?.response?.data?.message || err?.message || "Network error"
+            );
         }
-        return Promise.resolve();
-    });
-};
+    }
+);
 
-export const eventSlice = createSlice({
+// ============== Slice ==============
+
+const eventSlice = createSlice({
     name: "event",
-    initialState: initialState,
+    initialState,
     reducers: {
-        eventSuccess: (state, action) => {
-            state.data = [...action.payload.data.data];
-            state.message.success = action.payload.data.message;
-            state.message.error = "";
-        },
-        eventFailed: (state, action) => {
-            state.message.error = action.payload.data.message;
-        },
-        resetEvent: (state, action) => {
-            state = initialState;
-        },
+        resetEvent: () => initialState,
+    },
+    extraReducers: (builder) => {
+        builder
+            .addCase(fetchEvents.pending, (state) => {
+                state.status = "loading";
+                state.error = null;
+                state.successMessage = null;
+            })
+            .addCase(fetchEvents.fulfilled, (state, action) => {
+                state.status = "succeeded";
+                state.data = action.payload.events;
+                state.successMessage = action.payload.message || null;
+                state.error = null;
+            })
+            .addCase(fetchEvents.rejected, (state, action) => {
+                state.status = "failed";
+                state.error = action.payload || "Unknown error";
+            });
     },
 });
 
-// Action creators are generated for each case reducer function
-export const { eventSuccess, eventFailed } = eventSlice.actions;
+export const { resetEvent } = eventSlice.actions;
+
+// ============== Selectors ==============
+export const selectEventState = (state) => state.event;
+export const selectEvents = (state) => state.event.data;
+export const selectFirstEvent = (state) => state.event.data?.[0] ?? null;
+export const selectEventStatus = (state) => state.event.status;
+export const selectEventError = (state) => state.event.error;
+
 export default eventSlice.reducer;

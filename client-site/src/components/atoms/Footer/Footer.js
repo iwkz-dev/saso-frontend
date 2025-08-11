@@ -5,12 +5,16 @@ const FooterComponent = () => {
     return (
         <Layout.Footer
             style={{
-                backgroundColor: "rgb(232, 255, 226)",
+                backgroundColor: "#f0fdf4",
                 textAlign: "center",
-                color: "rgb(180, 180, 180)",
+                color: "#6b7280",
+                padding: "16px 8px",
+                fontSize: 14,
+                fontWeight: 500,
+                borderTop: "1px solid #d1fae5",
             }}
         >
-            © {new Date().getFullYear()} IWKZ Al-Falah
+            © {new Date().getFullYear()} IWKZ Al-Falah. All rights reserved.
         </Layout.Footer>
     );
 };

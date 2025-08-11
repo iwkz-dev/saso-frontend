@@ -1,121 +1,169 @@
-import React, { useEffect } from "react";
-import { Button, Form, Input, Layout, Space, Typography, message } from "antd";
+import { useEffect, useState } from "react";
+import {
+    Button,
+    Card,
+    Form,
+    Input,
+    Layout,
+    Space,
+    Typography,
+    message,
+    Grid,
+    Spin,
+    Empty,
+} from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import style from "./SearchOrderContent.module.scss";
 import { useDispatch, useSelector } from "react-redux";
 import {
     getOrderDetailByInvoiceNumber,
-    resetOrderData,
+    resetOrderState,
 } from "../../../stores/reducers/order";
 import MyOrderDetailContent from "../MyOrderDetailContent/MyOrderDetailContent";
-import { getEvent } from "../../../stores/reducers/event";
+import { fetchEvents } from "../../../stores/reducers/event";
+
+const { Content } = Layout;
+const { Title, Text, Paragraph } = Typography;
+const { useBreakpoint } = Grid;
 
 const SearchOrderContent = () => {
     const dispatch = useDispatch();
-    const detailOrder = useSelector((state) => state.order.data.detailOrder);
+    const screens = useBreakpoint();
+    const isMobile = !screens.md;
+
+    const detailOrder = useSelector((state) => state.order.detail);
+    const detailStatus = useSelector((state) => state.order.detailStatus);
     const events = useSelector((state) => state.event.data);
 
-    useEffect(() => {
-        dispatch(getEvent("approved"));
-    }, []),
-        useEffect(() => {
-            return () => {
-                dispatch(resetOrderData());
-            };
-        }, []);
+    const [submitting, setSubmitting] = useState(false);
 
-    const onFinish = (values) => {
-        const requestData = { ...values, eventId: events[0]._id };
-        dispatch(getOrderDetailByInvoiceNumber(requestData)).then(
-            (response) => {
-                if (!response) {
-                    message.error("Order not found");
-                }
-            },
-        );
+    useEffect(() => {
+        dispatch(fetchEvents("approved"));
+    }, [dispatch]);
+
+    useEffect(() => {
+        return () => {
+            dispatch(resetOrderState());
+        };
+    }, [dispatch]);
+
+    const onFinish = async (values) => {
+        const currentEventId = events?.[0]?._id;
+        if (!currentEventId) {
+            message.error("Event is not ready yet. Please try again shortly.");
+            return;
+        }
+
+        setSubmitting(true);
+        try {
+            const requestData = { ...values, eventId: currentEventId };
+            const resultAction = await dispatch(getOrderDetailByInvoiceNumber(requestData));
+            if (resultAction.meta.requestStatus !== "fulfilled" || !resultAction.payload?.detail) {
+                message.error("Order not found. Please check your details.");
+            } else {
+                message.success("Order found.");
+            }
+        } catch (e) {
+            message.error("Something went wrong. Please try again.");
+        } finally {
+            setSubmitting(false);
+        }
     };
 
     return (
-        <Layout.Content className={style.contentLayout}>
+        <Content className={style.contentLayout}>
             <div
                 style={{
-                    maxWidth: "1024px",
-                    padding: "1rem",
-                    margin: "1rem auto",
-                }}>
+                    maxWidth: 960,
+                    padding: isMobile ? 12 : 16,
+                    margin: "0 auto",
+                }}
+            >
                 <Space
                     className={style.searchOrderContent}
                     direction="vertical"
-                    size="middle">
-                    <Typography.Title level={3}>Search Order</Typography.Title>
-                    <Typography.Text type="secondary">
-                        Please fill the form below to get the information of
-                        your order
-                    </Typography.Text>
-                    <Form
-                        name="basic"
-                        labelCol={{
-                            span: 6,
-                        }}
-                        style={{
-                            padding: "24px",
-                            backgroundColor: "aliceblue",
-                        }}
-                        onFinish={onFinish}
-                        autoComplete="off">
-                        <div style={{ maxWidth: "500px", margin: "0 auto" }}>
+                    size={isMobile ? "middle" : "large"}
+                    style={{ width: "100%" }}
+                >
+                    <Title level={isMobile ? 4 : 3} style={{ marginBottom: 0 }}>
+                        Search Order
+                    </Title>
+                    <Text type="secondary">
+                        Enter your invoice number and full name to look up your order.
+                    </Text>
+
+                    <Card
+                        size="small"
+                        bodyStyle={{ padding: isMobile ? 12 : 16 }}
+                        style={{ borderRadius: 12 }}
+                    >
+                        <Form
+                            layout="vertical"
+                            onFinish={onFinish}
+                            autoComplete="off"
+                            style={{ width: "100%" }}
+                        >
                             <Form.Item
-                                label="Inovice Nr."
+                                label="Invoice Nr."
                                 name="invoiceNumber"
                                 rules={[
-                                    {
-                                        required: true,
-                                        message:
-                                            "Please input your Invoice Number!",
-                                    },
-                                ]}>
-                                <Input placeholder="Input Invoice.Nr" />
+                                    { required: true, message: "Please input your Invoice Number!" },
+                                ]}
+                            >
+                                <Input
+                                    placeholder="e.g., SS123"
+                                    allowClear
+                                    size="large"
+                                />
                             </Form.Item>
+
                             <Form.Item
                                 label="Full Name"
                                 name="customerFullname"
-                                rules={[
-                                    {
-                                        required: true,
-                                        message: "Please input your Full Name!",
-                                    },
-                                ]}>
+                                rules={[{ required: true, message: "Please input your Full Name!" }]}
+                            >
                                 <Input
-                                    placeholder="Input Full Name"
-                                    rules={[
-                                        {
-                                            required: true,
-                                            message:
-                                                "Please input your full name!",
-                                        },
-                                    ]}
+                                    placeholder="e.g., Max Mustermann"
+                                    allowClear
+                                    size="large"
                                 />
                             </Form.Item>
-                            <Form.Item>
+
+                            <Form.Item style={{ marginBottom: 0 }}>
                                 <Button
                                     type="primary"
                                     htmlType="submit"
-                                    icon={<SearchOutlined />}>
+                                    icon={<SearchOutlined />}
+                                    loading={submitting}
+                                    size="large"
+                                    block
+                                >
                                     Search Order
                                 </Button>
                             </Form.Item>
+                        </Form>
+                    </Card>
+
+                    {detailStatus === "loading" && (
+                        <div style={{ display: "flex", justifyContent: "center", padding: 24 }}>
+                            <Spin />
                         </div>
-                    </Form>
+                    )}
+
+                    {detailStatus === "succeeded" && detailOrder && (
+                        <MyOrderDetailContent
+                            detailOrder={detailOrder}
+                            withoutBackButton={true}
+                            events={events}
+                        />
+                    )}
+
+                    {detailStatus === "failed" && (
+                        <Empty description="No order found" />
+                    )}
                 </Space>
             </div>
-            {detailOrder ? (
-                <MyOrderDetailContent
-                    detailOrder={detailOrder}
-                    withoutBackButton={true}
-                    events={events}
-                />
-            ) : null}
-        </Layout.Content>
+        </Content>
     );
 };
 

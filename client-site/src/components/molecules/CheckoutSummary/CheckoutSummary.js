@@ -1,134 +1,85 @@
-import React from "react";
 import { useSelector } from "react-redux";
 import { Divider, Space, Typography } from "antd";
 import ImagesPreview from "../../atoms/ImagesPreview/ImagesPreview";
-import style from "./CheckoutSummary.module.scss";
 import { isAuth } from "../../../helpers/authHelper";
 import CheckoutGuestForm from "../CheckoutGuestForm/CheckoutGuestForm";
 import PaymentMethods from "../PaymentMethods/PaymentMethods";
+import style from "./CheckoutSummary.module.scss";
+
+const currency = (v) =>
+    new Intl.NumberFormat("de-DE", { style: "currency", currency: "EUR" }).format(
+        Number(v) || 0
+    );
 
 const CheckoutSummary = () => {
     const cart = useSelector((state) => state.cart.data);
 
-    const hasUndefinedValue = (obj) => {
-        for (const key in obj) {
-            if (obj.hasOwnProperty(key)) {
-                const value = obj[key];
-
-                if (
-                    value === undefined ||
-                    (typeof value === "string" && value.trim() === "")
-                ) {
-                    return true;
-                }
-
-                if (typeof value === "object" && !Array.isArray(value)) {
-                    if (hasUndefinedValue(value)) {
-                        return true;
-                    }
-                }
-            }
-        }
-
-        return false;
-    };
-
-    const cartItemComponents = () => {
-        return cart.items.map((cartItem, i) => (
-            <div key={i} className={style.cartItem}>
-                <div className={`${style.itemOverview} ${style.flexLayout}`}>
-                    <div className={style.imageWrapper}>
-                        <ImagesPreview
-                            productName={cartItem.menu.name}
-                            productImages={cartItem.menu.images}
-                        />
-                    </div>
-                    <Space direction="vertical">
-                        <Typography.Text className={style.itemTitle}>
-                            {cartItem.menu.name}
-                        </Typography.Text>
-                        <Typography.Text>
-                            {cartItem.menu.price} €
-                        </Typography.Text>
-                    </Space>
-                </div>
-                <div className={style.amountAndPrice}>
-                    <div
-                        className={`${style.itemAmountWrapperMobile} ${style.flexLayout}`}
-                    >
-                        <Typography.Text className={style.itemAmount}>
-                            {cartItem.amount}x
-                        </Typography.Text>
-                    </div>
-                    <div
-                        className={`${style.itemSumPriceWrapperMobile} ${style.flexLayout}`}
-                    >
-                        <Typography.Text className={style.itemSumPrice}>
-                            {cartItem.sumPrice}€
-                        </Typography.Text>
-                    </div>
-                </div>
-                <div
-                    className={`${style.itemAmountWrapper} ${style.flexLayout}`}
-                >
-                    <Typography.Text className={style.itemAmount}>
-                        {cartItem.amount}
-                    </Typography.Text>
-                </div>
-                <div
-                    className={`${style.itemSumPriceWrapper} ${style.flexLayout}`}
-                >
-                    <Typography.Text className={style.itemSumPrice}>
-                        {cartItem.sumPrice}€
-                    </Typography.Text>
-                </div>
-            </div>
-        ));
-    };
-
     return (
         <div className={style.checkoutSummary}>
             <Space size="large" direction="vertical" style={{ width: "100%" }}>
-                <Typography.Title level={3} style={{ textAlign: "center" }}>
-                    Checkout summary
-                </Typography.Title>
-                <div className={style.cartItems}>
-                    <div className={style.titleText}>
-                        <div className={style.flexLayout}>
-                            <Typography.Text className={style.text}>
-                                Menu Ordered
-                            </Typography.Text>
+                <div className={style.headerRow}>
+                    <Typography.Title level={4} style={{ margin: 0 }}>
+                        Order summary
+                    </Typography.Title>
+                    <Typography.Text type="secondary">
+                        {cart.items.length} item{cart.items.length > 1 ? "s" : ""}
+                    </Typography.Text>
+                </div>
+
+                <div className={`${style.gridRow} ${style.gridHead}`}>
+                    <Typography.Text className={style.muted}>Item</Typography.Text>
+                    <Typography.Text className={style.muted} style={{ textAlign: "right" }}>
+                        Qty
+                    </Typography.Text>
+                    <Typography.Text className={style.muted} style={{ textAlign: "right" }}>
+                        Subtotal
+                    </Typography.Text>
+                </div>
+
+                <div className={style.itemsWrap}>
+                    {cart.items.map((cartItem, i) => (
+                        <div key={i} className={`${style.gridRow} ${style.gridItem}`}>
+                            {/* Left: image + name + unit price */}
+                            <div className={style.itemInfo}>
+                                <div className={style.image}>
+                                    <ImagesPreview
+                                        productName={cartItem.menu.name}
+                                        productImages={cartItem.menu.images}
+                                    />
+                                </div>
+                                <div className={style.itemText}>
+                                    <Typography.Text strong className={style.title} ellipsis>
+                                        {cartItem.menu.name}
+                                    </Typography.Text>
+                                    <Typography.Text className={style.unitPrice}>
+                                        {currency(cartItem.menu.price)}
+                                    </Typography.Text>
+                                </div>
+                            </div>
+
+                            <div className={style.qtyCell}>
+                                <Typography.Text>{cartItem.amount}</Typography.Text>
+                            </div>
+
+                            <div className={style.subtotalCell}>
+                                <Typography.Text strong>{currency(cartItem.sumPrice)}</Typography.Text>
+                            </div>
                         </div>
-                        <div className={`${style.amount} ${style.flexLayout}`}>
-                            <Typography.Text className={style.text}>
-                                Amount
-                            </Typography.Text>
-                        </div>
-                        <div
-                            className={`${style.subPrice} ${style.flexLayout}`}
-                        >
-                            <Typography.Text className={style.text}>
-                                Sub Price
-                            </Typography.Text>
-                        </div>
+                    ))}
+                </div>
+
+                <Divider style={{ margin: "8px 0" }} />
+
+                <div className={style.totals}>
+                    <div className={`${style.totalRow} ${style.totalEmphasis}`}>
+                        <Typography.Text strong>Total</Typography.Text>
+                        <Typography.Title level={4} style={{ margin: 0 }}>
+                            {currency(cart.totalPrice)}
+                        </Typography.Title>
                     </div>
-                    {cartItemComponents()}
                 </div>
-                <Divider />
-                <div className={style.totalPriceWrapper}>
-                    <Typography.Title className={style.totalText} level={5}>
-                        Total:
-                    </Typography.Title>
-                    <Typography.Title
-                        className={style.totalPrice}
-                        level={3}
-                        type="danger"
-                    >
-                        {cart.totalPrice}€
-                    </Typography.Title>
-                </div>
-                {!isAuth() ? <CheckoutGuestForm /> : ""}
-                {isAuth() ? <PaymentMethods /> : ""}
+
+                {!isAuth() ? <CheckoutGuestForm /> : <PaymentMethods />}
             </Space>
         </div>
     );

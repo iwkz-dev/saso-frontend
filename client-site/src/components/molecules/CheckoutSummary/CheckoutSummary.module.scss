@@ -1,159 +1,110 @@
 .checkoutSummary {
-    .cartItems {
-        display: flex;
-        flex-direction: column;
-        gap: 2rem;
-        .titleText {
-            display: flex;
-            justify-content: space-evenly;
-            align-items: center;
-            padding: 0 1rem;
-            .text{
-                font-size: 1.1rem;
-                color: #4d4d4d;
-            }
-            .amount {
-                text-align: center;
-            }
-            .subPrice {
-                text-align: end;
-            }
-        }
-        .cartItem {
-            display: flex;
-            justify-content: space-evenly;
-            align-items: center;
-            padding: 1rem;
-            transition: all 0.3s;
-            border-radius: 3px;
-            &:hover {
-                box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
-            }
-            .itemOverview {
-                display: flex;
-                gap: 1rem;
-                .imageWrapper {
-                    width: 5rem;
-                }
-            }
-            .itemAmountWrapper{
-                text-align: center;
-            }
-            .itemSumPriceWrapper {
-                text-align: end;
-            }
-            .itemAmount, .itemTitle {
-                font-size: 1.1rem;
-            }
-            .itemSumPrice {
-                font-size: 1.25rem;
-            }
-            .amountAndPrice {
-                display: none;
-            }
-        }
-        .cartItemMobile {
-            display: none;
-        }
-    }
-    .flexLayout {
-        flex: 1 1 0;
-        width: 100%;
-    }
-    .totalPriceWrapper {
-        margin-top: 1rem;
-        padding: 0.5rem;
-        background-color: #ededed;
-        text-align: center;
-        .totalText, .totalPrice {
-            margin: 0;
-        }
+    width: 100%;
+}
+
+/* top heading row */
+.headerRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+/* grid rows */
+.gridRow {
+    display: grid;
+    grid-template-columns: 1fr auto auto; // item | qty | subtotal
+    gap: 8px;
+    align-items: center;
+}
+
+.gridHead {
+    display: none; // hidden on mobile
+    padding: 2px 4px;
+
+    @media (min-width: 768px) {
+        display: grid;
     }
 }
 
-@media only screen and (max-width: 769px) {
-    .checkoutSummary {
-        .cartItems {
-            .cartItem {
-                padding: 0.5rem;
-                .itemOverview {
-                    align-self: center;
-                    .imageWrapper {
-                        width: 4rem;
-                        height: 4rem;
-                    }
-                }
-                .itemAmount, .itemTitle{
-                    font-size: 14px;
-                }
-                .itemSumPrice{
-                    font-size: 1.1rem
-                }
-                .amountAndPrice {
-                    display: none;
-                }
-            }
-        }
-        .titleText {
-            .text {
-                font-size: 1rem;
-            }
-        }
-    }
+.itemsWrap {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
 }
 
-@media only screen and (max-width: 500px) {
-    .checkoutSummary {
-        .cartItems {
-            .titleText {
-                display: none;
-                .text {
-                    font-size: 1rem;
-                }
-            }
-            .cartItem {
-                display: flex;
-                flex-direction: column;
-                gap: 0.5rem;
-                padding: 0.5rem;
-                &:hover {
-                    box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
-                }
-                .itemOverview {
-                    display: flex;
-                    gap: 1rem;
-                    .imageWrapper {
-                        width: 4rem;
-                        height: 4rem;
-                    }
-                }
-                .itemAmountWrapper{
-                    display: none;
-                }
-                .itemSumPriceWrapper{
-                    display: none;
-                }
-                .amountAndPrice {
-                    display: flex;
-                    width: 100%;
-                    padding: 0 1rem;
-                    .itemSumPriceWrapperMobile{
-                        text-align: end;
-                    }
-                    .itemAmountWrapperMobile{
-                        text-align: start;
-                    }
-                    .itemAmountWrapperMobile, .itemSumPriceWrapperMobile{
-                        align-self: center;
-                        .itemAmount, .itemTitle {
-                            font-size: 1rem;
-                        }
-                    }
-                    .itemSumPrice {
-                        font-size: 1.25rem;
-                    }
-                }
-            }
-        }
-    }
+/* each item row */
+.gridItem {
+    padding: 8px;
+    border: 1px solid #f0f2f5;
+    border-radius: 10px;
+    background: #fff;
+}
+
+/* left side: image + text */
+.itemInfo {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 10px;
+    align-items: center;
+    min-width: 0; // enable ellipsis
+}
+
+.image {
+    width: 56px;
+    height: 56px;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #f8fafc;
+    border: 1px solid #f0f2f5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.itemText {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.title {
+    font-size: 14px;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.unitPrice {
+    color: #111827;
+}
+
+/* qty + subtotal cells (right aligned) */
+.qtyCell,
+.subtotalCell {
+    text-align: right;
+}
+
+/* totals */
+.totals {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.totalRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.totalEmphasis {
+    font-weight: 700;
+}
+
+.muted {
+    color: #6b7280;
+    font-size: 12px;
 }

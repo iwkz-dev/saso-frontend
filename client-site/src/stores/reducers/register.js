@@ -1,72 +1,89 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import authService from "../../services/authService";
 import { setToken } from "../../helpers/authHelper";
-import Router from "next/router";
-import { message } from "antd";
 
 const initialState = {
-    user: {
-        fullname: "",
-        phone: "",
-        email: "",
-        password: "",
-    },
-    message: {
-        error: "",
-        success: "",
-    },
+    user: null,
+    auth: null,
+    status: "idle",
+    message: null,
+    error: null,
 };
 
-export const resetRegisterMessage = () => (dispatch) => {
-    return dispatch(resetRegister());
-};
+export const submitRegister = createAsyncThunk(
+    "register/submitRegister",
+    async (form, { rejectWithValue }) => {
+        try {
+            const res = await authService.register(form);
+            const payload = res?.data ?? res;
+            if ((payload?.status || res?.status) !== "success") {
+                return rejectWithValue(payload?.message || "Registration failed");
+            }
 
-export const submitRegister = (data) => (dispatch) => {
-    return authService.register(data).then((response) => {
-        if (response.status === "success") {
-            //TODO: do the auto login here, data is in accessToken
-            const authData = {
-                accessToken: response.data.accessToken,
-                id: response.data._id,
+            const accessToken =
+                payload?.data?.accessToken ?? payload?.accessToken ?? null;
+            const id = payload?.data?._id ?? payload?.data?.id ?? payload?.id ?? null;
+            const user = payload?.data?.user ?? {
+                fullname: form.fullname,
+                email: form.email,
+                phone: form.phone,
             };
-            dispatch(registerSuccess(response.message));
-            setToken(authData);
-            Router.reload();
-        } else {
-            message.error(response.response.data.message);
-            dispatch(registerFailed(response.response.data.message));
-        }
-        return Promise.resolve();
-    });
-};
 
-export const registerSlice = createSlice({
+            let auth = null;
+            if (accessToken && id) {
+                auth = { accessToken, id };
+                setToken(auth); // auto-login
+            }
+
+            return {
+                message: payload?.message ?? "Registration success",
+                user,
+                auth,
+            };
+        } catch (err) {
+            return rejectWithValue(
+                err?.response?.data?.message || err?.message || "Network error"
+            );
+        }
+    }
+);
+
+const registerSlice = createSlice({
     name: "register",
-    initialState: { data: initialState },
+    initialState,
     reducers: {
-        textFieldChangeHandler: (state, action) => {
-            const name = action.payload.name;
-            const value = action.payload.value;
-            state.data.user[name] = value;
+        clearRegisterMessage: (state) => {
+            state.message = null;
+            state.error = null;
         },
-        registerSuccess: (state, action) => {
-            state.data.message.success = action.payload;
-            state.data.message.error = "";
-        },
-        registerFailed: (state, action) => {
-            state.data.message.error = action.payload;
-        },
-        resetRegister: (state, action) => {
-            state.data = initialState;
-        },
+        resetRegisterState: () => initialState,
+    },
+    extraReducers: (builder) => {
+        builder
+            .addCase(submitRegister.pending, (state) => {
+                state.status = "loading";
+                state.message = null;
+                state.error = null;
+            })
+            .addCase(submitRegister.fulfilled, (state, action) => {
+                state.status = "succeeded";
+                state.user = action.payload.user;
+                state.message = action.payload.message;
+                state.auth = action.payload.auth;
+            })
+            .addCase(submitRegister.rejected, (state, action) => {
+                state.status = "failed";
+                state.error = action.payload || "Registration failed";
+            });
     },
 });
 
-// Action creators are generated for each case reducer function
-export const {
-    textFieldChangeHandler,
-    registerSuccess,
-    registerFailed,
-    resetRegister,
-} = registerSlice.actions;
+export const { clearRegisterMessage, resetRegisterState } = registerSlice.actions;
+
+// Selectors
+export const selectRegisterState = (s) => s.register;
+export const selectRegisterStatus = (s) => s.register.status;
+export const selectRegisterMessage = (s) => s.register.message;
+export const selectRegisterError = (s) => s.register.error;
+
 export default registerSlice.reducer;

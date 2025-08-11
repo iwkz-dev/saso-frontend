@@ -1,10 +1,14 @@
 import sasoApi from "../api/SasoApi";
 
-const getCategory = (filter) => {
-    return sasoApi.getData(`/customer/category${filter}`);
+const toQuery = (filter) => {
+    if (!filter) return "";
+    if (typeof filter === "string") return filter.startsWith("?") ? filter : `?${filter}`;
+    const qs = new URLSearchParams(filter).toString();
+    return qs ? `?${qs}` : "";
 };
 
-const categoryService = {
-    getCategory,
+const getCategory = (filter) => {
+    return sasoApi.getData(`/customer/category${toQuery(filter)}`);
 };
-export default categoryService;
+
+export default { getCategory };

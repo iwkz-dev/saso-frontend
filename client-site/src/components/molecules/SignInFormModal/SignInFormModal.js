@@ -1,4 +1,5 @@
-import { Button, Form, Input } from "antd";
+import { useState } from "react";
+import { Button, Form, Input, Alert, Space, message } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { submitLogin } from "../../../stores/reducers/login";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
@@ -6,18 +7,23 @@ import Router from "next/router";
 
 const SignInFormModal = ({ setShowModal }) => {
     const dispatch = useDispatch();
-    const errorMessage = useSelector((state) => state.login.data.message.error);
+    const status = useSelector((state) => state.login.status);
+    const storeError = useSelector((state) => state.login.error);
+    const [form] = Form.useForm();
+    const [localError, setLocalError] = useState(null);
 
-    const onFinish = (values) => {
-        values.type = "client";
-        dispatch(submitLogin(values)).then((response) => {
-            if (response.status !== "success") {
-                setShowModal(true);
-            } else {
-                setShowModal(false);
-                Router.reload();
-            }
-        });
+    const onFinish = async (values) => {
+        setLocalError(null);
+        try {
+            const payload = { ...values, type: "client" };
+            await dispatch(submitLogin(payload)).unwrap();
+            message.success("Welcome back!");
+            if (typeof setShowModal === "function") setShowModal(false);
+            Router.push("/"); // or Router.reload() if you must
+        } catch (err) {
+            setLocalError(err || "Login failed");
+            if (typeof setShowModal === "function") setShowModal(true);
+        }
     };
 
     const forgotPasswordOnClick = () => {
@@ -25,54 +31,55 @@ const SignInFormModal = ({ setShowModal }) => {
     };
 
     return (
-        <Form id="sign-in" onFinish={onFinish}>
-            <Form.Item
-                name="email"
-                rules={[
-                    {
-                        required: true,
-                        message: "Please input your email!",
-                    },
-                ]}
-            >
-                <Input
-                    id="email"
-                    prefix={<UserOutlined className="site-form-item-icon" />}
-                    placeholder="Email"
-                />
-            </Form.Item>
-            <Form.Item
-                name="password"
-                id="password"
-                rules={[
-                    {
-                        required: true,
-                        message: "Please input your password!",
-                    },
-                ]}
-            >
-                <Input.Password
-                    prefix={<LockOutlined />}
-                    type="password"
-                    placeholder="Password"
-                />
-            </Form.Item>
-            <Button
-                style={{ padding: 0 }}
-                type="link"
-                onClick={() => forgotPasswordOnClick()}
-            >
-                Forgot password?
-            </Button>
-            <div
-                style={{
-                    fontSize: 12,
-                    marginBottom: 24,
-                    color: "red",
-                }}
-            >
-                {errorMessage}
-            </div>
+        <Form
+            id="sign-in"
+            form={form}
+            layout="vertical"
+            onFinish={onFinish}
+            style={{ width: "100%" }}
+        >
+            <Space direction="vertical" size={12} style={{ width: "100%" }}>
+                {(localError || storeError) && (
+                    <Alert type="error" showIcon message={localError || storeError} />
+                )}
+
+                <Form.Item
+                    label="Email"
+                    name="email"
+                    rules={[
+                        { required: true, message: "Please input your email!" },
+                        { type: "email", message: "Please enter a valid email address!" },
+                    ]}
+                >
+                    <Input
+                        size="large"
+                        id="email"
+                        autoComplete="email"
+                        prefix={<UserOutlined />}
+                        placeholder="you@example.com"
+                    />
+                </Form.Item>
+
+                <Form.Item
+                    label="Password"
+                    name="password"
+                    rules={[{ required: true, message: "Please input your password!" }]}
+                >
+                    <Input.Password
+                        size="large"
+                        id="password"
+                        autoComplete="current-password"
+                        prefix={<LockOutlined />}
+                        placeholder="••••••••"
+                    />
+                </Form.Item>
+
+                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                    <Button type="link" style={{ padding: 0 }} onClick={forgotPasswordOnClick}>
+                        Forgot password?
+                    </Button>
+                </div>
+            </Space>
         </Form>
     );
 };

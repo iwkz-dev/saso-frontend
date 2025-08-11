@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Button, Form, Input, Modal, Space, Steps, Typography } from "antd";
+import { useState } from "react";
+import { Button, Modal, Space, Steps } from "antd";
 import { LeftOutlined } from "@ant-design/icons";
 import { useDispatch } from "react-redux";
 import SignInFormModal from "../SignInFormModal/SignInFormModal";
@@ -14,24 +14,18 @@ const CheckoutGuestForm = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isSignIn, setIsSignIn] = useState(false);
     const [current, setCurrent] = useState(0);
-    const [userData, setUserData] = useState({
-        fullname: "",
-        email: "",
-        phone: "",
-    });
+    const [userData, setUserData] = useState({ fullname: "", email: "", phone: "" });
 
     const showModalForSignIn = (state) => {
         setIsModalOpen(true);
         setIsSignIn(state);
     };
 
-    const ModalContent = () => {
-        if (isSignIn) {
-            return <SignInFormModal setShowModal={setIsModalOpen} />;
-        }
-
-        return <SignUpFormModal />;
-    };
+    const ModalContent = () => (isSignIn ? (
+        <SignInFormModal setShowModal={setIsModalOpen} />
+    ) : (
+        <SignUpFormModal />
+    ));
 
     const handleCancel = () => {
         dispatch(resetLoginMessage());
@@ -44,79 +38,41 @@ const CheckoutGuestForm = () => {
         setCurrent(1);
     };
 
-    const stepsContent = () => {
-        switch (current) {
-            case 0:
-                return (
+    return (
+        <div style={{ width: "100%", maxWidth: 520, margin: "8px auto 0" }}>
+            <Space direction="vertical" size="large" style={{ width: "100%" }}>
+                <Steps
+                    size="small"
+                    current={current}
+                    style={{ width: "100%", maxWidth: 360, margin: "0 auto" }}
+                    items={[{ title: "Contact" }, { title: "Payment" }]}
+                />
+
+                {current === 0 ? (
                     <FormStepContent
                         userData={userData}
                         onFinish={onFinish}
                         showModalForSignIn={showModalForSignIn}
                     />
-                );
-            default:
-                return (
-                    <Space
-                        direction="vertical"
-                        size="large"
-                        style={{
-                            width: "100%",
-                        }}>
-                        <Button
-                            type="link"
-                            onClick={() => setCurrent(0)}
-                            icon={<LeftOutlined />}>
+                ) : (
+                    <Space direction="vertical" size="middle" style={{ width: "100%" }}>
+                        <Button type="link" onClick={() => setCurrent(0)} icon={<LeftOutlined />}>
                             Back to contact information
                         </Button>
                         <PaymentMethods userData={userData} />
                     </Space>
-                );
-        }
-    };
-
-    return (
-        <div
-            style={{
-                width: "100%",
-                maxWidth: 480,
-                margin: "0 auto",
-            }}>
-            <Space
-                direction="vertical"
-                size="large"
-                style={{
-                    width: "100%",
-                }}>
-                <Steps
-                    size="small"
-                    current={current}
-                    style={{
-                        width: "100%",
-                        maxWidth: 320,
-                        margin: "auto",
-                    }}
-                    items={[
-                        {
-                            title: "Contact Information",
-                        },
-                        {
-                            title: "Payment",
-                        },
-                    ]}
-                />
-                {stepsContent()}
+                )}
             </Space>
+
             <Modal
                 title={isSignIn ? "Sign in" : "Sign up"}
-                okButtonProps={{
-                    form: isSignIn ? "sign-in" : "sign-up",
-                    htmlType: "submit",
-                }}
+                okButtonProps={{ form: isSignIn ? "sign-in" : "sign-up", htmlType: "submit" }}
                 open={isModalOpen}
                 okText={isSignIn ? "Sign in" : "Sign up"}
                 onCancel={handleCancel}
                 closable={false}
-                destroyOnClose={true}>
+                destroyOnHidden
+            >
                 {ModalContent()}
             </Modal>
         </div>

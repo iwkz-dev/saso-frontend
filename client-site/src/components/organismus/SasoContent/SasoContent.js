@@ -1,22 +1,37 @@
-import React, { useState } from "react";
-import { Typography } from "antd";
-import ProductsTabs from "../../molecules/ProductsTabs/ProductsTabs";
+import { Typography, Space, Divider } from "antd";
 import ContentLayout from "../ContentLayout/ContentLayout";
-import { Space } from "antd";
-import style from "./SasoContent.module.scss";
+import ProductsTabs from "../../molecules/ProductsTabs/ProductsTabs";
 
 const SasoContent = ({ event }) => {
-    const [barcode] = useState("");
+    const barcode = "";
+
+    const headerWrapStyle = {
+        textAlign: "center",
+        marginBottom: 6,
+    };
+
+    const titleStyle = {
+        margin: 0,
+        lineHeight: 1.2,
+        fontSize: "clamp(18px, 4.5vw, 24px)",
+    };
+
+    const spaceStyle = {
+        width: "100%",
+        marginTop: 6,
+    };
 
     return (
-        <ContentLayout className={style.contentLayout} hasCarousel>
-            <Typography.Title level={2} style={{ textAlign: "center" }}>
-                Products
-            </Typography.Title>
-            <Space
-                className={style.productsContainer}
-                direction="vertical"
-                size="middle">
+        <ContentLayout hasCarousel>
+            <div style={headerWrapStyle}>
+                <Typography.Title level={2} style={titleStyle}>
+                    Menu
+                </Typography.Title>
+            </div>
+
+            <Divider style={{ margin: "12px 0" }} />
+
+            <Space direction="vertical" size="middle" style={spaceStyle}>
                 <ProductsTabs event={event} barcode={barcode} />
             </Space>
         </ContentLayout>

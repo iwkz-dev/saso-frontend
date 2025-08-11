@@ -1,8 +1,9 @@
-.dashboardCard{
-    .cardsWrapper{
+.dashboardCard {
+    .cardsWrapper {
         background-color: #00000000;
         box-shadow: none;
     }
+
     :global(.ant-card-body) {
         flex-wrap: wrap;
         gap: 12px;

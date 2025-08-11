@@ -1,20 +1,26 @@
 import sasoApi from "../api/SasoApi";
 
+const toQuery = (filter) => {
+    if (!filter) return "";
+    if (typeof filter === "string") return filter.startsWith("?") ? filter : `?${filter}`;
+    const qs = new URLSearchParams(filter).toString();
+    return qs ? `?${qs}` : "";
+};
+
 const getMenu = (filter) => {
-    return sasoApi.getData(`/customer/menu${filter}`);
+    return sasoApi.getData(`/customer/menu${toQuery(filter)}`);
 };
 
 const getMenuWithBarcode = (barcode) => {
-    return sasoApi.getData(`customer/${barcode}/detail-barcode`);
+    return sasoApi.getData(`/customer/${barcode}/detail-barcode`);
 };
 
 const getMenuWithId = (id) => {
-    return sasoApi.getData(`customer/menu/${id}/detail`);
+    return sasoApi.getData(`/customer/menu/${id}/detail`);
 };
 
-const menuService = {
+export default {
     getMenu,
-    getMenuWithBarcode,
     getMenuWithId,
+    getMenuWithBarcode,
 };
-export default menuService;
