@@ -1,24 +1,27 @@
-import { Col, Row } from "antd";
+import { Row, Col } from "antd";
 import ProductItem from "./ProductItem/ProductItem";
-import useWindowDimensions from "../../../hooks/windowsDimensions";
-import { useEffect, useState } from "react";
 
 const ProductCards = ({ productList }) => {
-    const [sectionNumbers, setSectionNumber] = useState(4);
-    const { width } = useWindowDimensions();
-
-    useEffect(() => {
-        if (width >= 1024) setSectionNumber(6);
-        if (width >= 728 && width < 1024) setSectionNumber(8);
-        if (width >= 375 && width < 728) setSectionNumber(12);
-        if (width <= 375) setSectionNumber(24);
-    }, [width]);
-
     return (
-        <Row gutter={[16, 24]}>
+        <Row
+            gutter={[
+                { xs: 8, sm: 12, md: 16, lg: 20, xl: 24 },
+                { xs: 12, sm: 16, md: 20, lg: 24, xl: 28 },
+            ]}
+            wrap
+        >
             {productList.map((product) => (
-                <Col key={product.name} span={sectionNumbers}>
-                    <ProductItem product={product} />
+                <Col
+                    key={product._id || product.name}
+                    xs={24}
+                    sm={12}
+                    md={8}
+                    lg={6}
+                    xl={6}
+                >
+                    <div style={{ height: "100%" }}>
+                        <ProductItem product={product} />
+                    </div>
                 </Col>
             ))}
         </Row>

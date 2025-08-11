@@ -1,43 +1,67 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import categoryService from "../../services/categoryService";
 
 const initialState = {
     data: [],
-    message: {
-        error: "",
-        success: "",
-    },
+    status: "idle",
+    error: null,
+    successMessage: null,
 };
 
-export const getAllCategories = (filter) => (dispatch) => {
-    return categoryService.getCategory(filter).then((response) => {
-        if (response.data.status === "success") {
-            dispatch(categorySuccess(response.data));
-        } else {
-            dispatch(categoryFailed(response.data));
+// ============== Thunks ==============
+
+export const fetchCategories = createAsyncThunk(
+    "category/fetchCategories",
+    async (filter, { rejectWithValue }) => {
+        try {
+            const res = await categoryService.getCategory(filter);
+            if (res.data?.status !== "success") {
+                return rejectWithValue(res.data?.message || "Failed to fetch categories");
+            }
+            return {
+                items: res.data?.data ?? [],
+                message: res.data?.message ?? null,
+            };
+        } catch (err) {
+            return rejectWithValue(
+                err?.response?.data?.message || err?.message || "Network error"
+            );
         }
-        return Promise.resolve();
-    });
-};
+    }
+);
 
-export const categorySlice = createSlice({
+// ============== Slice ==============
+
+const categorySlice = createSlice({
     name: "category",
-    initialState: initialState,
+    initialState,
     reducers: {
-        categorySuccess: (state, action) => {
-            state.data = [...action.payload.data];
-            state.message.success = action.payload.message;
-            state.message.error = "";
-        },
-        categoryFailed: (state, action) => {
-            state.message.error = action.payload.data.message;
-        },
-        resetCategory: (state, action) => {
-            state = initialState;
-        },
+        resetCategory: () => initialState,
+    },
+    extraReducers: (builder) => {
+        builder
+            .addCase(fetchCategories.pending, (state) => {
+                state.status = "loading";
+                state.error = null;
+                state.successMessage = null;
+            })
+            .addCase(fetchCategories.fulfilled, (state, action) => {
+                state.status = "succeeded";
+                state.data = action.payload.items;
+                state.successMessage = action.payload.message;
+            })
+            .addCase(fetchCategories.rejected, (state, action) => {
+                state.status = "failed";
+                state.error = action.payload || "Unknown error";
+            });
     },
 });
 
-// Action creators are generated for each case reducer function
-export const { categorySuccess, categoryFailed } = categorySlice.actions;
+export const { resetCategory } = categorySlice.actions;
+
+// ============== Selectors ==============
+export const selectCategories = (state) => state.category.data;
+export const selectCategoryStatus = (state) => state.category.status;
+export const selectCategoryError = (state) => state.category.error;
+
 export default categorySlice.reducer;

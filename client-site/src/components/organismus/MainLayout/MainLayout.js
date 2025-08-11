@@ -1,5 +1,3 @@
-import React from "react";
-import Head from "next/head";
 import { Layout, Result } from "antd";
 import Navbar from "../../molecules/Navbar/Navbar";
 import FooterComponent from "../../atoms/Footer/Footer";

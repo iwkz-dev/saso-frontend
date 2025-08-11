@@ -1,22 +1,19 @@
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
 import MainLayout from "../../components/organismus/MainLayout/MainLayout";
 import CheckoutContent from "../../components/organismus/CheckoutContent/CheckoutContent";
-import { useEffect } from "react";
-import { getEvent } from "../../stores/reducers/event";
-import { useDispatch } from "react-redux";
+import { fetchEvents } from "../../stores/reducers/event";
 
-const index = () => {
+export default function CheckoutPage() {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        const status = "approved";
-        dispatch(getEvent(status));
-    }, []);
+        dispatch(fetchEvents("approved"));
+    }, [dispatch]);
 
     return (
         <MainLayout>
             <CheckoutContent />
         </MainLayout>
     );
-};
-
-export default index;
+}

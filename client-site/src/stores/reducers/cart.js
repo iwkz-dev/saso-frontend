@@ -6,100 +6,121 @@ const initialState = {
     totalPrice: 0,
 };
 
+const round2 = (n) => Math.round((Number(n) || 0) * 100) / 100;
+
+const recalcTotals = (items) => {
+    let totalAmount = 0;
+    let totalPrice = 0;
+    for (const it of items) {
+        totalAmount += Number(it.amount) || 0;
+        totalPrice += Number(it.sumPrice) || 0;
+    }
+    return { totalAmount, totalPrice: round2(totalPrice) };
+};
+
+const upsertItem = (items, menu, nextAmount) => {
+    const id = menu?._id;
+    const idx = items.findIndex((it) => it.menu?._id === id);
+
+    const price = Number(menu?.price) || 0;
+    const amount = Math.max(0, Number(nextAmount) || 0);
+    const sumPrice = round2(price * amount);
+
+    if (idx >= 0) {
+        if (amount === 0) {
+            items.splice(idx, 1);
+        } else {
+            items[idx].amount = amount;
+            items[idx].sumPrice = sumPrice;
+        }
+    } else if (amount > 0) {
+        items.push({ menu, amount, sumPrice });
+    }
+};
+
 export const cartSlice = createSlice({
     name: "cart",
-    initialState: {
-        data: initialState,
-    },
+    initialState: { data: initialState },
     reducers: {
         addOrder: (state, action) => {
-            const id = action.payload._id;
-            const quantityLeft =
-                action.payload.quantity - action.payload.quantityOrder;
-            if (!state.data.items.length) {
-                state.data.items[0] = {
-                    amount: 1,
-                    sumPrice: parseFloat(action.payload.price.toFixed(2)),
-                    menu: action.payload,
-                };
-            } else {
-                const itemIndex = state.data.items.findIndex(
-                    (item, i) => item.menu._id == id,
-                );
-                if (itemIndex >= 0) {
-                    const amount = state.data.items[itemIndex].amount + 1;
-                    if (amount <= quantityLeft) {
-                        state.data.items[itemIndex].amount = amount;
-                        state.data.items[itemIndex].sumPrice = parseFloat(
-                            (
-                                state.data.items[itemIndex].menu.price * amount
-                            ).toFixed(2),
-                        );
-                    }
-                } else {
-                    state.data.items.push({
-                        amount: 1,
-                        sumPrice: parseFloat(action.payload.price.toFixed(2)),
-                        menu: action.payload,
-                    });
-                }
-            }
-            let totalPrice = 0;
-            let totalAmount = 0;
-            state.data.items.map((item) => {
-                totalPrice += item.sumPrice;
-                totalAmount += item.amount;
-            });
+            const menu = action.payload;
+            const id = menu?._id;
+            if (!id) return;
+
+            const items = state.data.items;
+            const idx = items.findIndex((it) => it.menu?._id === id);
+
+            const qty = Number(menu?.quantity) || 0;
+            const ordered = Number(menu?.quantityOrder) || 0;
+            const quantityLeft = Math.max(qty - ordered, 0);
+
+            const currentAmount = idx >= 0 ? items[idx].amount : 0;
+            const nextAmount = Math.min(currentAmount + 1, quantityLeft);
+
+            upsertItem(items, menu, nextAmount);
+            const { totalAmount, totalPrice } = recalcTotals(items);
             state.data.totalAmount = totalAmount;
-            state.data.totalPrice = parseFloat(totalPrice).toFixed(2);
+            state.data.totalPrice = totalPrice;
         },
+
         removeOrder: (state, action) => {
-            const id = action.payload._id;
-            const itemIndex = state.data.items.findIndex(
-                (item) => item.menu._id == id,
-            );
-            if (itemIndex >= 0) {
-                const amount = state.data.items[itemIndex].amount - 1;
-                if (amount == 0) {
-                    const isConfirm = confirm(
-                        `Do you want to remove ${action.payload.name} from your cart?`,
-                    );
-                    if (isConfirm) {
-                        const items = state.data.items.filter(
-                            (item) => item.menu._id != id,
-                        );
-                        state.data.items = items;
-                    }
-                } else {
-                    state.data.items[itemIndex].amount = amount;
-                    state.data.items[itemIndex].sumPrice = parseFloat(
-                        (
-                            state.data.items[itemIndex].menu.price * amount
-                        ).toFixed(2),
-                    );
-                }
-            } else {
-                state.data.items.push({
-                    amount: 1,
-                    sumPrice: parseFloat(action.payload.price.toFixed(2)),
-                    menu: action.payload,
-                });
-            }
-            let totalPrice = 0;
-            let totalAmount = 0;
-            state.data.items.map((item) => {
-                totalPrice += item.sumPrice;
-                totalAmount += item.amount;
-            });
+            const menu = action.payload;
+            const id = menu?._id;
+            if (!id) return;
+
+            const items = state.data.items;
+            const idx = items.findIndex((it) => it.menu?._id === id);
+
+            const currentAmount = idx >= 0 ? items[idx].amount : 0;
+            const nextAmount = Math.max(currentAmount - 1, 0);
+
+            upsertItem(items, menu, nextAmount);
+            const { totalAmount, totalPrice } = recalcTotals(items);
             state.data.totalAmount = totalAmount;
-            state.data.totalPrice = parseFloat(totalPrice).toFixed(2);
+            state.data.totalPrice = totalPrice;
         },
+
+        // Remove the line item entirely (e.g., from a trash icon in CartList)
+        removeItem: (state, action) => {
+            const id = action.payload?._id;
+            if (!id) return;
+            state.data.items = state.data.items.filter((it) => it.menu?._id !== id);
+            const { totalAmount, totalPrice } = recalcTotals(state.data.items);
+            state.data.totalAmount = totalAmount;
+            state.data.totalPrice = totalPrice;
+        },
+
+        // Directly set a specific quantity (useful for steppers)
+        setQuantity: (state, action) => {
+            const { menu, quantity } = action.payload || {};
+            if (!menu?._id) return;
+
+            const qty = Number(menu?.quantity) || 0;
+            const ordered = Number(menu?.quantityOrder) || 0;
+            const left = Math.max(qty - ordered, 0);
+            const clamped = Math.max(0, Math.min(Number(quantity) || 0, left));
+
+            upsertItem(state.data.items, menu, clamped);
+            const { totalAmount, totalPrice } = recalcTotals(state.data.items);
+            state.data.totalAmount = totalAmount;
+            state.data.totalPrice = totalPrice;
+        },
+
         resetCart: (state) => {
             state.data = { ...initialState };
         },
     },
 });
 
-// Action creators are generated for each case reducer function
-export const { resetCart, addOrder, removeOrder } = cartSlice.actions;
+export const { resetCart, addOrder, removeOrder, removeItem, setQuantity } =
+    cartSlice.actions;
+
 export default cartSlice.reducer;
+
+// ---------- Selectors ----------
+export const selectCartData = (state) => state.cart.data;
+export const selectCartItems = (state) => state.cart.data.items;
+export const selectCartTotals = (state) => ({
+    totalAmount: state.cart.data.totalAmount,
+    totalPrice: state.cart.data.totalPrice,
+});

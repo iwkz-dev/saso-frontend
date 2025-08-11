@@ -1,40 +1,55 @@
-import { Empty, Space } from "antd";
-import { Layout } from "antd";
+import { Empty, Space, Layout, Grid, Typography, Card } from "antd";
 import CheckoutSummary from "../../molecules/CheckoutSummary/CheckoutSummary";
 import BackToButton from "../../atoms/BackToButton/BackToButton";
 import { useSelector } from "react-redux";
 
+const { useBreakpoint } = Grid;
+
 const CheckoutContent = () => {
     const { Content } = Layout;
     const cart = useSelector((state) => state.cart.data);
+    const screens = useBreakpoint();
 
     return (
-        <Content
-            style={{
-                minHeight: "500px",
-                backgroundColor: "#ffffff",
-            }}
-        >
+        <Content style={{ backgroundColor: "#fff" }}>
             {cart.items.length <= 0 ? (
-                <Empty />
+                <Empty style={{ padding: "48px 0" }} />
             ) : (
                 <div
                     style={{
-                        maxWidth: "1024px",
-                        padding: "1rem",
-                        margin: "1rem auto",
+                        maxWidth: 960,
+                        padding: screens.md ? "16px 16px 32px" : "12px 12px 24px",
+                        margin: "0 auto",
                     }}
                 >
                     <Space
-                        size="large"
+                        size={screens.md ? "large" : "middle"}
                         direction="vertical"
                         style={{ width: "100%" }}
                     >
-                        <BackToButton
-                            targetURL="/cart"
-                            buttonText="Back to cart"
-                        />
-                        {<CheckoutSummary />}
+                        <div
+                            style={{
+                                display: "flex",
+                                flexWrap: "wrap",
+                                gap: 8,
+                                alignItems: "center",
+                                justifyContent: "space-between",
+                            }}
+                        >
+                            <BackToButton targetURL="/cart" buttonText="Back to cart" />
+                            <Typography.Title
+                                level={screens.md ? 3 : 4}
+                                style={{ margin: 0 }}
+                            >
+                                Checkout
+                            </Typography.Title>
+                        </div>
+
+                        <Card
+                            style={{ borderRadius: 12, padding: screens.md ? 16 : 12 }}
+                        >
+                            <CheckoutSummary />
+                        </Card>
                     </Space>
                 </div>
             )}

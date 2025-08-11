@@ -8,7 +8,6 @@ class SasoApi {
             return SasoApi.instance;
         }
 
-        //Axios.defaults.baseURL = process.env.NEXT_PUBLIC_SERVER_BASE_URL;
         Axios.defaults.baseURL = BASE_URL_HOST;
         Axios.defaults.headers.post["Content-Type"] =
             "application/json;charset=utf-8";

@@ -1,64 +1,84 @@
-import React, { useEffect } from "react";
-import { getEvent } from "../stores/reducers/event";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import {
+    fetchEvents,
+    selectFirstEvent,
+    selectEventStatus,
+    selectEventError,
+} from "../stores/reducers/event";
+
 import TokoContent from "../components/organismus/TokoContent/TokoContent";
 import SasoContent from "../components/organismus/SasoContent/SasoContent";
 import ZakatContent from "../components/organismus/ZakatContent/ZakatContent";
 import MainLayout from "../components/organismus/MainLayout/MainLayout";
 import { WhatsAppOutlined } from "@ant-design/icons";
-import { Button } from "antd";
+import { Button, Spin, Alert } from "antd";
+
+function ContentByType({ event }) {
+    if (!event) return null;
+    if (process.env.EVENT_TYPE === "toko") return <TokoContent event={event} />;
+    if (process.env.EVENT_TYPE === "saso") return <SasoContent event={event} />;
+    if (process.env.EVENT_TYPE === "zakat") return <ZakatContent event={event} />;
+    return null;
+}
 
 export default function Home() {
     const dispatch = useDispatch();
-    // Fetch current event
-    const events = useSelector((state) => state.event.data);
+    const firstEvent = useSelector(selectFirstEvent);
+    const status = useSelector(selectEventStatus);
+    const error = useSelector(selectEventError);
 
     useEffect(() => {
-        const status = "approved";
-        dispatch(getEvent(status));
-    }, []);
+        dispatch(fetchEvents("approved"));
+    }, [dispatch]);
 
-    const ContentComponent = (event) => {
-        if (process.env.EVENT_TYPE === "toko")
-            return <TokoContent event={event} />;
-        if (process.env.EVENT_TYPE === "saso")
-            return <SasoContent event={event} />;
-        if (process.env.EVENT_TYPE === "zakat")
-            return <ZakatContent event={event} />;
-    };
+    const contact = firstEvent?.contactPersons?.[0];
+    const waHref = contact?.phoneNumber
+        ? `https://wa.me/${contact.phoneNumber}`
+        : null;
 
     return (
         <MainLayout>
-            {events[0] ? ContentComponent(events[0]) : null}
-            {events[0] ? (
+            {status === "loading" && (
+                <div style={{ display: "flex", justifyContent: "center", padding: 24 }}>
+                    <Spin />
+                </div>
+            )}
+
+            {status === "failed" && (
+                <Alert type="error" message="Failed to load event" description={error} />
+            )}
+
+            {status === "succeeded" && <ContentByType event={firstEvent} />}
+
+            {status === "succeeded" && waHref && (
                 <div
                     style={{
                         width: "100%",
                         display: "flex",
                         justifyContent: "center",
                         marginBottom: "1rem",
-                    }}>
+                    }}
+                >
                     <Button
                         type="link"
-                        href={`https://wa.me/${events[0].contactPersons[0].phoneNumber}`}
+                        href={waHref}
                         target="_blank"
                         size="large"
                         style={{
                             position: "fixed",
-                            height: "60px",
                             bottom: "5%",
                             right: "10%",
-                            height: "fit-content",
-                            width: "fit-content",
                             backgroundColor: "#fff",
-                            boxShadow: "rgba(0, 0, 0, 0.16) 0px 1px 4px",
                             padding: "0.5rem 0.5rem",
+                            boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
                         }}
-                        icon={<WhatsAppOutlined />}>
-                        Ask {events[0].contactPersons[0].name}
+                        icon={<WhatsAppOutlined />}
+                    >
+                        Ask {contact?.name ?? "us"}
                     </Button>
                 </div>
-            ) : null}
+            )}
         </MainLayout>
     );
 }

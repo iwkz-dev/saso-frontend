@@ -1,59 +1,77 @@
+import { useState } from "react";
 import { Button, Modal, Space } from "antd";
-import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 import SignUpFormModal from "../SignUpFormModal/SignUpFormModal";
 import SignInFormModal from "../SignInFormModal/SignInFormModal";
-import { useDispatch } from "react-redux";
-import { resetLoginMessage } from "../../../stores/reducers/login";
-import { resetRegisterMessage } from "../../../stores/reducers/register";
+import { clearLoginMessage } from "../../../stores/reducers/login";
+import { clearRegisterMessage } from "../../../stores/reducers/register";
 
-const LoginModal = () => {
+const LoginModal = ({ size = "small" }) => {
     const dispatch = useDispatch();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isSignIn, setIsSignIn] = useState(false);
 
-    const showModal = (state) => {
+    const openModal = (signIn = false) => {
         setIsModalOpen(true);
-        setIsSignIn(state);
-    };
-
-    const ModalContent = () => {
-        if (isSignIn) {
-            return <SignInFormModal />;
-        }
-
-        return <SignUpFormModal />;
+        setIsSignIn(signIn);
     };
 
     const handleCancel = () => {
-        dispatch(resetLoginMessage());
-        dispatch(resetRegisterMessage());
+        dispatch(clearLoginMessage());
+        dispatch(clearRegisterMessage());
         setIsModalOpen(false);
     };
 
     return (
-        <Space
-            align="center"
-            style={{ width: "100%", justifyContent: "center" }}
-        >
-            <Button size="small" onClick={() => showModal(false)}>
-                Sign up
-            </Button>
-            <Button size="small" onClick={() => showModal(true)} type="link">
-                Sign in
-            </Button>
+        <Space align="center" style={{ width: "100%", justifyContent: "center", gap: 8 }}>
+            <Button size={size} onClick={() => openModal(false)}>Sign up</Button>
+            <Button size={size} onClick={() => openModal(true)} type="link">Sign in</Button>
+
             <Modal
                 title={isSignIn ? "Sign in" : "Sign up"}
-                okButtonProps={{
-                    form: isSignIn ? "sign-in" : "sign-up",
-                    htmlType: "submit",
-                }}
                 open={isModalOpen}
-                okText={isSignIn ? "Sign in" : "Sign up"}
                 onCancel={handleCancel}
+                okText={isSignIn ? "Sign in" : "Sign up"}
+                okButtonProps={{ form: isSignIn ? "sign-in" : "sign-up", htmlType: "submit" }}
+                maskClosable={false}
                 closable={false}
-                destroyOnClose={true}
+                destroyOnHidden
+                centered
+                width={420}
+                style={{ padding: 12 }}
             >
-                {ModalContent()}
+                {isSignIn ? (
+                    <SignInFormModal setShowModal={setIsModalOpen} />
+                ) : (
+                    <SignUpFormModal onSuccess={() => setIsModalOpen(false)} />
+                )}
+
+                <div
+                    style={{
+                        marginTop: 8,
+                        display: "flex",
+                        justifyContent: "center",
+                        gap: 4,
+                        fontSize: 12,
+                    }}
+                >
+                    <span style={{ color: "rgba(0,0,0,0.45)" }}>
+                        {isSignIn ? "Don't have an account?" : "Already have an account?"}
+                    </span>
+                    <button
+                        type="button"
+                        onClick={() => setIsSignIn((v) => !v)}
+                        style={{
+                            background: "none",
+                            border: "none",
+                            padding: 0,
+                            color: "#1677ff",
+                            cursor: "pointer",
+                        }}
+                    >
+                        {isSignIn ? "Sign up" : "Sign in"}
+                    </button>
+                </div>
             </Modal>
         </Space>
     );

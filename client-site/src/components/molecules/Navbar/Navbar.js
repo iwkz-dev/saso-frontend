@@ -1,34 +1,42 @@
-import { isAuth, logout } from "../../../helpers/authHelper";
-import { Layout, Row, Col, Modal } from "antd";
+import { useEffect, useState } from "react";
+import { Layout, Modal } from "antd";
 import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
+import { isAuth, logout } from "../../../helpers/authHelper";
 import { resetCart } from "../../../stores/reducers/cart";
 import NavbarDropDown from "../../atoms/NavbarDropDown/NavbarDropDown";
-import { useState } from "react";
 import SignUpFormModal from "../SignUpFormModal/SignUpFormModal";
 import SignInFormModal from "../SignInFormModal/SignInFormModal";
-import { resetLoginMessage } from "../../../stores/reducers/login";
-import { resetRegisterMessage } from "../../../stores/reducers/register";
+import { clearLoginMessage } from "../../../stores/reducers/login";
+import { clearRegisterMessage } from "../../../stores/reducers/register";
 
 const Navbar = () => {
     const dispatch = useDispatch();
     const cart = useSelector((state) => state.cart.data);
+
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isSignIn, setIsSignIn] = useState(false);
-    const { Header } = Layout;
+    const [scrolled, setScrolled] = useState(false);
+
+    useEffect(() => {
+        const onScroll = () => setScrolled(window.scrollY > 8);
+        onScroll();
+        window.addEventListener("scroll", onScroll, { passive: true });
+        return () => window.removeEventListener("scroll", onScroll);
+    }, []);
 
     const onClick = ({ key }) => {
         if (key === "logout") {
             dispatch(resetCart());
             logout();
+            return;
         }
-
         if (key === "signIn") {
             showSignInModal();
+            return;
         }
-
         if (key === "signUp") {
-            showSignUpModal(false);
+            showSignUpModal();
         }
     };
 
@@ -42,79 +50,125 @@ const Navbar = () => {
         setIsSignIn(false);
     };
 
-    const ModalContent = () => {
-        if (isSignIn) {
-            return <SignInFormModal setShowModal={setIsModalOpen} />;
-        }
-
-        return <SignUpFormModal />;
-    };
-
     const handleCancel = () => {
-        dispatch(resetLoginMessage());
-        dispatch(resetRegisterMessage());
+        dispatch(clearLoginMessage());
+        dispatch(clearRegisterMessage());
         setIsModalOpen(false);
     };
 
     return (
-        <Header
+        <Layout.Header
             style={{
-                backgroundColor: "#ffffff",
-                borderBottom: "1px solid rgba(149, 157, 165, 0.2)",
                 position: "sticky",
                 top: 0,
-                paddingRight: "1rem",
-                paddingLeft: "1rem",
                 zIndex: 999,
+                width: "100%",
+                background: scrolled ? "rgba(255,255,255,0.95)" : "rgba(255,255,255,0.75)",
+                backdropFilter: "blur(12px) saturate(180%)",
+                WebkitBackdropFilter: "blur(12px) saturate(180%)",
+                borderBottom: "1px solid rgba(0,0,0,0.06)",
+                boxShadow: scrolled ? "0 6px 12px rgba(0,0,0,0.05)" : "none",
+                padding: "8px 16px",
+                transition: "all 0.2s ease-in-out",
             }}
         >
-            <Row
-                justify="space-between"
+            <div
                 style={{
-                    maxWidth: "1024px",
-                    margin: "auto",
+                    maxWidth: 1024,
+                    margin: "0 auto",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
                 }}
             >
-                <Col
-                    style={{
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        width: "3rem",
-                        cursor: "pointer",
-                    }}
-                >
-                    <Link href="/">
+                <Link href="/" aria-label="Go to homepage">
+                    <div
+                        style={{
+                            display: "flex",
+                            alignItems: "center",
+                            height: 40,
+                            cursor: "pointer",
+                        }}
+                    >
                         <img
-                            style={{ width: "100%" }}
                             src="/images/iwkz_logo.png"
-                            alt="iwkz logo"
+                            alt="IWKZ logo"
+                            style={{
+                                height: 32,
+                                width: "auto",
+                                display: "block",
+                                marginRight: 4,
+                            }}
                         />
-                    </Link>
-                </Col>
-                <Col style={{ textAlign: "right" }}>
+                    </div>
+                </Link>
+
+                <div style={{ display: "flex", alignItems: "center" }}>
                     <NavbarDropDown onClick={onClick} cart={cart} />
-                </Col>
-            </Row>
-            {!isAuth() ? (
+                </div>
+            </div>
+
+            {!isAuth() && (
                 <Modal
                     title={isSignIn ? "Sign in" : "Sign up"}
+                    open={isModalOpen}
+                    onCancel={handleCancel}
+                    okText={isSignIn ? "Sign in" : "Sign up"}
                     okButtonProps={{
                         form: isSignIn ? "sign-in" : "sign-up",
                         htmlType: "submit",
                     }}
-                    open={isModalOpen}
-                    okText={isSignIn ? "Sign in" : "Sign up"}
-                    onCancel={handleCancel}
+                    maskClosable={false}
                     closable={false}
-                    destroyOnClose={true}
+                    destroyOnClose
+                    centered
+                    width={420}
+                    bodyStyle={{
+                        padding: 12,
+                    }}
                 >
-                    {ModalContent()}
+                    {isSignIn ? (
+                        <SignInFormModal setShowModal={setIsModalOpen} />
+                    ) : (
+                        <SignUpFormModal
+                            onSuccess={() => {
+                                setIsModalOpen(false);
+                            }}
+                        />
+                    )}
+
+                    <div
+                        style={{
+                            marginTop: 12,
+                            display: "flex",
+                            justifyContent: "center",
+                            gap: 4,
+                            fontSize: 12,
+                        }}
+                    >
+                        <span style={{ color: "rgba(0,0,0,0.45)" }}>
+                            {isSignIn ? "Don't have an account?" : "Already have an account?"}
+                        </span>
+                        <button
+                            type="button"
+                            onClick={() => setIsSignIn((v) => !v)}
+                            style={{
+                                background: "none",
+                                border: "none",
+                                padding: 0,
+                                margin: 0,
+                                color: "#1677ff",
+                                fontWeight: 500,
+                                cursor: "pointer",
+                            }}
+                        >
+                            {isSignIn ? "Sign up" : "Sign in"}
+                        </button>
+                    </div>
                 </Modal>
-            ) : (
-                <></>
             )}
-        </Header>
+        </Layout.Header>
     );
 };
+
 export default Navbar;
