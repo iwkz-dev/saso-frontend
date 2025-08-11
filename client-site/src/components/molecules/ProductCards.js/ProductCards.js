@@ -5,7 +5,7 @@ const ProductCards = ({ productList }) => {
     return (
         <Row
             gutter={[
-                { xs: 8, sm: 12, md: 16, lg: 20, xl: 24 },
+                { xs: 10, sm: 14, md: 18, lg: 20, xl: 24 },
                 { xs: 12, sm: 16, md: 20, lg: 24, xl: 28 },
             ]}
             wrap
