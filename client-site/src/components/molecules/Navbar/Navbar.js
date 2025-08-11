@@ -17,7 +17,6 @@ const Navbar = () => {
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isSignIn, setIsSignIn] = useState(false);
-
     const [scrolled, setScrolled] = useState(false);
 
     useEffect(() => {
@@ -42,13 +41,6 @@ const Navbar = () => {
         return () => ro.disconnect();
     }, []);
 
-    useEffect(() => {
-        const onScroll = () => setScrolled(window.scrollY > 8);
-        onScroll();
-        window.addEventListener("scroll", onScroll, { passive: true });
-        return () => window.removeEventListener("scroll", onScroll);
-    }, []);
-
     const onClick = ({ key }) => {
         if (key === "logout") {
             dispatch(resetCart());
@@ -56,22 +48,14 @@ const Navbar = () => {
             return;
         }
         if (key === "signIn") {
-            showSignInModal();
+            setIsModalOpen(true);
+            setIsSignIn(true);
             return;
         }
         if (key === "signUp") {
-            showSignUpModal();
+            setIsModalOpen(true);
+            setIsSignIn(false);
         }
-    };
-
-    const showSignInModal = () => {
-        setIsModalOpen(true);
-        setIsSignIn(true);
-    };
-
-    const showSignUpModal = () => {
-        setIsModalOpen(true);
-        setIsSignIn(false);
     };
 
     const handleCancel = () => {
@@ -87,7 +71,7 @@ const Navbar = () => {
             style={{
                 position: "sticky",
                 top: 0,
-                zIndex: 1100,
+                zIndex: 950,
                 width: "100%",
                 background: scrolled ? "rgba(255,255,255,0.95)" : "rgba(255,255,255,0.75)",
                 backdropFilter: "blur(12px) saturate(180%)",
@@ -108,23 +92,11 @@ const Navbar = () => {
                 }}
             >
                 <Link href="/" aria-label="Go to homepage">
-                    <div
-                        style={{
-                            display: "flex",
-                            alignItems: "center",
-                            height: 40,
-                            cursor: "pointer",
-                        }}
-                    >
+                    <div style={{ display: "flex", alignItems: "center", height: 40, cursor: "pointer" }}>
                         <img
                             src="/images/iwkz_logo.png"
                             alt="IWKZ logo"
-                            style={{
-                                height: 32,
-                                width: "auto",
-                                display: "block",
-                                marginRight: 4,
-                            }}
+                            style={{ height: 32, width: "auto", display: "block", marginRight: 4 }}
                         />
                     </div>
                 </Link>
@@ -140,27 +112,18 @@ const Navbar = () => {
                     open={isModalOpen}
                     onCancel={handleCancel}
                     okText={isSignIn ? "Sign in" : "Sign up"}
-                    okButtonProps={{
-                        form: isSignIn ? "sign-in" : "sign-up",
-                        htmlType: "submit",
-                    }}
+                    okButtonProps={{ form: isSignIn ? "sign-in" : "sign-up", htmlType: "submit" }}
                     maskClosable={false}
                     closable={false}
                     destroyOnHidden
                     centered
                     width={420}
-                    style={{
-                        padding: 12,
-                    }}
+                    style={{ padding: 12 }}
                 >
                     {isSignIn ? (
                         <SignInFormModal setShowModal={setIsModalOpen} />
                     ) : (
-                        <SignUpFormModal
-                            onSuccess={() => {
-                                setIsModalOpen(false);
-                            }}
-                        />
+                        <SignUpFormModal onSuccess={() => setIsModalOpen(false)} />
                     )}
 
                     <div
