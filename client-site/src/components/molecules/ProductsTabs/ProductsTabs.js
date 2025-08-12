@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Tabs, Spin, Alert, Empty } from "antd";
 import {
@@ -21,21 +21,36 @@ const TOKENS = {
     textMuted: "#6b7280",
     border: "#e5e7eb",
     surface: "#ffffff",
-    shadow: "0 6px 18px rgba(0,0,0,.06)",
+    shadow: "rgba(0, 0, 0, 0.2) 0px 0px 7px",
 };
 
-const ProductsTabs = ({ event, barcode, headerOffset = 56 }) => {
+const ProductsTabs = ({ event, barcode, headerOffset = 80 }) => {
     const dispatch = useDispatch();
     const categories = useSelector(selectCategories);
     const status = useSelector(selectCategoryStatus);
     const error = useSelector(selectCategoryError);
     const [activeKey, setActiveKey] = useState(null);
 
+    const [isSticked, setIsSticked] = useState(false);
+    const stickyRef = useRef(null);
+
     useEffect(() => {
         if (event?._id) {
             dispatch(fetchCategories({ event: event._id }));
         }
     }, [dispatch, event?._id]);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            if (!stickyRef.current) return;
+            const rect = stickyRef.current.getBoundingClientRect();
+            setIsSticked(rect.top <= headerOffset);
+        };
+
+        window.addEventListener("scroll", handleScroll, { passive: true });
+        handleScroll();
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, [headerOffset]);
 
     const getMenusArray = (c) => {
         if (!c) return [];
@@ -171,17 +186,19 @@ const ProductsTabs = ({ event, barcode, headerOffset = 56 }) => {
                 destroyOnHidden
                 renderTabBar={(props, DefaultTabBar) => (
                     <div
+                        ref={stickyRef}
                         style={{
                             position: "sticky",
-                            top: "var(--navbar-h, 56px)",
+                            top: `${headerOffset}px`,
                             zIndex: 900,
                             background: TOKENS.surface,
-                            boxShadow: TOKENS.shadow,
+                            boxShadow: isSticked ? TOKENS.shadow : "none",
                             borderRadius: TOKENS.radius,
                             marginBottom: 8,
+                            transition: "box-shadow 0.2s ease-in-out",
                         }}
                     >
-                        <div style={{ position: "relative", padding: "10px 8px" }}>
+                        <div style={{ position: "relative", padding: "8px 8px" }}>
                             <div
                                 style={{
                                     overflowX: "auto",
@@ -196,35 +213,6 @@ const ProductsTabs = ({ event, barcode, headerOffset = 56 }) => {
                                         style={{ display: "inline-flex", minWidth: "max-content", gap: TOKENS.gap }}
                                     />
                                 </div>
-                            </div>
-
-                            <div aria-hidden style={{ pointerEvents: "none", position: "absolute", inset: 0 }}>
-                                <div
-                                    style={{
-                                        position: "absolute",
-                                        left: 0,
-                                        top: 0,
-                                        bottom: 0,
-                                        width: 16,
-                                        background:
-                                            "linear-gradient(to right, rgba(255,255,255,1), rgba(255,255,255,0))",
-                                        borderTopLeftRadius: TOKENS.radius,
-                                        borderBottomLeftRadius: TOKENS.radius,
-                                    }}
-                                />
-                                <div
-                                    style={{
-                                        position: "absolute",
-                                        right: 0,
-                                        top: 0,
-                                        bottom: 0,
-                                        width: 16,
-                                        background:
-                                            "linear-gradient(to left, rgba(255,255,255,1), rgba(255,255,255,0))",
-                                        borderTopRightRadius: TOKENS.radius,
-                                        borderBottomRightRadius: TOKENS.radius,
-                                    }}
-                                />
                             </div>
                         </div>
                     </div>

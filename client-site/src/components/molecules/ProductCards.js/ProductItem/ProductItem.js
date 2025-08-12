@@ -74,7 +74,6 @@ const ProductItem = ({ product }) => {
         justifyContent: "center",
         overflow: "hidden",
         background: "#fff",
-        borderBottom: `1px solid ${TOKENS.border}`,
     };
 
     const imgStyle = {
