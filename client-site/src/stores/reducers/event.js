@@ -16,15 +16,20 @@ export const fetchEvents = createAsyncThunk(
         try {
             const res = await eventService.getEvent(status);
             if (res.data?.status !== "success") {
-                return rejectWithValue(res.data?.message || "Failed to fetch events");
+                return rejectWithValue(
+                    res.data?.message || "Failed to fetch events",
+                );
             }
-            return { events: res.data.data?.data ?? [], message: res.data.message };
+            return {
+                events: res.data.data?.data ?? [],
+                message: res.data.message,
+            };
         } catch (err) {
             return rejectWithValue(
-                err?.response?.data?.message || err?.message || "Network error"
+                err?.response?.data?.message || err?.message || "Network error",
             );
         }
-    }
+    },
 );
 
 // ============== Slice ==============

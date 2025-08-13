@@ -84,7 +84,9 @@ export const cartSlice = createSlice({
         removeItem: (state, action) => {
             const id = action.payload?._id;
             if (!id) return;
-            state.data.items = state.data.items.filter((it) => it.menu?._id !== id);
+            state.data.items = state.data.items.filter(
+                (it) => it.menu?._id !== id,
+            );
             const { totalAmount, totalPrice } = recalcTotals(state.data.items);
             state.data.totalAmount = totalAmount;
             state.data.totalPrice = totalPrice;

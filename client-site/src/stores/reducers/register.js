@@ -17,12 +17,15 @@ export const submitRegister = createAsyncThunk(
             const res = await authService.register(form);
             const payload = res?.data ?? res;
             if ((payload?.status || res?.status) !== "success") {
-                return rejectWithValue(payload?.message || "Registration failed");
+                return rejectWithValue(
+                    payload?.message || "Registration failed",
+                );
             }
 
             const accessToken =
                 payload?.data?.accessToken ?? payload?.accessToken ?? null;
-            const id = payload?.data?._id ?? payload?.data?.id ?? payload?.id ?? null;
+            const id =
+                payload?.data?._id ?? payload?.data?.id ?? payload?.id ?? null;
             const user = payload?.data?.user ?? {
                 fullname: form.fullname,
                 email: form.email,
@@ -42,10 +45,10 @@ export const submitRegister = createAsyncThunk(
             };
         } catch (err) {
             return rejectWithValue(
-                err?.response?.data?.message || err?.message || "Network error"
+                err?.response?.data?.message || err?.message || "Network error",
             );
         }
-    }
+    },
 );
 
 const registerSlice = createSlice({
@@ -78,7 +81,8 @@ const registerSlice = createSlice({
     },
 });
 
-export const { clearRegisterMessage, resetRegisterState } = registerSlice.actions;
+export const { clearRegisterMessage, resetRegisterState } =
+    registerSlice.actions;
 
 // Selectors
 export const selectRegisterState = (s) => s.register;

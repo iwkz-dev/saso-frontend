@@ -1,5 +1,9 @@
 import { useMemo, useState } from "react";
-import { SearchOutlined, FilePdfOutlined, EyeOutlined } from "@ant-design/icons";
+import {
+    SearchOutlined,
+    FilePdfOutlined,
+    EyeOutlined,
+} from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
 import {
     Button,
@@ -15,7 +19,10 @@ import {
     Typography,
 } from "antd";
 import BackToButton from "../../atoms/BackToButton/BackToButton";
-import { fetchOrderPdf, selectOrderStatuses } from "../../../stores/reducers/order";
+import {
+    fetchOrderPdf,
+    selectOrderStatuses,
+} from "../../../stores/reducers/order";
 import { formatDate } from "../../../helpers/dateHelper";
 import { insertKeytoData } from "../../../helpers/dataHelper";
 import Router from "next/router";
@@ -72,7 +79,7 @@ const MyOrderContent = () => {
         if (search.trim()) {
             const q = search.trim().toLowerCase();
             data = data.filter((o) =>
-                (o.invoiceNumber || "").toLowerCase().includes(q)
+                (o.invoiceNumber || "").toLowerCase().includes(q),
             );
         }
         return data;
@@ -109,14 +116,18 @@ const MyOrderContent = () => {
             dataIndex: "updated_at",
             key: "updated_at",
             width: 180,
-            render: (v) => <Text type="secondary">{formatDate(v, true, true)}</Text>,
+            render: (v) => (
+                <Text type="secondary">{formatDate(v, true, true)}</Text>
+            ),
         },
         {
             title: "Created",
             dataIndex: "created_at",
             key: "created_at",
             width: 180,
-            render: (v) => <Text type="secondary">{formatDate(v, true, true)}</Text>,
+            render: (v) => (
+                <Text type="secondary">{formatDate(v, true, true)}</Text>
+            ),
         },
         {
             title: "",
@@ -150,12 +161,20 @@ const MyOrderContent = () => {
                     margin: "0 auto",
                 }}
             >
-                <Space direction="vertical" size={isMobile ? 12 : 16} style={{ width: "100%" }}>
+                <Space
+                    direction="vertical"
+                    size={isMobile ? 12 : 16}
+                    style={{ width: "100%" }}
+                >
                     <BackToButton targetURL="/" buttonText="Back to Home" />
 
                     <Space
                         direction={isMobile ? "vertical" : "horizontal"}
-                        style={{ width: "100%", justifyContent: "space-between", alignItems: "center" }}
+                        style={{
+                            width: "100%",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                        }}
                         size={12}
                     >
                         <Title level={isMobile ? 4 : 3} style={{ margin: 0 }}>
@@ -214,23 +233,50 @@ const MyOrderContent = () => {
                                                 key="pdf"
                                                 size="small"
                                                 icon={<FilePdfOutlined />}
-                                                loading={pdfLoadingId === item._id}
-                                                onClick={() => onDownloadPdf(item._id)}
+                                                loading={
+                                                    pdfLoadingId === item._id
+                                                }
+                                                onClick={() =>
+                                                    onDownloadPdf(item._id)
+                                                }
                                             >
                                                 PDF
                                             </Button>,
                                         ]}
                                     >
-                                        <Space direction="vertical" size={4} style={{ width: "100%" }}>
-                                            <Space align="center" style={{ justifyContent: "space-between", width: "100%" }}>
-                                                <Text strong>{item.invoiceNumber}</Text>
+                                        <Space
+                                            direction="vertical"
+                                            size={4}
+                                            style={{ width: "100%" }}
+                                        >
+                                            <Space
+                                                align="center"
+                                                style={{
+                                                    justifyContent:
+                                                        "space-between",
+                                                    width: "100%",
+                                                }}
+                                            >
+                                                <Text strong>
+                                                    {item.invoiceNumber}
+                                                </Text>
                                                 {statusTag(item.status)}
                                             </Space>
                                             <Text type="secondary">
-                                                Updated • {formatDate(item.updated_at, true, true)}
+                                                Updated •{" "}
+                                                {formatDate(
+                                                    item.updated_at,
+                                                    true,
+                                                    true,
+                                                )}
                                             </Text>
                                             <Text type="secondary">
-                                                Created • {formatDate(item.created_at, true, true)}
+                                                Created •{" "}
+                                                {formatDate(
+                                                    item.created_at,
+                                                    true,
+                                                    true,
+                                                )}
                                             </Text>
                                         </Space>
                                     </List.Item>
@@ -246,7 +292,11 @@ const MyOrderContent = () => {
                             rowKey={(r) => r._id}
                             columns={columns}
                             dataSource={insertKeytoData(filtered)}
-                            pagination={{ size: "small", pageSize: 10, showSizeChanger: false }}
+                            pagination={{
+                                size: "small",
+                                pageSize: 10,
+                                showSizeChanger: false,
+                            }}
                             scroll={{ x: 760 }}
                         />
                     )}

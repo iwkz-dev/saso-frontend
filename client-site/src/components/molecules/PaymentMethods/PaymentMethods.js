@@ -54,8 +54,9 @@ const PaymentMethods = ({ userData }) => {
 
         notification.open({
             message: "Purchasing completed",
-            description: `Thank you ${name} for ${isTransfer ? "booking" : "purchasing"
-                }. Your invoice number is: ${currOrder?.invoiceNumber ?? "-"}.`,
+            description: `Thank you ${name} for ${
+                isTransfer ? "booking" : "purchasing"
+            }. Your invoice number is: ${currOrder?.invoiceNumber ?? "-"}.`,
             btn,
             duration: 10,
             key,
@@ -65,7 +66,9 @@ const PaymentMethods = ({ userData }) => {
 
     const submitTransferForm = async () => {
         if (!eventId) {
-            message.error("Event is not ready yet. Please try again in a moment.");
+            message.error(
+                "Event is not ready yet. Please try again in a moment.",
+            );
             return;
         }
         if (!cart?.items?.length) {
@@ -74,7 +77,7 @@ const PaymentMethods = ({ userData }) => {
         }
 
         const isConfirm = window.confirm(
-            "Please confirm if you plan to pay later. Ensure payment is made within 2x24 hours and send the proof to the designated contact person."
+            "Please confirm if you plan to pay later. Ensure payment is made within 2x24 hours and send the proof to the designated contact person.",
         );
         if (!isConfirm) return;
 
@@ -83,7 +86,7 @@ const PaymentMethods = ({ userData }) => {
             const orderData = createOrderData("transfer");
 
             const payload = await dispatch(
-                submitOrder({ data: orderData, isAuthRequired: isAuth() })
+                submitOrder({ data: orderData, isAuthRequired: isAuth() }),
             ).unwrap();
 
             const order = payload?.order || null;
@@ -120,15 +123,23 @@ const PaymentMethods = ({ userData }) => {
             >
                 <Button
                     onClick={submitTransferForm}
-                    style={{ width: "100%", borderRadius: 999, fontWeight: 700 }}
+                    style={{
+                        width: "100%",
+                        borderRadius: 999,
+                        fontWeight: 700,
+                    }}
                     type="primary"
                     size="large"
                 >
                     Pay Later
                 </Button>
-                <Typography.Text type="secondary" italic style={{ textAlign: "center" }}>
-                    Choose “Pay Later” to complete payment within 2×24 hours and send proof to
-                    the contact person.
+                <Typography.Text
+                    type="secondary"
+                    italic
+                    style={{ textAlign: "center" }}
+                >
+                    Choose “Pay Later” to complete payment within 2×24 hours and
+                    send proof to the contact person.
                 </Typography.Text>
             </Space>
         </Spin>

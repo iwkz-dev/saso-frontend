@@ -1,5 +1,4 @@
-// pages/product/[id].jsx (example path)
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/router";
 import { Spin, Alert } from "antd";
@@ -25,12 +24,10 @@ function ProductDetail() {
     const detailStatus = useSelector(selectMenuDetailStatus);
     const error = useSelector(selectMenuError);
 
-    // Fetch event (if your layout depends on it)
     useEffect(() => {
         dispatch(fetchEvents("approved"));
     }, [dispatch]);
 
-    // Fetch product detail when the router is ready and id exists
     useEffect(() => {
         if (!router.isReady) return;
         if (id) dispatch(fetchMenuById(id));
@@ -39,13 +36,23 @@ function ProductDetail() {
     return (
         <MainLayout>
             {detailStatus === "loading" && (
-                <div style={{ display: "flex", justifyContent: "center", padding: 24 }}>
+                <div
+                    style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        padding: 24,
+                    }}
+                >
                     <Spin />
                 </div>
             )}
 
             {detailStatus === "failed" && (
-                <Alert type="error" message="Failed to load product" description={error} />
+                <Alert
+                    type="error"
+                    message="Failed to load product"
+                    description={error}
+                />
             )}
 
             {detailStatus === "succeeded" && (

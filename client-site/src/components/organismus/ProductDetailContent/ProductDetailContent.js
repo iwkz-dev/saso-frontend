@@ -1,12 +1,5 @@
-import {
-    Layout,
-    Typography,
-    Button,
-    message,
-    Divider,
-    Empty,
-} from "antd";
-import { ShoppingCartOutlined } from "@ant-design/icons";
+import { Layout, Typography, Button, message, Divider, Empty } from "antd";
+import { PictureOutlined, ShoppingCartOutlined } from "@ant-design/icons";
 import BackToButton from "../../atoms/BackToButton/BackToButton";
 import ImagesPreview from "../../atoms/ImagesPreview/ImagesPreview";
 import { addOrder } from "../../../stores/reducers/cart";
@@ -41,7 +34,10 @@ const ProductDetailContent = ({ detailMenu }) => {
 
     const priceText =
         typeof detailMenu?.price === "number"
-            ? new Intl.NumberFormat("de-DE", { style: "currency", currency: "EUR" }).format(detailMenu.price)
+            ? new Intl.NumberFormat("de-DE", {
+                  style: "currency",
+                  currency: "EUR",
+              }).format(detailMenu.price)
             : `${detailMenu?.price ?? ""} €`;
 
     const handleClick = () => {
@@ -213,17 +209,25 @@ const ProductDetailContent = ({ detailMenu }) => {
                             <div style={chipRow}>
                                 <span
                                     style={chip(
-                                        isSoldOut ? "rgba(185,28,28,0.08)" : "rgba(16,185,129,0.1)",
+                                        isSoldOut
+                                            ? "rgba(185,28,28,0.08)"
+                                            : "rgba(16,185,129,0.1)",
                                         isSoldOut ? "#7f1d1d" : "#065f46",
-                                        isSoldOut ? "#fecaca" : "#bbf7d0"
+                                        isSoldOut ? "#fecaca" : "#bbf7d0",
                                     )}
                                 >
-                                    {isSoldOut ? "Sold out" : `In stock: ${left}`}
+                                    {isSoldOut
+                                        ? "Sold out"
+                                        : `In stock: ${left}`}
                                 </span>
 
                                 {isPOClosed && (
                                     <span
-                                        style={chip("rgba(107,114,128,0.12)", "#374151", "#e5e7eb")}
+                                        style={chip(
+                                            "rgba(107,114,128,0.12)",
+                                            "#374151",
+                                            "#e5e7eb",
+                                        )}
                                     >
                                         Pre‑order closed
                                     </span>
@@ -235,7 +239,9 @@ const ProductDetailContent = ({ detailMenu }) => {
                     <div style={{ ...grid, marginTop: 6 }}>
                         <div style={mediaCard}>
                             <div style={mediaFrame}>
-                                {isSoldOut && <div style={soldOutChip}>Sold out</div>}
+                                {isSoldOut && (
+                                    <div style={soldOutChip}>Sold out</div>
+                                )}
 
                                 <div style={mediaInner}>
                                     <div
@@ -248,11 +254,37 @@ const ProductDetailContent = ({ detailMenu }) => {
                                             padding: 8,
                                         }}
                                     >
-                                        <ImagesPreview
-                                            productName={detailMenu.name}
-                                            productImages={detailMenu.images}
-                                            height="100%"
-                                        />
+                                        {detailMenu.images?.length > 0 ? (
+                                            <ImagesPreview
+                                                productName={detailMenu.name}
+                                                productImages={
+                                                    detailMenu.images
+                                                }
+                                                height="100%"
+                                            />
+                                        ) : (
+                                            <div
+                                                style={{
+                                                    width: "60%",
+                                                    aspectRatio: "1 / 1",
+                                                    borderRadius: 12,
+                                                    background:
+                                                        "linear-gradient(135deg,#f3f4f6 0%,#e5e7eb 100%)",
+                                                    color: "#94a3b8",
+                                                    display: "flex",
+                                                    alignItems: "center",
+                                                    justifyContent: "center",
+                                                    fontSize: 28,
+                                                }}
+                                            >
+                                                <span
+                                                    role="img"
+                                                    aria-label="no image"
+                                                >
+                                                    <PictureOutlined />
+                                                </span>
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
                             </div>
@@ -260,11 +292,15 @@ const ProductDetailContent = ({ detailMenu }) => {
 
                         <div style={detailsCol}>
                             <div style={priceRow}>
-                                <Typography.Text style={priceStyle}>{priceText}</Typography.Text>
+                                <Typography.Text style={priceStyle}>
+                                    {priceText}
+                                </Typography.Text>
                             </div>
 
                             <Typography.Text style={stockText}>
-                                {isSoldOut ? "This item is currently unavailable." : `Left stock: ${left} / ${qty}`}
+                                {isSoldOut
+                                    ? "This item is currently unavailable."
+                                    : `Left stock: ${left} / ${qty}`}
                             </Typography.Text>
 
                             <Button
@@ -275,15 +311,22 @@ const ProductDetailContent = ({ detailMenu }) => {
                                 icon={<ShoppingCartOutlined />}
                                 style={addBtn}
                             >
-                                {isPOClosed ? "Pre‑order closed" : isSoldOut ? "Sold out" : "Add to cart"}
+                                {isPOClosed
+                                    ? "Pre‑order closed"
+                                    : isSoldOut
+                                    ? "Sold out"
+                                    : "Add to cart"}
                             </Button>
 
                             <Divider style={{ margin: "12px 0" }} />
 
                             <div>
-                                <Typography.Text style={sectionTitle}>Description</Typography.Text>
+                                <Typography.Text style={sectionTitle}>
+                                    Description
+                                </Typography.Text>
                                 <Typography.Paragraph style={descStyle}>
-                                    {detailMenu.description || "No description available."}
+                                    {detailMenu.description ||
+                                        "No description available."}
                                 </Typography.Paragraph>
                             </div>
                         </div>

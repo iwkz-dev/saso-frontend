@@ -23,16 +23,26 @@ const LoginModal = ({ size = "small" }) => {
     };
 
     return (
-        <Space align="center" style={{ width: "100%", justifyContent: "center", gap: 8 }}>
-            <Button size={size} onClick={() => openModal(false)}>Sign up</Button>
-            <Button size={size} onClick={() => openModal(true)} type="link">Sign in</Button>
+        <Space
+            align="center"
+            style={{ width: "100%", justifyContent: "center", gap: 8 }}
+        >
+            <Button size={size} onClick={() => openModal(false)}>
+                Sign up
+            </Button>
+            <Button size={size} onClick={() => openModal(true)} type="link">
+                Sign in
+            </Button>
 
             <Modal
                 title={isSignIn ? "Sign in" : "Sign up"}
                 open={isModalOpen}
                 onCancel={handleCancel}
                 okText={isSignIn ? "Sign in" : "Sign up"}
-                okButtonProps={{ form: isSignIn ? "sign-in" : "sign-up", htmlType: "submit" }}
+                okButtonProps={{
+                    form: isSignIn ? "sign-in" : "sign-up",
+                    htmlType: "submit",
+                }}
                 maskClosable={false}
                 closable={false}
                 destroyOnHidden
@@ -56,7 +66,9 @@ const LoginModal = ({ size = "small" }) => {
                     }}
                 >
                     <span style={{ color: "rgba(0,0,0,0.45)" }}>
-                        {isSignIn ? "Don't have an account?" : "Already have an account?"}
+                        {isSignIn
+                            ? "Don't have an account?"
+                            : "Already have an account?"}
                     </span>
                     <button
                         type="button"

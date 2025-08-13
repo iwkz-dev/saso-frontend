@@ -23,7 +23,6 @@ import BackToButton from "../../atoms/BackToButton/BackToButton";
 import { formatDate } from "../../../helpers/dateHelper";
 import style from "./MyOrderDetailContent.module.scss";
 
-
 const { Content } = Layout;
 const { useBreakpoint } = Grid;
 const { Title, Text, Paragraph } = Typography;
@@ -31,16 +30,25 @@ const { Panel } = Collapse;
 
 const tagForStatus = (status) => {
     switch (status) {
-        case 1: return <Tag color="processing">Paid</Tag>;
-        case 2: return <Tag color="error">Refund / Canceled</Tag>;
-        case 3: return <Tag color="success">Completed</Tag>;
-        default: return <Tag>Pending</Tag>;
+        case 1:
+            return <Tag color="processing">Paid</Tag>;
+        case 2:
+            return <Tag color="error">Refund / Canceled</Tag>;
+        case 3:
+            return <Tag color="success">Completed</Tag>;
+        default:
+            return <Tag>Pending</Tag>;
     }
 };
 
 const currency = (n) => (typeof n === "number" ? `${n} €` : n || "-");
 
-const MyOrderDetailContent = ({ detailOrder, withoutBackButton, events, onDownloadPdf }) => {
+const MyOrderDetailContent = ({
+    detailOrder,
+    withoutBackButton,
+    events,
+    onDownloadPdf,
+}) => {
     const screens = useBreakpoint();
     const isMobile = !screens.md;
 
@@ -58,17 +66,18 @@ const MyOrderDetailContent = ({ detailOrder, withoutBackButton, events, onDownlo
         }
     };
 
-    const whatsappHref =
-        cp?.phoneNumber ? `https://wa.me/${cp.phoneNumber.replace(/\D/g, "")}` : null;
+    const whatsappHref = cp?.phoneNumber
+        ? `https://wa.me/${cp.phoneNumber.replace(/\D/g, "")}`
+        : null;
 
-    // compute item subtotals + total
     const items = Array.isArray(detailOrder?.menus) ? detailOrder.menus : [];
     const itemsWithSubtotal = items.map((m) => ({
         ...m,
         _subtotal: (Number(m.price) || 0) * (Number(m.totalPortion) || 0),
     }));
     const computedTotal =
-        itemsWithSubtotal.reduce((s, it) => s + (it._subtotal || 0), 0) || detailOrder?.totalPrice;
+        itemsWithSubtotal.reduce((s, it) => s + (it._subtotal || 0), 0) ||
+        detailOrder?.totalPrice;
 
     return (
         <Content className={style.myOrderDetailContent}>
@@ -79,13 +88,23 @@ const MyOrderDetailContent = ({ detailOrder, withoutBackButton, events, onDownlo
                     margin: "0 auto",
                 }}
             >
-                <Space direction="vertical" size={isMobile ? 12 : 16} style={{ width: "100%" }}>
+                <Space
+                    direction="vertical"
+                    size={isMobile ? 12 : 16}
+                    style={{ width: "100%" }}
+                >
                     {!withoutBackButton && (
-                        <BackToButton targetURL="/my-order" buttonText="Back to My Orders" />
+                        <BackToButton
+                            targetURL="/my-order"
+                            buttonText="Back to My Orders"
+                        />
                     )}
 
                     {/* Header */}
-                    <Title level={isMobile ? 4 : 3} style={{ textAlign: "center", margin: "8px 0 0" }}>
+                    <Title
+                        level={isMobile ? 4 : 3}
+                        style={{ textAlign: "center", margin: "8px 0 0" }}
+                    >
                         {detailOrder.invoiceNumber}
                     </Title>
 
@@ -97,27 +116,50 @@ const MyOrderDetailContent = ({ detailOrder, withoutBackButton, events, onDownlo
                     >
                         <Space
                             direction={isMobile ? "vertical" : "horizontal"}
-                            style={{ width: "100%", justifyContent: "space-between", alignItems: isMobile ? "flex-start" : "center" }}
+                            style={{
+                                width: "100%",
+                                justifyContent: "space-between",
+                                alignItems: isMobile ? "flex-start" : "center",
+                            }}
                             size={isMobile ? 10 : 16}
                         >
                             {/* Left: customer + meta */}
                             <Space direction="vertical" size={6}>
                                 <Space size={8} wrap align="center">
-                                    <Text strong>{detailOrder.customerFullname}</Text>
+                                    <Text strong>
+                                        {detailOrder.customerFullname}
+                                    </Text>
                                     {tagForStatus(detailOrder.status)}
                                 </Space>
                                 <Text type="secondary">
-                                    Updated • {formatDate(detailOrder.updated_at, true, true)}
+                                    Updated •{" "}
+                                    {formatDate(
+                                        detailOrder.updated_at,
+                                        true,
+                                        true,
+                                    )}
                                 </Text>
                                 <Text type="secondary">
-                                    Created • {formatDate(detailOrder.created_at, true, true)}
+                                    Created •{" "}
+                                    {formatDate(
+                                        detailOrder.created_at,
+                                        true,
+                                        true,
+                                    )}
                                 </Text>
                             </Space>
 
                             {/* Right: total + quick actions */}
-                            <Space direction="vertical" align={isMobile ? "flex-start" : "flex-end"} size={8}>
+                            <Space
+                                direction="vertical"
+                                align={isMobile ? "flex-start" : "flex-end"}
+                                size={8}
+                            >
                                 <Text type="secondary">Total</Text>
-                                <Title level={isMobile ? 4 : 3} style={{ margin: 0 }}>
+                                <Title
+                                    level={isMobile ? 4 : 3}
+                                    style={{ margin: 0 }}
+                                >
                                     {currency(computedTotal)}
                                 </Title>
 
@@ -125,7 +167,12 @@ const MyOrderDetailContent = ({ detailOrder, withoutBackButton, events, onDownlo
                                     <Tooltip title="Copy invoice number">
                                         <Button
                                             size="small"
-                                            onClick={() => handleCopy(detailOrder.invoiceNumber, "Invoice copied")}
+                                            onClick={() =>
+                                                handleCopy(
+                                                    detailOrder.invoiceNumber,
+                                                    "Invoice copied",
+                                                )
+                                            }
                                             icon={<CopyOutlined />}
                                         >
                                             Invoice
@@ -151,7 +198,11 @@ const MyOrderDetailContent = ({ detailOrder, withoutBackButton, events, onDownlo
                                             <Button
                                                 size="small"
                                                 icon={<CreditCardOutlined />}
-                                                href={paypal.startsWith("http") ? paypal : `https://paypal.me/${paypal}`}
+                                                href={
+                                                    paypal.startsWith("http")
+                                                        ? paypal
+                                                        : `https://paypal.me/${paypal}`
+                                                }
                                                 target="_blank"
                                                 rel="noopener noreferrer"
                                                 type="primary"
@@ -167,7 +218,11 @@ const MyOrderDetailContent = ({ detailOrder, withoutBackButton, events, onDownlo
                                             <Button
                                                 size="small"
                                                 icon={<FilePdfOutlined />}
-                                                onClick={() => onDownloadPdf(detailOrder._id)}
+                                                onClick={() =>
+                                                    onDownloadPdf(
+                                                        detailOrder._id,
+                                                    )
+                                                }
                                             >
                                                 PDF
                                             </Button>
@@ -177,7 +232,9 @@ const MyOrderDetailContent = ({ detailOrder, withoutBackButton, events, onDownlo
                             </Space>
                         </Space>
 
-                        <Divider style={{ margin: isMobile ? "12px 0" : "16px 0" }} />
+                        <Divider
+                            style={{ margin: isMobile ? "12px 0" : "16px 0" }}
+                        />
 
                         {/* Quick facts row */}
                         <Space
@@ -188,7 +245,9 @@ const MyOrderDetailContent = ({ detailOrder, withoutBackButton, events, onDownlo
                             <Space size={6}>
                                 <Text type="secondary">Payment:</Text>
                                 <Text strong>
-                                    {detailOrder.paymentType?.name || detailOrder.paymentType || "-"}
+                                    {detailOrder.paymentType?.name ||
+                                        detailOrder.paymentType ||
+                                        "-"}
                                 </Text>
                             </Space>
                             <Space size={6}>
@@ -217,30 +276,65 @@ const MyOrderDetailContent = ({ detailOrder, withoutBackButton, events, onDownlo
                         size="small"
                         title={<Text strong>Ordered Items</Text>}
                         bodyStyle={{ padding: isMobile ? 8 : 12 }}
-                        headStyle={{ padding: isMobile ? "8px 12px" : "12px 16px" }}
+                        headStyle={{
+                            padding: isMobile ? "8px 12px" : "12px 16px",
+                        }}
                         style={{ borderRadius: 12 }}
                     >
                         <List
                             itemLayout="horizontal"
                             dataSource={itemsWithSubtotal}
                             renderItem={(item) => (
-                                <List.Item style={{ padding: isMobile ? "8px 4px" : "10px 6px" }}>
-                                    <Space direction="vertical" size={2} style={{ width: "100%" }}>
-                                        <Space style={{ justifyContent: "space-between", width: "100%" }}>
-                                            <Text strong style={{ maxWidth: "70%", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                                <List.Item
+                                    style={{
+                                        padding: isMobile
+                                            ? "8px 4px"
+                                            : "10px 6px",
+                                    }}
+                                >
+                                    <Space
+                                        direction="vertical"
+                                        size={2}
+                                        style={{ width: "100%" }}
+                                    >
+                                        <Space
+                                            style={{
+                                                justifyContent: "space-between",
+                                                width: "100%",
+                                            }}
+                                        >
+                                            <Text
+                                                strong
+                                                style={{
+                                                    maxWidth: "70%",
+                                                    whiteSpace: "nowrap",
+                                                    overflow: "hidden",
+                                                    textOverflow: "ellipsis",
+                                                }}
+                                            >
                                                 {item.name}
                                             </Text>
-                                            <Text>{currency(item._subtotal)}</Text>
+                                            <Text>
+                                                {currency(item._subtotal)}
+                                            </Text>
                                         </Space>
                                         <Text type="secondary">
-                                            {item.totalPortion} × {currency(item.price)}
+                                            {item.totalPortion} ×{" "}
+                                            {currency(item.price)}
                                         </Text>
                                     </Space>
                                 </List.Item>
                             )}
                         />
-                        <Divider style={{ margin: isMobile ? "8px 0" : "12px 0" }} />
-                        <Space style={{ width: "100%", justifyContent: "space-between" }}>
+                        <Divider
+                            style={{ margin: isMobile ? "8px 0" : "12px 0" }}
+                        />
+                        <Space
+                            style={{
+                                width: "100%",
+                                justifyContent: "space-between",
+                            }}
+                        >
                             <Text type="secondary">Total</Text>
                             <Text strong>{currency(computedTotal)}</Text>
                         </Space>
@@ -253,23 +347,41 @@ const MyOrderDetailContent = ({ detailOrder, withoutBackButton, events, onDownlo
                         defaultActiveKey={isMobile ? [] : ["payment"]}
                     >
                         <Panel header="Payment Instructions" key="payment">
-                            <Space direction="vertical" size={10} style={{ width: "100%" }}>
-                                <Paragraph type="secondary" style={{ marginBottom: 0 }}>
-                                    Please transfer your payment if you haven’t already, then send the proof to the contact below.
+                            <Space
+                                direction="vertical"
+                                size={10}
+                                style={{ width: "100%" }}
+                            >
+                                <Paragraph
+                                    type="secondary"
+                                    style={{ marginBottom: 0 }}
+                                >
+                                    Please transfer your payment if you haven’t
+                                    already, then send the proof to the contact
+                                    below.
                                 </Paragraph>
                                 <Descriptions size="small" column={1} bordered>
                                     <Descriptions.Item label="Contact Person">
-                                        <Paragraph copyable style={{ margin: 0 }}>
+                                        <Paragraph
+                                            copyable
+                                            style={{ margin: 0 }}
+                                        >
                                             {cp?.name || "-"}
                                         </Paragraph>
                                     </Descriptions.Item>
                                     <Descriptions.Item label="WhatsApp">
-                                        <Paragraph copyable style={{ margin: 0 }}>
+                                        <Paragraph
+                                            copyable
+                                            style={{ margin: 0 }}
+                                        >
                                             {cp?.phoneNumber || "-"}
                                         </Paragraph>
                                     </Descriptions.Item>
                                     <Descriptions.Item label="PayPal">
-                                        <Paragraph copyable style={{ margin: 0 }}>
+                                        <Paragraph
+                                            copyable
+                                            style={{ margin: 0 }}
+                                        >
                                             {paypal || "-"}
                                         </Paragraph>
                                     </Descriptions.Item>
@@ -277,7 +389,10 @@ const MyOrderDetailContent = ({ detailOrder, withoutBackButton, events, onDownlo
                                         <Text>IWKZ e.V.</Text>
                                     </Descriptions.Item>
                                     <Descriptions.Item label="IBAN">
-                                        <Paragraph copyable style={{ margin: 0 }}>
+                                        <Paragraph
+                                            copyable
+                                            style={{ margin: 0 }}
+                                        >
                                             {iban}
                                         </Paragraph>
                                     </Descriptions.Item>
@@ -285,7 +400,10 @@ const MyOrderDetailContent = ({ detailOrder, withoutBackButton, events, onDownlo
                                         <Text>{bic}</Text>
                                     </Descriptions.Item>
                                     <Descriptions.Item label="Invoice Number">
-                                        <Paragraph copyable style={{ margin: 0 }}>
+                                        <Paragraph
+                                            copyable
+                                            style={{ margin: 0 }}
+                                        >
                                             {detailOrder?.invoiceNumber}
                                         </Paragraph>
                                     </Descriptions.Item>

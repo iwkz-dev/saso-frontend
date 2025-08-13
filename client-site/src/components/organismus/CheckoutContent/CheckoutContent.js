@@ -18,7 +18,9 @@ const CheckoutContent = () => {
                 <div
                     style={{
                         maxWidth: 960,
-                        padding: screens.md ? "16px 16px 32px" : "12px 12px 24px",
+                        padding: screens.md
+                            ? "16px 16px 32px"
+                            : "12px 12px 24px",
                         margin: "0 auto",
                     }}
                 >
@@ -36,7 +38,10 @@ const CheckoutContent = () => {
                                 justifyContent: "space-between",
                             }}
                         >
-                            <BackToButton targetURL="/cart" buttonText="Back to cart" />
+                            <BackToButton
+                                targetURL="/cart"
+                                buttonText="Back to cart"
+                            />
                             <Typography.Title
                                 level={screens.md ? 3 : 4}
                                 style={{ margin: 0 }}
@@ -46,7 +51,10 @@ const CheckoutContent = () => {
                         </div>
 
                         <Card
-                            style={{ borderRadius: 12, padding: screens.md ? 16 : 12 }}
+                            style={{
+                                borderRadius: 12,
+                                padding: screens.md ? 16 : 12,
+                            }}
                         >
                             <CheckoutSummary />
                         </Card>

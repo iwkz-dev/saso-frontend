@@ -104,7 +104,11 @@ const MainCarousel = ({ eventName = "Our Event", images = [] }) => {
                                     Welcome to {eventName}
                                 </Typography.Title>
                                 <div style={ctaWrapStyle}>
-                                    <a href="#menus" style={ctaBtnStyle} aria-label="Shop now">
+                                    <a
+                                        href="#menus"
+                                        style={ctaBtnStyle}
+                                        aria-label="Shop now"
+                                    >
                                         Shop now
                                     </a>
                                 </div>
@@ -118,7 +122,10 @@ const MainCarousel = ({ eventName = "Our Event", images = [] }) => {
                                 <div style={{ position: "relative" }}>
                                     <img
                                         src={img?.imageUrl}
-                                        alt={img?.alt || `${eventName} slide ${i + 1}`}
+                                        alt={
+                                            img?.alt ||
+                                            `${eventName} slide ${i + 1}`
+                                        }
                                         loading="lazy"
                                         style={imageStyle}
                                     />

@@ -82,17 +82,26 @@ const ProductsTabs = ({ event, barcode, headerOffset = 80 }) => {
                                 height: TOKENS.pillH,
                                 padding: `0 ${TOKENS.padX}px`,
                                 borderRadius: 999,
-                                border: `1px solid ${isActive ? TOKENS.brand : TOKENS.border}`,
-                                background: isActive ? TOKENS.brandSoft : TOKENS.surface,
-                                color: isActive ? TOKENS.brandText : TOKENS.text,
+                                border: `1px solid ${
+                                    isActive ? TOKENS.brand : TOKENS.border
+                                }`,
+                                background: isActive
+                                    ? TOKENS.brandSoft
+                                    : TOKENS.surface,
+                                color: isActive
+                                    ? TOKENS.brandText
+                                    : TOKENS.text,
                                 fontSize: 14,
                                 fontWeight: 600,
                                 lineHeight: 1,
                                 letterSpacing: 0.1,
                                 cursor: "pointer",
                                 whiteSpace: "nowrap",
-                                transition: "border-color .15s ease, background .15s ease, color .15s ease",
-                                boxShadow: isActive ? "inset 0 0 0 1px rgba(16,185,129,.12)" : "none",
+                                transition:
+                                    "border-color .15s ease, background .15s ease, color .15s ease",
+                                boxShadow: isActive
+                                    ? "inset 0 0 0 1px rgba(16,185,129,.12)"
+                                    : "none",
                             }}
                         >
                             <span
@@ -118,7 +127,9 @@ const ProductsTabs = ({ event, barcode, headerOffset = 80 }) => {
                                     borderRadius: 999,
                                     fontSize: 12,
                                     fontWeight: 700,
-                                    background: isActive ? TOKENS.brand : "#f3f4f6",
+                                    background: isActive
+                                        ? TOKENS.brand
+                                        : "#f3f4f6",
                                     color: isActive ? "#fff" : TOKENS.textMuted,
                                 }}
                             >
@@ -128,7 +139,10 @@ const ProductsTabs = ({ event, barcode, headerOffset = 80 }) => {
                     ),
                     children: (
                         <div style={{ padding: "12px 8px 8px" }}>
-                            <ProductCards productList={c._menus} barcode={barcode} />
+                            <ProductCards
+                                productList={c._menus}
+                                barcode={barcode}
+                            />
                         </div>
                     ),
                 };
@@ -136,14 +150,23 @@ const ProductsTabs = ({ event, barcode, headerOffset = 80 }) => {
     }, [categories, barcode, activeKey]);
 
     useEffect(() => {
-        if (items.length && (activeKey === null || !items.some((i) => i.key === activeKey))) {
+        if (
+            items.length &&
+            (activeKey === null || !items.some((i) => i.key === activeKey))
+        ) {
             setActiveKey(items[0].key);
         }
     }, [items, activeKey]);
 
     if (status === "loading") {
         return (
-            <div style={{ display: "flex", justifyContent: "center", padding: 24 }}>
+            <div
+                style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    padding: 24,
+                }}
+            >
                 <Spin />
             </div>
         );
@@ -161,7 +184,12 @@ const ProductsTabs = ({ event, barcode, headerOffset = 80 }) => {
     }
 
     if (!items.length) {
-        return <Empty description="No products yet" style={{ paddingTop: 24, paddingBottom: 24 }} />;
+        return (
+            <Empty
+                description="No products yet"
+                style={{ paddingTop: 24, paddingBottom: 24 }}
+            />
+        );
     }
 
     return (
@@ -198,7 +226,9 @@ const ProductsTabs = ({ event, barcode, headerOffset = 80 }) => {
                             transition: "box-shadow 0.2s ease-in-out",
                         }}
                     >
-                        <div style={{ position: "relative", padding: "8px 8px" }}>
+                        <div
+                            style={{ position: "relative", padding: "8px 8px" }}
+                        >
                             <div
                                 style={{
                                     overflowX: "auto",
@@ -210,7 +240,11 @@ const ProductsTabs = ({ event, barcode, headerOffset = 80 }) => {
                                 <div style={{ display: "inline-block" }}>
                                     <DefaultTabBar
                                         {...props}
-                                        style={{ display: "inline-flex", minWidth: "max-content", gap: TOKENS.gap }}
+                                        style={{
+                                            display: "inline-flex",
+                                            minWidth: "max-content",
+                                            gap: TOKENS.gap,
+                                        }}
                                     />
                                 </div>
                             </div>

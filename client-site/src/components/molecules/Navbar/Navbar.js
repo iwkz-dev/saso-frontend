@@ -73,7 +73,9 @@ const Navbar = () => {
                 top: 0,
                 zIndex: 950,
                 width: "100%",
-                background: scrolled ? "rgba(255,255,255,0.95)" : "rgba(255,255,255,0.75)",
+                background: scrolled
+                    ? "rgba(255,255,255,0.95)"
+                    : "rgba(255,255,255,0.75)",
                 backdropFilter: "blur(12px) saturate(180%)",
                 WebkitBackdropFilter: "blur(12px) saturate(180%)",
                 borderBottom: "1px solid rgba(0,0,0,0.06)",
@@ -92,11 +94,23 @@ const Navbar = () => {
                 }}
             >
                 <Link href="/" aria-label="Go to homepage">
-                    <div style={{ display: "flex", alignItems: "center", height: 40, cursor: "pointer" }}>
+                    <div
+                        style={{
+                            display: "flex",
+                            alignItems: "center",
+                            height: 40,
+                            cursor: "pointer",
+                        }}
+                    >
                         <img
                             src="/images/iwkz_logo.png"
                             alt="IWKZ logo"
-                            style={{ height: 32, width: "auto", display: "block", marginRight: 4 }}
+                            style={{
+                                height: 32,
+                                width: "auto",
+                                display: "block",
+                                marginRight: 4,
+                            }}
                         />
                     </div>
                 </Link>
@@ -112,7 +126,10 @@ const Navbar = () => {
                     open={isModalOpen}
                     onCancel={handleCancel}
                     okText={isSignIn ? "Sign in" : "Sign up"}
-                    okButtonProps={{ form: isSignIn ? "sign-in" : "sign-up", htmlType: "submit" }}
+                    okButtonProps={{
+                        form: isSignIn ? "sign-in" : "sign-up",
+                        htmlType: "submit",
+                    }}
                     maskClosable={false}
                     closable={false}
                     destroyOnHidden
@@ -123,7 +140,9 @@ const Navbar = () => {
                     {isSignIn ? (
                         <SignInFormModal setShowModal={setIsModalOpen} />
                     ) : (
-                        <SignUpFormModal onSuccess={() => setIsModalOpen(false)} />
+                        <SignUpFormModal
+                            onSuccess={() => setIsModalOpen(false)}
+                        />
                     )}
 
                     <div
@@ -136,7 +155,9 @@ const Navbar = () => {
                         }}
                     >
                         <span style={{ color: "rgba(0,0,0,0.45)" }}>
-                            {isSignIn ? "Don't have an account?" : "Already have an account?"}
+                            {isSignIn
+                                ? "Don't have an account?"
+                                : "Already have an account?"}
                         </span>
                         <button
                             type="button"

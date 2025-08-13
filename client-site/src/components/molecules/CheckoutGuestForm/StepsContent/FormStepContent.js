@@ -16,17 +16,20 @@ const FormStepContent = ({ userData, onFinish, showModalForSignIn }) => {
             direction="vertical"
             style={{
                 width: "100%",
-            }}>
+            }}
+        >
             <div
                 style={{
                     maxWidth: 480,
                     margin: "auto",
-                }}>
+                }}
+            >
                 <Form
                     initialValues={userData}
                     id="guest-information"
                     {...layout}
-                    onFinish={onFinish}>
+                    onFinish={onFinish}
+                >
                     <Form.Item
                         label="Full Name"
                         name="fullname"
@@ -35,7 +38,8 @@ const FormStepContent = ({ userData, onFinish, showModalForSignIn }) => {
                                 required: true,
                                 message: "Please input your full name!",
                             },
-                        ]}>
+                        ]}
+                    >
                         <Input id="fullname" placeholder="Full Name" />
                     </Form.Item>
                     <Form.Item
@@ -49,7 +53,8 @@ const FormStepContent = ({ userData, onFinish, showModalForSignIn }) => {
                             {
                                 type: "email",
                             },
-                        ]}>
+                        ]}
+                    >
                         <Input id="email" placeholder="Email" />
                     </Form.Item>
                     <Form.Item
@@ -61,7 +66,8 @@ const FormStepContent = ({ userData, onFinish, showModalForSignIn }) => {
                                 message:
                                     "Please input your phone number (WhatsApp)!",
                             },
-                        ]}>
+                        ]}
+                    >
                         <Input
                             id="phone"
                             placeholder="Phone Number (WhatsApp)"
@@ -81,7 +87,8 @@ const FormStepContent = ({ userData, onFinish, showModalForSignIn }) => {
                         <Button
                             size="small"
                             onClick={() => showModalForSignIn(true)}
-                            type="link">
+                            type="link"
+                        >
                             Log in
                         </Button>
                     </Space>
@@ -90,7 +97,8 @@ const FormStepContent = ({ userData, onFinish, showModalForSignIn }) => {
                         <Button
                             size="small"
                             onClick={() => showModalForSignIn(false)}
-                            type="link">
+                            type="link"
+                        >
                             here
                         </Button>
                     </Space>

@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import authService from "../../services/authService";
-import { setToken, removeToken } from "../../helpers/authHelper"; // add removeToken if you have it
+import { setToken, removeToken } from "../../helpers/authHelper";
 
 const initialState = {
     user: null,
@@ -36,17 +36,17 @@ export const submitLogin = createAsyncThunk(
             };
         } catch (err) {
             return rejectWithValue(
-                err?.response?.data?.message || err?.message || "Network error"
+                err?.response?.data?.message || err?.message || "Network error",
             );
         }
-    }
+    },
 );
 
 export const logout = createAsyncThunk("login/logout", async () => {
     try {
         if (typeof removeToken === "function") removeToken();
         else setToken(null);
-    } catch (_) { }
+    } catch (_) {}
     return true;
 });
 

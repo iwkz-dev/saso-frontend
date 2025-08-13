@@ -1,10 +1,17 @@
 import { Button, Card, Space, Typography } from "antd";
 import ImagesPreview from "../ImagesPreview/ImagesPreview";
-import { MinusOutlined, PlusOutlined, DeleteOutlined } from "@ant-design/icons";
+import {
+    MinusOutlined,
+    PlusOutlined,
+    DeleteOutlined,
+    PictureOutlined,
+} from "@ant-design/icons";
 
 const CartList = ({ cart, add, remove }) => {
     const cardBodyStyle = {
-        padding: 10, // compact
+        padding: 10,
+        width: "100%",
+        borderRadius: 12,
     };
 
     const itemWrap = {
@@ -72,28 +79,50 @@ const CartList = ({ cart, add, remove }) => {
     return (
         <Space direction="vertical" style={{ width: "100%" }} size="middle">
             {cart.items.map((item, i) => (
-                <Card
-                    key={i}
-                    size="small"
-                    bodyStyle={cardBodyStyle}
-                    style={{ width: "100%", borderRadius: 12 }}
-                >
+                <Card key={i} size="small" style={cardBodyStyle}>
                     <div style={itemWrap}>
                         <div style={imgBox}>
-                            <ImagesPreview
-                                height="100%"
-                                productName={item.menu.name}
-                                productImages={item.menu.images}
-                            />
+                            {item.menu.images?.length > 0 ? (
+                                <ImagesPreview
+                                    height="100%"
+                                    productName={item.menu.name}
+                                    productImages={item.menu.images}
+                                />
+                            ) : (
+                                <div
+                                    style={{
+                                        borderRadius: 12,
+                                        background:
+                                            "linear-gradient(135deg,#f3f4f6 0%,#e5e7eb 100%)",
+                                        color: "#94a3b8",
+                                        display: "flex",
+                                        alignItems: "center",
+                                        justifyContent: "center",
+                                        fontSize: 28,
+                                    }}
+                                    aria-label="No image"
+                                >
+                                    <PictureOutlined />
+                                </div>
+                            )}
                         </div>
 
                         {/* Controls (right) */}
                         <div style={controls}>
-                            <div style={compactWrap} aria-label="Quantity controls">
+                            <div
+                                style={compactWrap}
+                                aria-label="Quantity controls"
+                            >
                                 <Button
                                     type="text"
                                     style={iconBtn}
-                                    icon={item.amount <= 1 ? <DeleteOutlined /> : <MinusOutlined />}
+                                    icon={
+                                        item.amount <= 1 ? (
+                                            <DeleteOutlined />
+                                        ) : (
+                                            <MinusOutlined />
+                                        )
+                                    }
                                     onClick={() => remove(item.menu)}
                                 />
                                 <div style={countBox}>

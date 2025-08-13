@@ -18,7 +18,9 @@ export const fetchMenu = createAsyncThunk(
         try {
             const res = await menuService.getMenu(filter);
             if (res.data?.status !== "success") {
-                return rejectWithValue(res.data?.message || "Failed to fetch menu");
+                return rejectWithValue(
+                    res.data?.message || "Failed to fetch menu",
+                );
             }
             return {
                 items: res.data?.data?.data ?? [],
@@ -26,10 +28,10 @@ export const fetchMenu = createAsyncThunk(
             };
         } catch (err) {
             return rejectWithValue(
-                err?.response?.data?.message || err?.message || "Network error"
+                err?.response?.data?.message || err?.message || "Network error",
             );
         }
-    }
+    },
 );
 
 export const fetchMenuById = createAsyncThunk(
@@ -38,7 +40,9 @@ export const fetchMenuById = createAsyncThunk(
         try {
             const res = await menuService.getMenuWithId(id);
             if (res.data?.status !== "success") {
-                return rejectWithValue(res.data?.message || "Failed to fetch menu detail");
+                return rejectWithValue(
+                    res.data?.message || "Failed to fetch menu detail",
+                );
             }
             return {
                 detail: res.data?.data ?? null,
@@ -46,10 +50,10 @@ export const fetchMenuById = createAsyncThunk(
             };
         } catch (err) {
             return rejectWithValue(
-                err?.response?.data?.message || err?.message || "Network error"
+                err?.response?.data?.message || err?.message || "Network error",
             );
         }
-    }
+    },
 );
 
 export const fetchMenuByBarcode = createAsyncThunk(
@@ -58,7 +62,9 @@ export const fetchMenuByBarcode = createAsyncThunk(
         try {
             const res = await menuService.getMenuWithBarcode(barcode);
             if (res.data?.status !== "success") {
-                return rejectWithValue(res.data?.message || "Failed to fetch by barcode");
+                return rejectWithValue(
+                    res.data?.message || "Failed to fetch by barcode",
+                );
             }
             return {
                 detail: res.data?.data ?? null,
@@ -66,10 +72,10 @@ export const fetchMenuByBarcode = createAsyncThunk(
             };
         } catch (err) {
             return rejectWithValue(
-                err?.response?.data?.message || err?.message || "Network error"
+                err?.response?.data?.message || err?.message || "Network error",
             );
         }
-    }
+    },
 );
 
 // ============== Slice ==============
