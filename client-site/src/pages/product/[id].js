@@ -41,8 +41,7 @@ function ProductDetail() {
                         display: "flex",
                         justifyContent: "center",
                         padding: 24,
-                    }}
-                >
+                    }}>
                     <Spin />
                 </div>
             )}

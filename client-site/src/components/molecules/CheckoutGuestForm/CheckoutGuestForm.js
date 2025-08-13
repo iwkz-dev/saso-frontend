@@ -63,13 +63,11 @@ const CheckoutGuestForm = () => {
                     <Space
                         direction="vertical"
                         size="middle"
-                        style={{ width: "100%" }}
-                    >
+                        style={{ width: "100%" }}>
                         <Button
                             type="link"
                             onClick={() => setCurrent(0)}
-                            icon={<LeftOutlined />}
-                        >
+                            icon={<LeftOutlined />}>
                             Back to contact information
                         </Button>
                         <PaymentMethods userData={userData} />
@@ -87,8 +85,7 @@ const CheckoutGuestForm = () => {
                 okText={isSignIn ? "Sign in" : "Sign up"}
                 onCancel={handleCancel}
                 closable={false}
-                destroyOnHidden
-            >
+                destroyOnHidden>
                 {ModalContent()}
             </Modal>
         </div>

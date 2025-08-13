@@ -8,8 +8,7 @@ const BackToButton = ({ targetURL, buttonText }) => {
         <Button
             type="link"
             onClick={() => Router.push(targetURL)}
-            icon={<LeftOutlined />}
-        >
+            icon={<LeftOutlined />}>
             {buttonText}
         </Button>
     );

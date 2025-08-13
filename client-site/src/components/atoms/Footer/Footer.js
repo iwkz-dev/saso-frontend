@@ -12,8 +12,7 @@ const FooterComponent = () => {
                 fontSize: 14,
                 fontWeight: 500,
                 borderTop: "1px solid #d1fae5",
-            }}
-        >
+            }}>
             © {new Date().getFullYear()} IWKZ Al-Falah. All rights reserved.
         </Layout.Footer>
     );

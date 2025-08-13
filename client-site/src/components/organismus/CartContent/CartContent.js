@@ -40,8 +40,7 @@ const CartContent = () => {
                 <Space
                     direction="vertical"
                     size="middle"
-                    style={{ width: "100%" }}
-                >
+                    style={{ width: "100%" }}>
                     <BackToButton targetURL="/" buttonText="Back to home" />
 
                     <Row gutter={[16, 16]}>
@@ -60,8 +59,7 @@ const CartContent = () => {
                                 style={{
                                     position: "sticky",
                                     top: 64,
-                                }}
-                            >
+                                }}>
                                 <Card style={cardStyle}>
                                     <CartSummary
                                         cart={cart}

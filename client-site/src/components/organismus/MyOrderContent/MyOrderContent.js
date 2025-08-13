@@ -159,13 +159,11 @@ const MyOrderContent = () => {
                     maxWidth: 960,
                     padding: isMobile ? "12px" : "16px",
                     margin: "0 auto",
-                }}
-            >
+                }}>
                 <Space
                     direction="vertical"
                     size={isMobile ? 12 : 16}
-                    style={{ width: "100%" }}
-                >
+                    style={{ width: "100%" }}>
                     <BackToButton targetURL="/" buttonText="Back to Home" />
 
                     <Space
@@ -175,8 +173,7 @@ const MyOrderContent = () => {
                             justifyContent: "space-between",
                             alignItems: "center",
                         }}
-                        size={12}
-                    >
+                        size={12}>
                         <Title level={isMobile ? 4 : 3} style={{ margin: 0 }}>
                             My Orders
                         </Title>
@@ -225,8 +222,9 @@ const MyOrderContent = () => {
                                                 key="view"
                                                 size="small"
                                                 icon={<EyeOutlined />}
-                                                onClick={() => onView(item._id)}
-                                            >
+                                                onClick={() =>
+                                                    onView(item._id)
+                                                }>
                                                 View
                                             </Button>,
                                             <Button
@@ -238,25 +236,21 @@ const MyOrderContent = () => {
                                                 }
                                                 onClick={() =>
                                                     onDownloadPdf(item._id)
-                                                }
-                                            >
+                                                }>
                                                 PDF
                                             </Button>,
-                                        ]}
-                                    >
+                                        ]}>
                                         <Space
                                             direction="vertical"
                                             size={4}
-                                            style={{ width: "100%" }}
-                                        >
+                                            style={{ width: "100%" }}>
                                             <Space
                                                 align="center"
                                                 style={{
                                                     justifyContent:
                                                         "space-between",
                                                     width: "100%",
-                                                }}
-                                            >
+                                                }}>
                                                 <Text strong>
                                                     {item.invoiceNumber}
                                                 </Text>

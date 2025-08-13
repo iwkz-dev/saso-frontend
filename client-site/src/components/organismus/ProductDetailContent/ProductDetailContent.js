@@ -19,8 +19,7 @@ const ProductDetailContent = ({ detailMenu }) => {
                         maxWidth: "1200px",
                         padding: "12px",
                         margin: "12px auto",
-                    }}
-                >
+                    }}>
                     <Empty />
                 </div>
             </Layout.Content>
@@ -214,8 +213,7 @@ const ProductDetailContent = ({ detailMenu }) => {
                                             : "rgba(16,185,129,0.1)",
                                         isSoldOut ? "#7f1d1d" : "#065f46",
                                         isSoldOut ? "#fecaca" : "#bbf7d0",
-                                    )}
-                                >
+                                    )}>
                                     {isSoldOut
                                         ? "Sold out"
                                         : `In stock: ${left}`}
@@ -227,8 +225,7 @@ const ProductDetailContent = ({ detailMenu }) => {
                                             "rgba(107,114,128,0.12)",
                                             "#374151",
                                             "#e5e7eb",
-                                        )}
-                                    >
+                                        )}>
                                         Pre‑order closed
                                     </span>
                                 )}
@@ -252,8 +249,7 @@ const ProductDetailContent = ({ detailMenu }) => {
                                             alignItems: "center",
                                             justifyContent: "center",
                                             padding: 8,
-                                        }}
-                                    >
+                                        }}>
                                         {detailMenu.images?.length > 0 ? (
                                             <ImagesPreview
                                                 productName={detailMenu.name}
@@ -275,12 +271,10 @@ const ProductDetailContent = ({ detailMenu }) => {
                                                     alignItems: "center",
                                                     justifyContent: "center",
                                                     fontSize: 28,
-                                                }}
-                                            >
+                                                }}>
                                                 <span
                                                     role="img"
-                                                    aria-label="no image"
-                                                >
+                                                    aria-label="no image">
                                                     <PictureOutlined />
                                                 </span>
                                             </div>
@@ -309,8 +303,7 @@ const ProductDetailContent = ({ detailMenu }) => {
                                 onClick={handleClick}
                                 shape="round"
                                 icon={<ShoppingCartOutlined />}
-                                style={addBtn}
-                            >
+                                style={addBtn}>
                                 {isPOClosed
                                     ? "Pre‑order closed"
                                     : isSoldOut

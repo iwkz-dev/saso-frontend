@@ -102,16 +102,14 @@ const ProductsTabs = ({ event, barcode, headerOffset = 80 }) => {
                                 boxShadow: isActive
                                     ? "inset 0 0 0 1px rgba(16,185,129,.12)"
                                     : "none",
-                            }}
-                        >
+                            }}>
                             <span
                                 title={name}
                                 style={{
                                     overflow: "hidden",
                                     textOverflow: "ellipsis",
                                     maxWidth: 140,
-                                }}
-                            >
+                                }}>
                                 {name}
                             </span>
 
@@ -131,8 +129,7 @@ const ProductsTabs = ({ event, barcode, headerOffset = 80 }) => {
                                         ? TOKENS.brand
                                         : "#f3f4f6",
                                     color: isActive ? "#fff" : TOKENS.textMuted,
-                                }}
-                            >
+                                }}>
                                 {count}
                             </span>
                         </span>
@@ -165,8 +162,7 @@ const ProductsTabs = ({ event, barcode, headerOffset = 80 }) => {
                     display: "flex",
                     justifyContent: "center",
                     padding: 24,
-                }}
-            >
+                }}>
                 <Spin />
             </div>
         );
@@ -202,8 +198,7 @@ const ProductsTabs = ({ event, barcode, headerOffset = 80 }) => {
                 overflow: "visible",
                 position: "relative",
                 boxShadow: "0 1px 0 rgba(0,0,0,.03)",
-            }}
-        >
+            }}>
             <Tabs
                 items={items}
                 activeKey={activeKey || items[0]?.key}
@@ -224,19 +219,19 @@ const ProductsTabs = ({ event, barcode, headerOffset = 80 }) => {
                             borderRadius: TOKENS.radius,
                             marginBottom: 8,
                             transition: "box-shadow 0.2s ease-in-out",
-                        }}
-                    >
+                        }}>
                         <div
-                            style={{ position: "relative", padding: "8px 8px" }}
-                        >
+                            style={{
+                                position: "relative",
+                                padding: "8px 8px",
+                            }}>
                             <div
                                 style={{
                                     overflowX: "auto",
                                     overflowY: "hidden",
                                     WebkitOverflowScrolling: "touch",
                                     scrollbarWidth: "none",
-                                }}
-                            >
+                                }}>
                                 <div style={{ display: "inline-block" }}>
                                     <DefaultTabBar
                                         {...props}

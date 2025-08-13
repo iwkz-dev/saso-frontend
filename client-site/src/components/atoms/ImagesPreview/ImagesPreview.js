@@ -30,14 +30,12 @@ const ImagesPreview = ({ productName, productImages, height, width }) => {
             <div
                 style={{
                     display: "none",
-                }}
-            >
+                }}>
                 <Image.PreviewGroup
                     preview={{
                         visible,
                         onVisibleChange: (vis) => setVisible(vis),
-                    }}
-                >
+                    }}>
                     {productImages.map((img) => (
                         <Image key={img.imageUrl} src={img.imageUrl} />
                     ))}

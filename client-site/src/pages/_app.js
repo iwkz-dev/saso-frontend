@@ -24,8 +24,7 @@ function MyApp({ Component, pageProps }) {
                         clientId: paypalClientId,
                         currency: "EUR",
                         intent: "capture",
-                    }}
-                >
+                    }}>
                     <Head>
                         <title>IWKZ E-Commerce</title>
                         <meta name="description" content="Saso Application" />

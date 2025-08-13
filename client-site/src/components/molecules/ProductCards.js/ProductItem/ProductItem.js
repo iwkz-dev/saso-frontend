@@ -175,8 +175,7 @@ const ProductItem = ({ product }) => {
                     e.preventDefault();
                     goDetail();
                 }
-            }}
-        >
+            }}>
             <div style={headerWrap}>
                 {(isSoldOut || isPOClosed) && (
                     <div style={chip}>
@@ -196,8 +195,7 @@ const ProductItem = ({ product }) => {
                             color: "#065f46",
                             borderRadius: 999,
                             fontWeight: 700,
-                        }}
-                    >
+                        }}>
                         {left} left
                     </Tag>
                 )}
@@ -225,8 +223,7 @@ const ProductItem = ({ product }) => {
                     <Typography.Text
                         style={nameStyle}
                         ellipsis={{ tooltip: product?.name }}
-                        onClick={(e) => e.stopPropagation()}
-                    >
+                        onClick={(e) => e.stopPropagation()}>
                         {product?.name}
                     </Typography.Text>
 
@@ -256,8 +253,7 @@ const ProductItem = ({ product }) => {
                             onClick={addToCart}
                             disabled={isSoldOut || isPOClosed}
                             aria-label="Add to cart"
-                            style={cta}
-                        >
+                            style={cta}>
                             Add
                         </Button>
                     </div>

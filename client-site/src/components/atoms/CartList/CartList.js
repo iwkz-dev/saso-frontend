@@ -100,8 +100,7 @@ const CartList = ({ cart, add, remove }) => {
                                         justifyContent: "center",
                                         fontSize: 28,
                                     }}
-                                    aria-label="No image"
-                                >
+                                    aria-label="No image">
                                     <PictureOutlined />
                                 </div>
                             )}
@@ -111,8 +110,7 @@ const CartList = ({ cart, add, remove }) => {
                         <div style={controls}>
                             <div
                                 style={compactWrap}
-                                aria-label="Quantity controls"
-                            >
+                                aria-label="Quantity controls">
                                 <Button
                                     type="text"
                                     style={iconBtn}
@@ -148,8 +146,7 @@ const CartList = ({ cart, add, remove }) => {
                                     whiteSpace: "nowrap",
                                     overflow: "hidden",
                                     textOverflow: "ellipsis",
-                                }}
-                            >
+                                }}>
                                 {item.menu.name}
                             </Typography.Text>
 

@@ -95,8 +95,7 @@ const MainCarousel = ({ eventName = "Our Event", images = [] }) => {
                     draggable
                     arrows
                     dotPosition="bottom"
-                    style={{ width: "100%" }}
-                >
+                    style={{ width: "100%" }}>
                     <div>
                         <div style={welcomeBgStyle}>
                             <div style={{ maxWidth: 900, margin: "0 auto" }}>
@@ -107,8 +106,7 @@ const MainCarousel = ({ eventName = "Our Event", images = [] }) => {
                                     <a
                                         href="#menus"
                                         style={ctaBtnStyle}
-                                        aria-label="Shop now"
-                                    >
+                                        aria-label="Shop now">
                                         Shop now
                                     </a>
                                 </div>

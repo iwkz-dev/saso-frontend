@@ -25,8 +25,7 @@ const LoginModal = ({ size = "small" }) => {
     return (
         <Space
             align="center"
-            style={{ width: "100%", justifyContent: "center", gap: 8 }}
-        >
+            style={{ width: "100%", justifyContent: "center", gap: 8 }}>
             <Button size={size} onClick={() => openModal(false)}>
                 Sign up
             </Button>
@@ -48,8 +47,7 @@ const LoginModal = ({ size = "small" }) => {
                 destroyOnHidden
                 centered
                 width={420}
-                style={{ padding: 12 }}
-            >
+                style={{ padding: 12 }}>
                 {isSignIn ? (
                     <SignInFormModal setShowModal={setIsModalOpen} />
                 ) : (
@@ -63,8 +61,7 @@ const LoginModal = ({ size = "small" }) => {
                         justifyContent: "center",
                         gap: 4,
                         fontSize: 12,
-                    }}
-                >
+                    }}>
                     <span style={{ color: "rgba(0,0,0,0.45)" }}>
                         {isSignIn
                             ? "Don't have an account?"
@@ -79,8 +76,7 @@ const LoginModal = ({ size = "small" }) => {
                             padding: 0,
                             color: "#1677ff",
                             cursor: "pointer",
-                        }}
-                    >
+                        }}>
                         {isSignIn ? "Sign up" : "Sign in"}
                     </button>
                 </div>

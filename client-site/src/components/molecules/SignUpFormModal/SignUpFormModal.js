@@ -5,7 +5,6 @@ import { submitRegister } from "../../../stores/reducers/register";
 
 const SignUpFormModal = ({ onSuccess }) => {
     const dispatch = useDispatch();
-    const status = useSelector((state) => state.register.status);
     const storeError = useSelector((state) => state.register.error);
     const [form] = Form.useForm();
     const [localError, setLocalError] = useState(null);
@@ -28,8 +27,7 @@ const SignUpFormModal = ({ onSuccess }) => {
             form={form}
             layout="vertical"
             onFinish={onFinish}
-            style={{ width: "100%" }}
-        >
+            style={{ width: "100%" }}>
             <Space direction="vertical" size={12} style={{ width: "100%" }}>
                 {(localError || storeError) && (
                     <Alert
@@ -47,8 +45,7 @@ const SignUpFormModal = ({ onSuccess }) => {
                             required: true,
                             message: "Please input your full name!",
                         },
-                    ]}
-                >
+                    ]}>
                     <Input
                         size="large"
                         placeholder="Your name"
@@ -68,8 +65,7 @@ const SignUpFormModal = ({ onSuccess }) => {
                             pattern: /^[+\d][\d\s()-]{6,}$/,
                             message: "Please enter a valid phone number",
                         },
-                    ]}
-                >
+                    ]}>
                     <Input
                         size="large"
                         placeholder="+49 170 1234567"
@@ -86,8 +82,7 @@ const SignUpFormModal = ({ onSuccess }) => {
                             type: "email",
                             message: "Please enter a valid email address!",
                         },
-                    ]}
-                >
+                    ]}>
                     <Input
                         size="large"
                         placeholder="you@example.com"
@@ -107,8 +102,7 @@ const SignUpFormModal = ({ onSuccess }) => {
                             min: 6,
                             message: "Password should be at least 6 characters",
                         },
-                    ]}
-                >
+                    ]}>
                     <Input.Password
                         size="large"
                         placeholder="Create a password"
