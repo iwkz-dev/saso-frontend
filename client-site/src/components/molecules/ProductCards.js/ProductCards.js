@@ -8,8 +8,7 @@ const ProductCards = ({ productList }) => {
                 { xs: 10, sm: 14, md: 18, lg: 20, xl: 24 },
                 { xs: 12, sm: 16, md: 20, lg: 24, xl: 28 },
             ]}
-            wrap
-        >
+            wrap>
             {productList.map((product) => (
                 <Col
                     key={product._id || product.name}
@@ -17,8 +16,7 @@ const ProductCards = ({ productList }) => {
                     sm={12}
                     md={8}
                     lg={6}
-                    xl={6}
-                >
+                    xl={6}>
                     <div style={{ height: "100%" }}>
                         <ProductItem product={product} />
                     </div>

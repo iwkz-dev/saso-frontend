@@ -4,7 +4,7 @@ import { getContentType, getToken } from "../helpers/authHelper";
 
 class SasoApi {
     constructor() {
-        if (SasoApi.instance != null) {
+        if (SasoApi.instance) {
             return SasoApi.instance;
         }
 
@@ -13,70 +13,70 @@ class SasoApi {
             "application/json;charset=utf-8";
         Axios.defaults.headers.post["Access-Control-Allow-Methods"] =
             "GET,POST,DELETE,PUT";
+
+        SasoApi.instance = this;
     }
-    getData = async (url, withAuth = false) => {
+
+    async getData(url, withAuth = false) {
         try {
+            const headers = {
+                "Content-Type": "application/json",
+            };
             if (withAuth) {
-                const res = await Axios.get(url, {
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: "Bearer " + getToken(),
-                    },
-                });
-                return res;
-            } else {
-                const res = await Axios.get(url, {
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                });
-                return res;
+                headers.Authorization = `Bearer ${getToken()}`;
             }
+            const res = await Axios.get(url, { headers });
+            return res;
         } catch (err) {
-            console.log(err);
-            // throw err;
+            console.error("GET request error:", err);
+            throw (err && err.response && err.response.data) || err;
         }
-    };
-    postData = async (
-        url,
-        data = null,
-        contentType = "",
-        responseType = "",
-    ) => {
+    }
+
+    async postData(url, data = null, contentType = "", responseType = "") {
         try {
             const res = await Axios.post(url, data, {
                 headers: {
-                    "content-type": getContentType(contentType),
-                    Authorization: "Bearer " + getToken(),
+                    "Content-Type": getContentType(contentType),
+                    Authorization: `Bearer ${getToken()}`,
                 },
                 responseType,
             });
             return res.data;
         } catch (err) {
-            return err;
+            console.error("POST request error:", err);
+            throw (err && err.response && err.response.data) || err;
         }
-    };
-    putData = async (url, data = null) => {
+    }
+
+    async putData(url, data = null) {
         try {
-            const res = await Axios.put(url, data);
-            return res.data;
-        } catch (err) {
-            throw err.response.data;
-        }
-    };
-    deleteData = async (url, contentType = "") => {
-        try {
-            const res = await Axios.delete(url, {
+            const res = await Axios.put(url, data, {
                 headers: {
-                    "content-type": getContentType(contentType),
-                    Authorization: "Bearer " + getToken(),
+                    Authorization: `Bearer ${getToken()}`,
                 },
             });
             return res.data;
         } catch (err) {
-            throw err.response.data;
+            console.error("PUT request error:", err);
+            throw (err && err.response && err.response.data) || err;
         }
-    };
+    }
+
+    async deleteData(url, contentType = "") {
+        try {
+            const res = await Axios.delete(url, {
+                headers: {
+                    "Content-Type": getContentType(contentType),
+                    Authorization: `Bearer ${getToken()}`,
+                },
+            });
+            return res.data;
+        } catch (err) {
+            console.error("DELETE request error:", err);
+            throw (err && err.response && err.response.data) || err;
+        }
+    }
 }
 
 export default new SasoApi();

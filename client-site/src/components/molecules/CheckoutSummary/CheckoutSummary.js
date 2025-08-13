@@ -34,14 +34,12 @@ const CheckoutSummary = () => {
                     </Typography.Text>
                     <Typography.Text
                         className={style.muted}
-                        style={{ textAlign: "right" }}
-                    >
+                        style={{ textAlign: "right" }}>
                         Qty
                     </Typography.Text>
                     <Typography.Text
                         className={style.muted}
-                        style={{ textAlign: "right" }}
-                    >
+                        style={{ textAlign: "right" }}>
                         Subtotal
                     </Typography.Text>
                 </div>
@@ -50,8 +48,7 @@ const CheckoutSummary = () => {
                     {cart.items.map((cartItem, i) => (
                         <div
                             key={i}
-                            className={`${style.gridRow} ${style.gridItem}`}
-                        >
+                            className={`${style.gridRow} ${style.gridItem}`}>
                             {/* Left: image + name + unit price */}
                             <div className={style.itemInfo}>
                                 <div className={style.image}>
@@ -64,13 +61,11 @@ const CheckoutSummary = () => {
                                     <Typography.Text
                                         strong
                                         className={style.title}
-                                        ellipsis
-                                    >
+                                        ellipsis>
                                         {cartItem.menu.name}
                                     </Typography.Text>
                                     <Typography.Text
-                                        className={style.unitPrice}
-                                    >
+                                        className={style.unitPrice}>
                                         {currency(cartItem.menu.price)}
                                     </Typography.Text>
                                 </div>

@@ -23,7 +23,7 @@ import MyOrderDetailContent from "../MyOrderDetailContent/MyOrderDetailContent";
 import { fetchEvents } from "../../../stores/reducers/event";
 
 const { Content } = Layout;
-const { Title, Text, Paragraph } = Typography;
+const { Title, Text } = Typography;
 const { useBreakpoint } = Grid;
 
 const SearchOrderContent = () => {
@@ -82,14 +82,12 @@ const SearchOrderContent = () => {
                     maxWidth: 960,
                     padding: isMobile ? 12 : 16,
                     margin: "0 auto",
-                }}
-            >
+                }}>
                 <Space
                     className={style.searchOrderContent}
                     direction="vertical"
                     size={isMobile ? "middle" : "large"}
-                    style={{ width: "100%" }}
-                >
+                    style={{ width: "100%" }}>
                     <Title level={isMobile ? 4 : 3} style={{ marginBottom: 0 }}>
                         Search Order
                     </Title>
@@ -101,14 +99,12 @@ const SearchOrderContent = () => {
                     <Card
                         size="small"
                         bodyStyle={{ padding: isMobile ? 12 : 16 }}
-                        style={{ borderRadius: 12 }}
-                    >
+                        style={{ borderRadius: 12 }}>
                         <Form
                             layout="vertical"
                             onFinish={onFinish}
                             autoComplete="off"
-                            style={{ width: "100%" }}
-                        >
+                            style={{ width: "100%" }}>
                             <Form.Item
                                 label="Invoice Nr."
                                 name="invoiceNumber"
@@ -118,8 +114,7 @@ const SearchOrderContent = () => {
                                         message:
                                             "Please input your Invoice Number!",
                                     },
-                                ]}
-                            >
+                                ]}>
                                 <Input
                                     placeholder="e.g., SS123"
                                     allowClear
@@ -135,8 +130,7 @@ const SearchOrderContent = () => {
                                         required: true,
                                         message: "Please input your Full Name!",
                                     },
-                                ]}
-                            >
+                                ]}>
                                 <Input
                                     placeholder="e.g., Max Mustermann"
                                     allowClear
@@ -151,8 +145,7 @@ const SearchOrderContent = () => {
                                     icon={<SearchOutlined />}
                                     loading={submitting}
                                     size="large"
-                                    block
-                                >
+                                    block>
                                     Search Order
                                 </Button>
                             </Form.Item>
@@ -165,8 +158,7 @@ const SearchOrderContent = () => {
                                 display: "flex",
                                 justifyContent: "center",
                                 padding: 24,
-                            }}
-                        >
+                            }}>
                             <Spin />
                         </div>
                     )}

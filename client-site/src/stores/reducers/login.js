@@ -46,7 +46,9 @@ export const logout = createAsyncThunk("login/logout", async () => {
     try {
         if (typeof removeToken === "function") removeToken();
         else setToken(null);
-    } catch (_) {}
+    } catch (_) {
+        console.log("Logout failed");
+    }
     return true;
 });
 

@@ -33,8 +33,7 @@ const CartSummary = ({ cart, title = "Order Summary" }) => {
                                 justifyContent: "space-between",
                                 alignItems: "baseline",
                                 gap: 8,
-                            }}
-                        >
+                            }}>
                             <Typography.Text
                                 strong
                                 ellipsis={{ tooltip: item.menu.name }}
@@ -44,8 +43,7 @@ const CartSummary = ({ cart, title = "Order Summary" }) => {
                                     whiteSpace: "nowrap",
                                     overflow: "hidden",
                                     textOverflow: "ellipsis",
-                                }}
-                            >
+                                }}>
                                 {item.menu.name}
                             </Typography.Text>
 
@@ -60,8 +58,7 @@ const CartSummary = ({ cart, title = "Order Summary" }) => {
                                 justifyContent: "space-between",
                                 alignItems: "baseline",
                                 gap: 8,
-                            }}
-                        >
+                            }}>
                             <Typography.Text type="secondary">
                                 {item.amount} × {currency(item.menu.price)}
                             </Typography.Text>
@@ -91,8 +88,7 @@ const CartSummary = ({ cart, title = "Order Summary" }) => {
                     borderRadius: 999,
                     fontWeight: 700,
                 }}
-                onClick={() => Router.push("/checkout")}
-            >
+                onClick={() => Router.push("/checkout")}>
                 Checkout
             </Button>
         </div>

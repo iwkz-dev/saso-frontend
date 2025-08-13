@@ -7,7 +7,6 @@ import Router from "next/router";
 
 const SignInFormModal = ({ setShowModal }) => {
     const dispatch = useDispatch();
-    const status = useSelector((state) => state.login.status);
     const storeError = useSelector((state) => state.login.error);
     const [form] = Form.useForm();
     const [localError, setLocalError] = useState(null);
@@ -36,8 +35,7 @@ const SignInFormModal = ({ setShowModal }) => {
             form={form}
             layout="vertical"
             onFinish={onFinish}
-            style={{ width: "100%" }}
-        >
+            style={{ width: "100%" }}>
             <Space direction="vertical" size={12} style={{ width: "100%" }}>
                 {(localError || storeError) && (
                     <Alert
@@ -56,8 +54,7 @@ const SignInFormModal = ({ setShowModal }) => {
                             type: "email",
                             message: "Please enter a valid email address!",
                         },
-                    ]}
-                >
+                    ]}>
                     <Input
                         size="large"
                         id="email"
@@ -75,8 +72,7 @@ const SignInFormModal = ({ setShowModal }) => {
                             required: true,
                             message: "Please input your password!",
                         },
-                    ]}
-                >
+                    ]}>
                     <Input.Password
                         size="large"
                         id="password"
@@ -87,13 +83,14 @@ const SignInFormModal = ({ setShowModal }) => {
                 </Form.Item>
 
                 <div
-                    style={{ display: "flex", justifyContent: "space-between" }}
-                >
+                    style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                    }}>
                     <Button
                         type="link"
                         style={{ padding: 0 }}
-                        onClick={forgotPasswordOnClick}
-                    >
+                        onClick={forgotPasswordOnClick}>
                         Forgot password?
                     </Button>
                 </div>

@@ -82,8 +82,7 @@ const Navbar = () => {
                 boxShadow: scrolled ? "0 6px 12px rgba(0,0,0,0.05)" : "none",
                 padding: "8px 16px",
                 transition: "all 0.2s ease-in-out",
-            }}
-        >
+            }}>
             <div
                 style={{
                     maxWidth: 1024,
@@ -91,8 +90,7 @@ const Navbar = () => {
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "space-between",
-                }}
-            >
+                }}>
                 <Link href="/" aria-label="Go to homepage">
                     <div
                         style={{
@@ -100,8 +98,7 @@ const Navbar = () => {
                             alignItems: "center",
                             height: 40,
                             cursor: "pointer",
-                        }}
-                    >
+                        }}>
                         <img
                             src="/images/iwkz_logo.png"
                             alt="IWKZ logo"
@@ -135,8 +132,7 @@ const Navbar = () => {
                     destroyOnHidden
                     centered
                     width={420}
-                    style={{ padding: 12 }}
-                >
+                    style={{ padding: 12 }}>
                     {isSignIn ? (
                         <SignInFormModal setShowModal={setIsModalOpen} />
                     ) : (
@@ -152,8 +148,7 @@ const Navbar = () => {
                             justifyContent: "center",
                             gap: 4,
                             fontSize: 12,
-                        }}
-                    >
+                        }}>
                         <span style={{ color: "rgba(0,0,0,0.45)" }}>
                             {isSignIn
                                 ? "Don't have an account?"
@@ -170,8 +165,7 @@ const Navbar = () => {
                                 color: "#1677ff",
                                 fontWeight: 500,
                                 cursor: "pointer",
-                            }}
-                        >
+                            }}>
                             {isSignIn ? "Sign up" : "Sign in"}
                         </button>
                     </div>

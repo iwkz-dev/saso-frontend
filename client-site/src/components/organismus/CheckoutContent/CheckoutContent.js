@@ -22,13 +22,11 @@ const CheckoutContent = () => {
                             ? "16px 16px 32px"
                             : "12px 12px 24px",
                         margin: "0 auto",
-                    }}
-                >
+                    }}>
                     <Space
                         size={screens.md ? "large" : "middle"}
                         direction="vertical"
-                        style={{ width: "100%" }}
-                    >
+                        style={{ width: "100%" }}>
                         <div
                             style={{
                                 display: "flex",
@@ -36,16 +34,14 @@ const CheckoutContent = () => {
                                 gap: 8,
                                 alignItems: "center",
                                 justifyContent: "space-between",
-                            }}
-                        >
+                            }}>
                             <BackToButton
                                 targetURL="/cart"
                                 buttonText="Back to cart"
                             />
                             <Typography.Title
                                 level={screens.md ? 3 : 4}
-                                style={{ margin: 0 }}
-                            >
+                                style={{ margin: 0 }}>
                                 Checkout
                             </Typography.Title>
                         </div>
@@ -54,8 +50,7 @@ const CheckoutContent = () => {
                             style={{
                                 borderRadius: 12,
                                 padding: screens.md ? 16 : 12,
-                            }}
-                        >
+                            }}>
                             <CheckoutSummary />
                         </Card>
                     </Space>

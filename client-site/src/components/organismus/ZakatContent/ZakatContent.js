@@ -10,8 +10,7 @@ const ZakatContent = ({ event }) => {
             style={{
                 minHeight: "500px",
                 backgroundColor: "#ffffff",
-            }}
-        >
+            }}>
             <Typography>
                 <Typography.Title level={2} style={{ textAlign: "center" }}>
                     Products

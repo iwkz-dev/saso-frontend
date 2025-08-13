@@ -86,13 +86,11 @@ const MyOrderDetailContent = ({
                     maxWidth: 960,
                     padding: isMobile ? "12px" : "16px",
                     margin: "0 auto",
-                }}
-            >
+                }}>
                 <Space
                     direction="vertical"
                     size={isMobile ? 12 : 16}
-                    style={{ width: "100%" }}
-                >
+                    style={{ width: "100%" }}>
                     {!withoutBackButton && (
                         <BackToButton
                             targetURL="/my-order"
@@ -103,8 +101,7 @@ const MyOrderDetailContent = ({
                     {/* Header */}
                     <Title
                         level={isMobile ? 4 : 3}
-                        style={{ textAlign: "center", margin: "8px 0 0" }}
-                    >
+                        style={{ textAlign: "center", margin: "8px 0 0" }}>
                         {detailOrder.invoiceNumber}
                     </Title>
 
@@ -112,8 +109,7 @@ const MyOrderDetailContent = ({
                     <Card
                         size="small"
                         bodyStyle={{ padding: isMobile ? 12 : 16 }}
-                        style={{ borderRadius: 12 }}
-                    >
+                        style={{ borderRadius: 12 }}>
                         <Space
                             direction={isMobile ? "vertical" : "horizontal"}
                             style={{
@@ -121,8 +117,7 @@ const MyOrderDetailContent = ({
                                 justifyContent: "space-between",
                                 alignItems: isMobile ? "flex-start" : "center",
                             }}
-                            size={isMobile ? 10 : 16}
-                        >
+                            size={isMobile ? 10 : 16}>
                             {/* Left: customer + meta */}
                             <Space direction="vertical" size={6}>
                                 <Space size={8} wrap align="center">
@@ -153,13 +148,11 @@ const MyOrderDetailContent = ({
                             <Space
                                 direction="vertical"
                                 align={isMobile ? "flex-start" : "flex-end"}
-                                size={8}
-                            >
+                                size={8}>
                                 <Text type="secondary">Total</Text>
                                 <Title
                                     level={isMobile ? 4 : 3}
-                                    style={{ margin: 0 }}
-                                >
+                                    style={{ margin: 0 }}>
                                     {currency(computedTotal)}
                                 </Title>
 
@@ -173,8 +166,7 @@ const MyOrderDetailContent = ({
                                                     "Invoice copied",
                                                 )
                                             }
-                                            icon={<CopyOutlined />}
-                                        >
+                                            icon={<CopyOutlined />}>
                                             Invoice
                                         </Button>
                                     </Tooltip>
@@ -186,8 +178,7 @@ const MyOrderDetailContent = ({
                                                 icon={<WhatsAppOutlined />}
                                                 href={whatsappHref}
                                                 target="_blank"
-                                                rel="noopener noreferrer"
-                                            >
+                                                rel="noopener noreferrer">
                                                 Contact
                                             </Button>
                                         </Tooltip>
@@ -205,8 +196,7 @@ const MyOrderDetailContent = ({
                                                 }
                                                 target="_blank"
                                                 rel="noopener noreferrer"
-                                                type="primary"
-                                            >
+                                                type="primary">
                                                 Pay
                                             </Button>
                                         </Tooltip>
@@ -222,8 +212,7 @@ const MyOrderDetailContent = ({
                                                     onDownloadPdf(
                                                         detailOrder._id,
                                                     )
-                                                }
-                                            >
+                                                }>
                                                 PDF
                                             </Button>
                                         </Tooltip>
@@ -240,8 +229,7 @@ const MyOrderDetailContent = ({
                         <Space
                             direction={isMobile ? "vertical" : "horizontal"}
                             size={isMobile ? 8 : 24}
-                            style={{ width: "100%", flexWrap: "wrap" }}
-                        >
+                            style={{ width: "100%", flexWrap: "wrap" }}>
                             <Space size={6}>
                                 <Text type="secondary">Payment:</Text>
                                 <Text strong>
@@ -279,8 +267,7 @@ const MyOrderDetailContent = ({
                         headStyle={{
                             padding: isMobile ? "8px 12px" : "12px 16px",
                         }}
-                        style={{ borderRadius: 12 }}
-                    >
+                        style={{ borderRadius: 12 }}>
                         <List
                             itemLayout="horizontal"
                             dataSource={itemsWithSubtotal}
@@ -290,19 +277,16 @@ const MyOrderDetailContent = ({
                                         padding: isMobile
                                             ? "8px 4px"
                                             : "10px 6px",
-                                    }}
-                                >
+                                    }}>
                                     <Space
                                         direction="vertical"
                                         size={2}
-                                        style={{ width: "100%" }}
-                                    >
+                                        style={{ width: "100%" }}>
                                         <Space
                                             style={{
                                                 justifyContent: "space-between",
                                                 width: "100%",
-                                            }}
-                                        >
+                                            }}>
                                             <Text
                                                 strong
                                                 style={{
@@ -310,8 +294,7 @@ const MyOrderDetailContent = ({
                                                     whiteSpace: "nowrap",
                                                     overflow: "hidden",
                                                     textOverflow: "ellipsis",
-                                                }}
-                                            >
+                                                }}>
                                                 {item.name}
                                             </Text>
                                             <Text>
@@ -333,8 +316,7 @@ const MyOrderDetailContent = ({
                             style={{
                                 width: "100%",
                                 justifyContent: "space-between",
-                            }}
-                        >
+                            }}>
                             <Text type="secondary">Total</Text>
                             <Text strong>{currency(computedTotal)}</Text>
                         </Space>
@@ -344,18 +326,15 @@ const MyOrderDetailContent = ({
                     <Collapse
                         bordered
                         style={{ borderRadius: 12, overflow: "hidden" }}
-                        defaultActiveKey={isMobile ? [] : ["payment"]}
-                    >
+                        defaultActiveKey={isMobile ? [] : ["payment"]}>
                         <Panel header="Payment Instructions" key="payment">
                             <Space
                                 direction="vertical"
                                 size={10}
-                                style={{ width: "100%" }}
-                            >
+                                style={{ width: "100%" }}>
                                 <Paragraph
                                     type="secondary"
-                                    style={{ marginBottom: 0 }}
-                                >
+                                    style={{ marginBottom: 0 }}>
                                     Please transfer your payment if you haven’t
                                     already, then send the proof to the contact
                                     below.
@@ -364,24 +343,21 @@ const MyOrderDetailContent = ({
                                     <Descriptions.Item label="Contact Person">
                                         <Paragraph
                                             copyable
-                                            style={{ margin: 0 }}
-                                        >
+                                            style={{ margin: 0 }}>
                                             {cp?.name || "-"}
                                         </Paragraph>
                                     </Descriptions.Item>
                                     <Descriptions.Item label="WhatsApp">
                                         <Paragraph
                                             copyable
-                                            style={{ margin: 0 }}
-                                        >
+                                            style={{ margin: 0 }}>
                                             {cp?.phoneNumber || "-"}
                                         </Paragraph>
                                     </Descriptions.Item>
                                     <Descriptions.Item label="PayPal">
                                         <Paragraph
                                             copyable
-                                            style={{ margin: 0 }}
-                                        >
+                                            style={{ margin: 0 }}>
                                             {paypal || "-"}
                                         </Paragraph>
                                     </Descriptions.Item>
@@ -391,8 +367,7 @@ const MyOrderDetailContent = ({
                                     <Descriptions.Item label="IBAN">
                                         <Paragraph
                                             copyable
-                                            style={{ margin: 0 }}
-                                        >
+                                            style={{ margin: 0 }}>
                                             {iban}
                                         </Paragraph>
                                     </Descriptions.Item>
@@ -402,8 +377,7 @@ const MyOrderDetailContent = ({
                                     <Descriptions.Item label="Invoice Number">
                                         <Paragraph
                                             copyable
-                                            style={{ margin: 0 }}
-                                        >
+                                            style={{ margin: 0 }}>
                                             {detailOrder?.invoiceNumber}
                                         </Paragraph>
                                     </Descriptions.Item>

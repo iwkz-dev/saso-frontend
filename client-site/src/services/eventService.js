@@ -1,6 +1,8 @@
 import sasoApi from "../api/SasoApi";
 
-const getEvent = (status) =>
-    sasoApi.getData(`/customer/event${status ? `?status=${status}` : ""}`);
+function getEvent(status) {
+    const query = status ? `?status=${encodeURIComponent(status)}` : "";
+    return sasoApi.getData(`/customer/event${query}`);
+}
 
 export default { getEvent };

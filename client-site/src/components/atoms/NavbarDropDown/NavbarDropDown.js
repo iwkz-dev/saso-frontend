@@ -69,8 +69,7 @@ const NavbarDropDown = ({ onClick, cart }) => {
                     <Button
                         size="small"
                         type="link"
-                        onClick={() => onClick(true)}
-                    >
+                        onClick={() => onClick(true)}>
                         Sign in
                     </Button>
                 ),
@@ -82,8 +81,7 @@ const NavbarDropDown = ({ onClick, cart }) => {
                     <Button
                         size="small"
                         onClick={() => onClick(false)}
-                        type="link"
-                    >
+                        type="link">
                         Sign up
                     </Button>
                 ),
@@ -100,8 +98,7 @@ const NavbarDropDown = ({ onClick, cart }) => {
                 items: getItems(),
                 onClick,
             }}
-            trigger={["click"]}
-        >
+            trigger={["click"]}>
             <Badge count={cart.items.length}>
                 <Button
                     shape="circle"

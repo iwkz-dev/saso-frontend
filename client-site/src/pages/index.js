@@ -46,8 +46,7 @@ export default function Home() {
                         display: "flex",
                         justifyContent: "center",
                         padding: 24,
-                    }}
-                >
+                    }}>
                     <Spin />
                 </div>
             )}
@@ -69,8 +68,7 @@ export default function Home() {
                         display: "flex",
                         justifyContent: "center",
                         marginBottom: "1rem",
-                    }}
-                >
+                    }}>
                     <Button
                         type="link"
                         href={waHref}
@@ -84,8 +82,7 @@ export default function Home() {
                             padding: "0.5rem 0.5rem",
                             boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
                         }}
-                        icon={<WhatsAppOutlined />}
-                    >
+                        icon={<WhatsAppOutlined />}>
                         Ask {contact?.name ?? "us"}
                     </Button>
                 </div>

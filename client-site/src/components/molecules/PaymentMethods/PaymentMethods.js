@@ -46,8 +46,7 @@ const PaymentMethods = ({ userData }) => {
                     onClick={() => {
                         notification.destroy(key);
                         Router.push(`/my-order/detail/${currOrder._id}`);
-                    }}
-                >
+                    }}>
                     See order
                 </Button>
             ) : null;
@@ -119,8 +118,7 @@ const PaymentMethods = ({ userData }) => {
                 direction="vertical"
                 align="center"
                 className={style.bookOrPayButton}
-                style={{ width: "100%" }}
-            >
+                style={{ width: "100%" }}>
                 <Button
                     onClick={submitTransferForm}
                     style={{
@@ -129,15 +127,13 @@ const PaymentMethods = ({ userData }) => {
                         fontWeight: 700,
                     }}
                     type="primary"
-                    size="large"
-                >
+                    size="large">
                     Pay Later
                 </Button>
                 <Typography.Text
                     type="secondary"
                     italic
-                    style={{ textAlign: "center" }}
-                >
+                    style={{ textAlign: "center" }}>
                     Choose “Pay Later” to complete payment within 2×24 hours and
                     send proof to the contact person.
                 </Typography.Text>
