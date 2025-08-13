@@ -57,8 +57,13 @@ const SearchOrderContent = () => {
         setSubmitting(true);
         try {
             const requestData = { ...values, eventId: currentEventId };
-            const resultAction = await dispatch(getOrderDetailByInvoiceNumber(requestData));
-            if (resultAction.meta.requestStatus !== "fulfilled" || !resultAction.payload?.detail) {
+            const resultAction = await dispatch(
+                getOrderDetailByInvoiceNumber(requestData),
+            );
+            if (
+                resultAction.meta.requestStatus !== "fulfilled" ||
+                !resultAction.payload?.detail
+            ) {
                 message.error("Order not found. Please check your details.");
             } else {
                 message.success("Order found.");
@@ -89,7 +94,8 @@ const SearchOrderContent = () => {
                         Search Order
                     </Title>
                     <Text type="secondary">
-                        Enter your invoice number and full name to look up your order.
+                        Enter your invoice number and full name to look up your
+                        order.
                     </Text>
 
                     <Card
@@ -107,7 +113,11 @@ const SearchOrderContent = () => {
                                 label="Invoice Nr."
                                 name="invoiceNumber"
                                 rules={[
-                                    { required: true, message: "Please input your Invoice Number!" },
+                                    {
+                                        required: true,
+                                        message:
+                                            "Please input your Invoice Number!",
+                                    },
                                 ]}
                             >
                                 <Input
@@ -120,7 +130,12 @@ const SearchOrderContent = () => {
                             <Form.Item
                                 label="Full Name"
                                 name="customerFullname"
-                                rules={[{ required: true, message: "Please input your Full Name!" }]}
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: "Please input your Full Name!",
+                                    },
+                                ]}
                             >
                                 <Input
                                     placeholder="e.g., Max Mustermann"
@@ -145,7 +160,13 @@ const SearchOrderContent = () => {
                     </Card>
 
                     {detailStatus === "loading" && (
-                        <div style={{ display: "flex", justifyContent: "center", padding: 24 }}>
+                        <div
+                            style={{
+                                display: "flex",
+                                justifyContent: "center",
+                                padding: 24,
+                            }}
+                        >
                             <Spin />
                         </div>
                     )}

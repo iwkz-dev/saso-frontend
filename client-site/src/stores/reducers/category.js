@@ -16,7 +16,9 @@ export const fetchCategories = createAsyncThunk(
         try {
             const res = await categoryService.getCategory(filter);
             if (res.data?.status !== "success") {
-                return rejectWithValue(res.data?.message || "Failed to fetch categories");
+                return rejectWithValue(
+                    res.data?.message || "Failed to fetch categories",
+                );
             }
             return {
                 items: res.data?.data ?? [],
@@ -24,10 +26,10 @@ export const fetchCategories = createAsyncThunk(
             };
         } catch (err) {
             return rejectWithValue(
-                err?.response?.data?.message || err?.message || "Network error"
+                err?.response?.data?.message || err?.message || "Network error",
             );
         }
-    }
+    },
 );
 
 // ============== Slice ==============

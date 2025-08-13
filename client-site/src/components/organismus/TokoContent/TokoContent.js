@@ -40,7 +40,8 @@ const TokoContent = ({ event }) => {
             <Space
                 className={style.productsContainer}
                 direction="vertical"
-                size="middle">
+                size="middle"
+            >
                 <Space.Compact direction="horizontal">
                     <Search
                         placeholder="input search text"
@@ -58,7 +59,8 @@ const TokoContent = ({ event }) => {
                     title="Scan barcode"
                     open={isModalOpen}
                     onOk={handleOk}
-                    onCancel={handleCancelModal}>
+                    onCancel={handleCancelModal}
+                >
                     <BarcodeScanner getBarcode={getBarcode} />
                 </Modal>
 

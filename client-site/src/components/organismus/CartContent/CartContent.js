@@ -37,13 +37,21 @@ const CartContent = () => {
     return (
         <ContentLayout hasCarousel={false}>
             <div style={{ maxWidth: 1200, margin: "0 auto", padding: 12 }}>
-                <Space direction="vertical" size="middle" style={{ width: "100%" }}>
+                <Space
+                    direction="vertical"
+                    size="middle"
+                    style={{ width: "100%" }}
+                >
                     <BackToButton targetURL="/" buttonText="Back to home" />
 
                     <Row gutter={[16, 16]}>
                         <Col xs={24} md={16} lg={16}>
                             <Card style={cardStyle}>
-                                <CartList cart={cart} add={add} remove={remove} />
+                                <CartList
+                                    cart={cart}
+                                    add={add}
+                                    remove={remove}
+                                />
                             </Card>
                         </Col>
 
@@ -55,7 +63,10 @@ const CartContent = () => {
                                 }}
                             >
                                 <Card style={cardStyle}>
-                                    <CartSummary cart={cart} title="Order Summary" />
+                                    <CartSummary
+                                        cart={cart}
+                                        title="Order Summary"
+                                    />
                                 </Card>
                             </div>
                         </Col>

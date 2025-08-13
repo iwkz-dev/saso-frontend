@@ -18,7 +18,8 @@ function ContentByType({ event }) {
     if (!event) return null;
     if (process.env.EVENT_TYPE === "toko") return <TokoContent event={event} />;
     if (process.env.EVENT_TYPE === "saso") return <SasoContent event={event} />;
-    if (process.env.EVENT_TYPE === "zakat") return <ZakatContent event={event} />;
+    if (process.env.EVENT_TYPE === "zakat")
+        return <ZakatContent event={event} />;
     return null;
 }
 
@@ -40,13 +41,23 @@ export default function Home() {
     return (
         <MainLayout>
             {status === "loading" && (
-                <div style={{ display: "flex", justifyContent: "center", padding: 24 }}>
+                <div
+                    style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        padding: 24,
+                    }}
+                >
                     <Spin />
                 </div>
             )}
 
             {status === "failed" && (
-                <Alert type="error" message="Failed to load event" description={error} />
+                <Alert
+                    type="error"
+                    message="Failed to load event"
+                    description={error}
+                />
             )}
 
             {status === "succeeded" && <ContentByType event={firstEvent} />}

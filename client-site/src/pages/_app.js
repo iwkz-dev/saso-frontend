@@ -1,5 +1,3 @@
-import "../styles/globals.scss";
-import React from "react";
 import { Provider } from "react-redux";
 import { persistor, store } from "../stores/store";
 
@@ -8,6 +6,7 @@ import Router from "next/router";
 import Head from "next/head";
 import { PersistGate } from "redux-persist/integration/react";
 import { PayPalScriptProvider } from "@paypal/react-paypal-js";
+import "../styles/globals.scss";
 
 function MyApp({ Component, pageProps }) {
     Router.onRouteChangeStart = () => {
@@ -25,7 +24,8 @@ function MyApp({ Component, pageProps }) {
                         clientId: paypalClientId,
                         currency: "EUR",
                         intent: "capture",
-                    }}>
+                    }}
+                >
                     <Head>
                         <title>IWKZ E-Commerce</title>
                         <meta name="description" content="Saso Application" />

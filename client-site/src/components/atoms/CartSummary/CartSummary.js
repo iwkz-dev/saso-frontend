@@ -27,7 +27,14 @@ const CartSummary = ({ cart, title = "Order Summary" }) => {
             <Space direction="vertical" size="small" style={{ width: "100%" }}>
                 {cart.items.map((item) => (
                     <div key={item.menu._id}>
-                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 8 }}>
+                        <div
+                            style={{
+                                display: "flex",
+                                justifyContent: "space-between",
+                                alignItems: "baseline",
+                                gap: 8,
+                            }}
+                        >
                             <Typography.Text
                                 strong
                                 ellipsis={{ tooltip: item.menu.name }}
@@ -47,7 +54,14 @@ const CartSummary = ({ cart, title = "Order Summary" }) => {
                             </Typography.Text>
                         </div>
 
-                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 8 }}>
+                        <div
+                            style={{
+                                display: "flex",
+                                justifyContent: "space-between",
+                                alignItems: "baseline",
+                                gap: 8,
+                            }}
+                        >
                             <Typography.Text type="secondary">
                                 {item.amount} × {currency(item.menu.price)}
                             </Typography.Text>

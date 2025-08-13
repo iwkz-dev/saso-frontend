@@ -24,7 +24,9 @@ export const submitOrder = createAsyncThunk(
 
             const payload = res?.data ?? res;
             if ((payload?.status || res?.status) !== "success") {
-                return rejectWithValue(payload?.message || "Order submission failed");
+                return rejectWithValue(
+                    payload?.message || "Order submission failed",
+                );
             }
 
             return {
@@ -34,10 +36,10 @@ export const submitOrder = createAsyncThunk(
             };
         } catch (err) {
             return rejectWithValue(
-                err?.response?.data?.message || err?.message || "Network error"
+                err?.response?.data?.message || err?.message || "Network error",
             );
         }
-    }
+    },
 );
 
 export const getOrderList = createAsyncThunk(
@@ -53,10 +55,10 @@ export const getOrderList = createAsyncThunk(
             return { items, message: d?.message ?? null };
         } catch (err) {
             return rejectWithValue(
-                err?.response?.data?.message || err?.message || "Network error"
+                err?.response?.data?.message || err?.message || "Network error",
             );
         }
-    }
+    },
 );
 
 export const getOrderDetail = createAsyncThunk(
@@ -66,33 +68,39 @@ export const getOrderDetail = createAsyncThunk(
             const res = await orderService.getOrderDetail(id);
             const d = res?.data;
             if (d?.status !== "success") {
-                return rejectWithValue(d?.message || "Failed to fetch order detail");
+                return rejectWithValue(
+                    d?.message || "Failed to fetch order detail",
+                );
             }
             return { detail: d?.data ?? null, message: d?.message ?? null };
         } catch (err) {
             return rejectWithValue(
-                err?.response?.data?.message || err?.message || "Network error"
+                err?.response?.data?.message || err?.message || "Network error",
             );
         }
-    }
+    },
 );
 
 export const getOrderDetailByInvoiceNumber = createAsyncThunk(
     "order/getOrderDetailByInvoiceNumber",
     async (payload, { rejectWithValue }) => {
         try {
-            const res = await orderService.getOrderDetailByInvoiceNumber(payload);
+            const res = await orderService.getOrderDetailByInvoiceNumber(
+                payload,
+            );
             const d = res?.data;
             if (d?.status !== "success") {
-                return rejectWithValue(d?.message || "Failed to fetch order detail");
+                return rejectWithValue(
+                    d?.message || "Failed to fetch order detail",
+                );
             }
             return { detail: d?.data ?? null, message: d?.message ?? null };
         } catch (err) {
             return rejectWithValue(
-                err?.response?.data?.message || err?.message || "Network error"
+                err?.response?.data?.message || err?.message || "Network error",
             );
         }
-    }
+    },
 );
 
 export const approveOrder = createAsyncThunk(
@@ -110,10 +118,10 @@ export const approveOrder = createAsyncThunk(
             return { message: d?.message ?? "Order approved" };
         } catch (err) {
             return rejectWithValue(
-                err?.response?.data?.message || err?.message || "Network error"
+                err?.response?.data?.message || err?.message || "Network error",
             );
         }
-    }
+    },
 );
 
 export const fetchOrderPdf = createAsyncThunk(
@@ -124,10 +132,12 @@ export const fetchOrderPdf = createAsyncThunk(
             return res;
         } catch (err) {
             return rejectWithValue(
-                err?.response?.data?.message || err?.message || "Failed to fetch PDF"
+                err?.response?.data?.message ||
+                    err?.message ||
+                    "Failed to fetch PDF",
             );
         }
-    }
+    },
 );
 
 // ---------- Slice ----------
@@ -194,16 +204,22 @@ const orderSlice = createSlice({
                 state.detailStatus = "loading";
                 state.error = null;
             })
-            .addCase(getOrderDetailByInvoiceNumber.fulfilled, (state, action) => {
-                state.detailStatus = "succeeded";
-                state.detail = action.payload.detail;
-                state.message = action.payload.message ?? null;
-            })
-            .addCase(getOrderDetailByInvoiceNumber.rejected, (state, action) => {
-                state.detailStatus = "failed";
-                state.detail = null;
-                state.error = action.payload || "Fetch detail failed";
-            });
+            .addCase(
+                getOrderDetailByInvoiceNumber.fulfilled,
+                (state, action) => {
+                    state.detailStatus = "succeeded";
+                    state.detail = action.payload.detail;
+                    state.message = action.payload.message ?? null;
+                },
+            )
+            .addCase(
+                getOrderDetailByInvoiceNumber.rejected,
+                (state, action) => {
+                    state.detailStatus = "failed";
+                    state.detail = null;
+                    state.error = action.payload || "Fetch detail failed";
+                },
+            );
 
         // Approve
         builder

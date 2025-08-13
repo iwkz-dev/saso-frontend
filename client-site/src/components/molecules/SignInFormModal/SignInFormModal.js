@@ -40,7 +40,11 @@ const SignInFormModal = ({ setShowModal }) => {
         >
             <Space direction="vertical" size={12} style={{ width: "100%" }}>
                 {(localError || storeError) && (
-                    <Alert type="error" showIcon message={localError || storeError} />
+                    <Alert
+                        type="error"
+                        showIcon
+                        message={localError || storeError}
+                    />
                 )}
 
                 <Form.Item
@@ -48,7 +52,10 @@ const SignInFormModal = ({ setShowModal }) => {
                     name="email"
                     rules={[
                         { required: true, message: "Please input your email!" },
-                        { type: "email", message: "Please enter a valid email address!" },
+                        {
+                            type: "email",
+                            message: "Please enter a valid email address!",
+                        },
                     ]}
                 >
                     <Input
@@ -63,7 +70,12 @@ const SignInFormModal = ({ setShowModal }) => {
                 <Form.Item
                     label="Password"
                     name="password"
-                    rules={[{ required: true, message: "Please input your password!" }]}
+                    rules={[
+                        {
+                            required: true,
+                            message: "Please input your password!",
+                        },
+                    ]}
                 >
                     <Input.Password
                         size="large"
@@ -74,8 +86,14 @@ const SignInFormModal = ({ setShowModal }) => {
                     />
                 </Form.Item>
 
-                <div style={{ display: "flex", justifyContent: "space-between" }}>
-                    <Button type="link" style={{ padding: 0 }} onClick={forgotPasswordOnClick}>
+                <div
+                    style={{ display: "flex", justifyContent: "space-between" }}
+                >
+                    <Button
+                        type="link"
+                        style={{ padding: 0 }}
+                        onClick={forgotPasswordOnClick}
+                    >
                         Forgot password?
                     </Button>
                 </div>

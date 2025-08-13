@@ -1,6 +1,10 @@
 import { useMemo, useState } from "react";
 import { Button, Card, Space, Typography, Tag, Tooltip, message } from "antd";
-import { ShoppingCartOutlined, PictureOutlined, InfoCircleOutlined } from "@ant-design/icons";
+import {
+    ShoppingCartOutlined,
+    PictureOutlined,
+    InfoCircleOutlined,
+} from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
 import { addOrder } from "../../../../stores/reducers/cart";
 import Router from "next/router";
@@ -19,7 +23,10 @@ const TOKENS = {
 
 const currency = (n) =>
     typeof n === "number"
-        ? new Intl.NumberFormat("de-DE", { style: "currency", currency: "EUR" }).format(n)
+        ? new Intl.NumberFormat("de-DE", {
+              style: "currency",
+              currency: "EUR",
+          }).format(n)
         : n;
 
 const ProductItem = ({ product }) => {
@@ -56,7 +63,7 @@ const ProductItem = ({ product }) => {
         cursor: "pointer",
         boxShadow: TOKENS.shadow,
         transition: "transform .18s ease, box-shadow .18s ease",
-        padding: 0
+        padding: 0,
     };
 
     const headerWrap = {
@@ -161,10 +168,20 @@ const ProductItem = ({ product }) => {
                 if (img) img.style.transform = "scale(1)";
             }}
             onClick={goDetail}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    goDetail();
+                }
+            }}
         >
             <div style={headerWrap}>
                 {(isSoldOut || isPOClosed) && (
-                    <div style={chip}>{isSoldOut ? "Sold out" : "Pre-order closed"}</div>
+                    <div style={chip}>
+                        {isSoldOut ? "Sold out" : "Pre-order closed"}
+                    </div>
                 )}
 
                 {!isSoldOut && !isPOClosed && (
@@ -203,15 +220,24 @@ const ProductItem = ({ product }) => {
                 </div>
             </div>
 
-            <div style={body} onClick={(e) => e.stopPropagation()}>
+            <div style={body}>
                 <Space direction="vertical" size={6} style={{ width: "100%" }}>
-                    <Typography.Text style={nameStyle} ellipsis={{ tooltip: product?.name }}>
+                    <Typography.Text
+                        style={nameStyle}
+                        ellipsis={{ tooltip: product?.name }}
+                        onClick={(e) => e.stopPropagation()}
+                    >
                         {product?.name}
                     </Typography.Text>
 
                     <div style={metaRow}>
                         <Tooltip title="Availability">
-                            <InfoCircleOutlined style={{ fontSize: 14, color: TOKENS.textMuted }} />
+                            <InfoCircleOutlined
+                                style={{
+                                    fontSize: 14,
+                                    color: TOKENS.textMuted,
+                                }}
+                            />
                         </Tooltip>
                         <Typography.Text style={stockText}>
                             {isSoldOut ? "Out of stock" : `Left: ${left}`}
@@ -219,7 +245,9 @@ const ProductItem = ({ product }) => {
                     </div>
 
                     <div style={bar}>
-                        <Typography.Text style={price}>{priceText}</Typography.Text>
+                        <Typography.Text style={price}>
+                            {priceText}
+                        </Typography.Text>
 
                         <Button
                             type="primary"
