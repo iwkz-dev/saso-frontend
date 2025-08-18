@@ -197,7 +197,6 @@ const ProductsTabs = ({ event, barcode, headerOffset = 80 }) => {
                 marginTop: 8,
                 overflow: "visible",
                 position: "relative",
-                boxShadow: "0 1px 0 rgba(0,0,0,.03)",
             }}>
             <Tabs
                 items={items}
