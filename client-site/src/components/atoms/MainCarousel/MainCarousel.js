@@ -1,10 +1,10 @@
 import { Carousel, Typography } from "antd";
 
 const MainCarousel = ({ eventName = "Our Event", images = [] }) => {
-    const heroHeight = "clamp(220px, 36vh, 520px)";
+    const ASPECT = "16 / 9";
 
     const wrapperStyle = {
-        maxWidth: "1200px",
+        maxWidth: 1200,
         margin: "12px auto 16px",
     };
 
@@ -14,21 +14,35 @@ const MainCarousel = ({ eventName = "Our Event", images = [] }) => {
         background: "#fff",
     };
 
-    const slideStyle = {
+    const slideBoxStyle = {
         position: "relative",
         width: "100%",
-        height: heroHeight,
+        aspectRatio: ASPECT,
+    };
+
+    const mediaFillStyle = {
+        position: "absolute",
+        inset: 0,
+        width: "100%",
+        height: "100%",
+        objectFit: "cover",
+        display: "block",
+    };
+
+    const welcomeBgStyle = {
+        ...slideBoxStyle,
+        background:
+            "linear-gradient(135deg, rgba(62,207,142,0.14) 0%, rgba(12,188,143,0.14) 100%)",
+    };
+
+    const contentLayerStyle = {
+        position: "absolute",
+        inset: 0,
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
         textAlign: "center",
         userSelect: "none",
-    };
-
-    const welcomeBgStyle = {
-        ...slideStyle,
-        background:
-            "linear-gradient(135deg, rgba(62,207,142,0.14) 0%, rgba(12,188,143,0.14) 100%)",
     };
 
     const titleStyle = {
@@ -63,13 +77,6 @@ const MainCarousel = ({ eventName = "Our Event", images = [] }) => {
         textDecoration: "none",
     };
 
-    const imageStyle = {
-        width: "100%",
-        height: heroHeight,
-        objectFit: "cover",
-        display: "block",
-    };
-
     const captionStyle = {
         position: "absolute",
         left: 12,
@@ -98,17 +105,22 @@ const MainCarousel = ({ eventName = "Our Event", images = [] }) => {
                     style={{ width: "100%" }}>
                     <div>
                         <div style={welcomeBgStyle}>
-                            <div style={{ maxWidth: 900, margin: "0 auto" }}>
-                                <Typography.Title level={1} style={titleStyle}>
-                                    Welcome to {eventName}
-                                </Typography.Title>
-                                <div style={ctaWrapStyle}>
-                                    <a
-                                        href="#menus"
-                                        style={ctaBtnStyle}
-                                        aria-label="Shop now">
-                                        Shop now
-                                    </a>
+                            <div style={contentLayerStyle}>
+                                <div
+                                    style={{ maxWidth: 900, margin: "0 auto" }}>
+                                    <Typography.Title
+                                        level={1}
+                                        style={titleStyle}>
+                                        Welcome to {eventName}
+                                    </Typography.Title>
+                                    <div style={ctaWrapStyle}>
+                                        <a
+                                            href="#menus"
+                                            style={ctaBtnStyle}
+                                            aria-label="Shop now">
+                                            Shop now
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -117,7 +129,7 @@ const MainCarousel = ({ eventName = "Our Event", images = [] }) => {
                     {hasImages &&
                         images.map((img, i) => (
                             <div key={img?.imageUrl || i}>
-                                <div style={{ position: "relative" }}>
+                                <div style={slideBoxStyle}>
                                     <img
                                         src={img?.imageUrl}
                                         alt={
@@ -125,7 +137,7 @@ const MainCarousel = ({ eventName = "Our Event", images = [] }) => {
                                             `${eventName} slide ${i + 1}`
                                         }
                                         loading="lazy"
-                                        style={imageStyle}
+                                        style={mediaFillStyle}
                                     />
                                     <div style={captionStyle}>{eventName}</div>
                                 </div>
