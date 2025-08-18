@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { SmileOutlined } from "@ant-design/icons";
-import { Space, Button, notification, message, Typography, Spin } from "antd";
+import { Space, Button, notification, message, Typography, Spin, Modal } from "antd";
 import { isAuth } from "../../../helpers/authHelper";
 import { submitOrder } from "../../../stores/reducers/order";
 import { resetCart } from "../../../stores/reducers/cart";
@@ -13,6 +13,8 @@ const PaymentMethods = ({ userData }) => {
     const cart = useSelector((state) => state.cart.data);
     const events = useSelector((state) => state.event.data);
     const [isSpinning, setIsSpinning] = useState(false);
+    const { confirm } = Modal;
+
 
     const eventId = events?.[0]?._id || null;
 
@@ -53,9 +55,8 @@ const PaymentMethods = ({ userData }) => {
 
         notification.open({
             message: "Purchasing completed",
-            description: `Thank you ${name} for ${
-                isTransfer ? "booking" : "purchasing"
-            }. Your invoice number is: ${currOrder?.invoiceNumber ?? "-"}.`,
+            description: `Thank you ${name} for ${isTransfer ? "booking" : "purchasing"
+                }. Your invoice number is: ${currOrder?.invoiceNumber ?? "-"}.`,
             btn,
             duration: 10,
             key,
@@ -65,9 +66,7 @@ const PaymentMethods = ({ userData }) => {
 
     const submitTransferForm = async () => {
         if (!eventId) {
-            message.error(
-                "Event is not ready yet. Please try again in a moment.",
-            );
+            message.error("Event is not ready yet. Please try again in a moment.");
             return;
         }
         if (!cart?.items?.length) {
@@ -75,41 +74,48 @@ const PaymentMethods = ({ userData }) => {
             return;
         }
 
-        const isConfirm = window.confirm(
-            "Please confirm if you plan to pay later. Ensure payment is made within 2x24 hours and send the proof to the designated contact person.",
-        );
-        if (!isConfirm) return;
+        confirm({
+            title: "Confirm Payment Later",
+            content:
+                "Please confirm if you plan to pay later. Ensure payment is made within 2x24 hours and send the proof to the designated contact person.",
+            okText: "Confirm",
+            cancelText: "Cancel",
+            async onOk() {
+                setIsSpinning(true);
+                try {
+                    const orderData = createOrderData("transfer");
 
-        setIsSpinning(true);
-        try {
-            const orderData = createOrderData("transfer");
+                    const payload = await dispatch(
+                        submitOrder({ data: orderData, isAuthRequired: isAuth() })
+                    ).unwrap();
 
-            const payload = await dispatch(
-                submitOrder({ data: orderData, isAuthRequired: isAuth() }),
-            ).unwrap();
+                    const order = payload?.order || null;
 
-            const order = payload?.order || null;
+                    const customerName =
+                        order?.customerFullname ||
+                        userData?.fullname ||
+                        userData?.name ||
+                        "there";
 
-            const customerName =
-                order?.customerFullname ||
-                userData?.fullname ||
-                userData?.name ||
-                "there";
+                    openNotification(customerName, order, true);
 
-            openNotification(customerName, order, true);
-
-            dispatch(resetCart());
-            Router.push("/");
-        } catch (err) {
-            const msg =
-                typeof err === "string"
-                    ? err
-                    : err?.message || "Order submission failed";
-            console.error(err);
-            message.error(msg);
-        } finally {
-            setIsSpinning(false);
-        }
+                    dispatch(resetCart());
+                    Router.push("/");
+                } catch (err) {
+                    const msg =
+                        typeof err === "string"
+                            ? err
+                            : err?.message || "Order submission failed";
+                    console.error(err);
+                    message.error(msg);
+                } finally {
+                    setIsSpinning(false);
+                }
+            },
+            onCancel() {
+                // just close, do nothing (same as returning if false in window.confirm)
+            },
+        });
     };
 
     return (

@@ -82,9 +82,8 @@ const ProductsTabs = ({ event, barcode, headerOffset = 80 }) => {
                                 height: TOKENS.pillH,
                                 padding: `0 ${TOKENS.padX}px`,
                                 borderRadius: 999,
-                                border: `1px solid ${
-                                    isActive ? TOKENS.brand : TOKENS.border
-                                }`,
+                                border: `1px solid ${isActive ? TOKENS.brand : TOKENS.border
+                                    }`,
                                 background: isActive
                                     ? TOKENS.brandSoft
                                     : TOKENS.surface,
@@ -197,7 +196,6 @@ const ProductsTabs = ({ event, barcode, headerOffset = 80 }) => {
                 marginTop: 8,
                 overflow: "visible",
                 position: "relative",
-                boxShadow: "0 1px 0 rgba(0,0,0,.03)",
             }}>
             <Tabs
                 items={items}
