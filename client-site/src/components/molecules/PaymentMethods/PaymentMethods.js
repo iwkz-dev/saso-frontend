@@ -1,7 +1,15 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { SmileOutlined } from "@ant-design/icons";
-import { Space, Button, notification, message, Typography, Spin, Modal } from "antd";
+import {
+    Space,
+    Button,
+    notification,
+    message,
+    Typography,
+    Spin,
+    Modal,
+} from "antd";
 import { isAuth } from "../../../helpers/authHelper";
 import { submitOrder } from "../../../stores/reducers/order";
 import { resetCart } from "../../../stores/reducers/cart";
@@ -14,7 +22,6 @@ const PaymentMethods = ({ userData }) => {
     const events = useSelector((state) => state.event.data);
     const [isSpinning, setIsSpinning] = useState(false);
     const { confirm } = Modal;
-
 
     const eventId = events?.[0]?._id || null;
 
@@ -55,8 +62,9 @@ const PaymentMethods = ({ userData }) => {
 
         notification.open({
             message: "Purchasing completed",
-            description: `Thank you ${name} for ${isTransfer ? "booking" : "purchasing"
-                }. Your invoice number is: ${currOrder?.invoiceNumber ?? "-"}.`,
+            description: `Thank you ${name} for ${
+                isTransfer ? "booking" : "purchasing"
+            }. Your invoice number is: ${currOrder?.invoiceNumber ?? "-"}.`,
             btn,
             duration: 10,
             key,
@@ -66,7 +74,9 @@ const PaymentMethods = ({ userData }) => {
 
     const submitTransferForm = async () => {
         if (!eventId) {
-            message.error("Event is not ready yet. Please try again in a moment.");
+            message.error(
+                "Event is not ready yet. Please try again in a moment.",
+            );
             return;
         }
         if (!cart?.items?.length) {
@@ -86,7 +96,10 @@ const PaymentMethods = ({ userData }) => {
                     const orderData = createOrderData("transfer");
 
                     const payload = await dispatch(
-                        submitOrder({ data: orderData, isAuthRequired: isAuth() })
+                        submitOrder({
+                            data: orderData,
+                            isAuthRequired: isAuth(),
+                        }),
                     ).unwrap();
 
                     const order = payload?.order || null;
