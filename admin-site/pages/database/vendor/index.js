@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import Content from "../../../src/components/Layout/Content/Content";
 import { useDispatch } from "react-redux";
 import {
@@ -11,67 +11,63 @@ import AddItemButton from "../../../src/components/common/Button/AddItemButton/A
 import { Space, message, Typography } from "antd";
 import { isAuth } from "../../../src/helpers/authHelper";
 
-const index = () => {
+const VendorIndexPage = () => {
     const dispatch = useDispatch();
     const pageTitle = "Saso App | Vendor";
     const [showTable, setShowTable] = useState(false);
     const [showLoadingData, setShowLoadingData] = useState(false);
 
-    useEffect(() => {
-        fetchVendors();
+    const handleFailedRequest = useCallback((response) => {
+        setShowLoadingData(false);
+        setShowTable(false);
+        message.error(response?.message || "Failed to load vendors");
+        isAuth(response);
     }, []);
 
-    const fetchVendors = async () => {
-        try {
-            setShowLoadingData(true);
-            const result = await dispatch(getAllVendors());
+    const handleFetchError = useCallback((error) => {
+        setShowLoadingData(false);
+        setShowTable(false);
+        message.error(error?.message || "Failed to load vendors");
+    }, []);
 
-            if (result.status === "success") {
-                setShowLoadingData(false);
+    const fetchVendors = useCallback(async () => {
+        setShowLoadingData(true);
+        try {
+            const result = await dispatch(getAllVendors());
+            if (result?.status === "success") {
                 setShowTable(true);
             } else {
                 handleFailedRequest(result);
             }
         } catch (error) {
             handleFetchError(error);
+        } finally {
+            setShowLoadingData(false);
         }
-    };
+    }, [dispatch, handleFailedRequest, handleFetchError]);
 
-    const handleFailedRequest = (response) => {
-        setShowLoadingData(false);
-        message.error(response.message);
-        setShowTable(false);
-        isAuth(response);
-    };
-
-    const handleFetchError = (error) => {
-        // TODO: handle error here
-        setShowLoadingData(false);
-        message.error(error.message);
-    };
+    useEffect(() => {
+        fetchVendors();
+    }, [fetchVendors]);
 
     const onDelete = async (item) => {
-        const isConfirm = window.confirm(
+        const ok = window.confirm(
             `Please confirm if you want to delete "${item.name}"`,
         );
+        if (!ok) return;
 
-        if (isConfirm) {
-            try {
-                setShowLoadingData(true);
-                const deleteResponse = await dispatch(
-                    deleteVendor(item["_id"]),
-                );
-
-                if (deleteResponse.status !== "failed") {
-                    setShowLoadingData(false);
-                    message.success(deleteResponse.message);
-                    fetchVendors();
-                } else {
-                    handleFailedRequest(deleteResponse);
-                }
-            } catch (error) {
-                handleFetchError(error);
+        setShowLoadingData(true);
+        try {
+            const res = await dispatch(deleteVendor(item["_id"]));
+            if (res?.status !== "failed") {
+                message.success(res?.message || "Vendor deleted");
+            } else {
+                handleFailedRequest(res);
             }
+        } catch (error) {
+            handleFetchError(error);
+        } finally {
+            setShowLoadingData(false);
         }
     };
 
@@ -95,4 +91,4 @@ const index = () => {
     );
 };
 
-export default index;
+export default VendorIndexPage;

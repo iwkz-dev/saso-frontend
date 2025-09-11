@@ -1,179 +1,298 @@
-import { createSlice } from "@reduxjs/toolkit";
+// src/store/reducers/contactPersonReducer.js
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import contactPersonService from "../../services/contactPersonService";
 
-export const getAllContactPerson = () => async (dispatch) => {
-    return contactPersonService
-        .getAllContactPerson()
-        .then((response) => {
-            dispatch(getContactPersonSuccess(response.data.data));
-            return response;
-        })
-        .catch((e) => {
-            if (e) {
-                dispatch(getContactPersonFailed(e.data.message));
-                return e.data;
-            }
-            const error = {
-                message: "Server Error",
-                status: "failed",
+// ============== Helpers ==============
+const getErrorPayload = (err, fallback = "Server Error") => {
+    const message =
+        err?.response?.data?.message ||
+        err?.data?.message ||
+        err?.message ||
+        fallback;
+    return { status: "failed", message };
+};
+const findIndexById = (arr, id) => arr.findIndex((i) => i._id === id);
+
+// ============== Core Thunks ==============
+export const getAllContactPersonThunk = createAsyncThunk(
+    "contactPerson/getAll",
+    async (_, { rejectWithValue }) => {
+        try {
+            const res = await contactPersonService.getAllContactPerson();
+            return { status: "success", data: res?.data?.data || [] };
+        } catch (err) {
+            return rejectWithValue(getErrorPayload(err));
+        }
+    },
+);
+
+export const deleteContactPersonThunk = createAsyncThunk(
+    "contactPerson/delete",
+    async (id, { rejectWithValue }) => {
+        try {
+            const res = await contactPersonService.deleteContactPerson(id);
+            return {
+                status: "success",
+                message: res?.data?.message || "Deleted",
+                id,
             };
-            dispatch(getContactPersonFailed(error.message));
-            return error;
-        });
+        } catch (err) {
+            return rejectWithValue(getErrorPayload(err));
+        }
+    },
+);
+
+export const createContactPersonThunk = createAsyncThunk(
+    "contactPerson/create",
+    async (requestedData, { rejectWithValue }) => {
+        try {
+            const res = await contactPersonService.createContactPerson(
+                requestedData,
+            );
+            return {
+                status: "success",
+                message: res?.data?.message || "Created",
+                data: res?.data?.data,
+            };
+        } catch (err) {
+            return rejectWithValue(getErrorPayload(err));
+        }
+    },
+);
+
+export const getDetailContactPersonThunk = createAsyncThunk(
+    "contactPerson/detail",
+    async (id, { rejectWithValue }) => {
+        try {
+            const res = await contactPersonService.getDetailContactPerson(id);
+            return {
+                status: "success",
+                message: res?.data?.message || "",
+                data: res?.data?.data || res?.data,
+            };
+        } catch (err) {
+            return rejectWithValue(getErrorPayload(err));
+        }
+    },
+);
+
+export const editDetailContactPersonThunk = createAsyncThunk(
+    "contactPerson/edit",
+    async ({ id, requestedData }, { rejectWithValue }) => {
+        try {
+            const res = await contactPersonService.editDetailContactPerson(
+                id,
+                requestedData,
+            );
+            return {
+                status: "success",
+                message: res?.data?.message || "Updated",
+                data: res?.data?.data || res?.data,
+            };
+        } catch (err) {
+            return rejectWithValue(getErrorPayload(err));
+        }
+    },
+);
+
+// ============== Backward-compatible Wrappers ==============
+
+export const getAllContactPerson = () => async (dispatch) => {
+    try {
+        const payload = await dispatch(getAllContactPersonThunk()).unwrap();
+        return payload;
+    } catch (e) {
+        return e;
+    }
 };
 
 export const deleteContactPerson = (id) => async (dispatch) => {
-    return contactPersonService
-        .deleteContactPerson(id)
-        .then((response) => {
-            dispatch(deleteContactPersonSuccess(response));
-            return response;
-        })
-        .catch((e) => {
-            if (e) {
-                dispatch(deleteContactPersonFailed(e.data.message));
-                return e.data;
-            }
-            const error = {
-                message: "Server Error",
-                status: "failed",
-            };
-            dispatch(deleteContactPersonFailed(error.message));
-            return error;
-        });
+    try {
+        const payload = await dispatch(deleteContactPersonThunk(id)).unwrap();
+        return payload;
+    } catch (e) {
+        return e;
+    }
 };
 
 export const createContactPerson = (requestedData) => async (dispatch) => {
-    return contactPersonService
-        .createContactPerson(requestedData)
-        .then((response) => {
-            dispatch(createContactPersonSuccess(response));
-            return response;
-        })
-        .catch((e) => {
-            if (e) {
-                dispatch(createContactPersonFailed(e.data.message));
-                return e.data;
-            }
-            const error = {
-                message: "Server Error",
-                status: "failed",
-            };
-            dispatch(createContactPersonFailed(error.message));
-            return error;
-        });
+    try {
+        const payload = await dispatch(
+            createContactPersonThunk(requestedData),
+        ).unwrap();
+        return payload;
+    } catch (e) {
+        return e;
+    }
 };
 
 export const getDetailContactPerson = (id) => async (dispatch) => {
-    return contactPersonService
-        .getDetailContactPerson(id)
-        .then((response) => {
-            dispatch(getContactPersonDetailSuccess(response));
-            return response;
-        })
-        .catch((e) => {
-            if (e) {
-                dispatch(getContactPersonDetailFailed(e.data.message));
-                return e.data;
-            }
-            const error = {
-                message: "Server Error",
-                status: "failed",
-            };
-            dispatch(getContactPersonDetailFailed(error.message));
-            return error;
-        });
+    try {
+        const payload = await dispatch(
+            getDetailContactPersonThunk(id),
+        ).unwrap();
+        return payload;
+    } catch (e) {
+        return e;
+    }
 };
 
 export const editDetailContactPerson =
     (id, requestedData) => async (dispatch) => {
-        return contactPersonService
-            .editDetailContactPerson(id, requestedData)
-            .then((response) => {
-                dispatch(editContactPersonDetailSuccess(response));
-                return response;
-            })
-            .catch((e) => {
-                if (e) {
-                    dispatch(editContactPersonDetailFailed(e.data.message));
-                    return e.data;
-                }
-                const error = {
-                    message: "Server Error",
-                    status: "failed",
-                };
-                dispatch(editContactPersonDetailFailed(error.message));
-                return error;
-            });
+        try {
+            const payload = await dispatch(
+                editDetailContactPersonThunk({ id, requestedData }),
+            ).unwrap();
+            return payload;
+        } catch (e) {
+            return e;
+        }
     };
 
-export const contactPersonSlice = createSlice({
+// ============== Slice ==============
+const initialState = {
+    status: "idle", // 'idle' | 'loading' | 'succeeded' | 'failed'
+    success: false,
+    error: null,
+    message: { error: "", success: "" },
+    contactPerson: [],
+    detailContactPerson: {},
+};
+
+const contactPersonSlice = createSlice({
     name: "contactPerson",
-    initialState: {
-        success: false,
-        message: {
-            error: "",
-            success: "",
-        },
-        contactPerson: [],
-        detailContactPerson: {},
-    },
-    reducers: {
-        getContactPersonSuccess: (state, action) => {
-            state.contactPerson = [...action.payload];
-            state.success = true;
-        },
-        getContactPersonFailed: (state, action) => {
-            state.message.error = action.payload;
-            state.success = false;
-        },
-        getContactPersonDetailSuccess: (state, action) => {
-            state.detailContactPerson = { ...action.payload.data };
-            state.message.success = action.payload.message;
-            state.success = true;
-        },
-        getContactPersonDetailFailed: (state, action) => {
-            state.message.error = action.payload;
-            state.success = false;
-        },
-        deleteContactPersonSuccess: (state, action) => {
-            state.message.success = action.payload.message;
-            state.success = true;
-        },
-        deleteContactPersonFailed: (state, action) => {
-            state.message.error = action.payload;
-            state.success = false;
-        },
-        createContactPersonSuccess: (state, action) => {
-            state.message.success = action.payload.message;
-            state.success = true;
-        },
-        createContactPersonFailed: (state, action) => {
-            state.message.error = action.payload;
-            state.success = false;
-        },
-        editContactPersonDetailSuccess: (state, action) => {
-            state.message.success = action.payload.message;
-            state.success = true;
-        },
-        editContactPersonDetailFailed: (state, action) => {
-            state.message.error = action.payload;
-            state.success = false;
-        },
+    initialState,
+    reducers: {},
+    extraReducers: (builder) => {
+        // get all
+        builder
+            .addCase(getAllContactPersonThunk.pending, (state) => {
+                state.status = "loading";
+                state.error = null;
+                state.message.error = "";
+                state.message.success = "";
+            })
+            .addCase(getAllContactPersonThunk.fulfilled, (state, action) => {
+                state.status = "succeeded";
+                state.success = true;
+                state.contactPerson = Array.isArray(action.payload.data)
+                    ? [...action.payload.data]
+                    : [];
+            })
+            .addCase(getAllContactPersonThunk.rejected, (state, action) => {
+                state.status = "failed";
+                state.success = false;
+                const msg = action.payload?.message || "Server Error";
+                state.error = msg;
+                state.message.error = msg;
+            });
+
+        // delete
+        builder
+            .addCase(deleteContactPersonThunk.pending, (state) => {
+                state.status = "loading";
+            })
+            .addCase(deleteContactPersonThunk.fulfilled, (state, action) => {
+                state.status = "succeeded";
+                state.success = true;
+                state.message.success = action.payload.message || "Deleted";
+                const id = action.payload.id;
+                if (id) {
+                    state.contactPerson = state.contactPerson.filter(
+                        (p) => p._id !== id,
+                    );
+                    if (state.detailContactPerson?._id === id) {
+                        state.detailContactPerson = {};
+                    }
+                }
+            })
+            .addCase(deleteContactPersonThunk.rejected, (state, action) => {
+                state.status = "failed";
+                state.success = false;
+                const msg = action.payload?.message || "Server Error";
+                state.error = msg;
+                state.message.error = msg;
+            });
+
+        // create
+        builder
+            .addCase(createContactPersonThunk.pending, (state) => {
+                state.status = "loading";
+            })
+            .addCase(createContactPersonThunk.fulfilled, (state, action) => {
+                state.status = "succeeded";
+                state.success = true;
+                state.message.success = action.payload.message || "Created";
+                const created = action.payload.data;
+                if (created) state.contactPerson.unshift(created);
+            })
+            .addCase(createContactPersonThunk.rejected, (state, action) => {
+                state.status = "failed";
+                state.success = false;
+                const msg = action.payload?.message || "Server Error";
+                state.error = msg;
+                state.message.error = msg;
+            });
+
+        // get detail
+        builder
+            .addCase(getDetailContactPersonThunk.pending, (state) => {
+                state.status = "loading";
+            })
+            .addCase(getDetailContactPersonThunk.fulfilled, (state, action) => {
+                state.status = "succeeded";
+                state.success = true;
+                state.message.success = action.payload.message || "";
+                state.detailContactPerson = { ...(action.payload.data || {}) };
+            })
+            .addCase(getDetailContactPersonThunk.rejected, (state, action) => {
+                state.status = "failed";
+                state.success = false;
+                const msg = action.payload?.message || "Server Error";
+                state.error = msg;
+                state.message.error = msg;
+            });
+
+        // edit
+        builder
+            .addCase(editDetailContactPersonThunk.pending, (state) => {
+                state.status = "loading";
+            })
+            .addCase(
+                editDetailContactPersonThunk.fulfilled,
+                (state, action) => {
+                    state.status = "succeeded";
+                    state.success = true;
+                    state.message.success = action.payload.message || "Updated";
+                    const updated = action.payload.data;
+                    if (updated?._id) {
+                        const idx = findIndexById(
+                            state.contactPerson,
+                            updated._id,
+                        );
+                        if (idx !== -1) {
+                            state.contactPerson[idx] = {
+                                ...state.contactPerson[idx],
+                                ...updated,
+                            };
+                        }
+                        if (state.detailContactPerson?._id === updated._id) {
+                            state.detailContactPerson = {
+                                ...state.detailContactPerson,
+                                ...updated,
+                            };
+                        }
+                    }
+                },
+            )
+            .addCase(editDetailContactPersonThunk.rejected, (state, action) => {
+                state.status = "failed";
+                state.success = false;
+                const msg = action.payload?.message || "Server Error";
+                state.error = msg;
+                state.message.error = msg;
+            });
     },
 });
 
-// Action creators are generated for each case reducer function
-export const {
-    getContactPersonSuccess,
-    getContactPersonFailed,
-    getContactPersonDetailSuccess,
-    getContactPersonDetailFailed,
-    deleteContactPersonSuccess,
-    deleteContactPersonFailed,
-    createContactPersonSuccess,
-    createContactPersonFailed,
-    editContactPersonDetailSuccess,
-    editContactPersonDetailFailed,
-} = contactPersonSlice.actions;
 export default contactPersonSlice.reducer;

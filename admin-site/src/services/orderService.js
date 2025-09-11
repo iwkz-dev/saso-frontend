@@ -1,130 +1,48 @@
 import api from "../api";
 import { getToken } from "../helpers/authHelper";
 
-const getAllOrders = (requestURL = "") => {
-    return new Promise((resolve, reject) => {
-        const headers = {
-            accept: "application/JSON",
-            Authorization: getToken(),
-        };
+const authHeaders = () => ({
+    accept: "application/json",
+    Authorization: getToken(),
+});
 
-        api({
-            method: "GET",
-            url: `/order${requestURL}`,
-            headers,
-        })
-            .then((response) => {
-                if (response.data.status === "success") {
-                    resolve(response.data);
-                } else {
-                    reject(response.data);
-                }
-            })
-            .catch((error) => {
-                reject(error.response);
-            });
-    });
+const handleResponse = (response) => {
+    const data = response?.data;
+    if (data?.status === "success") return data;
+    throw data;
 };
 
-const deleteOrder = (id) => {
-    return new Promise((resolve, reject) => {
-        const headers = {
-            accept: "application/JSON",
-            Authorization: getToken(),
-        };
-
-        api({
-            method: "DELETE",
-            url: `/order/${id}`,
-            headers,
-        })
-            .then((response) => {
-                if (response.data.status === "success") {
-                    resolve(response.data);
-                } else {
-                    reject(response.data);
-                }
-            })
-            .catch((error) => {
-                reject(error.response);
-            });
-    });
+const handleError = (error) => {
+    throw error?.response ?? error;
 };
 
-const getOrderByInvoiceNumber = (invoiceNumber) => {
-    return new Promise((resolve, reject) => {
-        const headers = {
-            accept: "application/JSON",
-            Authorization: getToken(),
-        };
+const request = (config) =>
+    api({ ...config, headers: { ...authHeaders(), ...(config.headers || {}) } })
+        .then(handleResponse)
+        .catch(handleError);
 
-        api({
-            method: "GET",
-            url: `/order/invoiceNumber/${invoiceNumber}`,
-            headers,
-        })
-            .then((response) => {
-                if (response.data.status === "success") {
-                    resolve(response.data);
-                } else {
-                    reject(response.data);
-                }
-            })
-            .catch((error) => {
-                reject(error.response);
-            });
+const getAllOrders = (requestURL = "") =>
+    request({ method: "GET", url: `/order${requestURL}` });
+
+const deleteOrder = (id) => request({ method: "DELETE", url: `/order/${id}` });
+
+const getOrderByInvoiceNumber = (invoiceNumber) =>
+    request({
+        method: "GET",
+        url: `/order/invoiceNumber/${encodeURIComponent(invoiceNumber)}`,
     });
-};
 
-const confirmOrderedMenuStatusByVendors = (orderId, vendorId) => {
-    return new Promise((resolve, reject) => {
-        const headers = {
-            accept: "application/JSON",
-            Authorization: getToken(),
-        };
-
-        api({
-            method: "PATCH",
-            url: `/order/${orderId}/vendor/${vendorId}/confirm`,
-            headers,
-        })
-            .then((response) => {
-                if (response.data.status === "success") {
-                    resolve(response.data);
-                } else {
-                    reject(response.data);
-                }
-            })
-            .catch((error) => {
-                reject(error.response);
-            });
+const confirmOrderedMenuStatusByVendors = (orderId, vendorId) =>
+    request({
+        method: "PATCH",
+        url: `/order/${orderId}/vendor/${vendorId}/confirm`,
     });
-};
 
-const changeOrderStatus = (id, status) => {
-    return new Promise((resolve, reject) => {
-        const headers = {
-            accept: "application/JSON",
-            Authorization: getToken(),
-        };
-
-        api({
-            method: "PATCH",
-            url: `/order/${id}/${status}`,
-            headers,
-        })
-            .then((response) => {
-                if (response.data.status === "success") {
-                    resolve(response.data);
-                } else {
-                    reject(response.data);
-                }
-            })
-            .catch((error) => {
-                reject(error.response);
-            });
+const changeOrderStatus = (id, status) =>
+    request({
+        method: "PATCH",
+        url: `/order/${id}/${encodeURIComponent(status)}`,
     });
-};
 
 const orderService = {
     getAllOrders,
@@ -133,4 +51,5 @@ const orderService = {
     changeOrderStatus,
     confirmOrderedMenuStatusByVendors,
 };
+
 export default orderService;

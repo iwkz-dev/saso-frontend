@@ -1,42 +1,61 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { Button, Input, message, Modal, Space, Popconfirm } from "antd";
-import { QrcodeOutlined } from "@ant-design/icons";
+import { QrcodeOutlined, UploadOutlined } from "@ant-design/icons";
 import { QrReader } from "react-qr-reader";
-import { UploadOutlined } from "@ant-design/icons";
 
-const OrderFilterForm = ({ filterValues, setFilterValues, exportToXlsx }) => {
-    const Search = Input.Search;
+const OrderFilterForm = ({ setFilterValues, exportToXlsx }) => {
+    const { Search } = Input;
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [inputValue, setInputValue] = useState("");
 
-    const handleSearch = (value) => {
-        setInputValue(value);
-        const data = {
-            id: value,
-            name: "invoiceNumber",
-        };
+    const upsertInvoiceFilter = useCallback(
+        (value) => {
+            const data = { id: value, name: "invoiceNumber" };
 
-        const filterIndex = filterValues.findIndex((f) => f.name === data.name);
-        if (!(filterIndex > -1)) {
-            setFilterValues([...filterValues, data]);
-        } else {
-            const tempFilters = [...filterValues];
-            tempFilters[filterIndex].id = data.id;
-            setFilterValues([...tempFilters]);
-        }
-    };
+            setFilterValues((prev) => {
+                const filters = Array.isArray(prev) ? prev : [];
+                const idx = filters.findIndex((f) => f.name === data.name);
 
-    const handleChange = (e) => {
-        handleSearch(e.target.value);
-    };
+                if (idx === -1) {
+                    return [...filters, data];
+                }
+                const next = [...filters];
+                next[idx] = { ...next[idx], id: data.id };
+                return next;
+            });
+        },
+        [setFilterValues],
+    );
 
-    const showModal = () => {
-        setIsModalOpen(true);
-    };
+    const handleSearch = useCallback(
+        (value) => {
+            setInputValue(value);
+            upsertInvoiceFilter(value);
+        },
+        [upsertInvoiceFilter],
+    );
 
-    const handleCancelModal = () => {
-        setIsModalOpen(false);
-    };
+    const handleChange = useCallback(
+        (e) => handleSearch(e.target.value),
+        [handleSearch],
+    );
+
+    const showModal = useCallback(() => setIsModalOpen(true), []);
+    const handleCancelModal = useCallback(() => setIsModalOpen(false), []);
+
+    const handleQrResult = useCallback(
+        (result, error) => {
+            if (result?.text) {
+                message.success(`Received QR code: ${result.text}`);
+                handleSearch(result.text);
+                setIsModalOpen(false);
+            }
+            if (error) {
+                console.error(error);
+            }
+        },
+        [handleSearch],
+    );
 
     return (
         <Space.Compact block>
@@ -48,35 +67,24 @@ const OrderFilterForm = ({ filterValues, setFilterValues, exportToXlsx }) => {
                 enterButton
                 value={inputValue}
             />
+
             <Button icon={<QrcodeOutlined />} onClick={showModal}>
                 Scan
             </Button>
+
             <Modal
-                destroyOnClose={true}
+                destroyOnHidden
                 title="Scan barcode"
                 open={isModalOpen}
-                footer={[]}
+                footer={null}
                 onCancel={handleCancelModal}>
                 <QrReader
-                    constraints={{
-                        facingMode: "environment",
-                    }}
-                    onResult={(result, error) => {
-                        if (result) {
-                            message.success(
-                                `Recieved QR-Code: ${result?.text}`,
-                            );
-                            handleSearch(result?.text);
-                            setIsModalOpen(false);
-                        }
-
-                        if (error) {
-                            console.info(error);
-                        }
-                    }}
+                    constraints={{ facingMode: "environment" }}
+                    onResult={handleQrResult}
                     style={{ width: "100%" }}
                 />
             </Modal>
+
             <Popconfirm
                 title="Export to xlsx file"
                 description="Are you sure want to export order to xlsx file?"

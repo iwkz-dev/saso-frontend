@@ -7,46 +7,55 @@ import { getAllEvents } from "../../../../src/store/reducers/eventReducer";
 import { useDispatch } from "react-redux";
 import { isAuth } from "../../../../src/helpers/authHelper";
 
-const index = () => {
+const AddContactPersonPage = () => {
     const dispatch = useDispatch();
     const pageTitle = "Saso App | Contact Person";
+
     const [showLoading, setShowLoading] = useState(false);
     const [showForm, setShowForm] = useState(false);
 
     useEffect(() => {
-        const fetchEvents = async () => {
-            try {
-                setShowLoading(true);
-                const response = await dispatch(getAllEvents());
+        let isMounted = true;
 
-                if (response.status === "success") {
+        (async () => {
+            try {
+                if (isMounted) setShowLoading(true);
+                const res = await dispatch(getAllEvents());
+                if (!isMounted) return;
+
+                if (res?.status === "success") {
                     setShowForm(true);
                 } else {
-                    message.error(response.message);
-                    isAuth(response);
+                    message.error(res?.message || "Failed to load events");
+                    isAuth(res); // keep your existing auth handling
+                    setShowForm(false);
                 }
-            } catch (error) {
-                message.error(error.message);
+            } catch (err) {
+                if (!isMounted) return;
+                message.error(err?.message || "Failed to load events");
+                setShowForm(false);
             } finally {
-                setShowLoading(false);
+                if (isMounted) setShowLoading(false);
             }
-        };
+        })();
 
-        fetchEvents();
-    }, []);
+        return () => {
+            isMounted = false;
+        };
+    }, [dispatch]);
 
     return (
         <LoggedIn title={pageTitle}>
             <Content>
+                <Typography.Title level={3}>
+                    Add contact person
+                </Typography.Title>
                 <Spin spinning={showLoading} tip="Loading...">
-                    <Typography.Title level={3}>
-                        Add contact person
-                    </Typography.Title>
-                    {showForm ? <AddContactPersonForm /> : ""}
+                    {showForm ? <AddContactPersonForm /> : null}
                 </Spin>
             </Content>
         </LoggedIn>
     );
 };
 
-export default index;
+export default AddContactPersonPage;

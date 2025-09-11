@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/router";
 import { getDetailEvent } from "../../../../src/store/reducers/eventReducer";
@@ -8,49 +8,41 @@ import RelatedMenuTable from "../../../../src/components/Table/Event/RelatedMenu
 import AddItemButton from "../../../../src/components/common/Button/AddItemButton/AddItemButton";
 import Content from "../../../../src/components/Layout/Content/Content";
 import { Space, Spin, Tabs, Typography, message } from "antd";
-import { isAuth } from "../../../../src/helpers/authHelper";
 import EventSummary from "../../../../src/components/Card/Event/EventSummary/EventSummary";
 import RelatedOrdersTable from "../../../../src/components/Table/Event/RelatedOrders/RelatedOrdersTable";
 import OrderFilterForm from "../../../../src/components/Form/Order/OrderFilterForm/OrderFilterForm";
 import * as XLSX from "xlsx";
 
-const id = () => {
+export default function EventViewPage() {
     const dispatch = useDispatch();
     const router = useRouter();
     const { id } = router.query;
+
     const pageTitle = "Saso App | Event";
-    const [showDataDisplay, setShowDataDisplay] = useState(false);
-    const [showLoading, setShowLoading] = useState(false);
+
+    // Slice state
+    const eventStatus = useSelector((s) => s.event.status);
+    const eventError = useSelector((s) => s.event.error);
+    const event = useSelector((s) => s.event.detailEvent);
+    const orders = useSelector((s) => s.order.orders) || [];
+
     const [filterValues, setFilterValues] = useState([]);
-    const event = useSelector((state) => state.event.detailEvent);
-    const orders = useSelector((state) => state.order.orders);
+
+    const loading = eventStatus === "loading";
+    const hasEvent = !!event && !!event._id;
 
     useEffect(() => {
-        const fetchData = async () => {
+        if (!router.isReady || !id) return;
+        (async () => {
             try {
-                setShowLoading(true);
-                const response = await dispatch(getDetailEvent(id));
-
-                if (response.status === "success") {
-                    setShowDataDisplay(true);
-                } else {
-                    message.error(response.message);
-                    isAuth(response);
-                }
-            } catch (error) {
-                // Handle any unexpected errors
-                console.error("Error fetching data:", error);
-            } finally {
-                setShowLoading(false);
+                await dispatch(getDetailEvent(id));
+            } catch (err) {
+                message.error(err?.message || "Failed to load event");
             }
-        };
+        })();
+    }, [router.isReady, id, dispatch]);
 
-        if (id) {
-            fetchData();
-        }
-    }, [id, dispatch]);
-
-    const getStatusDescription = (status) => {
+    const getStatusDescription = useCallback((status) => {
         switch (status) {
             case 0:
                 return "Waiting for Confirmation";
@@ -63,62 +55,77 @@ const id = () => {
             default:
                 return "Unknown Status";
         }
+    }, []);
+
+    const safeFileName = useMemo(() => {
+        const base = event?.name || "event";
+        return base.replace(/[\\/:*?"<>|]+/g, "_");
+    }, [event?.name]);
+
+    const exportToXlsx = useCallback(() => {
+        try {
+            if (!orders?.length) {
+                message.info("No orders to export.");
+                return;
+            }
+
+            const menuNames = Array.from(
+                new Set(
+                    orders.flatMap((o) =>
+                        (o?.menus || []).map((m) => m?.name).filter(Boolean),
+                    ),
+                ),
+            );
+
+            const orderSheetData = orders.map((order) => {
+                const rec = {
+                    OrderID: order?._id || "",
+                    InvoiceNumber: order?.invoiceNumber || "",
+                    Status: getStatusDescription(order?.status),
+                    CustomerName: order?.customerFullname || "",
+                    CustomerEmail: order?.customerEmail || "",
+                    CustomerPhone: order?.customerPhone || "",
+                    PaymentType: order?.paymentType || "",
+                    TotalPrice: order?.totalPrice ?? "",
+                    Event: event?.name || "",
+                    Note: order?.note || "",
+                    CreatedAt: order?.created_at || "",
+                    UpdatedAt: order?.updated_at || "",
+                };
+
+                menuNames.forEach((name) => {
+                    const found = (order?.menus || []).find(
+                        (m) => m?.name === name,
+                    );
+                    rec[name] =
+                        found && Number(found.totalPortion) !== 0
+                            ? found.totalPortion
+                            : "";
+                });
+
+                return rec;
+            });
+
+            const wb = XLSX.utils.book_new();
+            const ws = XLSX.utils.json_to_sheet(orderSheetData);
+            XLSX.utils.book_append_sheet(wb, ws, "Orders");
+            XLSX.writeFile(wb, `${safeFileName}-orders.xlsx`);
+        } catch (e) {
+            message.error("Failed to export to XLSX");
+            console.error(e);
+        }
+    }, [orders, event?.name, getStatusDescription, safeFileName]);
+
+    // ---- Inline styles
+    const headerWrap = {
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        gap: 12,
+        flexWrap: "wrap",
     };
 
-    const exportToXlsx = () => {
-        // Extract all unique menu names from the data
-        const allMenuNames = new Set();
-        orders.forEach((order) => {
-            order.menus.forEach((menu) => {
-                allMenuNames.add(menu.name);
-            });
-        });
-
-        // Convert Set to Array
-        const menuNamesArray = Array.from(allMenuNames);
-
-        // Prepare the main order data
-        const orderSheetData = orders.map((order) => {
-            // Create an object with the order details
-            const orderDetails = {
-                OrderID: order._id,
-                InvoiceNumber: order.invoiceNumber,
-                Status: getStatusDescription(order.status),
-                CustomerName: order.customerFullname,
-                CustomerEmail: order.customerEmail,
-                CustomerPhone: order.customerPhone,
-                PaymentType: order.paymentType,
-                TotalPrice: order.totalPrice,
-                Event: event.name,
-                Note: order.note,
-                CreatedAt: order.created_at,
-                UpdatedAt: order.updated_at,
-            };
-
-            // Add menu total portions to the order details
-            menuNamesArray.forEach((menuName) => {
-                const menu = order.menus.find((m) => m.name === menuName);
-                orderDetails[menuName] =
-                    menu && menu.totalPortion !== 0 ? menu.totalPortion : ""; // Use empty string if totalPortion is 0 or menu is not found
-            });
-
-            return orderDetails;
-        });
-
-        // Create a new workbook
-        const workbook = XLSX.utils.book_new();
-
-        // Convert the data to a worksheet object
-        const orderSheet = XLSX.utils.json_to_sheet(orderSheetData);
-
-        // Append the worksheet to the workbook
-        XLSX.utils.book_append_sheet(workbook, orderSheet, "Orders");
-
-        // Export the workbook
-        XLSX.writeFile(workbook, `${event.name}-order.xlsx`);
-    };
-
-    const items = [
+    const tabsItems = [
         {
             key: "1",
             label: "Event Details",
@@ -136,7 +143,9 @@ const id = () => {
                 <Space direction="vertical" style={{ display: "flex" }}>
                     <Typography.Title level={4}>Related Menu</Typography.Title>
                     <AddItemButton
-                        hrefLink={`/database/menu/add?event=${event._id}`}
+                        hrefLink={`/database/menu/add?event=${
+                            event?._id || ""
+                        }`}
                         text="Add Menu for this Event"
                     />
                     <RelatedMenuTable filterName="event" itemFilter={event} />
@@ -169,23 +178,50 @@ const id = () => {
     return (
         <LoggedIn title={pageTitle}>
             <Content>
-                <Spin spinning={showLoading} tip="Loading...">
-                    <Typography.Title level={3}>{event.name}</Typography.Title>
-                    {showDataDisplay ? (
+                {eventError && (
+                    <div
+                        style={{
+                            padding: 12,
+                            borderRadius: 8,
+                            background: "#fff1f0",
+                            color: "#a8071a",
+                            border: "1px solid #ffa39e",
+                        }}>
+                        {eventError}
+                    </div>
+                )}
+
+                <Spin spinning={loading} tip="Loading...">
+                    <div style={headerWrap}>
+                        <Typography.Title level={3}>
+                            {event?.name || "Event"}
+                        </Typography.Title>
+                    </div>
+
+                    {hasEvent ? (
                         <Space direction="vertical" style={{ display: "flex" }}>
                             <Tabs
                                 defaultActiveKey="1"
-                                items={items}
-                                destroyInactiveTabPane={true}
+                                items={tabsItems}
+                                destroyOnHidden
                             />
                         </Space>
-                    ) : (
-                        ""
-                    )}
+                    ) : !loading ? (
+                        <div
+                            style={{
+                                width: "100%",
+                                textAlign: "center",
+                                padding: "24px 0",
+                                color: "#7A8AA0",
+                                background: "#fff",
+                                borderRadius: 12,
+                                border: "1px dashed #CFD8E3",
+                            }}>
+                            Event not found or not loaded.
+                        </div>
+                    ) : null}
                 </Spin>
             </Content>
         </LoggedIn>
     );
-};
-
-export default id;
+}

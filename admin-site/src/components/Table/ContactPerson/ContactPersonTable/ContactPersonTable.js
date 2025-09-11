@@ -1,21 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { useMemo } from "react";
 import Table from "../../Table";
 import { useSelector } from "react-redux";
 
 const ContactPersonTable = ({ onDelete, isLoading, showTable }) => {
-    const contactPerson = useSelector(
-        (state) => state.contactPerson.contactPerson,
-    );
-    const events = useSelector((state) => state.event.events);
-    const [tableHead, setTableHead] = useState([]);
+    const contactPerson =
+        useSelector((state) => state?.contactPerson?.contactPerson) ?? [];
+    const events = useSelector((state) => state?.event?.events) ?? [];
 
-    useEffect(() => {
-        setTableHead([
-            {
-                key: "name",
-                dataIndex: "name",
-                title: "Name",
-            },
+    const tableHead = useMemo(
+        () => [
+            { key: "name", dataIndex: "name", title: "Name" },
             {
                 key: "phoneNumber",
                 dataIndex: "phoneNumber",
@@ -27,28 +21,23 @@ const ContactPersonTable = ({ onDelete, isLoading, showTable }) => {
                 title: "Event",
                 filterMode: "menu",
                 filterSearch: true,
-                filters: events.map((event) => {
-                    return {
-                        text: event.name,
-                        value: event._id,
-                    };
-                }),
+                filters: events.map((event) => ({
+                    text: event.name,
+                    value: event._id,
+                })),
                 onFilter: (value, record) => {
-                    return record.event.includes(value);
+                    const ev = record?.event;
+                    // Keep original intent (includes), but be defensive about types
+                    if (Array.isArray(ev))
+                        return ev.map(String).includes(String(value));
+                    return String(ev ?? "").includes(String(value));
                 },
             },
-            {
-                key: "created_at",
-                dataIndex: "created_at",
-                title: "Created At",
-            },
-            {
-                key: "updated_at",
-                dataIndex: "updated_at",
-                title: "Updated At",
-            },
-        ]);
-    }, [events]);
+            { key: "created_at", dataIndex: "created_at", title: "Created At" },
+            { key: "updated_at", dataIndex: "updated_at", title: "Updated At" },
+        ],
+        [events],
+    );
 
     return (
         <Table

@@ -1,104 +1,95 @@
-import React from "react";
-import { formatDate } from "../../helpers/dateHelper";
-import { Table, Select, Badge, Dropdown, Button, message } from "antd";
+import React, { useMemo, useCallback } from "react";
 import { useRouter } from "next/router";
+import {
+    Table,
+    Select,
+    Badge,
+    Dropdown,
+    Button,
+    Typography,
+    message,
+} from "antd";
+import { formatDate } from "../../helpers/dateHelper";
 import {
     DeleteTwoTone,
     EditTwoTone,
     SearchOutlined,
     EllipsisOutlined,
 } from "@ant-design/icons";
-import styles from "./Table.module.scss";
-import { Typography } from "antd";
+
+const { Column } = Table;
+
+const ActionCell = ({ items, onClick }) => (
+    <div style={{ display: "flex", justifyContent: "center" }}>
+        <Dropdown menu={{ items, onClick }}>
+            <Button icon={<EllipsisOutlined />} />
+        </Dropdown>
+    </div>
+);
 
 const TableComponent = ({
     onDelete,
-    data,
-    dataHead,
+    data = [],
+    dataHead = [],
     linkToEdit,
-    categories,
-    vendors,
-    events,
-    paymentTypes,
+    categories = [],
+    vendors = [],
+    events = [],
+    paymentTypes = [],
     linkToView,
     actionsOff,
     deleteOff,
     isLoading,
     expandable,
 }) => {
-    const { Column } = Table;
     const router = useRouter();
-    const updatedData = data.map((item) => {
-        const newItem = { ...item, key: item._id };
-        return newItem;
-    });
 
-    const getActionItems = () => {
+    // ---- Actions
+    const actionItems = useMemo(() => {
         const items = [];
-
-        if (linkToView) {
+        if (linkToView)
             items.push({
                 label: "View",
-                key: "1",
+                key: "view",
                 icon: <SearchOutlined />,
             });
-        }
-
-        if (linkToEdit) {
-            items.push({
-                label: "Edit",
-                key: "2",
-                icon: <EditTwoTone />,
-            });
-        }
-
-        if (!deleteOff) {
+        if (linkToEdit)
+            items.push({ label: "Edit", key: "edit", icon: <EditTwoTone /> });
+        if (!deleteOff)
             items.push({
                 label: "Delete",
-                key: "3",
+                key: "delete",
                 icon: <DeleteTwoTone twoToneColor="#eb2f96" />,
             });
-        }
-
         return items;
-    };
+    }, [linkToView, linkToEdit, deleteOff]);
 
-    const handleItemClick = (e, record) => {
-        const { key } = e;
+    const handleActionClick = useCallback(
+        (e, record) => {
+            switch (e.key) {
+                case "view":
+                    if (linkToView) router.push(linkToView + record._id);
+                    break;
+                case "edit":
+                    if (linkToEdit) router.push(linkToEdit + record._id);
+                    break;
+                case "delete":
+                    onDelete?.(record);
+                    break;
+                default:
+                    message.error("Unknown action");
+            }
+        },
+        [router, linkToView, linkToEdit, onDelete],
+    );
 
-        switch (key) {
-            // View
-            case "1":
-                router.push(linkToView + record._id);
-                break;
-            // Edit
-            case "2":
-                router.push(linkToEdit + record._id);
-                break;
-            // Delete
-            case "3":
-                onDelete(record);
-                break;
-            // Error
-            default:
-                message.error("Error trigger action");
-                break;
-        }
-    };
-
-    const getDefaultValue = (options, statuses, id) => {
-        return JSON.stringify({
-            id: id,
-            value: options.find((option) => option.code === statuses)?.value,
-        });
-    };
-
-    const renderDateColumn = (title, dataIndex, key, formatFunc) => (
+    // ---- Column builders
+    const renderDateColumn = (title, dataIndex, key, fmt) => (
         <Column
             title={title}
             dataIndex={dataIndex}
-            key={key}
-            render={(dates) => <>{formatFunc(dates)}</>}
+            key={`col-${key}`}
+            render={(value) => <>{fmt(value)}</>}
         />
     );
 
@@ -106,7 +97,7 @@ const TableComponent = ({
         <Column
             title={title}
             dataIndex={dataIndex}
-            key={key}
+            key={`col-${key}`}
             filterSearch={tH.filterSearch}
             filters={tH.filters}
             onFilter={tH.onFilter}
@@ -120,30 +111,28 @@ const TableComponent = ({
         <Column
             title={title}
             dataIndex={dataIndex}
-            key={key}
+            key={`col-${key}`}
             render={(desc) => (
                 <Typography.Paragraph
-                    ellipsis={{
-                        rows: 1,
-                        expandable: true,
-                    }}
-                    title={desc}>
+                    ellipsis={{ rows: 1, expandable: true }}
+                    title={desc}
+                    style={{ marginBottom: 0 }}>
                     {desc}
                 </Typography.Paragraph>
             )}
         />
     );
 
-    const renderPaymentTypeColumn = (title, dataIndex, key, paymentTypes) => (
+    const renderPaymentTypeColumn = (title, dataIndex, key) => (
         <Column
             title={title}
             dataIndex={dataIndex}
-            key={key}
+            key={`col-${key}`}
             render={(record) => {
-                let paymentType =
+                const p =
                     paymentTypes.find((e) => e.type === record) ||
                     paymentTypes.find((e) => e._id === record);
-                return <>{paymentType?.type}</>;
+                return <>{p?.type}</>;
             }}
         />
     );
@@ -152,204 +141,200 @@ const TableComponent = ({
         <Column
             title={title}
             dataIndex={dataIndex}
-            key={key}
+            key={`col-${key}`}
             filterSearch={tH.filterSearch}
             onFilter={tH.onFilter}
             filters={tH.filters}
             defaultFilteredValue={tH.defaultFilteredValue}
             render={(el, record) => {
-                if (!tH.coloredText) {
-                    return <>{el?.toString() || ""}</>;
+                if (!tH.coloredText) return <>{el?.toString?.() || ""}</>;
+                const kind = tH.coloredText(record);
+                if (kind === "danger") {
+                    return (
+                        <Typography.Text type="danger">
+                            <Badge status="error" /> {el?.toString?.() || ""}
+                        </Typography.Text>
+                    );
                 }
-
-                const colorTextType = tH.coloredText(record);
-                switch (colorTextType) {
-                    case "danger":
-                        return (
-                            <Typography.Text type={colorTextType}>
-                                <Badge status="error" /> {el?.toString() || ""}
-                            </Typography.Text>
-                        );
-                    case "success":
-                        return (
-                            <Typography.Text type={colorTextType}>
-                                <Badge status="success" />{" "}
-                                {el?.toString() || ""}
-                            </Typography.Text>
-                        );
-                    default:
-                        return (
-                            <Typography.Text type={colorTextType}>
-                                {el?.toString() || ""}
-                            </Typography.Text>
-                        );
+                if (kind === "success") {
+                    return (
+                        <Typography.Text type="success">
+                            <Badge status="success" /> {el?.toString?.() || ""}
+                        </Typography.Text>
+                    );
                 }
+                return (
+                    <Typography.Text>{el?.toString?.() || ""}</Typography.Text>
+                );
             }}
         />
     );
 
-    const editableRow = (tH) => {
-        const type = tH.type;
-        switch (type) {
-            case "select":
-                return (
-                    <Column
-                        title={tH.title}
-                        dataIndex={tH.dataIndex}
-                        key={tH.key}
-                        filterSearch={tH.filterSearch}
-                        onFilter={tH.onFilter}
-                        filters={tH.options.map((option) => {
-                            return {
-                                text: option.title,
-                                value: option.code,
-                            };
-                        })}
-                        defaultFilteredValue={[tH.defaultFilteredValue]}
-                        render={(statuses, record) => {
-                            return (
-                                <Select
-                                    key={record._id}
-                                    style={{
-                                        width: "95%",
-                                    }}
-                                    defaultValue={getDefaultValue(
-                                        tH.options,
-                                        statuses,
-                                        record._id,
-                                    )}
-                                    onChange={tH.onChange}
-                                    disabled={
-                                        tH.disabled
-                                            ? tH.disabled(record, events)
-                                            : false
-                                    }>
-                                    {tH.options.map((statusOption) => (
-                                        <Select.Option
-                                            key={statusOption.title}
-                                            value={JSON.stringify({
-                                                id: record._id,
-                                                value: statusOption.value,
-                                            })}>
-                                            {statusOption.title}
-                                        </Select.Option>
-                                    ))}
-                                </Select>
-                            );
-                        }}
-                    />
-                );
+    const serializeSelectValue = (id, value) => JSON.stringify({ id, value });
 
-            default:
-                break;
-        }
+    const getDefaultValue = (options = [], currentCode, id) => {
+        const matched = Array.isArray(options)
+            ? options.find((o) => o.code === currentCode)
+            : undefined;
+
+        const value = matched?.value ?? options?.[0]?.value ?? "";
+        return serializeSelectValue(id, value);
     };
+
+    const editableSelectColumn = (tH) => {
+        if (tH.type !== "select") return null;
+
+        const {
+            title,
+            dataIndex,
+            key,
+            options = [],
+            filterSearch,
+            onFilter,
+            filterMode,
+            defaultFilteredValue,
+            onChange,
+            disabled,
+        } = tH;
+
+        const filters = (options || []).map((opt) => ({
+            text: opt.title,
+            value: opt.code,
+        }));
+
+        return (
+            <Column
+                title={title}
+                dataIndex={dataIndex}
+                key={key}
+                filterSearch={filterSearch}
+                onFilter={onFilter}
+                filterMode={filterMode}
+                filters={filters}
+                defaultFilteredValue={
+                    typeof defaultFilteredValue !== "undefined"
+                        ? [defaultFilteredValue]
+                        : undefined
+                }
+                render={(currentCode, record) => (
+                    <Select
+                        key={record._id}
+                        style={{ width: "95%" }}
+                        // keep uncontrolled Select + JSON value (backward compatible)
+                        defaultValue={getDefaultValue(
+                            options,
+                            currentCode,
+                            record._id,
+                        )}
+                        onChange={onChange}
+                        disabled={disabled ? disabled(record, events) : false}>
+                        {(options || []).map((opt) => (
+                            <Select.Option
+                                key={`${record._id}-${String(opt.code)}`}
+                                value={serializeSelectValue(
+                                    record._id,
+                                    opt.value,
+                                )}>
+                                {opt.title}
+                            </Select.Option>
+                        ))}
+                    </Select>
+                )}
+            />
+        );
+    };
+
+    const hasActions = !(
+        actionsOff ||
+        (!linkToEdit && deleteOff && !linkToView)
+    );
 
     return (
         <Table
-            className={styles.table}
+            rowKey="_id"
             loading={isLoading}
-            dataSource={updatedData}
-            scroll={{
-                x: dataHead.length * 150,
-                y: 800,
-            }}
+            dataSource={data}
+            scroll={{ x: (dataHead?.length || 0) * 150, y: 800 }}
             size="small"
             expandable={
-                expandable
-                    ? {
-                          expandedRowRender: expandable,
-                      }
-                    : null
-            }>
-            {dataHead.map((tH) => {
-                const { title, dataIndex, key, editable } = tH;
+                expandable ? { expandedRowRender: expandable } : undefined
+            }
+            style={{ width: "100%" }}>
+            {(dataHead || []).map((tH) => {
+                const { title, dataIndex, key, editable, type } = tH;
 
-                if (editable) {
-                    return editableRow(tH);
-                } else if (key === "created_at" || key === "updated_at") {
-                    return renderDateColumn(title, dataIndex, key, (dates) =>
-                        formatDate(dates, true),
+                if (editable && type === "select")
+                    return editableSelectColumn(tH);
+
+                if (key === "created_at" || key === "updated_at")
+                    return renderDateColumn(title, dataIndex, key, (d) =>
+                        formatDate(d, true),
                     );
-                } else if (key === "started_at") {
-                    return renderDateColumn(
-                        title,
-                        dataIndex,
-                        key,
-                        (startedAt) => formatDate(startedAt, false, true),
+
+                if (key === "started_at")
+                    return renderDateColumn(title, dataIndex, key, (d) =>
+                        formatDate(d, false, true),
                     );
-                } else if (key === "category") {
+
+                if (key === "category")
                     return renderFilterableColumn(
                         title,
                         dataIndex,
                         key,
                         tH,
                         (categoryId) => {
-                            const category = categories.find(
-                                (c) => c._id === categoryId,
+                            const c = categories.find(
+                                (x) => x._id === categoryId,
                             );
-                            return <>{category?.name}</>;
+                            return <>{c?.name}</>;
                         },
                     );
-                } else if (key === "vendor") {
+
+                if (key === "vendor")
                     return renderFilterableColumn(
                         title,
                         dataIndex,
                         key,
                         tH,
                         (vendorId) => {
-                            const vendor = vendors.find(
-                                (c) => c._id === vendorId,
-                            );
-                            return <>{vendor?.name}</>;
+                            const v = vendors.find((x) => x._id === vendorId);
+                            return <>{v?.name}</>;
                         },
                     );
-                } else if (key === "event") {
+
+                if (key === "event")
                     return renderFilterableColumn(
                         title,
                         dataIndex,
                         key,
                         tH,
                         (eventId) => {
-                            const event = events.find((e) => e._id === eventId);
-                            return <>{event?.name}</>;
+                            const ev = events.find((x) => x._id === eventId);
+                            return <>{ev?.name}</>;
                         },
                     );
-                } else if (key === "description") {
+
+                if (key === "description")
                     return renderDescriptionColumn(title, dataIndex, key);
-                } else if (key === "paymentType") {
-                    return renderPaymentTypeColumn(
-                        title,
-                        dataIndex,
-                        key,
-                        paymentTypes,
-                    );
-                } else {
-                    return renderColoredTextColumn(title, dataIndex, key, tH);
-                }
+
+                if (key === "paymentType")
+                    return renderPaymentTypeColumn(title, dataIndex, key);
+
+                return renderColoredTextColumn(title, dataIndex, key, tH);
             })}
-            {actionsOff || (!linkToEdit && deleteOff && !linkToView) ? null : (
+
+            {hasActions && (
                 <Column
                     title="Actions"
                     key="action"
                     fixed="right"
                     width={80}
-                    render={(_, record) => {
-                        return (
-                            <div className={styles.actionCell}>
-                                <Dropdown
-                                    menu={{
-                                        items: getActionItems(),
-                                        onClick: (e) =>
-                                            handleItemClick(e, record),
-                                    }}>
-                                    <Button>
-                                        <EllipsisOutlined />
-                                    </Button>
-                                </Dropdown>
-                            </div>
-                        );
-                    }}
+                    render={(_, record) => (
+                        <ActionCell
+                            items={actionItems}
+                            onClick={(e) => handleActionClick(e, record)}
+                        />
+                    )}
                 />
             )}
         </Table>

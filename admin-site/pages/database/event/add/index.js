@@ -4,22 +4,27 @@ import AddEventForm from "../../../../src/components/Form/Event/AddEventForm/Add
 import Content from "../../../../src/components/Layout/Content/Content";
 import { Typography } from "antd";
 
-const index = () => {
-    const pageData = {
-        name: "Event",
-        href: `/event/add/`,
-        current: true,
-    };
+export default function AddEventPage() {
     const pageTitle = "Saso App | Event";
 
+    const headerStyle = {
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        gap: 12,
+        flexWrap: "wrap",
+    };
+
     return (
-        <LoggedIn title={pageTitle} pageData={pageData}>
+        <LoggedIn title={pageTitle}>
             <Content>
-                <Typography.Title level={3}>Add event</Typography.Title>
-                <AddEventForm />
+                <div style={{ display: "grid", gap: 16 }}>
+                    <div style={headerStyle}>
+                        <Typography.Title level={3}>Add Event</Typography.Title>
+                    </div>
+                    <AddEventForm />
+                </div>
             </Content>
         </LoggedIn>
     );
-};
-
-export default index;
+}

@@ -1,166 +1,186 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { editDetailMenu } from "../../../../store/reducers/menuReducer";
 import { Form, message } from "antd";
-import Router from "next/router";
+import { useRouter } from "next/router";
 import FormComponent from "../../Form";
 
-const getFileList = (images) => {
-    return images?.map((image) => ({
+const toFileList = (images = []) =>
+    images.map((image) => ({
         url: image.imageUrl,
         name: image.fileName,
         eTag: image.eTag,
         imageUrl: image.imageUrl,
         fileName: image.fileName,
     }));
-};
 
 const EditMenuForm = () => {
     const dispatch = useDispatch();
+    const router = useRouter();
+
     const [form] = Form.useForm();
-    const menu = useSelector((state) => state.menu.detailMenu);
-    const events = useSelector((state) => state.event.events);
-    const categories = useSelector((state) => state.category.categories);
-    const vendors = useSelector((state) => state.vendor.vendors);
     const [showUploading, setShowUploading] = useState(false);
-    const [images, setImages] = useState(getFileList(menu.images));
 
-    const initialValues = {
-        name: menu.name,
-        barcode: menu.barcode,
-        quantity: menu.quantity,
-        price: menu.price,
-        event: menu.event,
-        category: menu.category,
-        vendor: menu.vendor,
-        description: menu.description,
-        note: menu.note,
-    };
+    const menu = useSelector((state) => state?.menu?.detailMenu) ?? {};
+    const events = useSelector((state) => state?.event?.events) ?? [];
+    const categories =
+        useSelector((state) => state?.category?.categories) ?? [];
+    const vendors = useSelector((state) => state?.vendor?.vendors) ?? [];
 
-    const submitForm = async (values) => {
-        const confirmed = confirm("Please confirm to save your changes");
+    const [images, setImages] = useState(() => toFileList(menu?.images));
+    useEffect(() => {
+        setImages(toFileList(menu?.images));
+    }, [menu?.images]);
 
-        if (!confirmed) {
-            return;
-        }
+    const initialValues = useMemo(
+        () => ({
+            name: menu?.name,
+            barcode: menu?.barcode,
+            quantity: menu?.quantity,
+            price: menu?.price,
+            event: menu?.event,
+            category: menu?.category,
+            vendor: menu?.vendor,
+            description: menu?.description,
+            note: menu?.note,
+        }),
+        [
+            menu?.name,
+            menu?.barcode,
+            menu?.quantity,
+            menu?.price,
+            menu?.event,
+            menu?.category,
+            menu?.vendor,
+            menu?.description,
+            menu?.note,
+        ],
+    );
 
-        setShowUploading(true);
+    const submitForm = useCallback(
+        async (values) => {
+            const confirmed = window.confirm(
+                "Please confirm to save your changes",
+            );
+            if (!confirmed) return;
 
-        try {
-            const data = new FormData();
+            setShowUploading(true);
+            try {
+                const data = new FormData();
 
-            for (const key in values) {
-                data.append(key, values[key] || "");
-            }
+                Object.entries(values).forEach(([k, v]) =>
+                    data.append(k, v ?? ""),
+                );
 
-            images.forEach((image) => {
-                const file = image.originFileObj || image.eTag;
-                data.append("imageUrls", file);
-            });
+                images.forEach((image) => {
+                    const fileOrRef = image?.originFileObj || image?.eTag;
+                    if (fileOrRef) data.append("imageUrls", fileOrRef);
+                });
 
-            const response = await dispatch(editDetailMenu(menu._id, data));
+                const response = await dispatch(
+                    editDetailMenu(menu?._id, data),
+                );
 
-            if (response?.status === "failed") {
+                if (response?.status === "failed") {
+                    message.error(
+                        response?.message || "Failed to save changes.",
+                    );
+                } else {
+                    message.success(response?.message || "Changes saved.");
+                    router.push("/database/menu");
+                }
+            } catch (error) {
+                message.error(error?.message || "Something went wrong.");
+            } finally {
                 setShowUploading(false);
-                message.error(response.message);
-            } else {
-                setShowUploading(false);
-                message.success(response.message);
-                Router.push("/database/menu");
             }
-        } catch (error) {
-            setShowUploading(false);
-        }
-    };
+        },
+        [dispatch, images, menu?._id, router],
+    );
 
-    const onReset = () => {
-        form.current?.resetFields();
-    };
+    const onReset = useCallback(() => {
+        form.resetFields();
+        setImages(toFileList(menu?.images));
+    }, [form, menu?.images]);
 
-    const formItems = [
-        {
-            name: "General Information",
-            type: "divider",
-        },
-        {
-            name: "name",
-            label: "Name",
-            type: "text",
-            placeholder: "Name",
-            required: true,
-        },
-        {
-            name: "barcode",
-            label: "Barcode",
-            type: "inputCamera",
-            placeholder: "Barcode",
-        },
-        {
-            name: "quantity",
-            label: "Quantity",
-            type: "number",
-            placeholder: "Quantity",
-            required: true,
-            min: 0,
-            step: 1,
-        },
-        {
-            name: "price",
-            label: "Price (€)",
-            type: "number",
-            placeholder: "Price (€)",
-            required: true,
-            min: 0,
-            step: 0.01,
-        },
-        {
-            name: "event",
-            label: "Event",
-            type: "select",
-            placeholder: "Event",
-            options: events.map((item) => ({
-                value: item._id,
-                label: item.name,
-            })),
-            required: true,
-        },
-        {
-            name: "category",
-            label: "Category",
-            type: "select",
-            placeholder: "Category",
-            options: categories.map((item) => ({
-                value: item._id,
-                label: item.name,
-            })),
-            required: true,
-        },
-        {
-            name: "vendor",
-            label: "Vendor",
-            type: "select",
-            placeholder: "Vendor",
-            options: vendors.map((item) => ({
-                value: item._id,
-                label: item.name,
-            })),
-            required: true,
-        },
-        {
-            name: "Additional Information",
-            type: "divider",
-        },
-        {
-            name: "description",
-            label: "Description",
-            type: "description",
-            placeholder: "Description",
-        },
-        {
-            label: "images",
-            type: "imageUploader",
-        },
-    ];
+    const formItems = useMemo(
+        () => [
+            { name: "General Information", type: "divider" },
+            {
+                name: "name",
+                label: "Name",
+                type: "text",
+                placeholder: "Name",
+                required: true,
+            },
+            {
+                name: "barcode",
+                label: "Barcode",
+                type: "inputCamera",
+                placeholder: "Barcode",
+            },
+            {
+                name: "quantity",
+                label: "Quantity",
+                type: "number",
+                placeholder: "Quantity",
+                required: true,
+                min: 0,
+                step: 1,
+            },
+            {
+                name: "price",
+                label: "Price (€)",
+                type: "number",
+                placeholder: "Price (€)",
+                required: true,
+                min: 0,
+                step: 0.01,
+            },
+            {
+                name: "event",
+                label: "Event",
+                type: "select",
+                placeholder: "Event",
+                options: events.map((item) => ({
+                    value: item._id,
+                    label: item.name,
+                })),
+                required: true,
+            },
+            {
+                name: "category",
+                label: "Category",
+                type: "select",
+                placeholder: "Category",
+                options: categories.map((item) => ({
+                    value: item._id,
+                    label: item.name,
+                })),
+                required: true,
+            },
+            {
+                name: "vendor",
+                label: "Vendor",
+                type: "select",
+                placeholder: "Vendor",
+                options: vendors.map((item) => ({
+                    value: item._id,
+                    label: item.name,
+                })),
+                required: true,
+            },
+            { name: "Additional Information", type: "divider" },
+            {
+                name: "description",
+                label: "Description",
+                type: "description",
+                placeholder: "Description",
+            },
+            { label: "images", type: "imageUploader" },
+        ],
+        [events, categories, vendors],
+    );
 
     return (
         <FormComponent
@@ -172,7 +192,8 @@ const EditMenuForm = () => {
             showUploading={showUploading}
             images={images}
             setImages={setImages}
-            initialValues={initialValues}></FormComponent>
+            initialValues={initialValues}
+        />
     );
 };
 

@@ -4,62 +4,86 @@ import AddMenuForm from "../../../../src/components/Form/Menu/AddMenuForm/AddMen
 import Content from "../../../../src/components/Layout/Content/Content";
 import { getAllEvents } from "../../../../src/store/reducers/eventReducer";
 import { getAllCategories } from "../../../../src/store/reducers/categoryReducer";
+import { getAllVendors } from "../../../../src/store/reducers/vendorReducer";
 import { useDispatch } from "react-redux";
 import { message, Spin, Typography } from "antd";
 import { isAuth } from "../../../../src/helpers/authHelper";
-import { getAllVendors } from "../../../../src/store/reducers/vendorReducer";
 
-const index = () => {
+const AddMenuPage = () => {
     const dispatch = useDispatch();
     const [showLoading, setShowLoading] = useState(false);
     const [showForm, setShowForm] = useState(false);
     const pageTitle = "Saso App | Menu";
 
     useEffect(() => {
+        let cancelled = false;
+
         const fetchData = async () => {
             setShowLoading(true);
+            setShowForm(false);
 
             try {
-                const [eventsResponse, categoriesResponse, vendorResponse] =
-                    await Promise.all([
-                        dispatch(getAllEvents()),
-                        dispatch(getAllCategories()),
-                        dispatch(getAllVendors()),
-                    ]);
+                const results = await Promise.all([
+                    dispatch(getAllEvents()),
+                    dispatch(getAllCategories()),
+                    dispatch(getAllVendors()),
+                ]);
 
-                const failedResponse = [
-                    eventsResponse,
-                    categoriesResponse,
-                    vendorResponse,
-                ].find((response) => response?.status === "failed");
-
-                if (failedResponse) {
-                    message.error(failedResponse.message);
-                    isAuth(failedResponse);
-                } else {
-                    setShowForm(true);
+                const failed = results.find((r) => r?.status === "failed");
+                if (failed) {
+                    if (!cancelled) {
+                        message.error(
+                            failed?.message || "Failed to load prerequisites",
+                        );
+                        isAuth(failed);
+                    }
+                    return;
                 }
-            } catch (error) {
-                console.error("Error fetching data:", error);
-                message.error(error.message);
+
+                if (!cancelled) setShowForm(true);
+            } catch (err) {
+                if (!cancelled) {
+                    message.error(
+                        err?.message || "Failed to load prerequisites",
+                    );
+                    isAuth(err);
+                }
             } finally {
-                setShowLoading(false);
+                if (!cancelled) setShowLoading(false);
             }
         };
 
         fetchData();
-    }, []);
+        return () => {
+            cancelled = true;
+        };
+    }, [dispatch]);
 
     return (
         <LoggedIn title={pageTitle}>
             <Content>
+                <Typography.Title level={3}>Add menu</Typography.Title>
                 <Spin spinning={showLoading} tip="Loading...">
-                    <Typography.Title level={3}>Add menu</Typography.Title>
-                    {showForm ? <AddMenuForm /> : ""}
+                    {showForm ? (
+                        <AddMenuForm />
+                    ) : (
+                        !showLoading && (
+                            <div
+                                style={{
+                                    padding: 16,
+                                    background: "#fff",
+                                    border: "1px dashed #e5e7eb",
+                                    borderRadius: 12,
+                                    color: "#6b7280",
+                                }}>
+                                Unable to display the form. Please try again.
+                            </div>
+                        )
+                    )}
                 </Spin>
             </Content>
         </LoggedIn>
     );
 };
 
-export default index;
+export default AddMenuPage;

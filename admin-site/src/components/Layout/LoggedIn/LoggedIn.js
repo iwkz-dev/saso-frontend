@@ -1,8 +1,7 @@
 import Head from "next/head";
-import Router from "next/router";
-import { LogoutOutlined } from "@ant-design/icons";
-import { logout } from "../../../helpers/authHelper";
+import { useRouter } from "next/router";
 import {
+    LogoutOutlined,
     CalendarOutlined,
     PieChartOutlined,
     UserOutlined,
@@ -14,89 +13,125 @@ import {
     ShopOutlined,
     ScanOutlined,
 } from "@ant-design/icons";
-import { useEffect, useState } from "react";
-import { isAuth } from "../../../helpers/authHelper";
-import { Button, Layout, Menu as Menus } from "antd";
+import { useEffect, useMemo, useState } from "react";
+import { isAuth, logout } from "../../../helpers/authHelper";
+import { Button, Layout, Menu as Menus, Spin } from "antd";
 
 function LoggedIn({ children, title, isNotAllowed }) {
-    const [collapsed, setCollapsed] = useState(true);
-    const [current, setCurrent] = useState("");
+    const router = useRouter();
     const { Header, Footer, Sider, Content } = Layout;
 
+    const [collapsed, setCollapsed] = useState(true);
+    const [authChecked, setAuthChecked] = useState(false);
+    const [allowed, setAllowed] = useState(false);
+    const [current, setCurrent] = useState("/");
+
+    const items = useMemo(
+        () => [
+            { key: "/", icon: <PieChartOutlined />, label: "Dashboard" },
+            { key: "/scan", icon: <ScanOutlined />, label: "Scan" },
+            { type: "divider" },
+            {
+                type: "group",
+                label: "Database",
+                children: [
+                    {
+                        key: "/database/event",
+                        icon: <CalendarOutlined />,
+                        label: "Event",
+                    },
+                    {
+                        key: "/database/category",
+                        icon: <UnorderedListOutlined />,
+                        label: "Category",
+                    },
+                    {
+                        key: "/database/vendor",
+                        icon: <ShopOutlined />,
+                        label: "Vendor",
+                    },
+                    {
+                        key: "/database/menu",
+                        icon: <ReadOutlined />,
+                        label: "Menu",
+                    },
+                    {
+                        key: "/database/payment-type",
+                        icon: <CreditCardOutlined />,
+                        label: "Payment Type",
+                    },
+                    {
+                        key: "/database/order",
+                        icon: <ShoppingOutlined />,
+                        label: "Order",
+                    },
+                    {
+                        key: "/database/contact-person",
+                        icon: <ContactsOutlined />,
+                        label: "Contact Person",
+                    },
+                    {
+                        key: "/database/user",
+                        icon: <UserOutlined />,
+                        label: "User",
+                    },
+                ],
+            },
+        ],
+        [],
+    );
+
     useEffect(() => {
-        const pathChunks = Router.pathname.split("/");
-        pathChunks.shift();
-        setCurrent("/" + pathChunks.join("/"));
-    }, []);
-
-    function getItem(label, key, icon, children) {
-        return {
-            key,
-            icon,
-            children,
-            label,
-        };
-    }
-
-    const items = [
-        getItem("Dashboard", "/", <PieChartOutlined />),
-        getItem("Scan", "/scan", <ScanOutlined />),
-        {
-            type: "divider",
-        },
-        {
-            type: "group",
-            label: "Database",
-            children: [
-                getItem("Event", "/database/event", <CalendarOutlined />),
-                getItem(
-                    "Category",
-                    "/database/category",
-                    <UnorderedListOutlined />,
-                ),
-                getItem("Vendor", "/database/vendor", <ShopOutlined />),
-                getItem("Menu", "/database/menu", <ReadOutlined />),
-                getItem(
-                    "Payment Type",
-                    "/database/payment-type",
-                    <CreditCardOutlined />,
-                ),
-                getItem("Order", "/database/order", <ShoppingOutlined />),
-                getItem(
-                    "Contact Person",
-                    "/database/contact-person",
-                    <ContactsOutlined />,
-                ),
-                getItem("User", "/database/user", <UserOutlined />),
-            ],
-        },
-    ];
+        const asPath = (router.asPath || "/").replace(/\/+$/, "") || "/";
+        setCurrent(asPath);
+    }, [router.asPath]);
 
     useEffect(() => {
-        if (!isAuth()) {
-            Router.push("/login");
+        const authed = !!isAuth();
+        if (!authed) {
+            setAllowed(false);
+            setAuthChecked(true);
+            router.replace("/login");
+            return;
         }
-
         if (isNotAllowed) {
-            Router.back();
+            setAllowed(false);
+            setAuthChecked(true);
+            router.replace("/");
+            return;
         }
-    }, []);
-
-    if (!isAuth() || isNotAllowed) {
-        return "";
-    }
+        setAllowed(true);
+        setAuthChecked(true);
+    }, [router, isNotAllowed]);
 
     const onClick = (e) => {
         const key = e.key;
-        Router.push(key);
         setCurrent(key);
+        router.push(key);
     };
+
+    if (!authChecked) {
+        return (
+            <div
+                style={{
+                    minHeight: "100vh",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                }}>
+                <Spin tip="Checking access..." />
+            </div>
+        );
+    }
+
+    if (!allowed) return null;
 
     return (
         <Layout style={{ minHeight: "100vh" }}>
             <Head>
                 <title>{title}</title>
             </Head>
+
             <Sider
                 collapsible
                 collapsed={collapsed}
@@ -111,27 +146,26 @@ function LoggedIn({ children, title, isNotAllowed }) {
                         width: "100%",
                     }}>
                     <img
-                        style={{
-                            maxWidth: "2rem",
-                        }}
+                        style={{ maxWidth: "2rem" }}
                         src="/admin/iwkz-logo-no-text.svg"
                         alt="IWKZ logo"
                     />
                 </div>
+
                 <Menus
-                    defaultSelectedKeys={["/dashboard"]}
+                    mode="inline"
+                    theme="dark"
                     onClick={onClick}
                     selectedKeys={[current]}
                     items={items}
-                    mode="inline"
-                    theme="dark"
                 />
             </Sider>
-            <Layout className="site-layout">
+
+            <Layout>
                 <Header
                     style={{
                         padding: 0,
-                        background: "#00000000",
+                        background: "transparent",
                         display: "flex",
                         alignItems: "center",
                         width: "100%",
@@ -146,20 +180,23 @@ function LoggedIn({ children, title, isNotAllowed }) {
                         }}>
                         <div />
                         <img
-                            style={{
-                                maxWidth: "3rem",
-                            }}
+                            style={{ maxWidth: "3rem" }}
                             src="/admin/iwkz_logo.png"
                             alt="IWKZ logo"
                         />
                         <Button
                             shape="circle"
                             icon={<LogoutOutlined />}
-                            onClick={logout}
+                            onClick={() => {
+                                logout(); // make sure this clears tokens/storage
+                                router.replace("/login");
+                            }}
                         />
                     </div>
                 </Header>
+
                 <Content>{children}</Content>
+
                 <Footer style={{ margin: "auto" }}>© 2023 IWKZ Al-Falah</Footer>
             </Layout>
         </Layout>

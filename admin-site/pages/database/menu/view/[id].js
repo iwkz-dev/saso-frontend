@@ -8,51 +8,78 @@ import Content from "../../../../src/components/Layout/Content/Content";
 import { Spin, Typography, message } from "antd";
 import { isAuth } from "../../../../src/helpers/authHelper";
 
-const id = () => {
+const MenuViewPage = () => {
     const dispatch = useDispatch();
     const router = useRouter();
     const { id } = router.query;
     const pageTitle = "Saso App | Menu";
+
     const [showDataDisplay, setShowDataDisplay] = useState(false);
     const [showLoading, setShowLoading] = useState(false);
+
     const menu = useSelector((state) => state.menu.detailMenu);
 
     useEffect(() => {
+        if (!router.isReady || !id) return;
+
+        let cancelled = false;
+
         const fetchData = async () => {
             setShowLoading(true);
             try {
-                const response = await dispatch(getDetailMenu(id));
-                if (response.status === "success") {
+                const res = await dispatch(getDetailMenu(id));
+                if (cancelled) return;
+
+                if (res?.status === "success") {
                     setShowDataDisplay(true);
                 } else {
-                    message.error(response.message);
-                    isAuth(response);
+                    message.error(res?.message || "Failed to load menu");
+                    isAuth(res);
+                    setShowDataDisplay(false);
                 }
-            } catch (error) {
-                console.error("Error fetching data:", error);
-                // Handle error as needed
+            } catch (err) {
+                if (!cancelled) {
+                    message.error(err?.message || "Failed to load menu");
+                    setShowDataDisplay(false);
+                }
             } finally {
-                setShowLoading(false);
+                if (!cancelled) setShowLoading(false);
             }
         };
 
-        if (id) {
-            fetchData();
-        }
-    }, [id, dispatch]);
+        fetchData();
+        return () => {
+            cancelled = true;
+        };
+    }, [router.isReady, id, dispatch]);
 
     return (
         <LoggedIn title={pageTitle}>
             <Content>
+                <Typography.Title level={3}>
+                    View Menu &quot;{menu?.name || ""}&quot;
+                </Typography.Title>
                 <Spin spinning={showLoading} tip="Loading...">
-                    <Typography.Title level={3}>
-                        View Menu &quot;{menu.name}&quot;
-                    </Typography.Title>
-                    {showDataDisplay ? <MenuDataDisplay menu={menu} /> : ""}
+                    {showDataDisplay ? (
+                        <MenuDataDisplay menu={menu} />
+                    ) : (
+                        !showLoading && (
+                            <div
+                                style={{
+                                    padding: "16px",
+                                    background: "#fff",
+                                    border: "1px dashed #e5e7eb",
+                                    borderRadius: 12,
+                                    color: "#6b7280",
+                                }}>
+                                No data to display.
+                            </div>
+                        )
+                    )}
                 </Spin>
             </Content>
         </LoggedIn>
     );
 };
 
-export default id;
+export default MenuViewPage;

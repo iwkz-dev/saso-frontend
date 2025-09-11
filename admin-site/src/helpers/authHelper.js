@@ -1,39 +1,44 @@
 import Router from "next/router";
 
+const TOKEN_KEY = "access_token";
+
+const readToken = () => {
+    if (typeof window === "undefined") return null;
+    try {
+        return JSON.parse(localStorage.getItem(TOKEN_KEY));
+    } catch {
+        return null;
+    }
+};
+
 export const isAuth = (response) => {
-    if (response && getToken() && getUserId()) {
-        if (
-            response.message.toLowerCase() === "invalid token" ||
-            response.name.toLowerCase() === "invalid auth"
-        ) {
+    const token = getToken();
+    const userId = getUserId();
+
+    if (response && token && userId) {
+        const msg = response?.message?.toLowerCase();
+        const name = response?.name?.toLowerCase();
+        if (msg === "invalid token" || name === "invalid auth") {
             logout();
         }
     }
-    return !!(getToken() && getUserId());
+
+    return Boolean(token && userId);
 };
 
 export const setToken = (data) => {
-    localStorage.setItem("access_token", JSON.stringify(data));
+    if (typeof window !== "undefined") {
+        localStorage.setItem(TOKEN_KEY, JSON.stringify(data));
+    }
 };
 
-export const getToken = () => {
-    if (typeof window !== "undefined") {
-        return JSON.parse(localStorage.getItem("access_token"))?.accessToken;
-    }
-    return null;
-};
+export const getToken = () => readToken()?.accessToken ?? null;
 
-export const getUserId = () => {
-    if (typeof window !== "undefined") {
-        return JSON.parse(localStorage.getItem("access_token"))?.id;
-    }
-    return null;
-};
+export const getUserId = () => readToken()?.id ?? null;
 
 export const logout = () => {
     if (typeof window !== "undefined") {
-        // Perform localStorage action
-        localStorage.removeItem("access_token");
+        localStorage.removeItem(TOKEN_KEY);
         Router.push("/login");
     }
 };

@@ -1,179 +1,288 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import paymentTypeService from "../../services/paymentTypeService";
 
-export const getAllPaymentTypes = () => async (dispatch) => {
-    return paymentTypeService
-        .getAllPaymentTypes()
-        .then((response) => {
-            dispatch(getPaymentTypesSuccess(response.data.data));
-            return response;
-        })
-        .catch((e) => {
-            if (e) {
-                dispatch(getPaymentTypesFailed(e.data.message));
-                return e.data;
-            }
-            const error = {
-                message: "Server Error",
-                status: "failed",
+// ============== Helpers ==============
+const getErrorPayload = (err, fallback = "Server Error") => {
+    const message =
+        err?.response?.data?.message ||
+        err?.data?.message ||
+        err?.message ||
+        fallback;
+    return { status: "failed", message };
+};
+
+const findIndexById = (arr, id) => arr.findIndex((i) => i._id === id);
+
+// ============== Core Thunks ==============
+export const getAllPaymentTypesThunk = createAsyncThunk(
+    "paymentType/getAllPaymentTypes",
+    async (_, { rejectWithValue }) => {
+        try {
+            const res = await paymentTypeService.getAllPaymentTypes();
+            return { status: "success", data: res?.data?.data || [] };
+        } catch (err) {
+            return rejectWithValue(getErrorPayload(err));
+        }
+    },
+);
+
+export const deletePaymentTypeThunk = createAsyncThunk(
+    "paymentType/deletePaymentType",
+    async (id, { rejectWithValue }) => {
+        try {
+            const res = await paymentTypeService.deletePaymentType(id);
+            return {
+                status: "success",
+                message: res?.data?.message || "Deleted",
+                id,
             };
-            dispatch(getPaymentTypesFailed(error.message));
-            return error;
-        });
+        } catch (err) {
+            return rejectWithValue(getErrorPayload(err));
+        }
+    },
+);
+
+export const createPaymentTypeThunk = createAsyncThunk(
+    "paymentType/createPaymentType",
+    async (requestedData, { rejectWithValue }) => {
+        try {
+            const res = await paymentTypeService.createPaymentType(
+                requestedData,
+            );
+            return {
+                status: "success",
+                message: res?.data?.message || "Created",
+                data: res?.data?.data,
+            };
+        } catch (err) {
+            return rejectWithValue(getErrorPayload(err));
+        }
+    },
+);
+
+export const getDetailPaymentTypeThunk = createAsyncThunk(
+    "paymentType/getDetailPaymentType",
+    async (id, { rejectWithValue }) => {
+        try {
+            const res = await paymentTypeService.getDetailPaymentType(id);
+            return {
+                status: "success",
+                message: res?.data?.message || "",
+                data: res?.data?.data || res?.data,
+            };
+        } catch (err) {
+            return rejectWithValue(getErrorPayload(err));
+        }
+    },
+);
+
+export const editDetailPaymentTypeThunk = createAsyncThunk(
+    "paymentType/editDetailPaymentType",
+    async ({ id, requestedData }, { rejectWithValue }) => {
+        try {
+            const res = await paymentTypeService.editDetailPaymentType(
+                id,
+                requestedData,
+            );
+            return {
+                status: "success",
+                message: res?.data?.message || "Updated",
+                data: res?.data?.data || res?.data,
+            };
+        } catch (err) {
+            return rejectWithValue(getErrorPayload(err));
+        }
+    },
+);
+
+// ============== Backward-compatible Wrappers ==============
+
+export const getAllPaymentTypes = () => async (dispatch) => {
+    try {
+        const payload = await dispatch(getAllPaymentTypesThunk()).unwrap();
+        return payload;
+    } catch (e) {
+        return e;
+    }
 };
 
 export const deletePaymentType = (id) => async (dispatch) => {
-    return paymentTypeService
-        .deletePaymentType(id)
-        .then((response) => {
-            dispatch(deletePaymentTypeSuccess(response));
-            return response;
-        })
-        .catch((e) => {
-            if (e) {
-                dispatch(deletePaymentTypeFailed(e.data.message));
-                return e.data;
-            }
-            const error = {
-                message: "Server Error",
-                status: "failed",
-            };
-            dispatch(deletePaymentTypeFailed(error.message));
-            return error;
-        });
+    try {
+        const payload = await dispatch(deletePaymentTypeThunk(id)).unwrap();
+        return payload; // { status, message, id }
+    } catch (e) {
+        return e;
+    }
 };
 
 export const createPaymentType = (requestedData) => async (dispatch) => {
-    return paymentTypeService
-        .createPaymentType(requestedData)
-        .then((response) => {
-            dispatch(createPaymentTypeSuccess(response));
-            return response;
-        })
-        .catch((e) => {
-            if (e) {
-                dispatch(createPaymentTypeFailed(e.data.message));
-                return e.data;
-            }
-            const error = {
-                message: "Server Error",
-                status: "failed",
-            };
-            dispatch(createPaymentTypeFailed(error.message));
-            return error;
-        });
+    try {
+        const payload = await dispatch(
+            createPaymentTypeThunk(requestedData),
+        ).unwrap();
+        return payload; // { status, message, data }
+    } catch (e) {
+        return e;
+    }
 };
 
 export const getDetailPaymentType = (id) => async (dispatch) => {
-    return paymentTypeService
-        .getDetailPaymentType(id)
-        .then((response) => {
-            dispatch(getPaymentTypeDetailSuccess(response));
-            return response;
-        })
-        .catch((e) => {
-            if (e) {
-                dispatch(getPaymentTypeDetailFailed(e.data.message));
-                return e.data;
-            }
-            const error = {
-                message: "Server Error",
-                status: "failed",
-            };
-            dispatch(getPaymentTypeDetailFailed(error.message));
-            return error;
-        });
+    try {
+        const payload = await dispatch(getDetailPaymentTypeThunk(id)).unwrap();
+        return payload; // { status, message, data }
+    } catch (e) {
+        return e;
+    }
 };
 
 export const editDetailPaymentType =
     (id, requestedData) => async (dispatch) => {
-        return paymentTypeService
-            .editDetailPaymentType(id, requestedData)
-            .then((response) => {
-                dispatch(editPaymentTypeDetailSuccess(response));
-                return response;
-            })
-            .catch((e) => {
-                if (e) {
-                    dispatch(editPaymentTypeDetailFailed(e.data.message));
-                    return e.data;
-                }
-                const error = {
-                    message: "Server Error",
-                    status: "failed",
-                };
-                dispatch(editPaymentTypeDetailFailed(error.message));
-                return error;
-            });
+        try {
+            const payload = await dispatch(
+                editDetailPaymentTypeThunk({ id, requestedData }),
+            ).unwrap();
+            return payload; // { status, message, data }
+        } catch (e) {
+            return e;
+        }
     };
+
+// ============== Slice ==============
+const initialState = {
+    status: "idle", // 'idle' | 'loading' | 'succeeded' | 'failed'
+    success: false,
+    error: null,
+    message: { error: "", success: "" },
+    paymentTypes: [],
+    detailPaymentType: {},
+};
 
 export const paymentTypeSlice = createSlice({
     name: "paymentType",
-    initialState: {
-        success: false,
-        message: {
-            error: "",
-            success: "",
-        },
-        paymentTypes: [],
-        detailPaymentType: {},
-    },
-    reducers: {
-        getPaymentTypesSuccess: (state, action) => {
-            state.paymentTypes = [...action.payload];
-            state.success = true;
-        },
-        getPaymentTypesFailed: (state, action) => {
-            state.message.error = action.payload;
-            state.success = false;
-        },
-        getPaymentTypeDetailSuccess: (state, action) => {
-            state.detailPaymentType = { ...action.payload.data };
-            state.message.success = action.payload.message;
-            state.success = true;
-        },
-        getPaymentTypeDetailFailed: (state, action) => {
-            state.message.error = action.payload;
-            state.success = false;
-        },
-        deletePaymentTypeSuccess: (state, action) => {
-            state.message.success = action.payload.message;
-            state.success = true;
-        },
-        deletePaymentTypeFailed: (state, action) => {
-            state.message.error = action.payload;
-            state.success = false;
-        },
-        createPaymentTypeSuccess: (state, action) => {
-            state.message.success = action.payload.message;
-            state.success = true;
-        },
-        createPaymentTypeFailed: (state, action) => {
-            state.message.error = action.payload;
-            state.success = false;
-        },
-        editPaymentTypeDetailSuccess: (state, action) => {
-            state.message.success = action.payload.message;
-            state.success = true;
-        },
-        editPaymentTypeDetailFailed: (state, action) => {
-            state.message.error = action.payload;
-            state.success = false;
-        },
+    initialState,
+    reducers: {},
+    extraReducers: (builder) => {
+        // getAllPaymentTypes
+        builder
+            .addCase(getAllPaymentTypesThunk.pending, (state) => {
+                state.status = "loading";
+                state.error = null;
+                state.message.error = "";
+                state.message.success = "";
+            })
+            .addCase(getAllPaymentTypesThunk.fulfilled, (state, action) => {
+                state.status = "succeeded";
+                state.success = true;
+                state.paymentTypes = Array.isArray(action.payload.data)
+                    ? [...action.payload.data]
+                    : [];
+            })
+            .addCase(getAllPaymentTypesThunk.rejected, (state, action) => {
+                state.status = "failed";
+                state.success = false;
+                const msg = action.payload?.message || "Server Error";
+                state.error = msg;
+                state.message.error = msg;
+            });
+
+        // deletePaymentType
+        builder
+            .addCase(deletePaymentTypeThunk.pending, (state) => {
+                state.status = "loading";
+            })
+            .addCase(deletePaymentTypeThunk.fulfilled, (state, action) => {
+                state.status = "succeeded";
+                state.success = true;
+                state.message.success = action.payload.message || "Deleted";
+                const id = action.payload.id;
+                if (id) {
+                    state.paymentTypes = state.paymentTypes.filter(
+                        (p) => p._id !== id,
+                    );
+                    if (state.detailPaymentType?._id === id)
+                        state.detailPaymentType = {};
+                }
+            })
+            .addCase(deletePaymentTypeThunk.rejected, (state, action) => {
+                state.status = "failed";
+                state.success = false;
+                const msg = action.payload?.message || "Server Error";
+                state.error = msg;
+                state.message.error = msg;
+            });
+
+        // createPaymentType
+        builder
+            .addCase(createPaymentTypeThunk.pending, (state) => {
+                state.status = "loading";
+            })
+            .addCase(createPaymentTypeThunk.fulfilled, (state, action) => {
+                state.status = "succeeded";
+                state.success = true;
+                state.message.success = action.payload.message || "Created";
+                const created = action.payload.data;
+                if (created) state.paymentTypes.unshift(created);
+            })
+            .addCase(createPaymentTypeThunk.rejected, (state, action) => {
+                state.status = "failed";
+                state.success = false;
+                const msg = action.payload?.message || "Server Error";
+                state.error = msg;
+                state.message.error = msg;
+            });
+
+        // getDetailPaymentType
+        builder
+            .addCase(getDetailPaymentTypeThunk.pending, (state) => {
+                state.status = "loading";
+            })
+            .addCase(getDetailPaymentTypeThunk.fulfilled, (state, action) => {
+                state.status = "succeeded";
+                state.success = true;
+                state.message.success = action.payload.message || "";
+                state.detailPaymentType = { ...(action.payload.data || {}) };
+            })
+            .addCase(getDetailPaymentTypeThunk.rejected, (state, action) => {
+                state.status = "failed";
+                state.success = false;
+                const msg = action.payload?.message || "Server Error";
+                state.error = msg;
+                state.message.error = msg;
+            });
+
+        // editDetailPaymentType
+        builder
+            .addCase(editDetailPaymentTypeThunk.pending, (state) => {
+                state.status = "loading";
+            })
+            .addCase(editDetailPaymentTypeThunk.fulfilled, (state, action) => {
+                state.status = "succeeded";
+                state.success = true;
+                state.message.success = action.payload.message || "Updated";
+                const updated = action.payload.data;
+                if (updated?._id) {
+                    const idx = findIndexById(state.paymentTypes, updated._id);
+                    if (idx !== -1)
+                        state.paymentTypes[idx] = {
+                            ...state.paymentTypes[idx],
+                            ...updated,
+                        };
+                    if (state.detailPaymentType?._id === updated._id) {
+                        state.detailPaymentType = {
+                            ...state.detailPaymentType,
+                            ...updated,
+                        };
+                    }
+                }
+            })
+            .addCase(editDetailPaymentTypeThunk.rejected, (state, action) => {
+                state.status = "failed";
+                state.success = false;
+                const msg = action.payload?.message || "Server Error";
+                state.error = msg;
+                state.message.error = msg;
+            });
     },
 });
 
-// Action creators are generated for each case reducer function
-export const {
-    getPaymentTypesSuccess,
-    getPaymentTypesFailed,
-    getPaymentTypeDetailSuccess,
-    getPaymentTypeDetailFailed,
-    deletePaymentTypeSuccess,
-    deletePaymentTypeFailed,
-    createPaymentTypeSuccess,
-    createPaymentTypeFailed,
-    editPaymentTypeDetailSuccess,
-    editPaymentTypeDetailFailed,
-} = paymentTypeSlice.actions;
 export default paymentTypeSlice.reducer;

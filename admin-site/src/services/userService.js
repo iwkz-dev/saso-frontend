@@ -1,132 +1,39 @@
 import api from "../api";
 import { getToken } from "../helpers/authHelper";
 
-const getAllUsers = (requestURL = "") => {
-    return new Promise((resolve, reject) => {
-        const headers = {
-            accept: "application/JSON",
-            Authorization: getToken(),
-        };
+const authHeaders = () => ({
+    accept: "application/json",
+    Authorization: getToken(),
+});
 
-        api({
-            method: "GET",
-            url: `/user${requestURL}`,
-            headers,
-        })
-            .then((response) => {
-                if (response.data.status === "success") {
-                    resolve(response.data);
-                } else {
-                    reject(response.data);
-                }
-            })
-            .catch((error) => {
-                reject(error.response);
-            });
-    });
+const handleResponse = (response) => {
+    const data = response?.data;
+    if (data?.status === "success") return data;
+    throw data;
 };
 
-const getDetailUser = (id) => {
-    return new Promise((resolve, reject) => {
-        const headers = {
-            accept: "application/JSON",
-            Authorization: getToken(),
-        };
-
-        api({
-            method: "GET",
-            url: `/user/${id}/detail`,
-            headers,
-        })
-            .then((response) => {
-                if (response.data.status === "success") {
-                    resolve(response.data);
-                } else {
-                    reject(response.data);
-                }
-            })
-            .catch((error) => {
-                reject(error.response);
-            });
-    });
+const handleError = (error) => {
+    throw error?.response ?? error;
 };
 
-const editDetailUser = (id, requestedData) => {
-    return new Promise((resolve, reject) => {
-        const headers = {
-            accept: "application/JSON",
-            Authorization: getToken(),
-        };
+const request = (config) =>
+    api({ ...config, headers: { ...authHeaders(), ...(config.headers || {}) } })
+        .then(handleResponse)
+        .catch(handleError);
 
-        api({
-            method: "PUT",
-            url: `/user/${id}`,
-            data: requestedData,
-            headers,
-        })
-            .then((response) => {
-                if (response.data.status === "success") {
-                    resolve(response.data);
-                } else {
-                    reject(response.data);
-                }
-            })
-            .catch((error) => {
-                reject(error.response);
-            });
-    });
-};
+const getAllUsers = (requestURL = "") =>
+    request({ method: "GET", url: `/user${requestURL}` });
 
-const createUser = (requestedData) => {
-    return new Promise((resolve, reject) => {
-        const headers = {
-            accept: "application/JSON",
-            Authorization: getToken(),
-        };
+const getDetailUser = (id) =>
+    request({ method: "GET", url: `/user/${id}/detail` });
 
-        api({
-            method: "POST",
-            url: `/user/create`,
-            data: requestedData,
-            headers,
-        })
-            .then((response) => {
-                if (response.data.status === "success") {
-                    resolve(response.data);
-                } else {
-                    reject(response.data);
-                }
-            })
-            .catch((error) => {
-                reject(error.response);
-            });
-    });
-};
+const editDetailUser = (id, requestedData) =>
+    request({ method: "PUT", url: `/user/${id}`, data: requestedData });
 
-const deleteUser = (id) => {
-    return new Promise((resolve, reject) => {
-        const headers = {
-            accept: "application/JSON",
-            Authorization: getToken(),
-        };
+const createUser = (requestedData) =>
+    request({ method: "POST", url: "/user/create", data: requestedData });
 
-        api({
-            method: "DELETE",
-            url: `/user/${id}`,
-            headers,
-        })
-            .then((response) => {
-                if (response.data.status === "success") {
-                    resolve(response.data);
-                } else {
-                    reject(response.data);
-                }
-            })
-            .catch((error) => {
-                reject(error.response);
-            });
-    });
-};
+const deleteUser = (id) => request({ method: "DELETE", url: `/user/${id}` });
 
 const userService = {
     getAllUsers,
@@ -135,4 +42,5 @@ const userService = {
     deleteUser,
     editDetailUser,
 };
+
 export default userService;

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useDispatch } from "react-redux";
 import LoggedIn from "../../../src/components/Layout/LoggedIn/LoggedIn";
 import {
@@ -11,101 +11,108 @@ import { getAllEvents } from "../../../src/store/reducers/eventReducer";
 import OrderFilterForm from "../../../src/components/Form/Order/OrderFilterForm/OrderFilterForm";
 import Content from "../../../src/components/Layout/Content/Content";
 import { Space, Typography, message } from "antd";
-import { isAuth } from "../../../src/helpers/authHelper";
 import { getAllPaymentTypes } from "../../../src/store/reducers/paymentTypeReducer";
 
-const index = () => {
+const OrderIndexPage = () => {
     const dispatch = useDispatch();
     const pageTitle = "Saso App | Order";
+
     const [showTable, setShowTable] = useState(false);
     const [showLoadingData, setShowLoadingData] = useState(false);
     const [filterValues, setFilterValues] = useState([]);
 
-    useEffect(() => {
-        getEventsOrders();
-    }, [filterValues]);
+    const buildQueryString = useCallback((filters = []) => {
+        const params = new URLSearchParams();
+        filters.forEach((f) => {
+            if (f?.name && (f.id || f.id === 0)) {
+                params.append(f.name, String(f.id));
+            }
+        });
+        const qs = params.toString();
+        return qs ? `?${qs}` : "";
+    }, []);
 
-    const filtersQueryBuilder = (filters) => {
-        const queries = [];
-        if (filters.length > 0) {
-            filters.map((f) => {
-                const filtersQuery = `${f.name}=${f.id}`;
-                queries.push(filtersQuery);
-            });
-            return `${queries.join("&")}`;
-        }
-        return "";
-    };
-
-    const getEventsOrders = async () => {
+    const fetchOrders = useCallback(async () => {
         setShowLoadingData(true);
-        const filters = `?${filtersQueryBuilder(filterValues)}`;
-
         try {
-            await Promise.all([
+            const filters = buildQueryString(filterValues);
+            const results = await Promise.all([
                 dispatch(getAllEvents()),
                 dispatch(getAllPaymentTypes()),
                 dispatch(getAllOrders(filters)),
             ]);
 
-            setShowTable(true);
-            setShowLoadingData(false);
-        } catch (error) {
+            const failed = results.find((r) => r?.status === "failed");
+            if (failed) {
+                setShowTable(false);
+                message.error(failed?.message || "Failed to load orders");
+            } else {
+                setShowTable(true);
+            }
+        } catch (err) {
             setShowTable(false);
+            message.error(err?.message || "Failed to load data");
+        } finally {
             setShowLoadingData(false);
-            message.error(error.message);
-            isAuth(error);
         }
-    };
+    }, [dispatch, filterValues, buildQueryString]);
+
+    useEffect(() => {
+        fetchOrders();
+    }, [fetchOrders]);
 
     const onChangeStatus = async (value) => {
-        value = JSON.parse(value);
-        const isConfirm = confirm(
-            `Please confirm this if you want to change status to ${value.value}`,
-        );
+        // value is a JSON string: { id, value }
+        let parsed;
+        try {
+            parsed = JSON.parse(value);
+        } catch {
+            message.error("Invalid status payload");
+            return;
+        }
 
-        if (isConfirm) {
-            setShowLoadingData(true);
-            try {
-                const onChangeStatus = await dispatch(
-                    changeOrderStatus(value.id, value.value),
-                );
-                if (onChangeStatus.status !== "failed") {
-                    setShowLoadingData(false);
-                    message.success(onChangeStatus.message);
-                    getEventsOrders();
-                } else {
-                    setShowLoadingData(false);
-                    message.error(onChangeStatus.message);
-                }
-            } catch (error) {
-                setShowLoadingData(false);
-                message.error(error);
+        const ok = window.confirm(
+            `Please confirm this if you want to change status to ${parsed.value}`,
+        );
+        if (!ok) return;
+
+        setShowLoadingData(true);
+        try {
+            const res = await dispatch(
+                changeOrderStatus(parsed.id, parsed.value),
+            );
+            if (res?.status !== "failed") {
+                message.success(res?.message || "Order status updated");
+                await fetchOrders();
+            } else {
+                message.error(res?.message || "Failed to update status");
             }
+        } catch (err) {
+            message.error(err?.message || "Failed to update status");
+        } finally {
+            setShowLoadingData(false);
         }
     };
 
     const onDelete = async (item) => {
-        const isConfirm = confirm(
+        const ok = window.confirm(
             `Please confirm this if you want to delete "${item.invoiceNumber}"`,
         );
-        if (isConfirm) {
-            setShowLoadingData(true);
-            try {
-                const onDelete = await dispatch(deleteOrder(item["_id"]));
-                if (onDelete.status !== "failed") {
-                    setShowLoadingData(false);
-                    message.success(onDelete.message);
-                    getEventsOrders();
-                } else {
-                    setShowLoadingData(false);
-                    message.error(onChangeStatus.message);
-                }
-            } catch (e) {
-                //TODO: handle error here
-                setShowLoadingData(false);
-                message.error(e);
+        if (!ok) return;
+
+        setShowLoadingData(true);
+        try {
+            const res = await dispatch(deleteOrder(item["_id"]));
+            if (res?.status !== "failed") {
+                message.success(res?.message || "Order deleted");
+                await fetchOrders();
+            } else {
+                message.error(res?.message || "Failed to delete order");
             }
+        } catch (err) {
+            message.error(err?.message || "Failed to delete order");
+        } finally {
+            setShowLoadingData(false);
         }
     };
 
@@ -118,6 +125,7 @@ const index = () => {
                         filterValues={filterValues}
                         setFilterValues={setFilterValues}
                     />
+
                     <OrderTable
                         onDelete={onDelete}
                         onChangeStatus={onChangeStatus}
@@ -130,4 +138,4 @@ const index = () => {
     );
 };
 
-export default index;
+export default OrderIndexPage;

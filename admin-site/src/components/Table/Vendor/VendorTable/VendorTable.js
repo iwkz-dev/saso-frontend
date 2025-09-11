@@ -1,30 +1,18 @@
-import React, { useEffect, useState } from "react";
+import React, { useMemo } from "react";
 import Table from "../../Table";
 import { useSelector } from "react-redux";
 
 const VendorTable = ({ onDelete }) => {
-    const vendors = useSelector((state) => state.vendor.vendors);
-    const [tableHead, setTableHead] = useState([]);
+    const vendors = useSelector((state) => state?.vendor?.vendors) ?? [];
 
-    useEffect(() => {
-        setTableHead([
-            {
-                key: "name",
-                dataIndex: "name",
-                title: "Name",
-            },
-            {
-                key: "created_at",
-                dataIndex: "created_at",
-                title: "Created At",
-            },
-            {
-                key: "updated_at",
-                dataIndex: "updated_at",
-                title: "Updated At",
-            },
-        ]);
-    }, [vendors]);
+    const tableHead = useMemo(
+        () => [
+            { key: "name", dataIndex: "name", title: "Name" },
+            { key: "created_at", dataIndex: "created_at", title: "Created At" },
+            { key: "updated_at", dataIndex: "updated_at", title: "Updated At" },
+        ],
+        [],
+    );
 
     return (
         <Table

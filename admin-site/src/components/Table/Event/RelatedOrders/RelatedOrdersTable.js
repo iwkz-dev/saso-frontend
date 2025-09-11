@@ -1,139 +1,133 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Table from "../../Table";
-import { Typography, message } from "antd";
+import { Typography, message, Tag } from "antd";
 import { getAllEvents } from "../../../../store/reducers/eventReducer";
 import {
     changeOrderStatus,
     getAllOrders,
 } from "../../../../store/reducers/orderReducer";
 import { getAllPaymentTypes } from "../../../../store/reducers/paymentTypeReducer";
-import { isAuth } from "../../../../helpers/authHelper";
 import dayjs from "dayjs";
+import { CheckCircleOutlined, CloseCircleOutlined } from "@ant-design/icons";
 
 const RelatedOrdersTable = ({
     filterName,
     itemFilter,
     onDelete,
-    filterValues,
+    filterValues = [],
 }) => {
     const dispatch = useDispatch();
-    const orders = useSelector((state) => state.order.orders);
-    const events = useSelector((state) => state.event.events);
+
+    const orders = useSelector((s) => s.order.orders) || [];
+    const events = useSelector((s) => s.event.events) || [];
+    const paymentTypes = useSelector((s) => s.paymentType.paymentTypes) || [];
+
     const [showTable, setShowTable] = useState(false);
-    const [tableHead, setTableHead] = useState([]);
-    const paymentTypes = useSelector((state) => state.paymentType.paymentTypes);
     const [showLoadingData, setShowLoadingData] = useState(false);
 
-    useEffect(() => {
-        getAllData();
-    }, [filterValues]);
+    // --- helpers
+    const filtersQueryBuilder = useCallback((vals) => {
+        if (!Array.isArray(vals) || vals.length === 0) return "";
+        return vals
+            .map(
+                (f) =>
+                    `${encodeURIComponent(f.name)}=${encodeURIComponent(f.id)}`,
+            )
+            .join("&");
+    }, []);
 
-    const getEventsOrders = async () => {
-        setShowLoadingData(true);
-
-        try {
-            const filter = `?${filterName}=${itemFilter._id}`;
-            await Promise.all([
-                dispatch(getAllEvents()),
-                dispatch(getAllPaymentTypes()),
-                dispatch(getAllOrders(filter)),
-            ]);
-
-            setShowTable(true);
-            setShowLoadingData(false);
-        } catch (error) {
+    const fetchAll = useCallback(async () => {
+        if (!filterName || !itemFilter?._id) {
             setShowTable(false);
             setShowLoadingData(false);
-            message.error(error.message);
-            isAuth(error);
+            return;
         }
-    };
 
-    const onChangeStatus = async (value) => {
-        value = JSON.parse(value);
-        const isConfirm = confirm(
-            `Please confirm this if you want to change status to ${value.value}`,
-        );
-
-        if (isConfirm) {
-            setShowLoadingData(true);
-            try {
-                const onChangeStatus = await dispatch(
-                    changeOrderStatus(value.id, value.value),
-                );
-                if (onChangeStatus.status !== "failed") {
-                    setShowLoadingData(false);
-                    message.success(onChangeStatus.message);
-                    getEventsOrders();
-                } else {
-                    setShowLoadingData(false);
-                    message.error(onChangeStatus.message);
-                }
-            } catch (error) {
-                setShowLoadingData(false);
-                message.error(error);
-            }
-        }
-    };
-
-    const filtersQueryBuilder = (filterValues) => {
-        const queries = [];
-        if (filterValues.length > 0) {
-            filterValues.map((f) => {
-                const filtersQuery = `${f.name}=${f.id}`;
-                queries.push(filtersQuery);
-            });
-            return `${queries.join("&")}`;
-        }
-        return "";
-    };
-
-    const getAllData = async () => {
         setShowLoadingData(true);
-        const filterByInvoiceNumber = filtersQueryBuilder(filterValues);
-
         try {
-            const filter = `?${filterByInvoiceNumber}&${filterName}=${itemFilter._id}`;
+            const filterQuery = filtersQueryBuilder(filterValues);
+            const qsCore = `${encodeURIComponent(
+                filterName,
+            )}=${encodeURIComponent(itemFilter._id)}`;
+            const qs = filterQuery ? `?${filterQuery}&${qsCore}` : `?${qsCore}`;
+
             const responses = await Promise.all([
                 dispatch(getAllEvents()),
-                dispatch(getAllOrders(filter)),
+                dispatch(getAllOrders(qs)),
                 dispatch(getAllPaymentTypes()),
             ]);
 
-            if (!responses.some((r) => r?.status === "failed")) {
-                setShowTable(true);
-            } else {
+            const failed = responses.find((r) => r?.status === "failed");
+            if (failed) {
                 setShowTable(false);
-                const failedResponse = responses.find(
-                    (r) => r?.status === "failed",
-                );
-                message.error(failedResponse?.message);
+                message.error(failed?.message || "Failed to load orders");
+            } else {
+                setShowTable(true);
             }
+        } catch (err) {
+            setShowTable(false);
+            message.error(err?.message || "Failed to load data");
+        } finally {
             setShowLoadingData(false);
-        } catch (error) {
-            // Handle unexpected errors here
+        }
+    }, [
+        dispatch,
+        filterName,
+        itemFilter?._id,
+        filterValues,
+        filtersQueryBuilder,
+    ]);
+
+    useEffect(() => {
+        fetchAll();
+    }, [fetchAll]);
+
+    const onChangeStatus = async (value) => {
+        let parsed;
+        try {
+            parsed = JSON.parse(value);
+        } catch {
+            message.error("Invalid status payload");
+            return;
+        }
+
+        const ok = window.confirm(
+            `Please confirm if you want to change status to "${parsed.value}".`,
+        );
+        if (!ok) return;
+
+        setShowLoadingData(true);
+        try {
+            const res = await dispatch(
+                changeOrderStatus(parsed.id, parsed.value),
+            );
+            if (res?.status !== "failed") {
+                message.success(res?.message || "Order status updated");
+                await fetchAll();
+            } else {
+                message.error(res?.message || "Failed to update status");
+            }
+        } catch (err) {
+            message.error(err?.message || "Failed to update status");
+        } finally {
             setShowLoadingData(false);
-            console.error("Unexpected error:", error);
         }
     };
 
-    useEffect(() => {
-        setTableHead([
+    const tableHead = useMemo(
+        () => [
             {
                 key: "invoiceNumber",
                 dataIndex: "invoiceNumber",
                 title: "Invoice Number",
                 filterSearch: true,
-                filters: orders.map((order) => {
-                    return {
-                        text: order.invoiceNumber,
-                        value: order.invoiceNumber,
-                    };
-                }),
-                onFilter: (value, record) => {
-                    return record.invoiceNumber.includes(value);
-                },
+                filters: orders.map((o) => ({
+                    text: o.invoiceNumber,
+                    value: o.invoiceNumber,
+                })),
+                onFilter: (value, record) =>
+                    record.invoiceNumber?.includes?.(value),
                 coloredText: (record) => {
                     if (
                         record.status === 0 &&
@@ -141,7 +135,6 @@ const RelatedOrdersTable = ({
                     ) {
                         return "danger";
                     }
-
                     return "";
                 },
             },
@@ -150,14 +143,12 @@ const RelatedOrdersTable = ({
                 dataIndex: "event",
                 title: "Event",
                 filterSearch: true,
-                filters: events.map((event) => {
-                    return {
-                        text: event.name,
-                        value: event._id,
-                    };
-                }),
+                filters: events.map((e) => ({ text: e.name, value: e._id })),
                 onFilter: (value, record) => {
-                    return record.event.includes(value);
+                    const v = record.event;
+                    return Array.isArray(v)
+                        ? v.includes(value)
+                        : String(v) === String(value);
                 },
             },
             {
@@ -168,41 +159,16 @@ const RelatedOrdersTable = ({
                 type: "select",
                 onChange: onChangeStatus,
                 filterSearch: true,
-                onFilter: (value, record) => {
-                    return record.status === value;
-                },
-                disabled: (record, events) => {
-                    const getEvent = events.find(
-                        (event) => event._id === record.event,
-                    );
-
-                    if (getEvent && getEvent.status !== 1) {
-                        return true;
-                    }
-
-                    return false;
+                onFilter: (value, record) => record.status === value,
+                disabled: (record, eventsList) => {
+                    const ev = eventsList.find((e) => e._id === record.event);
+                    return !ev || ev.status !== 1; // only editable if event is Approved (status=1)
                 },
                 options: [
-                    {
-                        title: "Wait For Confirmation",
-                        value: "wait",
-                        code: 0,
-                    },
-                    {
-                        title: "Paid",
-                        value: "paid",
-                        code: 1,
-                    },
-                    {
-                        title: "Cancel / Refund",
-                        value: "cancel",
-                        code: 2,
-                    },
-                    {
-                        title: "Done",
-                        value: "done",
-                        code: 3,
-                    },
+                    { title: "Wait For Confirmation", value: "wait", code: 0 },
+                    { title: "Paid", value: "paid", code: 1 },
+                    { title: "Cancel / Refund", value: "cancel", code: 2 },
+                    { title: "Done", value: "done", code: 3 },
                 ],
             },
             {
@@ -225,43 +191,68 @@ const RelatedOrdersTable = ({
                 dataIndex: "paymentType",
                 title: "Payment Type",
             },
-            {
-                key: "arrived_at",
-                dataIndex: "arrived_at",
-                title: "Arrived At",
-            },
-            {
-                key: "created_at",
-                dataIndex: "created_at",
-                title: "Created At",
-            },
-            {
-                key: "updated_at",
-                dataIndex: "updated_at",
-                title: "Updated At",
-            },
-        ]);
-    }, [events, orders]);
+            { key: "arrived_at", dataIndex: "arrived_at", title: "Arrived At" },
+            { key: "created_at", dataIndex: "created_at", title: "Created At" },
+            { key: "updated_at", dataIndex: "updated_at", title: "Updated At" },
+        ],
+        [events, orders],
+    );
+
+    const listItemElement = (items = []) =>
+        items.map((item, idx) => {
+            const isConfirmed = item.status === 1;
+            const key = item._id || item.key || `${item.name}-${idx}`;
+
+            return (
+                <li
+                    key={key}
+                    style={{
+                        display: "flex",
+                        alignItems: "flex-start",
+                        gap: "8px",
+                        padding: "8px 0",
+                        borderBottom: "1px solid #f0f0f0",
+                    }}>
+                    <div style={{ paddingTop: 4 }}>
+                        {isConfirmed ? (
+                            <CheckCircleOutlined
+                                style={{ color: "#52c41a", fontSize: 18 }}
+                            />
+                        ) : (
+                            <CloseCircleOutlined
+                                style={{ color: "#bfbfbf", fontSize: 18 }}
+                            />
+                        )}
+                    </div>
+                    <div>
+                        <Typography.Text strong>
+                            {item.name} ({item.totalPortion})
+                        </Typography.Text>
+                        {item.note && (
+                            <div style={{ fontSize: "12px", color: "#8c8c8c" }}>
+                                Note: {item.note}
+                            </div>
+                        )}
+                        <div style={{ marginTop: 4 }}>
+                            <Tag color={isConfirmed ? "green" : "default"}>
+                                {isConfirmed ? "Confirmed" : "Not Confirmed"}
+                            </Tag>
+                        </div>
+                    </div>
+                </li>
+            );
+        });
 
     const expandOrderedMenu = (record) => (
         <div>
             <Typography.Text style={{ margin: 0, whiteSpace: "pre-line" }}>
                 Ordered Menu:
             </Typography.Text>
-            <ol>{listItemElement(record.menus)}</ol>
+            <ol style={{ marginTop: 8 }}>
+                {listItemElement(record.menus || [])}
+            </ol>
         </div>
     );
-
-    const listItemElement = (items) => {
-        return items.map((item) => {
-            return (
-                <li key={item.key}>
-                    {item.name} ({item.totalPortion})
-                    {item.note ? ", note: " + item.note : ""}
-                </li>
-            );
-        });
-    };
 
     return (
         <Table
