@@ -2,15 +2,25 @@ import React from "react";
 import Head from "next/head";
 import LoginForm from "../src/components/Form/Login/LoginForm";
 
-const login = () => (
-    <div>
-        <Head>
-            <title>Saso App | Login</title>
-        </Head>
-        <main className="relative z-10 flex-auto flex items-center justify-center text-sm text-center text-gray-600 py-16 px-4 sm:px-6 lg:px-8">
-            <LoginForm />
-        </main>
-    </div>
-);
+export default function LoginPage() {
+    const pageStyle = {
+        minHeight: "100vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: "32px 16px",
+        background:
+            "linear-gradient(180deg, rgba(245,248,255,1) 0%, rgba(252,252,252,1) 100%)",
+    };
 
-export default login;
+    return (
+        <div>
+            <Head>
+                <title>Saso App | Login</title>
+            </Head>
+            <main style={pageStyle}>
+                <LoginForm />
+            </main>
+        </div>
+    );
+}

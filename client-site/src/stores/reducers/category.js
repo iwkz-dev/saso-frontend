@@ -61,7 +61,6 @@ const categorySlice = createSlice({
 
 export const { resetCategory } = categorySlice.actions;
 
-// ============== Selectors ==============
 export const selectCategories = (state) => state.category.data;
 export const selectCategoryStatus = (state) => state.category.status;
 export const selectCategoryError = (state) => state.category.error;

@@ -96,7 +96,6 @@ const Index = () => {
                 vendorId: selectedVendor,
             }),
         )
-            .unwrap()
             .then(() => {
                 message.success("Order confirmed!");
                 setOrder(null);

@@ -1,70 +1,68 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { useDispatch } from "react-redux";
 import { createEvent } from "../../../../store/reducers/eventReducer";
 import { Form, message } from "antd";
 import Router from "next/router";
 import FormComponent from "../../Form";
 
-const AddEventForm = () => {
+export default function AddEventForm() {
     const dispatch = useDispatch();
     const [form] = Form.useForm();
     const [showUploading, setShowUploading] = useState(false);
     const [images, setImages] = useState([]);
-    const [date, setDate] = useState("");
+    const [monthYear, setMonthYear] = useState("");
+
+    const onChangeMonthYear = useCallback((date, dateString) => {
+        setMonthYear(dateString || "");
+    }, []);
+
+    const onReset = () => {
+        form.resetFields();
+        setImages([]);
+        setMonthYear("");
+    };
 
     const submitForm = async (values) => {
-        const text = confirm("Please confirm to add event");
+        if (!monthYear) {
+            message.warning("Please select the event month.");
+            return;
+        }
 
-        if (text) {
-            setShowUploading(true);
+        const confirmed = window.confirm("Please confirm to add event");
+        if (!confirmed) return;
 
-            const createData = async () => {
-                const data = new FormData();
-                for (const [key, value] of Object.entries(values)) {
-                    data.append(key, value || "");
-                }
+        setShowUploading(true);
 
-                data.set("started_at", date);
+        try {
+            const data = new FormData();
 
-                await Promise.all(
-                    images.map((image) => {
-                        return data.append("imageUrls", image.originFileObj);
-                    }),
-                );
+            Object.entries(values || {}).forEach(([key, val]) => {
+                if (key !== "started_at") data.append(key, val ?? "");
+            });
 
-                return dispatch(createEvent(data));
-            };
+            data.set("started_at", monthYear);
 
-            try {
-                const result = await createData();
+            (images || []).forEach((img) => {
+                if (img?.originFileObj)
+                    data.append("imageUrls", img.originFileObj);
+            });
 
-                if (result?.status === "failed") {
-                    setShowUploading(false);
-                    message.error(result.message);
-                } else {
-                    setShowUploading(false);
-                    message.success(result.message);
-                    Router.push("/database/event");
-                }
-            } catch (error) {
-                setShowUploading(false);
+            const res = await dispatch(createEvent(data));
+            if (res?.status === "failed") {
+                message.error(res?.message || "Failed to create event");
+            } else {
+                message.success(res?.message || "Event created");
+                Router.replace("/database/event");
             }
+        } catch (err) {
+            message.error(err?.message || "Failed to create event");
+        } finally {
+            setShowUploading(false);
         }
     };
 
-    const onChange = (_, dateString) => {
-        setDate(dateString);
-    };
-
-    const onReset = () => {
-        form.current?.resetFields();
-    };
-
     const formItems = [
-        {
-            name: "General Information",
-            type: "divider",
-        },
+        { name: "General Information", type: "divider" },
         {
             name: "name",
             label: "Name",
@@ -74,12 +72,12 @@ const AddEventForm = () => {
         },
         {
             name: "started_at",
-            label: "Started At",
+            label: "Month",
             type: "datePicker",
-            placeholder: "Started At",
+            placeholder: "Select month",
             picker: "month",
-            onChange: onChange,
-            showTime: true,
+            format: "YYYY-MM",
+            onChange: onChangeMonthYear,
             required: true,
         },
         {
@@ -88,65 +86,37 @@ const AddEventForm = () => {
             type: "select",
             placeholder: "PO Closed",
             options: [
-                {
-                    value: false,
-                    label: "No",
-                },
-                {
-                    value: true,
-                    label: "Yes",
-                },
+                { value: false, label: "No" },
+                { value: true, label: "Yes" },
             ],
             required: true,
         },
-        {
-            name: "Payment Information",
-            type: "divider",
-        },
+
+        { name: "Payment Information", type: "divider" },
         {
             name: "bankName",
             label: "Bank Name",
             type: "text",
             placeholder: "Bank name",
         },
-        {
-            name: "iban",
-            label: "IBAN",
-            type: "text",
-            placeholder: "IBAN",
-        },
-        {
-            name: "bic",
-            label: "BIC",
-            type: "text",
-            placeholder: "BIC",
-        },
-        {
-            name: "usageNote",
-            label: "VZW",
-            type: "text",
-            placeholder: "VZW",
-        },
+        { name: "iban", label: "IBAN", type: "text", placeholder: "IBAN" },
+        { name: "bic", label: "BIC", type: "text", placeholder: "BIC" },
+        { name: "usageNote", label: "VZW", type: "text", placeholder: "VZW" },
         {
             name: "paypal",
             label: "Paypal",
             type: "text",
             placeholder: "Paypal",
         },
-        {
-            name: "Additional Information",
-            type: "divider",
-        },
+
+        { name: "Additional Information", type: "divider" },
         {
             name: "description",
             label: "Description",
             type: "description",
             placeholder: "Description",
         },
-        {
-            label: "images",
-            type: "imageUploader",
-        },
+        { label: "images", type: "imageUploader" },
     ];
 
     return (
@@ -158,8 +128,7 @@ const AddEventForm = () => {
             onReset={onReset}
             showUploading={showUploading}
             images={images}
-            setImages={setImages}></FormComponent>
+            setImages={setImages}
+        />
     );
-};
-
-export default AddEventForm;
+}

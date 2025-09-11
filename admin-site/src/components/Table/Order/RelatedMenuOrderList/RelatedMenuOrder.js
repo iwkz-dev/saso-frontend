@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllEvents } from "../../../../store/reducers/eventReducer";
 import { getAllCategories } from "../../../../store/reducers/categoryReducer";
@@ -7,55 +7,56 @@ import { message } from "antd";
 
 const RelatedMenuOrder = ({ menus }) => {
     const dispatch = useDispatch();
-    const categories = useSelector((state) => state.category.categories);
-    const events = useSelector((state) => state.event.events);
+
+    const categories = useSelector((s) => s?.category?.categories) ?? [];
+    const events = useSelector((s) => s?.event?.events) ?? [];
+
     const [showTable, setShowTable] = useState(false);
 
     useEffect(() => {
-        getAllData();
-    }, []);
+        let mounted = true;
 
-    const getAllData = async () => {
-        try {
-            const [eventsResponse, categoriesResponse] = await Promise.all([
-                dispatch(getAllEvents()),
-                dispatch(getAllCategories()),
-            ]);
+        (async () => {
+            try {
+                const [eventsResponse, categoriesResponse] = await Promise.all([
+                    dispatch(getAllEvents()),
+                    dispatch(getAllCategories()),
+                ]);
 
-            if (
-                eventsResponse.status !== "failed" &&
-                categoriesResponse.status !== "failed"
-            ) {
-                setShowTable(true);
-            } else {
+                const eventsOk = eventsResponse?.status !== "failed";
+                const categoriesOk = categoriesResponse?.status !== "failed";
+
+                if (!mounted) return;
+
+                if (eventsOk && categoriesOk) {
+                    setShowTable(true);
+                } else {
+                    setShowTable(false);
+                    const errorMessage = !eventsOk
+                        ? eventsResponse?.message || "Failed to load events."
+                        : categoriesResponse?.message ||
+                          "Failed to load categories.";
+                    message.error(errorMessage);
+                }
+            } catch (err) {
+                if (!mounted) return;
                 setShowTable(false);
-                const errorMessage =
-                    eventsResponse.status === "failed"
-                        ? eventsResponse.message
-                        : categoriesResponse.message;
-                message.error(errorMessage);
+                message.error(
+                    err?.message || "Something went wrong loading data.",
+                );
+                console.error(err);
             }
-        } catch (error) {
-            console.error("An error occurred:", error);
-            // Handle the error appropriately, e.g., show a user-friendly message
-        }
-    };
+        })();
 
-    const [tableHead, setTableHead] = useState([]);
+        return () => {
+            mounted = false;
+        };
+    }, [dispatch]);
 
-    useEffect(() => {
-        setTableHead([
-            {
-                key: "name",
-                dataIndex: "name",
-                title: "Name",
-            },
-            {
-                key: "price",
-                dataIndex: "price",
-                title: "Price (€)",
-            },
-
+    const tableHead = useMemo(
+        () => [
+            { key: "name", dataIndex: "name", title: "Name" },
+            { key: "price", dataIndex: "price", title: "Price (€)" },
             {
                 key: "totalPortion",
                 dataIndex: "totalPortion",
@@ -67,14 +68,15 @@ const RelatedMenuOrder = ({ menus }) => {
                 title: "Category",
                 filterMode: "menu",
                 filterSearch: true,
-                filters: categories.map((category) => {
-                    return {
-                        text: category.name,
-                        value: category._id,
-                    };
-                }),
+                filters: categories.map((c) => ({
+                    text: c.name,
+                    value: c._id,
+                })),
                 onFilter: (value, record) => {
-                    return record.category.includes(value);
+                    const rv = record?.category;
+                    if (Array.isArray(rv))
+                        return rv.map(String).includes(String(value));
+                    return String(rv ?? "").includes(String(value));
                 },
             },
             {
@@ -83,18 +85,17 @@ const RelatedMenuOrder = ({ menus }) => {
                 title: "Event",
                 filterMode: "menu",
                 filterSearch: true,
-                filters: events.map((event) => {
-                    return {
-                        text: event.name,
-                        value: event._id,
-                    };
-                }),
+                filters: events.map((e) => ({ text: e.name, value: e._id })),
                 onFilter: (value, record) => {
-                    return record.event.includes(value);
+                    const rv = record?.event;
+                    if (Array.isArray(rv))
+                        return rv.map(String).includes(String(value));
+                    return String(rv ?? "").includes(String(value));
                 },
             },
-        ]);
-    }, [events, categories, menus]);
+        ],
+        [categories, events],
+    );
 
     return (
         <Table

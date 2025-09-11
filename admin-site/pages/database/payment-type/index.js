@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import React, { useEffect, useState, useCallback } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
     deletePaymentType,
     getAllPaymentTypes,
@@ -11,56 +11,61 @@ import PaymentTypeTable from "../../../src/components/Table/PaymentType/PaymentT
 import Content from "../../../src/components/Layout/Content/Content";
 import AddItemButton from "../../../src/components/common/Button/AddItemButton/AddItemButton";
 
-const index = () => {
+const Index = () => {
     const dispatch = useDispatch();
     const pageTitle = "Saso App | Payment Type";
+
+    const paymentTypes = useSelector((s) => s.paymentType.paymentTypes);
+
     const [showTable, setShowTable] = useState(false);
     const [showLoadingData, setShowLoadingData] = useState(false);
 
-    useEffect(() => {
-        getPaymentTypes();
-    }, []);
-
-    const getPaymentTypes = async () => {
+    const fetchPaymentTypes = useCallback(async () => {
         setShowLoadingData(true);
         try {
-            const response = await dispatch(getAllPaymentTypes());
-            if (response.status === "success") {
+            const res = await dispatch(getAllPaymentTypes());
+            if (res?.status === "success") {
                 setShowTable(true);
             } else {
-                message.error(response.message);
-                isAuth(response);
                 setShowTable(false);
+                message.error(res?.message || "Failed to load payment types");
+                isAuth(res);
             }
+        } catch (err) {
+            // unexpected throw
+            setShowTable(false);
+            message.error(err?.message || "Failed to load payment types");
+            isAuth(err);
         } finally {
             setShowLoadingData(false);
         }
-    };
+    }, [dispatch]);
+
+    useEffect(() => {
+        fetchPaymentTypes();
+    }, [fetchPaymentTypes]);
 
     const onDelete = async (item) => {
-        const isConfirm = confirm(
+        const ok = window.confirm(
             `Please confirm this if you want to delete "${item.name}"`,
         );
+        if (!ok) return;
 
-        if (isConfirm) {
-            setShowLoadingData(true);
-            try {
-                const onDeleteResponse = await dispatch(
-                    deletePaymentType(item["_id"]),
-                );
-
-                if (onDeleteResponse.status !== "failed") {
-                    message.success(onDeleteResponse.message);
-                    await getPaymentTypes();
-                } else {
-                    message.error(onDeleteResponse.message);
-                }
-            } catch (e) {
-                // TODO: handle error here
-                message.error(e);
-            } finally {
-                setShowLoadingData(false);
+        setShowLoadingData(true);
+        try {
+            const res = await dispatch(deletePaymentType(item["_id"]));
+            if (res?.status !== "failed") {
+                message.success(res?.message || "Deleted");
+                await fetchPaymentTypes();
+            } else {
+                message.error(res?.message || "Delete failed");
+                isAuth(res);
             }
+        } catch (e) {
+            message.error(e?.message || "Delete failed");
+            isAuth(e);
+        } finally {
+            setShowLoadingData(false);
         }
     };
 
@@ -75,7 +80,7 @@ const index = () => {
                     />
                     <PaymentTypeTable
                         isLoading={showLoadingData}
-                        showTable={showTable}
+                        showTable={showTable && (paymentTypes?.length ?? 0) > 0}
                         onDelete={onDelete}
                     />
                 </Space>
@@ -84,4 +89,4 @@ const index = () => {
     );
 };
 
-export default index;
+export default Index;

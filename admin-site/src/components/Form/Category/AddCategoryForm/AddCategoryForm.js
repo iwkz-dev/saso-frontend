@@ -7,65 +7,65 @@ import Router from "next/router";
 const AddCategoryForm = () => {
     const dispatch = useDispatch();
     const [form] = Form.useForm();
-    const [showUploading, setShowUploading] = useState(false);
+    const [submitting, setSubmitting] = useState(false);
 
     const submitForm = async (values) => {
-        const shouldAddCategory = confirm("Please confirm to add category");
+        const confirmAdd = window.confirm("Please confirm to add category");
+        if (!confirmAdd) return;
 
-        if (shouldAddCategory) {
-            setShowUploading(true);
-
-            try {
-                const response = await dispatch(createCategory(values));
-
-                if (response?.status === "failed") {
-                    message.error(response.message);
-                } else {
-                    message.success(response.message);
-                    Router.push("/database/category");
-                }
-            } catch (error) {
-                message.error(error.message);
-            } finally {
-                setShowUploading(false);
-            }
+        setSubmitting(true);
+        try {
+            const res = await dispatch(createCategory(values));
+            message.success(res?.message || "Category created");
+            Router.replace("/database/category");
+        } catch (err) {
+            message.error(err?.message || "Failed to create category");
+        } finally {
+            setSubmitting(false);
         }
     };
 
     const onReset = () => {
-        form.current?.resetFields();
+        form.resetFields();
     };
 
     return (
-        <div>
-            <Form
-                ref={form}
-                name="category"
-                onFinish={submitForm}
-                labelCol={{
-                    span: 4,
-                }}
-                wrapperCol={{
-                    span: 14,
-                }}>
-                <Form.Item label="Name" name="name" required>
-                    <Input placeholder="Name" />
-                </Form.Item>
-                <Form.Item>
-                    <Space>
-                        <Button
-                            type="primary"
-                            htmlType="submit"
-                            loading={showUploading}>
-                            Submit
-                        </Button>
-                        <Button htmlType="button" onClick={onReset}>
-                            Reset
-                        </Button>
-                    </Space>
-                </Form.Item>
-            </Form>
-        </div>
+        <Form
+            form={form}
+            name="category"
+            onFinish={submitForm}
+            labelCol={{ span: 4 }}
+            wrapperCol={{ span: 14 }}>
+            <Form.Item
+                label="Name"
+                name="name"
+                rules={[
+                    {
+                        required: true,
+                        whitespace: true,
+                        message: "Please input a category name",
+                    },
+                ]}>
+                <Input placeholder="Name" />
+            </Form.Item>
+
+            <Form.Item>
+                <Space>
+                    <Button
+                        type="primary"
+                        htmlType="submit"
+                        loading={submitting}>
+                        Submit
+                    </Button>
+                    <Button
+                        htmlType="button"
+                        onClick={onReset}
+                        disabled={submitting}>
+                        Reset
+                    </Button>
+                </Space>
+            </Form.Item>
+        </Form>
     );
 };
 

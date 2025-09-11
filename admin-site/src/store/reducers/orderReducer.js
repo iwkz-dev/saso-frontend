@@ -1,183 +1,298 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import orderService from "../../services/orderService";
 
-export const getAllOrders = (requestURL) => async (dispatch) => {
-    return orderService
-        .getAllOrders(requestURL)
-        .then((response) => {
-            dispatch(getOrdersSuccess(response.data.data));
-            return response;
-        })
-        .catch((e) => {
-            if (e) {
-                dispatch(getOrdersFailed(e.data.message));
-                return e.data;
-            }
-            const error = {
-                message: "Server Error",
-                status: "failed",
-            };
-            dispatch(getOrdersFailed(error.message));
-            return error;
-        });
+// ============== Helpers ==============
+const getErrorPayload = (err, fallback = "Server Error") => {
+    const message =
+        err?.response?.data?.message ||
+        err?.data?.message ||
+        err?.message ||
+        fallback;
+    return { status: "failed", message };
 };
 
-export const getOrderByInvoiceNumber = (invoiceNumber) => async (dispatch) => {
-    return orderService
-        .getOrderByInvoiceNumber(invoiceNumber)
-        .then((response) => {
-            dispatch(getOrderByInvoiceNumberSuccess(response.data.data));
-            return response;
-        })
-        .catch((e) => {
-            if (e) {
-                dispatch(getOrderByInvoiceNumberFailed(e.data.message));
-                return e.data;
-            }
-            const error = {
-                message: "Server Error",
-                status: "failed",
-            };
-            dispatch(getOrderByInvoiceNumberFailed(error.message));
-            return error;
-        });
-};
+const findIndexById = (arr, id) => arr.findIndex((o) => o._id === id);
 
-export const confirmOrderedMenu = createAsyncThunk(
-    "order/confirmOrderedMenu",
-    async ({ orderId, vendorId }, thunkAPI) => {
+// ============== Thunks (core) ==============
+
+export const getAllOrdersThunk = createAsyncThunk(
+    "order/getAllOrders",
+    async (requestURL, { rejectWithValue }) => {
         try {
-            const response =
-                await orderService.confirmOrderedMenuStatusByVendors(
-                    orderId,
-                    vendorId,
-                );
-            return response; // your backend returns { status: "success", data: ... }
-        } catch (error) {
-            return thunkAPI.rejectWithValue(error?.data || "Unknown error");
+            const res = await orderService.getAllOrders(requestURL);
+            return { status: "success", data: res?.data?.data || [] };
+        } catch (err) {
+            return rejectWithValue(getErrorPayload(err));
         }
     },
 );
 
-export const deleteOrder = (id) => async (dispatch) => {
-    return orderService
-        .deleteOrder(id)
-        .then((response) => {
-            dispatch(deleteOrderSuccess(response));
-            return response;
-        })
-        .catch((e) => {
-            if (e) {
-                dispatch(deleteOrderFailed(e.data.message));
-                return e.data;
-            }
-            const error = {
-                message: "Server Error",
-                status: "failed",
+export const getOrderByInvoiceNumberThunk = createAsyncThunk(
+    "order/getOrderByInvoiceNumber",
+    async (invoiceNumber, { rejectWithValue }) => {
+        try {
+            const res = await orderService.getOrderByInvoiceNumber(
+                invoiceNumber,
+            );
+            return { status: "success", data: res?.data?.data };
+        } catch (err) {
+            return rejectWithValue(getErrorPayload(err));
+        }
+    },
+);
+
+export const deleteOrderThunk = createAsyncThunk(
+    "order/deleteOrder",
+    async (id, { rejectWithValue }) => {
+        try {
+            const res = await orderService.deleteOrder(id);
+            return {
+                status: "success",
+                message: res?.data?.message || "Deleted",
+                id,
             };
-            dispatch(deleteOrderFailed(error.message));
-            return error;
-        });
+        } catch (err) {
+            return rejectWithValue(getErrorPayload(err));
+        }
+    },
+);
+
+export const changeOrderStatusThunk = createAsyncThunk(
+    "order/changeOrderStatus",
+    async ({ id, status }, { rejectWithValue }) => {
+        try {
+            const res = await orderService.changeOrderStatus(id, status);
+            return {
+                status: "success",
+                message: res?.data?.message || "Updated",
+                data: res?.data?.data, // updated order
+            };
+        } catch (err) {
+            return rejectWithValue(getErrorPayload(err));
+        }
+    },
+);
+
+export const confirmOrderedMenu = createAsyncThunk(
+    "order/confirmOrderedMenu",
+    async ({ orderId, vendorId }, { rejectWithValue }) => {
+        try {
+            const res = await orderService.confirmOrderedMenuStatusByVendors(
+                orderId,
+                vendorId,
+            );
+            // normalize shape
+            return {
+                status: "success",
+                message: res?.data?.message || "Ordered menus confirmed.",
+                data: res?.data?.data,
+            };
+        } catch (err) {
+            return rejectWithValue(getErrorPayload(err));
+        }
+    },
+);
+
+// ============== Thunk wrappers (backward compatible) ==============
+
+export const getAllOrders = (requestURL) => async (dispatch) => {
+    try {
+        const payload = await dispatch(getAllOrdersThunk(requestURL)).unwrap();
+        return payload;
+    } catch (e) {
+        return e;
+    }
 };
 
-export const changeOrderStatus = (id, status) => (dispatch) => {
-    return orderService
-        .changeOrderStatus(id, status)
-        .then((response) => {
-            dispatch(changeOrderStatusSuccess(response.data.data));
-            return response;
-        })
-        .catch((e) => {
-            if (e) {
-                dispatch(changeOrderStatusFailed(e.data.message));
-                return e.data;
-            }
-            const error = {
-                message: "Server Error",
-                status: "failed",
-            };
-            dispatch(getOrdersFailed(error.message));
-            return error;
-        });
+export const getOrderByInvoiceNumber = (invoiceNumber) => async (dispatch) => {
+    try {
+        const payload = await dispatch(
+            getOrderByInvoiceNumberThunk(invoiceNumber),
+        ).unwrap();
+        return payload;
+    } catch (e) {
+        return e;
+    }
+};
+
+export const deleteOrder = (id) => async (dispatch) => {
+    try {
+        const payload = await dispatch(deleteOrderThunk(id)).unwrap();
+        return payload; // { status, message, id }
+    } catch (e) {
+        return e;
+    }
+};
+
+export const changeOrderStatus = (id, status) => async (dispatch) => {
+    try {
+        const payload = await dispatch(
+            changeOrderStatusThunk({ id, status }),
+        ).unwrap();
+        return payload;
+    } catch (e) {
+        return e;
+    }
+};
+
+// ============== Slice ==============
+const initialState = {
+    status: "idle", // 'idle' | 'loading' | 'succeeded' | 'failed'
+    success: false,
+    error: null,
+    message: { error: "", success: "" },
+    orders: [],
+    detailOrder: {},
+    confirmedMenus: [],
+    loading: false, // kept for backward-compat (used by some UIs)
 };
 
 export const orderSlice = createSlice({
     name: "order",
-    initialState: {
-        success: false,
-        message: {
-            error: "",
-            success: "",
-        },
-        orders: [],
-        detailOrder: {},
-        confirmedMenus: [],
-        loading: false,
-    },
-    reducers: {
-        getOrdersSuccess: (state, action) => {
-            state.orders = [...action.payload];
-            state.success = true;
-        },
-        getOrdersFailed: (state, action) => {
-            state.message.error = action.payload;
-            state.success = false;
-        },
-        deleteOrderSuccess: (state, action) => {
-            state.message.success = action.payload.message;
-            state.success = true;
-        },
-        deleteOrderFailed: (state, action) => {
-            state.message.error = action.payload;
-            state.success = false;
-        },
-        changeOrderStatusSuccess: (state, action) => {
-            state.message.success = action.payload;
-            state.success = true;
-        },
-        changeOrderStatusFailed: (state, action) => {
-            state.message.error = action.payload;
-            state.success = false;
-        },
-        getOrderByInvoiceNumberSuccess: (state, action) => {
-            state.detailOrder = action.payload;
-            state.success = true;
-        },
-        getOrderByInvoiceNumberFailed: (state, action) => {
-            state.message.error = action.payload;
-            state.success = false;
-        },
-    },
+    initialState,
+    reducers: {},
     extraReducers: (builder) => {
+        // ---- getAllOrders
+        builder
+            .addCase(getAllOrdersThunk.pending, (state) => {
+                state.status = "loading";
+                state.loading = true;
+                state.error = null;
+                state.message.error = "";
+                state.message.success = "";
+            })
+            .addCase(getAllOrdersThunk.fulfilled, (state, action) => {
+                state.status = "succeeded";
+                state.loading = false;
+                state.success = true;
+                state.orders = Array.isArray(action.payload.data)
+                    ? [...action.payload.data]
+                    : [];
+            })
+            .addCase(getAllOrdersThunk.rejected, (state, action) => {
+                state.status = "failed";
+                state.loading = false;
+                state.success = false;
+                const msg = action.payload?.message || "Server Error";
+                state.error = msg;
+                state.message.error = msg;
+            });
+
+        // ---- getOrderByInvoiceNumber
+        builder
+            .addCase(getOrderByInvoiceNumberThunk.pending, (state) => {
+                state.status = "loading";
+                state.loading = true;
+            })
+            .addCase(
+                getOrderByInvoiceNumberThunk.fulfilled,
+                (state, action) => {
+                    state.status = "succeeded";
+                    state.loading = false;
+                    state.success = true;
+                    state.detailOrder = action.payload.data || {};
+                    state.message.success = "Loaded";
+                },
+            )
+            .addCase(getOrderByInvoiceNumberThunk.rejected, (state, action) => {
+                state.status = "failed";
+                state.loading = false;
+                state.success = false;
+                const msg = action.payload?.message || "Server Error";
+                state.error = msg;
+                state.message.error = msg;
+            });
+
+        // ---- deleteOrder
+        builder
+            .addCase(deleteOrderThunk.pending, (state) => {
+                state.status = "loading";
+                state.loading = true;
+            })
+            .addCase(deleteOrderThunk.fulfilled, (state, action) => {
+                state.status = "succeeded";
+                state.loading = false;
+                state.success = true;
+                state.message.success = action.payload.message || "Deleted";
+                const id = action.payload.id;
+                if (id) {
+                    state.orders = state.orders.filter((o) => o._id !== id);
+                    if (state.detailOrder?._id === id) state.detailOrder = {};
+                }
+            })
+            .addCase(deleteOrderThunk.rejected, (state, action) => {
+                state.status = "failed";
+                state.loading = false;
+                state.success = false;
+                const msg = action.payload?.message || "Server Error";
+                state.error = msg;
+                state.message.error = msg;
+            });
+
+        // ---- changeOrderStatus
+        builder
+            .addCase(changeOrderStatusThunk.pending, (state) => {
+                state.status = "loading";
+                state.loading = true;
+            })
+            .addCase(changeOrderStatusThunk.fulfilled, (state, action) => {
+                state.status = "succeeded";
+                state.loading = false;
+                state.success = true;
+                state.message.success = action.payload.message || "Updated";
+
+                const updated = action.payload.data;
+                if (updated?._id) {
+                    const idx = findIndexById(state.orders, updated._id);
+                    if (idx !== -1)
+                        state.orders[idx] = {
+                            ...state.orders[idx],
+                            ...updated,
+                        };
+                    if (state.detailOrder?._id === updated._id) {
+                        state.detailOrder = {
+                            ...state.detailOrder,
+                            ...updated,
+                        };
+                    }
+                }
+            })
+            .addCase(changeOrderStatusThunk.rejected, (state, action) => {
+                state.status = "failed";
+                state.loading = false;
+                state.success = false;
+                const msg = action.payload?.message || "Server Error";
+                state.error = msg;
+                state.message.error = msg;
+            });
+
+        // ---- confirmOrderedMenu
         builder
             .addCase(confirmOrderedMenu.pending, (state) => {
-                state.loading = true;
+                state.loading = true; // maintains backward-compat flag
+                state.status = "loading";
                 state.message.error = "";
                 state.success = false;
             })
             .addCase(confirmOrderedMenu.fulfilled, (state, action) => {
                 state.loading = false;
-                state.confirmedMenus = action.payload.data; // adjust if your backend returns { data: menus }
+                state.status = "succeeded";
                 state.success = true;
-                state.message.success = "Ordered menus confirmed.";
+                state.confirmedMenus = action.payload.data || [];
+                state.message.success =
+                    action.payload.message || "Ordered menus confirmed.";
             })
             .addCase(confirmOrderedMenu.rejected, (state, action) => {
                 state.loading = false;
+                state.status = "failed";
                 state.success = false;
-                state.message.error =
-                    action.payload || "Failed to confirm ordered menus.";
+                const msg =
+                    action.payload?.message ||
+                    "Failed to confirm ordered menus.";
+                state.message.error = msg;
+                state.error = msg;
             });
     },
 });
 
-export const {
-    getOrdersSuccess,
-    getOrdersFailed,
-    deleteOrderSuccess,
-    deleteOrderFailed,
-    changeOrderStatusSuccess,
-    changeOrderStatusFailed,
-    getOrderByInvoiceNumberSuccess,
-    getOrderByInvoiceNumberFailed,
-} = orderSlice.actions;
 export default orderSlice.reducer;

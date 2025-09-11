@@ -8,50 +8,63 @@ import Content from "../../../../src/components/Layout/Content/Content";
 import { Spin, Typography, message } from "antd";
 import { isAuth } from "../../../../src/helpers/authHelper";
 
-const id = () => {
+const EditContactPersonPage = () => {
     const dispatch = useDispatch();
     const router = useRouter();
     const { id } = router.query;
+
     const pageTitle = "Saso App | Contact Person";
     const [showForm, setShowForm] = useState(false);
     const [showLoading, setShowLoading] = useState(false);
 
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                setShowLoading(true);
-                if (id) {
-                    const response = await dispatch(getDetailContactPerson(id));
+        let isMounted = true;
 
-                    if (response.status === "success") {
-                        setShowForm(true);
-                    } else {
-                        message.error(response.message);
-                        isAuth(response);
-                    }
+        const fetchData = async () => {
+            if (!id) return; // wait until the id is available
+
+            try {
+                if (isMounted) setShowLoading(true);
+
+                const res = await dispatch(getDetailContactPerson(id));
+                if (!isMounted) return;
+
+                if (res?.status === "success") {
+                    setShowForm(true);
+                } else {
+                    message.error(
+                        res?.message || "Failed to load contact person",
+                    );
+                    isAuth(res);
+                    setShowForm(false);
                 }
-            } catch (error) {
-                // Handle errors if necessary
+            } catch (err) {
+                if (!isMounted) return;
+                message.error(err?.message || "Failed to load contact person");
+                setShowForm(false);
             } finally {
-                setShowLoading(false);
+                if (isMounted) setShowLoading(false);
             }
         };
 
         fetchData();
-    }, [id]);
+        return () => {
+            isMounted = false;
+        };
+    }, [dispatch, id]);
 
     return (
         <LoggedIn title={pageTitle}>
             <Content>
                 <Spin spinning={showLoading} tip="Loading...">
-                    <Typography.Title level={3}>
+                    <Typography.Title level={3} style={{ margin: 0 }}>
                         Edit contact person
                     </Typography.Title>
-                    {showForm ? <EditContactPersonForm /> : ""}
+                    {showForm ? <EditContactPersonForm /> : null}
                 </Spin>
             </Content>
         </LoggedIn>
     );
 };
 
-export default id;
+export default EditContactPersonPage;

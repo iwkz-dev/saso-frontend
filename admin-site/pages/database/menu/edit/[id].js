@@ -7,50 +7,70 @@ import { useDispatch } from "react-redux";
 import { getDetailMenu } from "../../../../src/store/reducers/menuReducer";
 import { getAllEvents } from "../../../../src/store/reducers/eventReducer";
 import { getAllCategories } from "../../../../src/store/reducers/categoryReducer";
+import { getAllVendors } from "../../../../src/store/reducers/vendorReducer";
 import { message, Spin, Typography } from "antd";
 import { isAuth } from "../../../../src/helpers/authHelper";
-import { getAllVendors } from "../../../../src/store/reducers/vendorReducer";
 
-const id = () => {
+const EditMenuPage = () => {
     const dispatch = useDispatch();
-    const [showLoading, setShowLoading] = useState(false);
     const router = useRouter();
     const { id } = router.query;
+
     const [showForm, setShowForm] = useState(false);
+    const [showLoading, setShowLoading] = useState(false);
+
     const pageTitle = "Saso App | Menu";
 
     useEffect(() => {
+        if (!router.isReady || !id) return;
+
+        let cancelled = false;
+
         const fetchData = async () => {
             setShowLoading(true);
             setShowForm(false);
 
             try {
-                await Promise.all([
+                const results = await Promise.all([
                     dispatch(getAllEvents()),
                     dispatch(getAllCategories()),
                     dispatch(getAllVendors()),
                     dispatch(getDetailMenu(id)),
                 ]);
 
-                setShowForm(true);
-            } catch (error) {
-                message.error(error.message);
-                isAuth(error);
+                const failed = results.find((r) => r?.status === "failed");
+                if (failed) {
+                    if (!cancelled) {
+                        message.error(failed?.message || "Failed to load data");
+                        isAuth(failed);
+                        setShowForm(false);
+                    }
+                    return;
+                }
+
+                if (!cancelled) setShowForm(true);
+            } catch (err) {
+                if (!cancelled) {
+                    message.error(err?.message || "Failed to load data");
+                    isAuth(err);
+                    setShowForm(false);
+                }
             } finally {
-                setShowLoading(false);
+                if (!cancelled) setShowLoading(false);
             }
         };
 
-        if (id) {
-            fetchData();
-        }
-    }, [id, dispatch]);
+        fetchData();
+        return () => {
+            cancelled = true;
+        };
+    }, [router.isReady, id, dispatch]);
 
     return (
         <LoggedIn title={pageTitle}>
             <Content>
+                <Typography.Title level={3}>Edit menu</Typography.Title>
                 <Spin spinning={showLoading} tip="Loading...">
-                    <Typography.Title level={3}>Edit menu</Typography.Title>
                     {showForm && <EditMenuForm id={id} />}
                 </Spin>
             </Content>
@@ -58,4 +78,4 @@ const id = () => {
     );
 };
 
-export default id;
+export default EditMenuPage;

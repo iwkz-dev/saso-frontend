@@ -1,87 +1,96 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
     deleteMenu,
     getAllMenus,
 } from "../../../src/store/reducers/menuReducer";
 import { getAllCategories } from "../../../src/store/reducers/categoryReducer";
 import { getAllEvents } from "../../../src/store/reducers/eventReducer";
+import { getAllVendors } from "../../../src/store/reducers/vendorReducer";
 import LoggedIn from "../../../src/components/Layout/LoggedIn/LoggedIn";
 import MenuTable from "../../../src/components/Table/Menu/MenuTable/MenuTable";
 import AddItemButton from "../../../src/components/common/Button/AddItemButton/AddItemButton";
 import Content from "../../../src/components/Layout/Content/Content";
 import { message, Space, Typography } from "antd";
 import { isAuth } from "../../../src/helpers/authHelper";
-import { getAllVendors } from "../../../src/store/reducers/vendorReducer";
 
-const index = () => {
+const Index = () => {
     const dispatch = useDispatch();
     const pageTitle = "Saso App | Menu";
+
+    const menus = useSelector((s) => s.menu.menus);
+
     const [showTable, setShowTable] = useState(false);
     const [showLoading, setShowLoading] = useState(false);
 
-    useEffect(() => {
-        getEventsCategoriesMenusVendors();
-    }, []);
+    const mountedRef = useRef(true);
+    useEffect(
+        () => () => {
+            mountedRef.current = false;
+        },
+        [],
+    );
 
-    const getEventsCategoriesMenusVendors = async () => {
+    const fetchAll = useCallback(async () => {
+        if (!mountedRef.current) return;
+        setShowLoading(true);
         try {
-            setShowLoading(true);
+            const [evRes, catRes, menRes, venRes] = await Promise.all([
+                dispatch(getAllEvents()),
+                dispatch(getAllCategories()),
+                dispatch(getAllMenus()),
+                dispatch(getAllVendors()),
+            ]);
 
-            const [eventsResponse, categoriesResponse, menusResponse, vendors] =
-                await Promise.all([
-                    dispatch(getAllEvents()),
-                    dispatch(getAllCategories()),
-                    dispatch(getAllMenus()),
-                    dispatch(getAllVendors()),
-                ]);
+            const failed = [evRes, catRes, menRes, venRes].find(
+                (r) => r?.status === "failed",
+            );
 
-            // Check for failed responses
-            if (
-                [
-                    eventsResponse,
-                    categoriesResponse,
-                    menusResponse,
-                    vendors,
-                ].some((r) => r?.status === "failed")
-            ) {
-                throw new Error("One or more requests failed");
+            if (failed) {
+                // Show the most relevant message, honor auth handling
+                message.error(failed?.message || "Failed to load data");
+                isAuth(failed);
+                if (mountedRef.current) setShowTable(false);
+                return;
             }
 
-            // If all responses are successful
-            setShowTable(true);
-        } catch (error) {
-            setShowTable(false);
-            message.error(error.message);
-            isAuth(error);
+            if (mountedRef.current) setShowTable(true);
+        } catch (err) {
+            message.error(err?.message || "Failed to load data");
+            isAuth(err);
+            if (mountedRef.current) setShowTable(false);
         } finally {
-            setShowLoading(false);
+            if (mountedRef.current) setShowLoading(false);
         }
-    };
+    }, [dispatch]);
+
+    useEffect(() => {
+        fetchAll();
+    }, [fetchAll]);
 
     const onDelete = async (item) => {
-        const isConfirmed = window.confirm(
-            `Please confirm this if you want to delete "${item.name}"`,
+        const ok = window.confirm(
+            `Please confirm this if you want to delete "${
+                item?.name ?? "this menu"
+            }"`,
         );
+        if (!ok) return;
 
-        if (isConfirmed) {
-            setShowLoading(true);
-
-            try {
-                const onDeleteResult = await dispatch(deleteMenu(item["_id"]));
-
-                if (onDeleteResult.status !== "failed") {
-                    message.success(onDeleteResult.message);
-                    getEventsCategoriesMenusVendors();
-                } else {
-                    message.error(onDeleteResult.message);
-                }
-            } catch (error) {
-                // TODO: Handle error here
-                message.error(error.message);
-            } finally {
-                setShowLoading(false);
+        if (mountedRef.current) setShowLoading(true);
+        try {
+            const res = await dispatch(deleteMenu(item["_id"]));
+            if (res?.status !== "failed") {
+                message.success(res?.message || "Menu deleted");
+                await fetchAll();
+            } else {
+                message.error(res?.message || "Failed to delete menu");
+                isAuth(res);
             }
+        } catch (err) {
+            message.error(err?.message || "Failed to delete menu");
+            isAuth(err);
+        } finally {
+            if (mountedRef.current) setShowLoading(false);
         }
     };
 
@@ -89,21 +98,25 @@ const index = () => {
         <LoggedIn title={pageTitle}>
             <Content>
                 <Typography.Title level={3}>Menu</Typography.Title>
+
                 <Space direction="vertical" style={{ display: "flex" }}>
-                    <Space
+                    <div
                         style={{
                             display: "flex",
                             justifyContent: "space-between",
+                            alignItems: "center",
+                            gap: 12,
                         }}>
                         <AddItemButton
                             hrefLink="/database/menu/add"
                             text="Add Menu"
                         />
-                    </Space>
+                    </div>
+
                     <MenuTable
                         onDelete={onDelete}
                         isLoading={showLoading}
-                        showTable={showTable}
+                        showTable={showTable && (menus?.length ?? 0) > 0}
                     />
                 </Space>
             </Content>
@@ -111,4 +124,4 @@ const index = () => {
     );
 };
 
-export default index;
+export default Index;

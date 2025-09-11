@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { editDetailCategory } from "../../../../store/reducers/categoryReducer";
 import { Form, Input, Button, Space, message } from "antd";
@@ -7,77 +7,71 @@ import Router from "next/router";
 const EditCategoryForm = () => {
     const dispatch = useDispatch();
     const [form] = Form.useForm();
-    const category = useSelector((state) => state.category.detailCategory);
-    const [showUploading, setShowUploading] = useState(false);
+    const category =
+        useSelector((state) => state.category.detailCategory) || {};
+    const [submitting, setSubmitting] = useState(false);
 
-    const initialValues = {
-        name: category.name,
-    };
+    const initialValues = useMemo(
+        () => ({
+            name: category?.name || "",
+        }),
+        [category?.name],
+    );
 
     const submitForm = async (values) => {
-        const shouldSaveChanges = confirm(
+        const shouldSave = window.confirm(
             "Please confirm to save your changes",
         );
+        if (!shouldSave) return;
 
-        if (!shouldSaveChanges) {
-            return;
-        }
-
-        setShowUploading(true);
-
+        setSubmitting(true);
         try {
-            const response = await dispatch(
-                editDetailCategory(category._id, values),
+            const res = await dispatch(
+                editDetailCategory({ id: category._id, requestedData: values }),
             );
 
-            if (response?.status === "failed") {
-                message.error(response.message);
-            } else {
-                message.success(response.message);
-                Router.push("/database/category");
-            }
-        } catch (error) {
-            message.error(error.message);
+            message.success(res?.message || "Category updated");
+            Router.replace("/database/category");
+        } catch (err) {
+            message.error(err?.message || "Failed to update category");
         } finally {
-            setShowUploading(false);
+            setSubmitting(false);
         }
     };
 
     const onReset = () => {
-        form.current?.resetFields();
+        form.resetFields();
     };
 
     return (
         <Form
-            ref={form}
+            form={form}
             initialValues={initialValues}
             name="category"
             onFinish={submitForm}
-            labelCol={{
-                span: 4,
-            }}
-            wrapperCol={{
-                span: 14,
-            }}>
+            labelCol={{ span: 4 }}
+            wrapperCol={{ span: 14 }}>
             <Form.Item
                 label="Name"
                 name="name"
                 rules={[
-                    {
-                        required: true,
-                    },
+                    { required: true, message: "Please input a category name" },
                 ]}>
-                <Input placeholder="Name" defaultValue={category.name} />
+                <Input placeholder="Name" />
             </Form.Item>
+
             <Form.Item>
                 <Space>
                     <Button
                         type="primary"
                         htmlType="submit"
-                        loading={showUploading}>
+                        loading={submitting}>
                         Submit
                     </Button>
-                    <Button htmlType="button" onClick={onReset}>
+                    <Button
+                        htmlType="button"
+                        onClick={onReset}
+                        disabled={submitting}>
                         Reset
                     </Button>
                 </Space>

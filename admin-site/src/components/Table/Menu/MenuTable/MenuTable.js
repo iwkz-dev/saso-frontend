@@ -1,35 +1,32 @@
-import React, { useEffect, useState } from "react";
+import React, { useMemo } from "react";
 import { useSelector } from "react-redux";
 import Table from "../../Table";
 
 function MenuTable({ onDelete, isLoading, showTable }) {
-    const menus = useSelector((state) => state.menu.menus);
-    const events = useSelector((state) => state.event.events);
-    const categories = useSelector((state) => state.category.categories);
-    const vendors = useSelector((state) => state.vendor.vendors);
-    const [tableHead, setTableHead] = useState([]);
+    const menus = useSelector((state) => state?.menu?.menus) ?? [];
+    const events = useSelector((state) => state?.event?.events) ?? [];
+    const categories =
+        useSelector((state) => state?.category?.categories) ?? [];
+    const vendors = useSelector((state) => state?.vendor?.vendors) ?? [];
 
-    useEffect(() => {
-        setTableHead([
-            {
-                key: "name",
-                dataIndex: "name",
-                title: "Name",
-            },
+    const tableHead = useMemo(
+        () => [
+            { key: "name", dataIndex: "name", title: "Name" },
             {
                 key: "category",
                 dataIndex: "category",
                 title: "Category",
                 filterMode: "menu",
                 filterSearch: true,
-                filters: categories.map((category) => {
-                    return {
-                        text: category.name,
-                        value: category._id,
-                    };
-                }),
+                filters: categories.map((c) => ({
+                    text: c.name,
+                    value: c._id,
+                })),
                 onFilter: (value, record) => {
-                    return record.category.includes(value);
+                    const rv = record?.category;
+                    if (Array.isArray(rv))
+                        return rv.map(String).includes(String(value));
+                    return String(rv ?? "").includes(String(value));
                 },
             },
             {
@@ -38,26 +35,16 @@ function MenuTable({ onDelete, isLoading, showTable }) {
                 title: "Vendor",
                 filterMode: "menu",
                 filterSearch: true,
-                filters: vendors.map((v) => {
-                    return {
-                        text: v.name,
-                        value: v._id,
-                    };
-                }),
+                filters: vendors.map((v) => ({ text: v.name, value: v._id })),
                 onFilter: (value, record) => {
-                    return record.vendor.includes(value);
+                    const rv = record?.vendor;
+                    if (Array.isArray(rv))
+                        return rv.map(String).includes(String(value));
+                    return String(rv ?? "").includes(String(value));
                 },
             },
-            {
-                key: "price",
-                dataIndex: "price",
-                title: "Price (€)",
-            },
-            {
-                key: "quantity",
-                dataIndex: "quantity",
-                title: "Quantity",
-            },
+            { key: "price", dataIndex: "price", title: "Price (€)" },
+            { key: "quantity", dataIndex: "quantity", title: "Quantity" },
             {
                 key: "quantityOrder",
                 dataIndex: "quantityOrder",
@@ -69,33 +56,20 @@ function MenuTable({ onDelete, isLoading, showTable }) {
                 title: "Event",
                 filterMode: "menu",
                 filterSearch: true,
-                filters: events.map((event) => {
-                    return {
-                        text: event.name,
-                        value: event._id,
-                    };
-                }),
+                filters: events.map((e) => ({ text: e.name, value: e._id })),
                 onFilter: (value, record) => {
-                    return record.event.includes(value);
+                    const rv = record?.event;
+                    if (Array.isArray(rv))
+                        return rv.map(String).includes(String(value));
+                    return String(rv ?? "").includes(String(value));
                 },
             },
-            {
-                key: "note",
-                dataIndex: "note",
-                title: "Note",
-            },
-            {
-                key: "created_at",
-                dataIndex: "created_at",
-                title: "Created At",
-            },
-            {
-                key: "updated_at",
-                dataIndex: "updated_at",
-                title: "Updated At",
-            },
-        ]);
-    }, [events, menus]);
+            { key: "note", dataIndex: "note", title: "Note" },
+            { key: "created_at", dataIndex: "created_at", title: "Created At" },
+            { key: "updated_at", dataIndex: "updated_at", title: "Updated At" },
+        ],
+        [categories, vendors, events],
+    );
 
     return (
         <Table

@@ -1,39 +1,44 @@
-export const formatDate = (dateStr, withClock = false, withDay = false) => {
-    const date = new Date(dateStr);
-    const options = { year: "numeric", month: "long", day: "numeric" };
-    let formatedDate = date.toLocaleDateString("id-Id", options);
-    if (withDay) {
-        const dayOpt = { weekday: "long" };
-        const day = date.toLocaleString("id-Id", dayOpt);
-        formatedDate = `${day}, ${formatedDate}`;
-    }
-    if (withClock) {
-        const clockOpt = { hour: "numeric", minute: "numeric" };
-        const clock = date.toLocaleString("id-Id", clockOpt);
-        formatedDate = `${formatedDate}, ${clock} `;
-    }
-    return formatedDate;
+const ID_LOCALE = "id-ID";
+
+const toValidDate = (input) => {
+    const d = input instanceof Date ? input : new Date(input);
+    return isNaN(d.getTime()) ? null : d;
 };
 
-/*
-const makeTwoDigit = (number) => {
-    number = number < 10 && number > 0 ? "0" + number : number;
-    number = number <= 0 ? "00" : number;
-    return number;
+export const formatDate = (dateStr, withClock = false, withDay = false) => {
+    const date = toValidDate(dateStr);
+    if (!date) return "";
+
+    const baseOpts = { year: "numeric", month: "long", day: "numeric" };
+
+    let formatted = new Intl.DateTimeFormat(ID_LOCALE, baseOpts).format(date);
+
+    if (withDay) {
+        const day = new Intl.DateTimeFormat(ID_LOCALE, {
+            weekday: "long",
+        }).format(date);
+        formatted = `${day}, ${formatted}`;
+    }
+
+    if (withClock) {
+        const clock = new Intl.DateTimeFormat(ID_LOCALE, {
+            hour: "numeric",
+            minute: "numeric",
+        }).format(date);
+        formatted = `${formatted}, ${clock}`;
+    }
+
+    return formatted;
 };
-*/
 
 export const getDateValue = (dateStr) => {
-    const date = new Date(dateStr);
-    const year = date.getFullYear();
-    let month = date.getMonth() + 1;
-    let day = date.getDate();
+    const date = toValidDate(dateStr);
+    if (!date) return ""; // gracefully handle invalid inputs
 
-    if (day < 10) {
-        day = "0" + day;
-    }
-    if (month < 10) {
-        month = "0" + month;
-    }
-    return `${year}-${month}-${day}`;
+    const pad2 = (n) => String(n).padStart(2, "0");
+    const y = date.getFullYear();
+    const m = pad2(date.getMonth() + 1);
+    const d = pad2(date.getDate());
+
+    return `${y}-${m}-${d}`;
 };

@@ -1,127 +1,41 @@
 import api from "../api";
 import { getToken } from "../helpers/authHelper";
 
-const getAllCategories = () => {
-    return new Promise((resolve, reject) => {
-        const headers = {
-            accept: "application/JSON",
-            Authorization: getToken(),
-        };
-        api({
-            method: "GET",
-            url: "/category",
-            headers,
-        })
-            .then((response) => {
-                if (response.data.status === "success") {
-                    resolve(response.data);
-                } else {
-                    reject(response.data);
-                }
-            })
-            .catch((error) => {
-                reject(error.response);
-            });
-    });
+const authHeaders = () => ({
+    accept: "application/json",
+    Authorization: getToken(),
+});
+
+const handleResponse = (response) => {
+    const data = response?.data;
+    if (data?.status === "success") return data;
+    // keep old behavior: reject with response.data when status !== success
+    throw data;
 };
 
-const deleteCategory = (id) => {
-    return new Promise((resolve, reject) => {
-        const headers = {
-            accept: "application/JSON",
-            Authorization: getToken(),
-        };
-        api({
-            method: "DELETE",
-            url: `/category/${id}`,
-            headers,
-        })
-            .then((response) => {
-                if (response.data.status === "success") {
-                    resolve(response.data);
-                } else {
-                    reject(response.data);
-                }
-            })
-            .catch((error) => {
-                reject(error.response);
-            });
-    });
+const handleError = (error) => {
+    // keep old behavior: reject with error.response
+    throw error?.response ?? error;
 };
 
-const createCategory = (requestedData) => {
-    return new Promise((resolve, reject) => {
-        const headers = {
-            accept: "application/JSON",
-            Authorization: getToken(),
-        };
-        api({
-            method: "POST",
-            url: `/category`,
-            data: requestedData,
-            headers,
-        })
-            .then((response) => {
-                if (response.data.status === "success") {
-                    resolve(response.data);
-                } else {
-                    reject(response.data);
-                }
-            })
-            .catch((error) => {
-                reject(error.response);
-            });
-    });
-};
+const request = (config) =>
+    api({ ...config, headers: { ...authHeaders(), ...(config.headers || {}) } })
+        .then(handleResponse)
+        .catch(handleError);
 
-const getDetailCategory = (id) => {
-    return new Promise((resolve, reject) => {
-        const headers = {
-            accept: "application/JSON",
-            Authorization: getToken(),
-        };
-        api({
-            method: "GET",
-            url: `/category/${id}/detail`,
-            headers,
-        })
-            .then((response) => {
-                if (response.data.status === "success") {
-                    resolve(response.data);
-                } else {
-                    reject(response.data);
-                }
-            })
-            .catch((error) => {
-                reject(error.response);
-            });
-    });
-};
+const getAllCategories = () => request({ method: "GET", url: "/category" });
 
-const editDetailCategory = (id, requestedData) => {
-    return new Promise((resolve, reject) => {
-        const headers = {
-            accept: "application/JSON",
-            Authorization: getToken(),
-        };
-        api({
-            method: "PUT",
-            url: `/category/${id}`,
-            data: requestedData,
-            headers,
-        })
-            .then((response) => {
-                if (response.data.status === "success") {
-                    resolve(response.data);
-                } else {
-                    reject(response.data);
-                }
-            })
-            .catch((error) => {
-                reject(error.response);
-            });
-    });
-};
+const deleteCategory = (id) =>
+    request({ method: "DELETE", url: `/category/${id}` });
+
+const createCategory = (requestedData) =>
+    request({ method: "POST", url: "/category", data: requestedData });
+
+const getDetailCategory = (id) =>
+    request({ method: "GET", url: `/category/${id}/detail` });
+
+const editDetailCategory = (id, requestedData) =>
+    request({ method: "PUT", url: `/category/${id}`, data: requestedData });
 
 const categoryService = {
     getAllCategories,

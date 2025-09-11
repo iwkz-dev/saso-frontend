@@ -1,97 +1,110 @@
-import React, { useEffect, useState } from "react";
-import Content from "../../../src/components/Layout/Content/Content";
-import { useDispatch } from "react-redux";
-import {
-    deleteCategory,
-    getAllCategories,
-} from "../../../src/store/reducers/categoryReducer";
+import React, { useEffect, useState, useMemo } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import LoggedIn from "../../../src/components/Layout/LoggedIn/LoggedIn";
+import Content from "../../../src/components/Layout/Content/Content";
 import CategoryTable from "../../../src/components/Table/Category/CategoryTable/CategoryTable";
 import AddItemButton from "../../../src/components/common/Button/AddItemButton/AddItemButton";
-import { Space, message, Typography } from "antd";
-import { isAuth } from "../../../src/helpers/authHelper";
+import { Typography, Space, message } from "antd";
+import {
+    getAllCategories,
+    deleteCategory,
+} from "../../../src/store/reducers/categoryReducer";
 
-const index = () => {
+export default function CategoryIndexPage() {
     const dispatch = useDispatch();
     const pageTitle = "Saso App | Category";
-    const [showTable, setShowTable] = useState(false);
-    const [showLoadingData, setShowLoadingData] = useState(false);
+
+    const { status, error, categories } = useSelector((s) => s.category);
+    const [opLoading, setOpLoading] = useState(false);
+
+    const loading = status === "loading" || opLoading;
+    const showTable = useMemo(
+        () => (categories?.length || 0) > 0,
+        [categories],
+    );
 
     useEffect(() => {
-        fetchCategories();
-    }, []);
-
-    const fetchCategories = async () => {
-        try {
-            setShowLoadingData(true);
-            const result = await dispatch(getAllCategories());
-
-            if (result.status === "success") {
-                setShowLoadingData(false);
-                setShowTable(true);
-            } else {
-                handleFailedRequest(result);
+        dispatch(getAllCategories()).then((res) => {
+            if (res?.status === "failed") {
+                message.error(res?.message || "Failed to load categories");
             }
-        } catch (error) {
-            handleFetchError(error);
-        }
-    };
-
-    const handleFailedRequest = (response) => {
-        setShowLoadingData(false);
-        message.error(response.message);
-        setShowTable(false);
-        isAuth(response);
-    };
-
-    const handleFetchError = (error) => {
-        setShowLoadingData(false);
-        message.error(error.message);
-    };
+        });
+    }, [dispatch]);
 
     const onDelete = async (item) => {
-        const isConfirm = window.confirm(
-            `Please confirm if you want to delete "${item.name}"`,
+        const ok = window.confirm(
+            `Please confirm if you want to delete "${
+                item?.name ?? "this category"
+            }".`,
         );
+        if (!ok) return;
 
-        if (isConfirm) {
-            try {
-                setShowLoadingData(true);
-                const deleteResponse = await dispatch(
-                    deleteCategory(item["_id"]),
-                );
-
-                if (deleteResponse.status !== "failed") {
-                    setShowLoadingData(false);
-                    message.success(deleteResponse.message);
-                    fetchCategories();
-                } else {
-                    handleFailedRequest(deleteResponse);
-                }
-            } catch (error) {
-                handleFetchError(error);
+        setOpLoading(true);
+        try {
+            const res = await dispatch(deleteCategory(item?._id));
+            if (res?.status === "failed") {
+                message.error(res?.message || "Failed to delete category");
+            } else {
+                message.success(res?.message || "Category deleted");
             }
+        } finally {
+            setOpLoading(false);
         }
     };
 
     return (
         <LoggedIn title={pageTitle}>
             <Content>
-                <Typography.Title level={3}>Category</Typography.Title>
-                <Space direction="vertical" style={{ display: "flex" }}>
+                <div
+                    style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        gap: 12,
+                        flexWrap: "wrap",
+                    }}>
+                    <Typography.Title level={3}>Category</Typography.Title>
                     <AddItemButton
                         hrefLink="/database/category/add"
                         text="Add Category"
                     />
+                </div>
+
+                {error && status !== "loading" ? (
+                    <div
+                        style={{
+                            padding: 12,
+                            borderRadius: 8,
+                            background: "#fff1f0",
+                            color: "#a8071a",
+                            border: "1px solid #ffa39e",
+                        }}>
+                        {error}
+                    </div>
+                ) : null}
+
+                <Space direction="vertical" style={{ display: "flex" }}>
                     <CategoryTable
                         onDelete={onDelete}
-                        isLoading={showLoadingData}
+                        isLoading={loading}
                         showTable={showTable}
                     />
+                    {!showTable && !loading && (
+                        <div
+                            style={{
+                                width: "100%",
+                                textAlign: "center",
+                                padding: "24px 0",
+                                color: "#7A8AA0",
+                                background: "#fff",
+                                borderRadius: 12,
+                                border: "1px dashed #CFD8E3",
+                            }}>
+                            No categories to display yet.
+                        </div>
+                    )}
                 </Space>
             </Content>
         </LoggedIn>
     );
-};
-
-export default index;
+}

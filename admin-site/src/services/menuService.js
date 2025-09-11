@@ -1,158 +1,46 @@
 import api from "../api";
 import { getToken } from "../helpers/authHelper";
 
-const getAllMenus = (requestURL = "") => {
-    return new Promise((resolve, reject) => {
-        const headers = {
-            accept: "application/JSON",
-            Authorization: getToken(),
-        };
+const authHeaders = () => ({
+    accept: "application/json",
+    Authorization: getToken(),
+});
 
-        api({
-            method: "GET",
-            url: `/menu${requestURL}`,
-            headers,
-        })
-            .then((response) => {
-                if (response.data.status === "success") {
-                    resolve(response.data);
-                } else {
-                    reject(response.data);
-                }
-            })
-            .catch((error) => {
-                reject(error.response);
-            });
-    });
+const handleResponse = (response) => {
+    const data = response?.data;
+    if (data?.status === "success") return data;
+    throw data;
 };
 
-const getDetailMenu = (id) => {
-    return new Promise((resolve, reject) => {
-        const headers = {
-            accept: "application/JSON",
-            Authorization: getToken(),
-        };
-
-        api({
-            method: "GET",
-            url: `/menu/${id}/detail`,
-            headers,
-        })
-            .then((response) => {
-                if (response.data.status === "success") {
-                    resolve(response.data);
-                } else {
-                    reject(response.data);
-                }
-            })
-            .catch((error) => {
-                reject(error.response);
-            });
-    });
+const handleError = (error) => {
+    throw error?.response ?? error;
 };
 
-const editDetailMenu = (id, requestedData) => {
-    return new Promise((resolve, reject) => {
-        const headers = {
-            accept: "application/JSON",
-            Authorization: getToken(),
-        };
+const request = (config) =>
+    api({ ...config, headers: { ...authHeaders(), ...(config.headers || {}) } })
+        .then(handleResponse)
+        .catch(handleError);
 
-        api({
-            method: "PUT",
-            url: `/menu/${id}`,
-            data: requestedData,
-            headers,
-        })
-            .then((response) => {
-                if (response.data.status === "success") {
-                    resolve(response.data);
-                } else {
-                    reject(response.data);
-                }
-            })
-            .catch((error) => {
-                reject(error.response);
-            });
+const getAllMenus = (requestURL = "") =>
+    request({ method: "GET", url: `/menu${requestURL}` });
+
+const getDetailMenu = (id) =>
+    request({ method: "GET", url: `/menu/${id}/detail` });
+
+const editDetailMenu = (id, requestedData) =>
+    request({ method: "PUT", url: `/menu/${id}`, data: requestedData });
+
+const editDetailMenuImages = (id, requestedData) =>
+    request({
+        method: "PATCH",
+        url: `/menu/${id}/upload-images`,
+        data: requestedData,
     });
-};
 
-const editDetailMenuImages = (id, requestedData) => {
-    return new Promise((resolve, reject) => {
-        const headers = {
-            accept: "application/JSON",
-            Authorization: getToken(),
-        };
+const createMenu = (requestedData) =>
+    request({ method: "POST", url: "/menu", data: requestedData });
 
-        api({
-            method: "PATCH",
-            url: `/menu/${id}/upload-images`,
-            data: requestedData,
-            headers,
-        })
-            .then((response) => {
-                if (response.data.status === "success") {
-                    resolve(response.data);
-                } else {
-                    reject(response.data);
-                }
-            })
-            .catch((error) => {
-                reject(error.response);
-            });
-    });
-};
-
-const createMenu = (requestedData) => {
-    return new Promise((resolve, reject) => {
-        const headers = {
-            accept: "application/JSON",
-            Authorization: getToken(),
-        };
-
-        api({
-            method: "POST",
-            url: `/menu`,
-            data: requestedData,
-            headers,
-        })
-            .then((response) => {
-                if (response.data.status === "success") {
-                    resolve(response.data);
-                } else {
-                    reject(response.data);
-                }
-            })
-            .catch((error) => {
-                reject(error.response);
-            });
-    });
-};
-
-const deleteMenu = (id) => {
-    return new Promise((resolve, reject) => {
-        const headers = {
-            accept: "application/JSON",
-            Authorization: getToken(),
-        };
-
-        api({
-            method: "DELETE",
-            url: `/menu/${id}`,
-            headers,
-        })
-            .then((response) => {
-                if (response.data.status === "success") {
-                    resolve(response.data);
-                } else {
-                    reject(response.data);
-                }
-            })
-            .catch((error) => {
-                reject(error.response);
-            });
-    });
-};
+const deleteMenu = (id) => request({ method: "DELETE", url: `/menu/${id}` });
 
 const menuService = {
     getAllMenus,
@@ -162,4 +50,5 @@ const menuService = {
     createMenu,
     editDetailMenuImages,
 };
+
 export default menuService;

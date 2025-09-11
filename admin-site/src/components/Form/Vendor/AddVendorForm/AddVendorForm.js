@@ -2,55 +2,56 @@ import { useState } from "react";
 import { Form, Input, Button, Space, message } from "antd";
 import { useDispatch } from "react-redux";
 import { createVendor } from "../../../../store/reducers/vendorReducer";
-import Router from "next/router";
+import { useRouter } from "next/router";
 
 const AddVendorForm = () => {
     const dispatch = useDispatch();
+    const router = useRouter();
     const [form] = Form.useForm();
     const [showUploading, setShowUploading] = useState(false);
 
     const submitForm = async (values) => {
-        const shouldAddVendor = confirm("Please confirm to add vendor");
+        const shouldAddVendor = window.confirm("Please confirm to add vendor");
+        if (!shouldAddVendor) return;
 
-        if (shouldAddVendor) {
-            setShowUploading(true);
+        setShowUploading(true);
+        try {
+            const response = await dispatch(createVendor(values));
 
-            try {
-                const response = await dispatch(createVendor(values));
-
-                if (response?.status === "failed") {
-                    message.error(response.message);
-                } else {
-                    message.success(response.message);
-                    Router.push("/database/vendor");
-                }
-            } catch (error) {
-                message.error(error.message);
-            } finally {
-                setShowUploading(false);
+            if (response?.status === "failed") {
+                message.error(response?.message || "Failed to add vendor.");
+            } else {
+                message.success(response?.message || "Vendor added.");
+                router.push("/database/vendor");
             }
+        } catch (error) {
+            message.error(error?.message || "Something went wrong.");
+        } finally {
+            setShowUploading(false);
         }
     };
 
     const onReset = () => {
-        form.current?.resetFields();
+        form.resetFields();
     };
 
     return (
         <div>
             <Form
-                ref={form}
+                form={form}
                 name="vendor"
                 onFinish={submitForm}
-                labelCol={{
-                    span: 4,
-                }}
-                wrapperCol={{
-                    span: 14,
-                }}>
-                <Form.Item label="Name" name="name" required>
+                labelCol={{ span: 4 }}
+                wrapperCol={{ span: 14 }}>
+                <Form.Item
+                    label="Name"
+                    name="name"
+                    rules={[
+                        { required: true, message: "Please enter vendor name" },
+                    ]}>
                     <Input placeholder="Name" />
                 </Form.Item>
+
                 <Form.Item>
                     <Space>
                         <Button

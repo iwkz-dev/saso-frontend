@@ -19,7 +19,6 @@ const id = () => {
     const orders = useSelector((state) => state.order.orders);
     const [orderDetail, setOrderDetail] = useState({});
 
-    //TODO view order
     useEffect(() => {
         const fetchData = async () => {
             setShowLoading(true);
