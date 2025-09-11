@@ -77,7 +77,9 @@ const Index = () => {
                 }
 
                 try {
-                    const res = await dispatch(getOrderByInvoiceNumber(invoiceNumber));
+                    const res = await dispatch(
+                        getOrderByInvoiceNumber(invoiceNumber),
+                    );
                     if (res?.status === "success") {
                         const data = res?.data ?? res?.order ?? res;
                         setOrder(data);
@@ -86,14 +88,16 @@ const Index = () => {
                         setScanned(false);
                     }
                 } catch (err) {
-                    message.error(err?.message || "Failed to fetch order details.");
+                    message.error(
+                        err?.message || "Failed to fetch order details.",
+                    );
                     setScanned(false);
                 } finally {
                     setLoading(false);
                 }
             }
         },
-        [dispatch, scanned, selectedVendor]
+        [dispatch, scanned, selectedVendor],
     );
 
     const handleConfirm = async () => {
@@ -102,7 +106,10 @@ const Index = () => {
         setLoading(true);
         try {
             const res = await dispatch(
-                confirmOrderedMenu({ orderId: order._id, vendorId: selectedVendor })
+                confirmOrderedMenu({
+                    orderId: order._id,
+                    vendorId: selectedVendor,
+                }),
             );
             if (res?.status === "failed") {
                 message.error(res?.message || "Failed to confirm order.");
@@ -137,13 +144,16 @@ const Index = () => {
                     <div
                         key={item?.key ?? `${item?.name}-${idx}`}
                         style={{
-                            backgroundColor: isConfirmed ? "#f6ffed" : "transparent",
-                            border: `1px solid ${isConfirmed ? "#b7eb8f" : "#f0f0f0"}`,
+                            backgroundColor: isConfirmed
+                                ? "#f6ffed"
+                                : "transparent",
+                            border: `1px solid ${
+                                isConfirmed ? "#b7eb8f" : "#f0f0f0"
+                            }`,
                             borderRadius: 4,
                             padding: "4px 8px",
                             marginBottom: 4,
-                        }}
-                    >
+                        }}>
                         {item?.name} x {item?.totalPortion}
                         {isConfirmed && (
                             <span style={{ color: "#52c41a", marginLeft: 8 }}>
@@ -153,17 +163,25 @@ const Index = () => {
                     </div>
                 );
             }),
-        [order]
+        [order],
     );
 
     return (
         <LoggedIn title={pageTitle}>
             <Content>
                 <Spin spinning={loading} tip="Loading...">
-                    <div style={{ maxWidth: 600, margin: "0 auto", padding: 24 }}>
+                    <div
+                        style={{
+                            maxWidth: 600,
+                            margin: "0 auto",
+                            padding: 24,
+                        }}>
                         <Title level={3}>QR Code Scanner</Title>
 
-                        <Space direction="vertical" size="middle" style={{ width: "100%" }}>
+                        <Space
+                            direction="vertical"
+                            size="middle"
+                            style={{ width: "100%" }}>
                             {hasVendors ? (
                                 <Form layout="vertical">
                                     <Form.Item label="Select Vendor" required>
@@ -171,10 +189,11 @@ const Index = () => {
                                             placeholder="Select Vendor"
                                             value={selectedVendor}
                                             onChange={handleVendorChange}
-                                            allowClear
-                                        >
+                                            allowClear>
                                             {vendors.map((vendor) => (
-                                                <Option key={vendor._id} value={vendor._id}>
+                                                <Option
+                                                    key={vendor._id}
+                                                    value={vendor._id}>
                                                     {vendor.name}
                                                 </Option>
                                             ))}
@@ -190,8 +209,7 @@ const Index = () => {
                                     type="primary"
                                     icon={<CameraOutlined />}
                                     block
-                                    onClick={toggleCamera}
-                                >
+                                    onClick={toggleCamera}>
                                     Open Camera
                                 </Button>
                             )}
@@ -208,16 +226,19 @@ const Index = () => {
                                             key="confirm"
                                             type="primary"
                                             onClick={handleConfirm}
-                                            disabled={!selectedVendor}
-                                        >
+                                            disabled={!selectedVendor}>
                                             Confirm Order
                                         </Button>,
-                                        <Button key="back" onClick={handleGoBack}>
+                                        <Button
+                                            key="back"
+                                            onClick={handleGoBack}>
                                             Scan Again
                                         </Button>,
-                                    ]}
-                                >
-                                    <Descriptions column={1} bordered size="small">
+                                    ]}>
+                                    <Descriptions
+                                        column={1}
+                                        bordered
+                                        size="small">
                                         <Descriptions.Item label="Customer">
                                             {order.customerFullname}
                                         </Descriptions.Item>
@@ -233,8 +254,7 @@ const Index = () => {
                                 onCancel={() => setCameraOn(false)}
                                 footer={null}
                                 destroyOnHidden
-                                title="Scan QR Code"
-                            >
+                                title="Scan QR Code">
                                 <div
                                     style={{
                                         border: "2px dashed #1890ff",
@@ -242,10 +262,11 @@ const Index = () => {
                                         overflow: "hidden",
                                         padding: 16,
                                         textAlign: "center",
-                                    }}
-                                >
+                                    }}>
                                     <QrReader
-                                        constraints={{ facingMode: "environment" }}
+                                        constraints={{
+                                            facingMode: "environment",
+                                        }}
                                         onResult={handleScan}
                                         style={{ width: "100%" }}
                                     />
