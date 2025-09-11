@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useEffect, useMemo, useState, useCallback } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
     Spin,
     Card,
@@ -29,86 +29,101 @@ const { Option } = Select;
 const Index = () => {
     const pageTitle = "Saso App | Scan";
     const dispatch = useDispatch();
+
     const [loading, setLoading] = useState(false);
     const [order, setOrder] = useState(null);
     const [scanned, setScanned] = useState(false);
     const [selectedVendor, setSelectedVendor] = useState(null);
     const [cameraOn, setCameraOn] = useState(false);
-    const [vendors, setVendors] = useState([]);
+
+    const vendors = useSelector((s) => s?.vendor?.vendors) ?? [];
+
+    const hasVendors = vendors.length > 0;
 
     const handleVendorChange = (value) => {
-        setSelectedVendor(value);
+        setSelectedVendor(value ?? null);
         setScanned(false);
         setOrder(null);
     };
 
     useEffect(() => {
-        const getVendors = async () => {
-            const response = await dispatch(getAllVendors());
-            if (response.status === "success") {
-                setVendors(response.data.data);
-            } else {
-                message.error("Failed to load vendors.");
+        (async () => {
+            const res = await dispatch(getAllVendors());
+            if (res?.status !== "success") {
+                message.error(res?.message || "Failed to load vendors.");
             }
-        };
-
-        getVendors();
+        })();
     }, [dispatch]);
 
-    const handleScan = async (result, error) => {
-        if (result) {
-            setScanned(true);
-            setCameraOn(false);
-            setLoading(true);
-
-            const invoiceNumber = result?.text;
-
-            try {
-                const response = await dispatch(
-                    getOrderByInvoiceNumber(invoiceNumber),
-                );
-
-                if (response.status === "success") {
-                    setOrder(response.data);
-                } else {
-                    message.error("Order not found.");
-                    setScanned(false);
-                }
-            } catch (err) {
-                console.error(err);
-                message.error("Failed to fetch order details.");
-                setScanned(false);
-            } finally {
-                setLoading(false);
+    const handleScan = useCallback(
+        async (result, error) => {
+            if (error) {
+                console.error(error);
             }
-        }
 
-        if (error) {
-            console.log(error);
-        }
-    };
+            if (!selectedVendor) return;
 
-    const handleConfirm = () => {
+            if (result && !scanned) {
+                setScanned(true);
+                setCameraOn(false);
+                setLoading(true);
+
+                const invoiceNumber = result?.text?.trim();
+                if (!invoiceNumber) {
+                    message.error("Invalid QR content.");
+                    setScanned(false);
+                    setLoading(false);
+                    return;
+                }
+
+                try {
+                    const res = await dispatch(
+                        getOrderByInvoiceNumber(invoiceNumber),
+                    );
+                    if (res?.status === "success") {
+                        const data = res?.data ?? res?.order ?? res;
+                        setOrder(data);
+                    } else {
+                        message.error(res?.message || "Order not found.");
+                        setScanned(false);
+                    }
+                } catch (err) {
+                    message.error(
+                        err?.message || "Failed to fetch order details.",
+                    );
+                    setScanned(false);
+                } finally {
+                    setLoading(false);
+                }
+            }
+        },
+        [dispatch, scanned, selectedVendor],
+    );
+
+    const handleConfirm = async () => {
+        if (!order?._id || !selectedVendor) return;
+
         setLoading(true);
-        dispatch(
-            confirmOrderedMenu({
-                orderId: order._id,
-                vendorId: selectedVendor,
-            }),
-        )
-            .then(() => {
-                message.success("Order confirmed!");
+        try {
+            const res = await dispatch(
+                confirmOrderedMenu({
+                    orderId: order._id,
+                    vendorId: selectedVendor,
+                }),
+            );
+            if (res?.status === "failed") {
+                message.error(res?.message || "Failed to confirm order.");
+            } else {
+                message.success(res?.message || "Order confirmed!");
                 setOrder(null);
                 setScanned(false);
                 setCameraOn(false);
-            })
-            .catch((error) => {
-                console.error(error);
-                message.error(error?.message || "Failed to confirm order.");
-            })
-            .finally(() => {
-                setLoading(false);
-            });
+            }
+        } catch (err) {
+            message.error(err?.message || "Failed to confirm order.");
+        } finally {
+            setLoading(false);
+        }
     };
 
     const handleGoBack = () => {
@@ -117,11 +132,39 @@ const Index = () => {
     };
 
     const toggleCamera = () => {
-        setCameraOn(!cameraOn);
-        if (!cameraOn) {
-            setScanned(false);
-        }
+        setCameraOn((prev) => !prev);
+        setScanned(false);
     };
+
+    const itemsList = useMemo(
+        () =>
+            (order?.menus ?? []).map((item, idx) => {
+                const isConfirmed = Number(item?.status) === 1;
+                return (
+                    <div
+                        key={item?.key ?? `${item?.name}-${idx}`}
+                        style={{
+                            backgroundColor: isConfirmed
+                                ? "#f6ffed"
+                                : "transparent",
+                            border: `1px solid ${
+                                isConfirmed ? "#b7eb8f" : "#f0f0f0"
+                            }`,
+                            borderRadius: 4,
+                            padding: "4px 8px",
+                            marginBottom: 4,
+                        }}>
+                        {item?.name} x {item?.totalPortion}
+                        {isConfirmed && (
+                            <span style={{ color: "#52c41a", marginLeft: 8 }}>
+                                <CheckCircleOutlined /> Confirmed
+                            </span>
+                        )}
+                    </div>
+                );
+            }),
+        [order],
+    );
 
     return (
         <LoggedIn title={pageTitle}>
@@ -139,7 +182,7 @@ const Index = () => {
                             direction="vertical"
                             size="middle"
                             style={{ width: "100%" }}>
-                            {vendors.length > 0 && (
+                            {hasVendors ? (
                                 <Form layout="vertical">
                                     <Form.Item label="Select Vendor" required>
                                         <Select
@@ -157,6 +200,8 @@ const Index = () => {
                                         </Select>
                                     </Form.Item>
                                 </Form>
+                            ) : (
+                                <Empty description="No vendors available." />
                             )}
 
                             {selectedVendor && !scanned && (
@@ -180,7 +225,8 @@ const Index = () => {
                                         <Button
                                             key="confirm"
                                             type="primary"
-                                            onClick={handleConfirm}>
+                                            onClick={handleConfirm}
+                                            disabled={!selectedVendor}>
                                             Confirm Order
                                         </Button>,
                                         <Button
@@ -197,36 +243,7 @@ const Index = () => {
                                             {order.customerFullname}
                                         </Descriptions.Item>
                                         <Descriptions.Item label="Items">
-                                            {order.menus.map((item, idx) => (
-                                                <div
-                                                    key={idx}
-                                                    style={{
-                                                        backgroundColor:
-                                                            item.status === 1
-                                                                ? "#f6ffed"
-                                                                : "transparent",
-                                                        border:
-                                                            item.status === 1
-                                                                ? "1px solid #b7eb8f"
-                                                                : "1px solid #f0f0f0",
-                                                        borderRadius: 4,
-                                                        padding: "4px 8px",
-                                                        marginBottom: 4,
-                                                    }}>
-                                                    {item.name} x{" "}
-                                                    {item.totalPortion}{" "}
-                                                    {item.status === 1 && (
-                                                        <span
-                                                            style={{
-                                                                color: "#52c41a",
-                                                                marginLeft: 8,
-                                                            }}>
-                                                            <CheckCircleOutlined />{" "}
-                                                            Confirmed
-                                                        </span>
-                                                    )}
-                                                </div>
-                                            ))}
+                                            {itemsList}
                                         </Descriptions.Item>
                                     </Descriptions>
                                 </Card>
@@ -236,7 +253,7 @@ const Index = () => {
                                 open={cameraOn}
                                 onCancel={() => setCameraOn(false)}
                                 footer={null}
-                                destroyOnClose
+                                destroyOnHidden
                                 title="Scan QR Code">
                                 <div
                                     style={{
