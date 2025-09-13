@@ -108,8 +108,9 @@ const DashboardCard = () => {
                 borderRadius: 999,
                 color,
                 background: bg,
-                border: `1px solid ${bg === "#F4F6F9" ? "#E6ECF2" : "transparent"
-                    }`,
+                border: `1px solid ${
+                    bg === "#F4F6F9" ? "#E6ECF2" : "transparent"
+                }`,
                 fontWeight: 600,
                 letterSpacing: 0.2,
                 textTransform: "uppercase",

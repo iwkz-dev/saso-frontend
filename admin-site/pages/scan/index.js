@@ -147,8 +147,9 @@ const Index = () => {
                             backgroundColor: isConfirmed
                                 ? "#f6ffed"
                                 : "transparent",
-                            border: `1px solid ${isConfirmed ? "#b7eb8f" : "#f0f0f0"
-                                }`,
+                            border: `1px solid ${
+                                isConfirmed ? "#b7eb8f" : "#f0f0f0"
+                            }`,
                             borderRadius: 4,
                             padding: "4px 8px",
                             marginBottom: 4,
