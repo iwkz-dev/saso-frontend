@@ -108,7 +108,7 @@ const MyOrderDetailContent = ({
                     {/* Summary Card */}
                     <Card
                         size="small"
-                        bodyStyle={{ padding: isMobile ? 12 : 16 }}
+                        styles={{ padding: isMobile ? 12 : 16 }}
                         style={{ borderRadius: 12 }}>
                         <Space
                             direction={isMobile ? "vertical" : "horizontal"}
@@ -263,8 +263,8 @@ const MyOrderDetailContent = ({
                     <Card
                         size="small"
                         title={<Text strong>Ordered Items</Text>}
-                        bodyStyle={{ padding: isMobile ? 8 : 12 }}
-                        headStyle={{
+                        styles={{ padding: isMobile ? 8 : 12 }}
+                        headStyles={{
                             padding: isMobile ? "8px 12px" : "12px 16px",
                         }}
                         style={{ borderRadius: 12 }}>

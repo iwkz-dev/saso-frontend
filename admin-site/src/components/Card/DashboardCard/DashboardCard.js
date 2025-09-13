@@ -11,6 +11,7 @@ import {
 } from "antd";
 import { useSelector } from "react-redux";
 import { formatDate } from "../../../helpers/dateHelper";
+import { useRouter } from "next/router";
 
 const STATUS_META = {
     0: { title: "Draft", tag: "default" },
@@ -21,6 +22,7 @@ const STATUS_META = {
 const DashboardCard = () => {
     const events = useSelector((s) => s.event.events) || [];
     const orders = useSelector((s) => s.order.orders) || [];
+    const router = useRouter();
 
     const nf = useMemo(
         () =>
@@ -106,9 +108,8 @@ const DashboardCard = () => {
                 borderRadius: 999,
                 color,
                 background: bg,
-                border: `1px solid ${
-                    bg === "#F4F6F9" ? "#E6ECF2" : "transparent"
-                }`,
+                border: `1px solid ${bg === "#F4F6F9" ? "#E6ECF2" : "transparent"
+                    }`,
                 fontWeight: 600,
                 letterSpacing: 0.2,
                 textTransform: "uppercase",
@@ -123,6 +124,10 @@ const DashboardCard = () => {
             tag: "default",
         };
         return <Tag color={meta.tag}>{meta.title}</Tag>;
+    };
+
+    const handleClick = (eventId) => {
+        router.push(`/database/event/view/${eventId}`);
     };
 
     if (!displayEvents.length) {
@@ -165,7 +170,8 @@ const DashboardCard = () => {
                         key={event._id}
                         hoverable
                         style={cardStyle}
-                        bodyStyle={cardBodyStyle}>
+                        styles={cardBodyStyle}
+                        onClick={() => handleClick(event._id)}>
                         <Space
                             direction="vertical"
                             style={{ width: "100%" }}
