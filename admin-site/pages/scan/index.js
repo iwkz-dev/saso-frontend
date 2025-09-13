@@ -201,7 +201,7 @@ const Index = () => {
                                     </Form.Item>
                                 </Form>
                             ) : (
-                                <Empty description="No vendors available." />
+                                ""
                             )}
 
                             {selectedVendor && !scanned && (

@@ -98,7 +98,7 @@ const SearchOrderContent = () => {
 
                     <Card
                         size="small"
-                        bodyStyle={{ padding: isMobile ? 12 : 16 }}
+                        styles={{ padding: isMobile ? 12 : 16 }}
                         style={{ borderRadius: 12 }}>
                         <Form
                             layout="vertical"
