@@ -9,10 +9,12 @@ const authHeaders = () => ({
 const handleResponse = (response) => {
     const data = response?.data;
     if (data?.status === "success") return data;
+    // Keep old behavior: reject with response.data when status !== success
     throw data;
 };
 
 const handleError = (error) => {
+    // Keep old behavior: reject with error.response
     throw error?.response ?? error;
 };
 
@@ -21,50 +23,31 @@ const request = (config) =>
         .then(handleResponse)
         .catch(handleError);
 
-const getAllEvents = () => request({ method: "GET", url: "/event" });
+const getAllContactPerson = () =>
+    request({ method: "GET", url: "/contact-person" });
 
-const deleteEvent = (id) => request({ method: "DELETE", url: `/event/${id}` });
+const deleteContactPerson = (id) =>
+    request({ method: "DELETE", url: `/contact-person/${id}` });
 
-const createEvent = (requestedData) =>
-    request({ method: "POST", url: "/event", data: requestedData });
+const createContactPerson = (requestedData) =>
+    request({ method: "POST", url: "/contact-person", data: requestedData });
 
-const changeEventStatus = (id, status) =>
-    request({ method: "PATCH", url: `/event/${id}/${status}/change-status` });
+const getDetailContactPerson = (id) =>
+    request({ method: "GET", url: `/contact-person/${id}/detail` });
 
-const changeEventPOClosed = (id, status) =>
+const editDetailContactPerson = (id, requestedData) =>
     request({
-        method: "PATCH",
-        url: `/event/${id}/${status}/change-po-closed`,
-    });
-
-const getDetailEvent = (id) =>
-    request({ method: "GET", url: `/event/${id}/detail` });
-
-const editDetailEvent = (id, requestedData) =>
-    request({ method: "PUT", url: `/event/${id}`, data: requestedData });
-
-const editDetailEventImages = (id, requestedData) =>
-    request({
-        method: "PATCH",
-        url: `/event/${id}/upload-images`,
+        method: "PUT",
+        url: `/contact-person/${id}`,
         data: requestedData,
-        headers:
-            typeof FormData !== "undefined" && requestedData instanceof FormData
-                ? {
-                      /* no Content-Type override */
-                  }
-                : undefined,
     });
 
-const eventService = {
-    getAllEvents,
-    deleteEvent,
-    createEvent,
-    getDetailEvent,
-    editDetailEventImages,
-    editDetailEvent,
-    changeEventStatus,
-    changeEventPOClosed,
+const contactPersonService = {
+    getAllContactPerson,
+    deleteContactPerson,
+    createContactPerson,
+    getDetailContactPerson,
+    editDetailContactPerson,
 };
 
-export default eventService;
+export default contactPersonService;

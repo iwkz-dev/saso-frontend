@@ -1,4 +1,3 @@
-// src/store/reducers/contactPersonReducer.js
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import contactPersonService from "../../services/contactPersonService";
 
