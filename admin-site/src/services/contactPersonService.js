@@ -23,7 +23,8 @@ const request = (config) =>
         .then(handleResponse)
         .catch(handleError);
 
-const getAllContactPerson = () => request({ method: "GET", url: "/contact-person" });
+const getAllContactPerson = () =>
+    request({ method: "GET", url: "/contact-person" });
 
 const deleteContactPerson = (id) =>
     request({ method: "DELETE", url: `/contact-person/${id}` });
@@ -35,7 +36,11 @@ const getDetailContactPerson = (id) =>
     request({ method: "GET", url: `/contact-person/${id}/detail` });
 
 const editDetailContactPerson = (id, requestedData) =>
-    request({ method: "PUT", url: `/contact-person/${id}`, data: requestedData });
+    request({
+        method: "PUT",
+        url: `/contact-person/${id}`,
+        data: requestedData,
+    });
 
 const contactPersonService = {
     getAllContactPerson,
