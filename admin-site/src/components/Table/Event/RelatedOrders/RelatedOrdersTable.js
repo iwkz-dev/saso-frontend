@@ -19,6 +19,8 @@ const RelatedOrdersTable = ({
 }) => {
     const dispatch = useDispatch();
 
+    const DEBOUNCE_MS = 500;
+
     const orders = useSelector((s) => s.order.orders) || [];
     const events = useSelector((s) => s.event.events) || [];
     const paymentTypes = useSelector((s) => s.paymentType.paymentTypes) || [];
@@ -44,10 +46,6 @@ const RelatedOrdersTable = ({
             return;
         }
 
-        // make it unique per call
-        const requestId = Date.now();
-        fetchAll.latestRequest = requestId;
-
         setShowLoadingData(true);
         try {
             const filterQuery = filtersQueryBuilder(filterValues);
@@ -62,9 +60,6 @@ const RelatedOrdersTable = ({
                 dispatch(getAllPaymentTypes()),
             ]);
 
-            // Only update if it's the latest call
-            if (fetchAll.latestRequest !== requestId) return;
-
             const failed = responses.find((r) => r?.status === "failed");
             if (failed) {
                 setShowTable(false);
@@ -73,13 +68,10 @@ const RelatedOrdersTable = ({
                 setShowTable(true);
             }
         } catch (err) {
-            if (fetchAll.latestRequest !== requestId) return;
             setShowTable(false);
             message.error(err?.message || "Failed to load data");
         } finally {
-            if (fetchAll.latestRequest === requestId) {
-                setShowLoadingData(false);
-            }
+            setShowLoadingData(false);
         }
     }, [
         dispatch,
@@ -90,7 +82,19 @@ const RelatedOrdersTable = ({
     ]);
 
     useEffect(() => {
-        fetchAll();
+        if (!filterName || !itemFilter?._id) {
+            setShowTable(false);
+            setShowLoadingData(false);
+            return;
+        }
+
+        setShowLoadingData(true);
+
+        const t = setTimeout(() => {
+            fetchAll();
+        }, DEBOUNCE_MS);
+
+        return () => clearTimeout(t);
     }, [fetchAll]);
 
     const onChangeStatus = async (value) => {
