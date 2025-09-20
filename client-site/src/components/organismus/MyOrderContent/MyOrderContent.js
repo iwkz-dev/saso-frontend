@@ -141,12 +141,6 @@ const MyOrderContent = () => {
                         icon={<EyeOutlined />}
                         onClick={() => onView(record._id)}
                     />
-                    <Button
-                        size="small"
-                        icon={<FilePdfOutlined />}
-                        loading={pdfLoadingId === record._id}
-                        onClick={() => onDownloadPdf(record._id)}
-                    />
                 </Space>
             ),
         },
@@ -226,18 +220,6 @@ const MyOrderContent = () => {
                                                     onView(item._id)
                                                 }>
                                                 View
-                                            </Button>,
-                                            <Button
-                                                key="pdf"
-                                                size="small"
-                                                icon={<FilePdfOutlined />}
-                                                loading={
-                                                    pdfLoadingId === item._id
-                                                }
-                                                onClick={() =>
-                                                    onDownloadPdf(item._id)
-                                                }>
-                                                PDF
                                             </Button>,
                                         ]}>
                                         <Space
