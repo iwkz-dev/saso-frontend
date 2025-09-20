@@ -1,9 +1,5 @@
 import { useMemo, useState } from "react";
-import {
-    SearchOutlined,
-    FilePdfOutlined,
-    EyeOutlined,
-} from "@ant-design/icons";
+import { SearchOutlined, EyeOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
 import {
     Button,
@@ -19,10 +15,7 @@ import {
     Typography,
 } from "antd";
 import BackToButton from "../../atoms/BackToButton/BackToButton";
-import {
-    fetchOrderPdf,
-    selectOrderStatuses,
-} from "../../../stores/reducers/order";
+import { selectOrderStatuses } from "../../../stores/reducers/order";
 import { formatDate } from "../../../helpers/dateHelper";
 import { insertKeytoData } from "../../../helpers/dataHelper";
 import Router from "next/router";
@@ -60,7 +53,6 @@ const MyOrderContent = () => {
     // state
     const [search, setSearch] = useState("");
     const [statusVal, setStatusVal] = useState("all");
-    const [pdfLoadingId, setPdfLoadingId] = useState(null);
 
     const orders = useSelector((state) => state.order.list ?? []);
     const events = useSelector((state) => state.event.data ?? []);
@@ -86,15 +78,6 @@ const MyOrderContent = () => {
     }, [orders, currentEventId, statusVal, search]);
 
     const onView = (id) => Router.push(`/my-order/detail/${id}`);
-
-    const onDownloadPdf = async (id) => {
-        try {
-            setPdfLoadingId(id);
-            await dispatch(fetchOrderPdf(id));
-        } finally {
-            setPdfLoadingId(null);
-        }
-    };
 
     const columns = [
         {
