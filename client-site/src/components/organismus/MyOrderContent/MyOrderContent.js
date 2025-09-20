@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { SearchOutlined, EyeOutlined } from "@ant-design/icons";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import {
     Button,
     Empty,
@@ -46,7 +46,6 @@ const statusTag = (status) => {
 };
 
 const MyOrderContent = () => {
-    const dispatch = useDispatch();
     const screens = useBreakpoint();
     const isMobile = !screens.md;
 
