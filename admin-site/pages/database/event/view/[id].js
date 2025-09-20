@@ -203,7 +203,10 @@ export default function EventViewPage() {
                             <Tabs
                                 defaultActiveKey="1"
                                 items={tabsItems}
-                                destroyOnHidden
+                                destroyInactiveTabPane
+                                onChange={() => {
+                                    setFilterValues([]);
+                                }}
                             />
                         </Space>
                     ) : !loading ? (

@@ -19,6 +19,8 @@ const RelatedOrdersTable = ({
 }) => {
     const dispatch = useDispatch();
 
+    const DEBOUNCE_MS = 500;
+
     const orders = useSelector((s) => s.order.orders) || [];
     const events = useSelector((s) => s.event.events) || [];
     const paymentTypes = useSelector((s) => s.paymentType.paymentTypes) || [];
@@ -80,7 +82,19 @@ const RelatedOrdersTable = ({
     ]);
 
     useEffect(() => {
-        fetchAll();
+        if (!filterName || !itemFilter?._id) {
+            setShowTable(false);
+            setShowLoadingData(false);
+            return;
+        }
+
+        setShowLoadingData(true);
+
+        const t = setTimeout(() => {
+            fetchAll();
+        }, DEBOUNCE_MS);
+
+        return () => clearTimeout(t);
     }, [fetchAll]);
 
     const onChangeStatus = async (value) => {

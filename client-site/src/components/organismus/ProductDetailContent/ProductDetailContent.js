@@ -169,7 +169,6 @@ const ProductDetailContent = ({ detailMenu }) => {
     const addBtn = {
         width: "100%",
         marginTop: 10,
-        padding: "10px 14px",
         borderRadius: 999,
         fontWeight: 700,
     };
