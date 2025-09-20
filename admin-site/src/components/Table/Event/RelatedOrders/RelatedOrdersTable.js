@@ -44,6 +44,10 @@ const RelatedOrdersTable = ({
             return;
         }
 
+        // make it unique per call
+        const requestId = Date.now();
+        fetchAll.latestRequest = requestId;
+
         setShowLoadingData(true);
         try {
             const filterQuery = filtersQueryBuilder(filterValues);
@@ -58,6 +62,9 @@ const RelatedOrdersTable = ({
                 dispatch(getAllPaymentTypes()),
             ]);
 
+            // Only update if it's the latest call
+            if (fetchAll.latestRequest !== requestId) return;
+
             const failed = responses.find((r) => r?.status === "failed");
             if (failed) {
                 setShowTable(false);
@@ -66,10 +73,13 @@ const RelatedOrdersTable = ({
                 setShowTable(true);
             }
         } catch (err) {
+            if (fetchAll.latestRequest !== requestId) return;
             setShowTable(false);
             message.error(err?.message || "Failed to load data");
         } finally {
-            setShowLoadingData(false);
+            if (fetchAll.latestRequest === requestId) {
+                setShowLoadingData(false);
+            }
         }
     }, [
         dispatch,
