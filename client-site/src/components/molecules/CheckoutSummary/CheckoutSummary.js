@@ -1,5 +1,6 @@
 import { useSelector } from "react-redux";
 import { Divider, Space, Typography } from "antd";
+import { PictureOutlined } from "@ant-design/icons";
 import ImagesPreview from "../../atoms/ImagesPreview/ImagesPreview";
 import { isAuth } from "../../../helpers/authHelper";
 import CheckoutGuestForm from "../CheckoutGuestForm/CheckoutGuestForm";
@@ -52,10 +53,28 @@ const CheckoutSummary = () => {
                             {/* Left: image + name + unit price */}
                             <div className={style.itemInfo}>
                                 <div className={style.image}>
-                                    <ImagesPreview
-                                        productName={cartItem.menu.name}
-                                        productImages={cartItem.menu.images}
-                                    />
+                                    {cartItem.menu.images?.length > 0 ? (
+                                        <ImagesPreview
+                                            height="100%"
+                                            productName={cartItem.menu.name}
+                                            productImages={cartItem.menu.images}
+                                        />
+                                    ) : (
+                                        <div
+                                            style={{
+                                                borderRadius: 12,
+                                                background:
+                                                    "linear-gradient(135deg,#f3f4f6 0%,#e5e7eb 100%)",
+                                                color: "#94a3b8",
+                                                display: "flex",
+                                                alignItems: "center",
+                                                justifyContent: "center",
+                                                fontSize: 28,
+                                            }}
+                                            aria-label="No image">
+                                            <PictureOutlined />
+                                        </div>
+                                    )}
                                 </div>
                                 <div className={style.itemText}>
                                     <Typography.Text
