@@ -73,7 +73,7 @@ const OrderFilterForm = ({ setFilterValues, exportToXlsx }) => {
             </Button>
 
             <Modal
-                destroyOnHidden
+                destroyOnClose
                 title="Scan barcode"
                 open={isModalOpen}
                 footer={null}

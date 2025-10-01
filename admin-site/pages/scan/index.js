@@ -253,7 +253,7 @@ const Index = () => {
                                 open={cameraOn}
                                 onCancel={() => setCameraOn(false)}
                                 footer={null}
-                                destroyOnHidden
+                                destroyOnClose
                                 title="Scan QR Code">
                                 <div
                                     style={{

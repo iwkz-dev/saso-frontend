@@ -34,7 +34,7 @@ export const getOrderByInvoiceNumberThunk = createAsyncThunk(
             const res = await orderService.getOrderByInvoiceNumber(
                 invoiceNumber,
             );
-            return { status: "success", data: res?.data?.data };
+            return { status: "success", data: res?.data };
         } catch (err) {
             return rejectWithValue(getErrorPayload(err));
         }
@@ -73,7 +73,7 @@ export const changeOrderStatusThunk = createAsyncThunk(
     },
 );
 
-export const confirmOrderedMenu = createAsyncThunk(
+export const confirmOrderedMenuThunk = createAsyncThunk(
     "order/confirmOrderedMenu",
     async ({ orderId, vendorId }, { rejectWithValue }) => {
         try {
@@ -128,6 +128,17 @@ export const changeOrderStatus = (id, status) => async (dispatch) => {
     try {
         const payload = await dispatch(
             changeOrderStatusThunk({ id, status }),
+        ).unwrap();
+        return payload;
+    } catch (e) {
+        return e;
+    }
+};
+
+export const confirmOrderedMenu = (requestURL) => async (dispatch) => {
+    try {
+        const payload = await dispatch(
+            confirmOrderedMenuThunk(requestURL),
         ).unwrap();
         return payload;
     } catch (e) {
@@ -268,13 +279,13 @@ export const orderSlice = createSlice({
 
         // ---- confirmOrderedMenu
         builder
-            .addCase(confirmOrderedMenu.pending, (state) => {
+            .addCase(confirmOrderedMenuThunk.pending, (state) => {
                 state.loading = true; // maintains backward-compat flag
                 state.status = "loading";
                 state.message.error = "";
                 state.success = false;
             })
-            .addCase(confirmOrderedMenu.fulfilled, (state, action) => {
+            .addCase(confirmOrderedMenuThunk.fulfilled, (state, action) => {
                 state.loading = false;
                 state.status = "succeeded";
                 state.success = true;
@@ -282,7 +293,7 @@ export const orderSlice = createSlice({
                 state.message.success =
                     action.payload.message || "Ordered menus confirmed.";
             })
-            .addCase(confirmOrderedMenu.rejected, (state, action) => {
+            .addCase(confirmOrderedMenuThunk.rejected, (state, action) => {
                 state.loading = false;
                 state.status = "failed";
                 state.success = false;

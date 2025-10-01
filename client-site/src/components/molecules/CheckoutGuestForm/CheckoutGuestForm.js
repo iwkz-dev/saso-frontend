@@ -85,7 +85,7 @@ const CheckoutGuestForm = () => {
                 okText={isSignIn ? "Sign in" : "Sign up"}
                 onCancel={handleCancel}
                 closable={false}
-                destroyOnHidden>
+                destroyOnClose>
                 {ModalContent()}
             </Modal>
         </div>
