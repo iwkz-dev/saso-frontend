@@ -129,7 +129,7 @@ const Navbar = () => {
                     }}
                     maskClosable={false}
                     closable={false}
-                    destroyOnHidden
+                    destroyOnClose
                     centered
                     width={420}
                     style={{ padding: 12 }}>

@@ -205,7 +205,7 @@ const ProductsTabs = ({ event, barcode, headerOffset = 80 }) => {
                 animated
                 tabBarGutter={TOKENS.gap}
                 tabBarStyle={{ padding: 0, margin: 0 }}
-                destroyOnHidden
+                destroyInactiveTabPane
                 renderTabBar={(props, DefaultTabBar) => (
                     <div
                         ref={stickyRef}
