@@ -19,8 +19,6 @@ const Navbar = () => {
         event ? selectCartData(state, event._id) : null,
     );
 
-    console.log(cart);
-
     const [modalOpen, setModalOpen] = useState(false);
     const [signInMode, setSignInMode] = useState(true);
     const [scrolled, setScrolled] = useState(false);
