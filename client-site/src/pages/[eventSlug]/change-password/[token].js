@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
-import MainLayout from "../../components/organismus/MainLayout/MainLayout";
 import axios from "axios";
-import { useRouter } from "next/router";
-import { BASE_URL_HOST } from "../../config/config";
-import { Button, Form, Input, Layout, Space, Typography, message } from "antd";
 import Link from "next/link";
+import { Button, Form, Input, Layout, Space, Typography, message } from "antd";
+import { useRouter } from "next/router";
+
+import { BASE_URL_HOST } from "../../../config/config";
+import MainLayout from "../../../components/organismus/MainLayout/MainLayout";
 
 export default function changePassword() {
     const router = useRouter();
