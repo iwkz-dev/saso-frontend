@@ -5,4 +5,8 @@ function getEvent(status) {
     return sasoApi.getData(`/customer/event${query}`);
 }
 
-export default { getEvent };
+function getEventBySlug(slug) {
+    return sasoApi.getData(`/customer/event/${slug}`);
+}
+
+export default { getEvent, getEventBySlug };

@@ -8,8 +8,8 @@ const postOrderGuest = (data) => {
     return sasoApi.postData("/customer/order-guest", data);
 };
 
-const getOrderList = () => {
-    return sasoApi.getData("/customer/order", true);
+const getOrderList = (eventId) => {
+    return sasoApi.getData(`/customer/order/event/${eventId}`, true);
 };
 
 const getOrderDetail = (orderId) => {

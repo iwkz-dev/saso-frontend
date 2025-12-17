@@ -1,7 +1,10 @@
 import { Button, Typography, Divider, Space } from "antd";
-import Router from "next/router";
+import Router, { useRouter } from "next/router";
 
 const CartSummary = ({ cart, title = "Order Summary" }) => {
+    const router = useRouter();
+    const { eventSlug } = router.query;
+
     const currency = (value) =>
         new Intl.NumberFormat("de-DE", {
             style: "currency",
@@ -14,8 +17,7 @@ const CartSummary = ({ cart, title = "Order Summary" }) => {
         alignItems: "baseline",
     };
 
-    const subtotal = cart.items.reduce((acc, item) => acc + item.sumPrice, 0);
-
+    const subtotal = cart.reduce((acc, item) => acc + item.sumPrice, 0);
     const total = subtotal;
 
     return (
@@ -25,7 +27,7 @@ const CartSummary = ({ cart, title = "Order Summary" }) => {
             </Typography.Title>
 
             <Space direction="vertical" size="small" style={{ width: "100%" }}>
-                {cart.items.map((item) => (
+                {cart.map((item) => (
                     <div key={item.menu._id}>
                         <div
                             style={{
@@ -88,7 +90,7 @@ const CartSummary = ({ cart, title = "Order Summary" }) => {
                     borderRadius: 999,
                     fontWeight: 700,
                 }}
-                onClick={() => Router.push("/checkout")}>
+                onClick={() => Router.push(`/${eventSlug}/checkout`)}>
                 Checkout
             </Button>
         </div>

@@ -78,7 +78,7 @@ const CartList = ({ cart, add, remove }) => {
 
     return (
         <Space direction="vertical" style={{ width: "100%" }} size="middle">
-            {cart.items.map((item, i) => (
+            {cart.map((item, i) => (
                 <Card key={i} size="small" style={cardBodyStyle}>
                     <div style={itemWrap}>
                         <div style={imgBox}>

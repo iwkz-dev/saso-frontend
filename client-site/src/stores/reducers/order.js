@@ -44,9 +44,9 @@ export const submitOrder = createAsyncThunk(
 
 export const getOrderList = createAsyncThunk(
     "order/getOrderList",
-    async (_, { rejectWithValue }) => {
+    async (eventId, { rejectWithValue }) => {
         try {
-            const res = await orderService.getOrderList();
+            const res = await orderService.getOrderList(eventId);
             const d = res?.data;
             if (d?.status !== "success") {
                 return rejectWithValue(d?.message || "Failed to fetch orders");

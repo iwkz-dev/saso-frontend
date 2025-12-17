@@ -7,7 +7,7 @@ import {
 } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
 import { addOrder } from "../../../../stores/reducers/cart";
-import Router from "next/router";
+import { useRouter } from "next/router";
 
 const TOKENS = {
     radius: 14,
@@ -31,8 +31,8 @@ const currency = (n) =>
 
 const ProductItem = ({ product }) => {
     const dispatch = useDispatch();
-    const events = useSelector((s) => s.event.data);
-    const event = events?.[0] || {};
+    const router = useRouter();
+    const event = useSelector((s) => s.event.data);
     const isPOClosed = !!event?.po_closed;
 
     const qty = Number(product?.quantity ?? 0);
@@ -53,7 +53,13 @@ const ProductItem = ({ product }) => {
     };
 
     const goDetail = () => {
-        if (product?._id) Router.push(`/product/${product._id}`);
+        if (product?._id) {
+            // Append /product/{id} to the current path
+            const newPath = `${router.asPath.replace(/\/$/, "")}/product/${
+                product._id
+            }`;
+            router.push(newPath);
+        }
     };
 
     const cardStyle = {

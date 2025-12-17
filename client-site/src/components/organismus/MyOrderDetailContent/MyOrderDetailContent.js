@@ -46,16 +46,16 @@ const currency = (n) => (typeof n === "number" ? `${n} €` : n || "-");
 const MyOrderDetailContent = ({
     detailOrder,
     withoutBackButton,
-    events,
+    event,
     onDownloadPdf,
 }) => {
     const screens = useBreakpoint();
     const isMobile = !screens.md;
 
-    const cp = events?.[0]?.contactPersons?.[0];
-    const paypal = events?.[0]?.paypal || "";
-    const iban = events?.[0]?.iban || "-";
-    const bic = events?.[0]?.bic || "-";
+    const cp = event?.contactPersons?.[0];
+    const paypal = event?.paypal || "";
+    const iban = event?.iban || "-";
+    const bic = event?.bic || "-";
 
     const handleCopy = async (text, label = "Copied") => {
         try {
@@ -93,8 +93,8 @@ const MyOrderDetailContent = ({
                     style={{ width: "100%" }}>
                     {!withoutBackButton && (
                         <BackToButton
-                            targetURL="/my-order"
                             buttonText="Back to My Orders"
+                            to={`/${event.slug}/my-order`}
                         />
                     )}
 
@@ -264,7 +264,7 @@ const MyOrderDetailContent = ({
                         size="small"
                         title={<Text strong>Ordered Items</Text>}
                         styles={{ padding: isMobile ? 8 : 12 }}
-                        headStyles={{
+                        headstyles={{
                             padding: isMobile ? "8px 12px" : "12px 16px",
                         }}
                         style={{ borderRadius: 12 }}>

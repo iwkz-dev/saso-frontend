@@ -2,7 +2,8 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import eventService from "../../services/eventService";
 
 const initialState = {
-    data: [],
+    data: {},
+    events: [],
     status: "idle",
     error: null,
     successMessage: null,
@@ -32,6 +33,28 @@ export const fetchEvents = createAsyncThunk(
     },
 );
 
+export const fetchEventBySlug = createAsyncThunk(
+    "event/fetchEventBySlug",
+    async (slug, { rejectWithValue }) => {
+        try {
+            const res = await eventService.getEventBySlug(slug);
+            if (res.data?.status !== "success") {
+                return rejectWithValue(
+                    res.data?.message || "Failed to fetch events",
+                );
+            }
+            return {
+                data: res.data?.data ?? [],
+                message: res.data.message,
+            };
+        } catch (err) {
+            return rejectWithValue(
+                err?.response?.data?.message || err?.message || "Network error",
+            );
+        }
+    },
+);
+
 // ============== Slice ==============
 
 const eventSlice = createSlice({
@@ -49,11 +72,26 @@ const eventSlice = createSlice({
             })
             .addCase(fetchEvents.fulfilled, (state, action) => {
                 state.status = "succeeded";
-                state.data = action.payload.events;
+                state.events = action.payload.events;
                 state.successMessage = action.payload.message || null;
                 state.error = null;
             })
             .addCase(fetchEvents.rejected, (state, action) => {
+                state.status = "failed";
+                state.error = action.payload || "Unknown error";
+            })
+            .addCase(fetchEventBySlug.pending, (state) => {
+                state.status = "loading";
+                state.error = null;
+                state.successMessage = null;
+            })
+            .addCase(fetchEventBySlug.fulfilled, (state, action) => {
+                state.status = "succeeded";
+                state.data = action.payload.data;
+                state.successMessage = action.payload.message || null;
+                state.error = null;
+            })
+            .addCase(fetchEventBySlug.rejected, (state, action) => {
                 state.status = "failed";
                 state.error = action.payload || "Unknown error";
             });
@@ -64,8 +102,7 @@ export const { resetEvent } = eventSlice.actions;
 
 // ============== Selectors ==============
 export const selectEventState = (state) => state.event;
-export const selectEvents = (state) => state.event.data;
-export const selectFirstEvent = (state) => state.event.data?.[0] ?? null;
+export const selectEvents = (state) => state.event.events;
 export const selectEventStatus = (state) => state.event.status;
 export const selectEventError = (state) => state.event.error;
 

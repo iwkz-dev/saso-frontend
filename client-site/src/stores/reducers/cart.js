@@ -1,9 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-    items: [],
-    totalAmount: 0,
-    totalPrice: 0,
+    data: {},
 };
 
 const round2 = (n) => Math.round((Number(n) || 0) * 100) / 100;
@@ -40,76 +38,103 @@ const upsertItem = (items, menu, nextAmount) => {
 
 export const cartSlice = createSlice({
     name: "cart",
-    initialState: { data: initialState },
+    initialState,
     reducers: {
         addOrder: (state, action) => {
             const menu = action.payload;
             const id = menu?._id;
-            if (!id) return;
+            const eventId = menu?.event;
+            if (!id || !eventId) return;
 
-            const items = state.data.items;
-            const idx = items.findIndex((it) => it.menu?._id === id);
+            if (!state.data) state.data = {};
+
+            if (!state.data[eventId]) {
+                state.data[eventId] = {
+                    items: [],
+                    totalAmount: 0,
+                    totalPrice: 0,
+                };
+            }
+
+            const cart = state.data[eventId];
+            const idx = cart.items.findIndex((it) => it.menu?._id === id);
 
             const qty = Number(menu?.quantity) || 0;
             const ordered = Number(menu?.quantityOrder) || 0;
             const quantityLeft = Math.max(qty - ordered, 0);
 
-            const currentAmount = idx >= 0 ? items[idx].amount : 0;
+            const currentAmount = idx >= 0 ? cart.items[idx].amount : 0;
             const nextAmount = Math.min(currentAmount + 1, quantityLeft);
 
-            upsertItem(items, menu, nextAmount);
-            const { totalAmount, totalPrice } = recalcTotals(items);
-            state.data.totalAmount = totalAmount;
-            state.data.totalPrice = totalPrice;
+            upsertItem(cart.items, menu, nextAmount);
+            const { totalAmount, totalPrice } = recalcTotals(cart.items);
+            cart.totalAmount = totalAmount;
+            cart.totalPrice = totalPrice;
         },
 
         removeOrder: (state, action) => {
             const menu = action.payload;
             const id = menu?._id;
-            if (!id) return;
+            const eventId = menu?.event;
+            if (!id || !eventId || !state.data[eventId]) return;
 
-            const items = state.data.items;
-            const idx = items.findIndex((it) => it.menu?._id === id);
-
-            const currentAmount = idx >= 0 ? items[idx].amount : 0;
+            const cart = state.data[eventId];
+            const idx = cart.items.findIndex((it) => it.menu?._id === id);
+            const currentAmount = idx >= 0 ? cart.items[idx].amount : 0;
             const nextAmount = Math.max(currentAmount - 1, 0);
 
-            upsertItem(items, menu, nextAmount);
-            const { totalAmount, totalPrice } = recalcTotals(items);
-            state.data.totalAmount = totalAmount;
-            state.data.totalPrice = totalPrice;
+            upsertItem(cart.items, menu, nextAmount);
+            const { totalAmount, totalPrice } = recalcTotals(cart.items);
+            cart.totalAmount = totalAmount;
+            cart.totalPrice = totalPrice;
         },
 
-        // Remove the line item entirely (e.g., from a trash icon in CartList)
         removeItem: (state, action) => {
-            const id = action.payload?._id;
-            if (!id) return;
-            state.data.items = state.data.items.filter(
-                (it) => it.menu?._id !== id,
-            );
-            const { totalAmount, totalPrice } = recalcTotals(state.data.items);
-            state.data.totalAmount = totalAmount;
-            state.data.totalPrice = totalPrice;
+            const menu = action.payload;
+            const id = menu?._id;
+            const eventId = menu?.event;
+            if (!id || !eventId || !state.data[eventId]) return;
+
+            const cart = state.data[eventId];
+            cart.items = cart.items.filter((it) => it.menu?._id !== id);
+            const { totalAmount, totalPrice } = recalcTotals(cart.items);
+            cart.totalAmount = totalAmount;
+            cart.totalPrice = totalPrice;
         },
 
-        // Directly set a specific quantity (useful for steppers)
         setQuantity: (state, action) => {
             const { menu, quantity } = action.payload || {};
-            if (!menu?._id) return;
+            const id = menu?._id;
+            const eventId = menu?.event;
+            if (!id || !eventId) return;
 
+            if (!state.data[eventId]) {
+                state.data[eventId] = {
+                    items: [],
+                    totalAmount: 0,
+                    totalPrice: 0,
+                };
+            }
+
+            const cart = state.data[eventId];
             const qty = Number(menu?.quantity) || 0;
             const ordered = Number(menu?.quantityOrder) || 0;
-            const left = Math.max(qty - ordered, 0);
+            const left = Math.max(0, qty - ordered);
             const clamped = Math.max(0, Math.min(Number(quantity) || 0, left));
 
-            upsertItem(state.data.items, menu, clamped);
-            const { totalAmount, totalPrice } = recalcTotals(state.data.items);
-            state.data.totalAmount = totalAmount;
-            state.data.totalPrice = totalPrice;
+            upsertItem(cart.items, menu, clamped);
+            const { totalAmount, totalPrice } = recalcTotals(cart.items);
+            cart.totalAmount = totalAmount;
+            cart.totalPrice = totalPrice;
         },
 
-        resetCart: (state) => {
-            state.data = { ...initialState };
+        resetCart: (state, action) => {
+            const eventId = action.payload;
+            if (eventId) {
+                delete state.data[eventId];
+            } else {
+                state.data = {};
+            }
         },
     },
 });
@@ -120,9 +145,16 @@ export const { resetCart, addOrder, removeOrder, removeItem, setQuantity } =
 export default cartSlice.reducer;
 
 // ---------- Selectors ----------
-export const selectCartData = (state) => state.cart.data;
-export const selectCartItems = (state) => state.cart.data.items;
-export const selectCartTotals = (state) => ({
-    totalAmount: state.cart.data.totalAmount,
-    totalPrice: state.cart.data.totalPrice,
-});
+export const selectCartData = (state, eventId) =>
+    state.cart.data[eventId] || { items: [], totalAmount: 0, totalPrice: 0 };
+
+export const selectCartItems = (state, eventId) =>
+    state.cart.data[eventId]?.items || [];
+
+export const selectCartTotals = (state, eventId) => {
+    const cart = state.cart.data[eventId];
+    return {
+        totalAmount: cart?.totalAmount || 0,
+        totalPrice: cart?.totalPrice || 0,
+    };
+};

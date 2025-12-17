@@ -1,13 +1,17 @@
 import { Empty, Space, Layout, Grid, Typography, Card } from "antd";
+import { useSelector } from "react-redux";
+
 import CheckoutSummary from "../../molecules/CheckoutSummary/CheckoutSummary";
 import BackToButton from "../../atoms/BackToButton/BackToButton";
-import { useSelector } from "react-redux";
+import { selectCartData } from "../../../stores/reducers/cart";
 
 const { useBreakpoint } = Grid;
 
 const CheckoutContent = () => {
     const { Content } = Layout;
-    const cart = useSelector((state) => state.cart.data);
+    const event = useSelector((state) => state.event.data);
+    const cart = useSelector((state) => selectCartData(state, event._id));
+
     const screens = useBreakpoint();
 
     return (
@@ -36,7 +40,7 @@ const CheckoutContent = () => {
                                 justifyContent: "space-between",
                             }}>
                             <BackToButton
-                                targetURL="/cart"
+                                to={`/${event.slug}/cart`}
                                 buttonText="Back to cart"
                             />
                             <Typography.Title
@@ -51,7 +55,7 @@ const CheckoutContent = () => {
                                 borderRadius: 12,
                                 padding: screens.md ? 16 : 12,
                             }}>
-                            <CheckoutSummary />
+                            <CheckoutSummary cart={cart} />
                         </Card>
                     </Space>
                 </div>

@@ -1,10 +1,11 @@
-import React, { useState } from "react";
-import MainLayout from "../../components/organismus/MainLayout/MainLayout";
+import { useState } from "react";
 import { Button, Form, Input, Layout, Space, Typography, message } from "antd";
 import { useDispatch } from "react-redux";
-import { BASE_URL_HOST } from "../../config/config";
-import { resetLogin } from "../../stores/reducers/login";
 import axios from "axios";
+
+import MainLayout from "../../../components/organismus/MainLayout/MainLayout";
+import { BASE_URL_HOST } from "../../../config/config";
+import { resetLogin } from "../../../stores/reducers/login";
 
 const index = () => {
     const dispatch = useDispatch();

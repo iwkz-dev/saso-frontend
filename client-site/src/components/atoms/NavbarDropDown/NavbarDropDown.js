@@ -11,13 +11,67 @@ import {
 } from "@ant-design/icons";
 import Link from "next/link";
 import { isAuth } from "../../../helpers/authHelper";
+import { useRouter } from "next/router";
 
 const NavbarDropDown = ({ onClick, cart }) => {
+    const router = useRouter();
+    const { eventSlug } = router.query;
+
     const getItems = () => {
+        const showEventItems = !!eventSlug;
+
         if (isAuth()) {
-            return [
+            const items = [];
+
+            if (showEventItems) {
+                items.push(
+                    {
+                        label: <Link href={`/${eventSlug}/cart`}>Cart</Link>,
+                        key: "0",
+                        icon: (
+                            <Badge count={cart.items.length} size="small">
+                                <ShoppingCartOutlined />
+                            </Badge>
+                        ),
+                    },
+                    {
+                        label: (
+                            <Link href={`/${eventSlug}/my-order`}>
+                                My Order
+                            </Link>
+                        ),
+                        key: "1",
+                        icon: <HistoryOutlined />,
+                    },
+                    {
+                        label: (
+                            <Link href={`/${eventSlug}/search-order`}>
+                                Search order
+                            </Link>
+                        ),
+                        key: "2",
+                        icon: <SearchOutlined />,
+                    },
+                    { type: "divider" },
+                );
+            }
+
+            items.push({
+                label: <div>Logout</div>,
+                key: "logout",
+                icon: <LogoutOutlined />,
+            });
+
+            return items;
+        }
+
+        // Guest user
+        const guestItems = [];
+
+        if (showEventItems) {
+            guestItems.push(
                 {
-                    label: <Link href="/cart">Cart</Link>,
+                    label: <Link href={`/${eventSlug}/cart`}>Cart</Link>,
                     key: "0",
                     icon: (
                         <Badge count={cart.items.length} size="small">
@@ -26,44 +80,19 @@ const NavbarDropDown = ({ onClick, cart }) => {
                     ),
                 },
                 {
-                    label: <Link href="/my-order">My Order</Link>,
+                    label: (
+                        <Link href={`/${eventSlug}/search-order`}>
+                            Search order
+                        </Link>
+                    ),
                     key: "1",
-                    icon: <HistoryOutlined />,
-                },
-                {
-                    label: <Link href="/search-order">Search order</Link>,
-                    key: "2",
                     icon: <SearchOutlined />,
                 },
-                {
-                    type: "divider",
-                },
-
-                {
-                    label: <div>Logout</div>,
-                    key: "logout",
-                    icon: <LogoutOutlined />,
-                },
-            ];
+                { type: "divider" },
+            );
         }
-        return [
-            {
-                label: <Link href="/cart">Cart</Link>,
-                key: "0",
-                icon: (
-                    <Badge count={cart.items.length} size="small">
-                        <ShoppingCartOutlined />
-                    </Badge>
-                ),
-            },
-            {
-                label: <Link href="/search-order">Search order</Link>,
-                key: "1",
-                icon: <SearchOutlined />,
-            },
-            {
-                type: "divider",
-            },
+
+        guestItems.push(
             {
                 label: (
                     <Button
@@ -80,24 +109,23 @@ const NavbarDropDown = ({ onClick, cart }) => {
                 label: (
                     <Button
                         size="small"
-                        onClick={() => onClick(false)}
-                        type="link">
+                        type="link"
+                        onClick={() => onClick(false)}>
                         Sign up
                     </Button>
                 ),
                 icon: <UserAddOutlined />,
                 key: "signUp",
             },
-        ];
+        );
+
+        return guestItems;
     };
 
     return (
         <Dropdown
             style={{ cursor: "pointer" }}
-            menu={{
-                items: getItems(),
-                onClick,
-            }}
+            menu={{ items: getItems(), onClick }}
             trigger={["click"]}>
             <Badge count={cart.items.length}>
                 <Button
