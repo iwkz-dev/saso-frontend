@@ -15,12 +15,12 @@ import {
 import { SearchOutlined } from "@ant-design/icons";
 import style from "./SearchOrderContent.module.scss";
 import { useDispatch, useSelector } from "react-redux";
+
 import {
     getOrderDetailByInvoiceNumber,
     resetOrderState,
 } from "../../../stores/reducers/order";
 import MyOrderDetailContent from "../MyOrderDetailContent/MyOrderDetailContent";
-import { fetchEvents } from "../../../stores/reducers/event";
 
 const { Content } = Layout;
 const { Title, Text } = Typography;
@@ -33,14 +33,9 @@ const SearchOrderContent = () => {
 
     const detailOrder = useSelector((state) => state.order.detail);
     const detailStatus = useSelector((state) => state.order.detailStatus);
-    const events = useSelector((state) => state.event.data);
+    const event = useSelector((state) => state.event.data);
 
     const [submitting, setSubmitting] = useState(false);
-
-    useEffect(() => {
-        dispatch(fetchEvents("approved"));
-    }, [dispatch]);
-
     useEffect(() => {
         return () => {
             dispatch(resetOrderState());
@@ -48,7 +43,7 @@ const SearchOrderContent = () => {
     }, [dispatch]);
 
     const onFinish = async (values) => {
-        const currentEventId = events?.[0]?._id;
+        const currentEventId = event?._id;
         if (!currentEventId) {
             message.error("Event is not ready yet. Please try again shortly.");
             return;
@@ -167,7 +162,7 @@ const SearchOrderContent = () => {
                         <MyOrderDetailContent
                             detailOrder={detailOrder}
                             withoutBackButton={true}
-                            events={events}
+                            event={event}
                         />
                     )}
 

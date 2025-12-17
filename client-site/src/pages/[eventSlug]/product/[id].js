@@ -3,17 +3,15 @@ import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/router";
 import { Spin, Alert } from "antd";
 
-import MainLayout from "../../components/organismus/MainLayout/MainLayout";
-import ProductDetailContent from "../../components/organismus/ProductDetailContent/ProductDetailContent";
+import MainLayout from "../../../components/organismus/MainLayout/MainLayout";
+import ProductDetailContent from "../../../components/organismus/ProductDetailContent/ProductDetailContent";
 
 import {
     fetchMenuById,
     selectMenuDetail,
     selectMenuDetailStatus,
     selectMenuError,
-} from "../../stores/reducers/menu";
-
-import { fetchEvents } from "../../stores/reducers/event";
+} from "../../../stores/reducers/menu";
 
 function ProductDetail() {
     const dispatch = useDispatch();
@@ -23,10 +21,6 @@ function ProductDetail() {
     const detailMenu = useSelector(selectMenuDetail);
     const detailStatus = useSelector(selectMenuDetailStatus);
     const error = useSelector(selectMenuError);
-
-    useEffect(() => {
-        dispatch(fetchEvents("approved"));
-    }, [dispatch]);
 
     useEffect(() => {
         if (!router.isReady) return;

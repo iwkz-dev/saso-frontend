@@ -1,92 +1,92 @@
-import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
+
 import {
-    fetchEvents,
-    selectFirstEvent,
     selectEventStatus,
     selectEventError,
+    selectEvents,
 } from "../stores/reducers/event";
-
-import TokoContent from "../components/organismus/TokoContent/TokoContent";
-import SasoContent from "../components/organismus/SasoContent/SasoContent";
-import ZakatContent from "../components/organismus/ZakatContent/ZakatContent";
 import MainLayout from "../components/organismus/MainLayout/MainLayout";
-import { WhatsAppOutlined } from "@ant-design/icons";
-import { Button, Spin, Alert } from "antd";
+import { Alert, Empty, Skeleton, Card, Col, Row, Typography } from "antd";
+import EventCards from "../components/molecules/EventCards/EventCards";
 
-function ContentByType({ event }) {
-    if (!event) return null;
-    if (process.env.EVENT_TYPE === "toko") return <TokoContent event={event} />;
-    if (process.env.EVENT_TYPE === "saso") return <SasoContent event={event} />;
-    if (process.env.EVENT_TYPE === "zakat")
-        return <ZakatContent event={event} />;
-    return null;
-}
+const { Title, Paragraph } = Typography;
 
 export default function Home() {
-    const dispatch = useDispatch();
-    const firstEvent = useSelector(selectFirstEvent);
     const status = useSelector(selectEventStatus);
     const error = useSelector(selectEventError);
-
-    useEffect(() => {
-        dispatch(fetchEvents("approved"));
-    }, [dispatch]);
-
-    const contact = firstEvent?.contactPersons?.[0];
-    const waHref = contact?.phoneNumber
-        ? `https://wa.me/${contact.phoneNumber}`
-        : null;
+    const events = useSelector(selectEvents);
 
     return (
         <MainLayout>
-            {status === "loading" && (
+            <div
+                style={{
+                    width: "100%",
+                    margin: "0 auto",
+                    padding: "24px 16px",
+                }}>
                 <div
                     style={{
-                        display: "flex",
+                        marginBottom: 32,
                         justifyContent: "center",
-                        padding: 24,
+                        textAlign: "center",
                     }}>
-                    <Spin />
+                    <Title level={2} style={{ marginBottom: 8 }}>
+                        Available Events
+                    </Title>
+                    <Paragraph type="secondary">
+                        Select an event to continue
+                    </Paragraph>
                 </div>
-            )}
 
-            {status === "failed" && (
-                <Alert
-                    type="error"
-                    message="Failed to load event"
-                    description={error}
-                />
-            )}
+                {status === "loading" && (
+                    <Row gutter={[24, 24]}>
+                        {[...Array(4)].map((_, index) => (
+                            <Col key={index} xs={24} sm={12} md={8} lg={6}>
+                                <Card>
+                                    <Skeleton.Image
+                                        active
+                                        style={{
+                                            width: "100%",
+                                            height: 180,
+                                            marginBottom: 16,
+                                        }}
+                                    />
+                                    <Skeleton
+                                        active
+                                        title={false}
+                                        paragraph={{ rows: 2 }}
+                                    />
+                                </Card>
+                            </Col>
+                        ))}
+                    </Row>
+                )}
 
-            {status === "succeeded" && <ContentByType event={firstEvent} />}
+                {status === "failed" && (
+                    <Alert
+                        type="error"
+                        showIcon
+                        message="Unable to load events"
+                        description={
+                            error ||
+                            "Something went wrong. Please try again later."
+                        }
+                    />
+                )}
 
-            {status === "succeeded" && waHref && (
-                <div
-                    style={{
-                        width: "100%",
-                        display: "flex",
-                        justifyContent: "center",
-                        marginBottom: "1rem",
-                    }}>
-                    <Button
-                        type="link"
-                        href={waHref}
-                        target="_blank"
-                        size="large"
-                        style={{
-                            position: "fixed",
-                            bottom: "5%",
-                            right: "10%",
-                            backgroundColor: "#fff",
-                            padding: "0.5rem 0.5rem",
-                            boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
-                        }}
-                        icon={<WhatsAppOutlined />}>
-                        Ask {contact?.name ?? "us"}
-                    </Button>
-                </div>
-            )}
+                {status === "succeeded" && events.length === 0 && (
+                    <Empty
+                        description="No events available at the moment"
+                        style={{ marginTop: 48 }}
+                    />
+                )}
+
+                {status === "succeeded" && events.length > 0 && (
+                    <div style={{ marginTop: 24 }}>
+                        <EventCards events={events} />
+                    </div>
+                )}
+            </div>
         </MainLayout>
     );
 }

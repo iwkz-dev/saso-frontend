@@ -1,15 +1,15 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Empty, Spin } from "antd";
+import { useRouter } from "next/router";
+
 import {
     getOrderDetail,
     resetOrderState,
-} from "../../../stores/reducers/order";
-import { useRouter } from "next/router";
-import MainLayout from "../../../components/organismus/MainLayout/MainLayout";
-import MyOrderDetailContent from "../../../components/organismus/MyOrderDetailContent/MyOrderDetailContent";
-import { isAuth } from "../../../helpers/authHelper";
-import { fetchEvents } from "../../../stores/reducers/event";
-import { Empty, Spin } from "antd";
+} from "../../../../stores/reducers/order";
+import MainLayout from "../../../../components/organismus/MainLayout/MainLayout";
+import MyOrderDetailContent from "../../../../components/organismus/MyOrderDetailContent/MyOrderDetailContent";
+import { isAuth } from "../../../../helpers/authHelper";
 
 const MyOrderDetailPage = () => {
     const dispatch = useDispatch();
@@ -17,7 +17,7 @@ const MyOrderDetailPage = () => {
     const { id } = router.query;
 
     const detailOrder = useSelector((state) => state.order.detail);
-    const events = useSelector((state) => state.event.data);
+    const event = useSelector((state) => state.event.data);
     const detailStatus = useSelector((state) => state.order.detailStatus);
 
     useEffect(() => {
@@ -27,7 +27,6 @@ const MyOrderDetailPage = () => {
         const orderId = Array.isArray(id) ? id[0] : id;
         if (orderId) {
             dispatch(getOrderDetail(orderId));
-            dispatch(fetchEvents("approved"));
         }
     }, [router.isReady, id, dispatch]);
 
@@ -51,10 +50,7 @@ const MyOrderDetailPage = () => {
             )}
 
             {detailStatus === "succeeded" && detailOrder && (
-                <MyOrderDetailContent
-                    detailOrder={detailOrder}
-                    events={events}
-                />
+                <MyOrderDetailContent detailOrder={detailOrder} event={event} />
             )}
 
             {detailStatus === "failed" && (

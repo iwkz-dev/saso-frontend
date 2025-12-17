@@ -1,14 +1,25 @@
-import React from "react";
 import { LeftOutlined } from "@ant-design/icons";
 import { Button } from "antd";
-import Router from "next/router";
+import { useRouter } from "next/router";
 
-const BackToButton = ({ targetURL, buttonText }) => {
+const BackToButton = ({ buttonText, to }) => {
+    const router = useRouter();
+
+    const handleBack = () => {
+        if (to) {
+            router.push(to);
+            return;
+        }
+
+        const pathParts = router.asPath.split("/").filter(Boolean);
+        pathParts.pop();
+        const newPath = "/" + pathParts.join("/");
+
+        router.push(newPath || "/");
+    };
+
     return (
-        <Button
-            type="link"
-            onClick={() => Router.push(targetURL)}
-            icon={<LeftOutlined />}>
+        <Button type="link" onClick={handleBack} icon={<LeftOutlined />}>
             {buttonText}
         </Button>
     );

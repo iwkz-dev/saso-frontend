@@ -54,10 +54,10 @@ const MyOrderContent = () => {
     const [statusVal, setStatusVal] = useState("all");
 
     const orders = useSelector((state) => state.order.list ?? []);
-    const events = useSelector((state) => state.event.data ?? []);
+    const event = useSelector((state) => state.event.data);
     const { listStatus } = useSelector(selectOrderStatuses);
 
-    const currentEventId = events?.[0]?._id ?? null;
+    const currentEventId = event?._id ?? null;
 
     const filtered = useMemo(() => {
         let data = Array.isArray(orders) ? orders : [];
@@ -76,7 +76,7 @@ const MyOrderContent = () => {
         return data;
     }, [orders, currentEventId, statusVal, search]);
 
-    const onView = (id) => Router.push(`/my-order/detail/${id}`);
+    const onView = (id) => Router.push(`/${event.slug}/my-order/detail/${id}`);
 
     const columns = [
         {
@@ -140,7 +140,7 @@ const MyOrderContent = () => {
                     direction="vertical"
                     size={isMobile ? 12 : 16}
                     style={{ width: "100%" }}>
-                    <BackToButton targetURL="/" buttonText="Back to Home" />
+                    <BackToButton buttonText="Back" />
 
                     <Space
                         direction={isMobile ? "vertical" : "horizontal"}

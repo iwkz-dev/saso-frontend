@@ -9,7 +9,7 @@ import { resetRegisterMessage } from "../../../stores/reducers/register";
 import PaymentMethods from "../PaymentMethods/PaymentMethods";
 import FormStepContent from "./StepsContent/FormStepContent";
 
-const CheckoutGuestForm = () => {
+const CheckoutGuestForm = ({ cart }) => {
     const dispatch = useDispatch();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isSignIn, setIsSignIn] = useState(false);
@@ -70,7 +70,7 @@ const CheckoutGuestForm = () => {
                             icon={<LeftOutlined />}>
                             Back to contact information
                         </Button>
-                        <PaymentMethods userData={userData} />
+                        <PaymentMethods userData={userData} cart={cart} />
                     </Space>
                 )}
             </Space>

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { SmileOutlined } from "@ant-design/icons";
+import Router from "next/router";
 import {
     Space,
     Button,
@@ -10,20 +11,19 @@ import {
     Spin,
     Modal,
 } from "antd";
+
 import { isAuth } from "../../../helpers/authHelper";
 import { submitOrder } from "../../../stores/reducers/order";
 import { resetCart } from "../../../stores/reducers/cart";
-import Router from "next/router";
 import style from "./PaymentMethods.module.scss";
 
-const PaymentMethods = ({ userData }) => {
+const PaymentMethods = ({ cart, userData }) => {
     const dispatch = useDispatch();
-    const cart = useSelector((state) => state.cart.data);
-    const events = useSelector((state) => state.event.data);
+    const event = useSelector((state) => state.event.data);
     const [isSpinning, setIsSpinning] = useState(false);
     const { confirm } = Modal;
 
-    const eventId = events?.[0]?._id || null;
+    const eventId = event?._id || null;
 
     const createOrderData = (paymentType) => {
         const menus = cart.items.map((item) => ({
@@ -54,7 +54,9 @@ const PaymentMethods = ({ userData }) => {
                     size="small"
                     onClick={() => {
                         notification.destroy(key);
-                        Router.push(`/my-order/detail/${currOrder._id}`);
+                        Router.push(
+                            `${event.slug}/my-order/detail/${currOrder._id}`,
+                        );
                     }}>
                     See order
                 </Button>
@@ -112,8 +114,8 @@ const PaymentMethods = ({ userData }) => {
 
                     openNotification(customerName, order, true);
 
-                    dispatch(resetCart());
-                    Router.push("/");
+                    dispatch(resetCart(event._id));
+                    Router.push(`/${event.slug}`);
                 } catch (err) {
                     const msg =
                         typeof err === "string"

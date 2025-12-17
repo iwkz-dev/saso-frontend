@@ -3,12 +3,17 @@ import { Empty, Space, Row, Col, Card } from "antd";
 import CartList from "../../atoms/CartList/CartList";
 import ContentLayout from "../ContentLayout/ContentLayout";
 import CartSummary from "../../atoms/CartSummary/CartSummary";
-import { addOrder, removeOrder } from "../../../stores/reducers/cart";
+import {
+    addOrder,
+    removeOrder,
+    selectCartData,
+} from "../../../stores/reducers/cart";
 import BackToButton from "../../atoms/BackToButton/BackToButton";
 
 const CartContent = () => {
     const dispatch = useDispatch();
-    const cart = useSelector((state) => state.cart.data);
+    const event = useSelector((state) => state.event.data);
+    const cart = useSelector((state) => selectCartData(state, event._id));
 
     const add = (menu) => dispatch(addOrder(menu));
     const remove = (menu) => dispatch(removeOrder(menu));
@@ -19,7 +24,7 @@ const CartContent = () => {
         padding: 12,
     };
 
-    if (!cart?.items?.length) {
+    if (!cart.items.length) {
         return (
             <ContentLayout hasCarousel={false}>
                 <div style={{ maxWidth: 1200, margin: "0 auto", padding: 12 }}>
@@ -41,13 +46,13 @@ const CartContent = () => {
                     direction="vertical"
                     size="middle"
                     style={{ width: "100%" }}>
-                    <BackToButton targetURL="/" buttonText="Back to home" />
+                    <BackToButton buttonText="Back to home" />
 
                     <Row gutter={[16, 16]}>
                         <Col xs={24} md={16} lg={16}>
                             <Card style={cardStyle}>
                                 <CartList
-                                    cart={cart}
+                                    cart={cart.items}
                                     add={add}
                                     remove={remove}
                                 />
@@ -62,7 +67,7 @@ const CartContent = () => {
                                 }}>
                                 <Card style={cardStyle}>
                                     <CartSummary
-                                        cart={cart}
+                                        cart={cart.items}
                                         title="Order Summary"
                                     />
                                 </Card>

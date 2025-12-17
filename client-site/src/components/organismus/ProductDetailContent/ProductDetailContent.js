@@ -7,8 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 const ProductDetailContent = ({ detailMenu }) => {
     const dispatch = useDispatch();
-    const events = useSelector((state) => state.event.data);
-    const event = events?.[0] || {};
+    const event = useSelector((state) => state.event.data);
     const isPOClosed = !!event?.po_closed;
 
     if (!detailMenu) {
@@ -195,7 +194,7 @@ const ProductDetailContent = ({ detailMenu }) => {
             <div style={container}>
                 <div style={card}>
                     <div style={headRow}>
-                        <BackToButton targetURL="/" buttonText="Back" />
+                        <BackToButton to={`/${event.slug}`} buttonText="Back" />
                     </div>
 
                     <div style={{ margin: "4px 6px 10px 6px" }}>

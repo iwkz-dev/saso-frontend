@@ -5,9 +5,8 @@ import MainCarousel from "../../atoms/MainCarousel/MainCarousel";
 
 const ContentLayout = ({ children, hasCarousel = true, className }) => {
     const { Content } = Layout;
-    const events = useSelector((state) => state.event.data);
-    const firstEvent = events?.[0] || null;
-    const showCarousel = hasCarousel && firstEvent;
+    const event = useSelector((state) => state.event.data);
+    const showCarousel = hasCarousel && event;
 
     const contentOuterStyle = {
         maxWidth: "1200px",
@@ -25,10 +24,10 @@ const ContentLayout = ({ children, hasCarousel = true, className }) => {
 
     const carouselProps = useMemo(
         () => ({
-            eventName: firstEvent?.name || "Our Event",
-            images: firstEvent?.images || [],
+            eventName: event?.name || "Our Event",
+            images: event?.images || [],
         }),
-        [firstEvent],
+        [event],
     );
 
     return (
