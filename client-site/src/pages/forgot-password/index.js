@@ -1,18 +1,21 @@
 import { useState } from "react";
 import { Button, Form, Input, Layout, Space, Typography, message } from "antd";
-import { useDispatch } from "react-redux";
 import axios from "axios";
 
-import MainLayout from "../../../components/organismus/MainLayout/MainLayout";
-import { BASE_URL_HOST } from "../../../config/config";
-import { resetLogin } from "../../../stores/reducers/login";
+import MainLayout from "../../components/organismus/MainLayout/MainLayout";
+import { BASE_URL_HOST } from "../../config/config";
+import { isAuth } from "../../helpers/authHelper";
+import { useRouter } from "next/router";
 
 const index = () => {
-    const dispatch = useDispatch();
+    const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
 
+    if (isAuth()) {
+        router.push("/");
+    }
+
     const onFinish = (values) => {
-        dispatch(resetLogin());
         setIsLoading(true);
         axios({
             url: `${BASE_URL_HOST}/auth/forget-password`,
