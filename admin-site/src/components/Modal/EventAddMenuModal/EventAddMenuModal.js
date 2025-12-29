@@ -8,7 +8,11 @@ import {
     Typography,
     message,
 } from "antd";
-import { PlusOutlined, UploadOutlined, FormOutlined } from "@ant-design/icons";
+import {
+    PlusOutlined,
+    FormOutlined,
+    DownloadOutlined,
+} from "@ant-design/icons";
 import { useState } from "react";
 import { useRouter } from "next/router";
 import { useDispatch } from "react-redux";
@@ -162,9 +166,9 @@ const EventAddMenuModal = ({ event }) => {
                                 beforeUpload={handleUploadXlsx}>
                                 <Button
                                     type="default"
-                                    icon={<UploadOutlined />}
+                                    icon={<DownloadOutlined />}
                                     style={{ width: "100%" }}>
-                                    Upload .xlsx File
+                                    Import .xlsx File
                                 </Button>
                             </Upload>
                             <Text
