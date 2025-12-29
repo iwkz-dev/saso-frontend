@@ -33,7 +33,6 @@ export default function EventViewPage() {
     const router = useRouter();
     const { id } = router.query;
 
-    // Redux State
     const {
         detailEvent: event,
         status,
@@ -42,7 +41,6 @@ export default function EventViewPage() {
     const orders = useSelector((s) => s.order.orders) || [];
     const menus = useSelector((s) => s.menu.menus) || [];
 
-    // Local State
     const [filterInvoiceOrderValues, setFilterInvoiceOrderValues] = useState(
         [],
     );
