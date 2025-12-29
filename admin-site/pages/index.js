@@ -1,72 +1,116 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Button, message, Spin, Table, Tag, Typography, Row, Col } from "antd";
+import Link from "next/link";
+
 import LoggedIn from "../src/components/Layout/LoggedIn/LoggedIn";
 import Content from "../src/components/Layout/Content/Content";
-import DashboardCard from "../src/components/Card/DashboardCard/DashboardCard";
-import { useDispatch, useSelector } from "react-redux";
 import { getAllEvents } from "../src/store/reducers/eventReducer";
 import { getAllOrders } from "../src/store/reducers/orderReducer";
-import { message, Spin, Typography } from "antd";
 import { isAuth } from "../src/helpers/authHelper";
+import SummaryCard from "../src/components/Card/SummaryCard/SummaryCard";
+
+const PAGE_TITLE = "Saso App | Dashboard";
+
+const EVENT_STATUS_MAP = {
+    0: { label: "Draft", color: "gray" },
+    1: { label: "Approved", color: "blue" },
+    2: { label: "done", color: "green" },
+};
+
+const wrapperStyle = {
+    minHeight: "calc(100vh - 120px)",
+    padding: 24,
+    display: "flex",
+    flexDirection: "column",
+    gap: 24,
+};
+
+const cardStyle = {
+    borderRadius: 16,
+    background: "#fff",
+    boxShadow:
+        "0 1px 2px rgba(0,0,0,0.04), 0 8px 24px -12px rgba(31, 76, 135, 0.18)",
+};
 
 const IndexPage = () => {
     const dispatch = useDispatch();
-    const pageTitle = "Saso App | Dashboard";
-    const [showLoading, setShowLoading] = useState(false);
-    const [showCard, setShowCard] = useState(false);
+    const [loading, setLoading] = useState(false);
 
-    const events = useSelector((s) => s.event.events) || [];
-    const orders = useSelector((s) => s.order.orders) || [];
+    const events = useSelector((s) => s.event.events ?? []);
+    const orders = useSelector((s) => s.order.orders ?? []);
 
-    useEffect(() => {
-        fetchData();
+    const handleFailedRequest = useCallback((payload) => {
+        const msg = payload?.message || "Server Error";
+        message.error(msg);
+        isAuth({ status: "failed", message: msg });
     }, []);
 
-    const fetchData = async () => {
-        setShowLoading(true);
-        setShowCard(false);
+    const fetchData = useCallback(async () => {
+        setLoading(true);
         try {
             await Promise.all([
                 dispatch(getAllEvents()),
                 dispatch(getAllOrders()),
             ]);
-            setShowCard(true);
         } catch (err) {
             handleFailedRequest(err);
         } finally {
-            setShowLoading(false);
+            setLoading(false);
         }
-    };
+    }, [dispatch, handleFailedRequest]);
 
-    const handleFailedRequest = (payload) => {
-        setShowCard(false);
-        setShowLoading(false);
-        const msg = payload?.message || "Server Error";
-        message.error(msg);
-        isAuth({ status: "failed", message: msg });
-    };
+    useEffect(() => {
+        fetchData();
+    }, [fetchData]);
 
-    const wrapperStyle = {
-        minHeight: "calc(100vh - 120px)",
-        padding: "24px",
-        display: "flex",
-        flexDirection: "column",
-        gap: "24px",
-    };
+    const ordersByEvent = useMemo(() => {
+        return orders.reduce((acc, order) => {
+            const key = order.event;
+            if (!acc[key]) acc[key] = [];
+            acc[key].push(order);
+            return acc;
+        }, {});
+    }, [orders]);
 
-    const headerCardStyle = {
-        borderRadius: 16,
-        padding: "16px 20px",
-        background: "#fff",
-        boxShadow:
-            "0 1px 2px rgba(0,0,0,0.04), 0 8px 24px -12px rgba(31, 76, 135, 0.18)",
-    };
+    const eventTableData = useMemo(() => {
+        return events.map((event) => {
+            const eventOrders = ordersByEvent[event._id] ?? [];
 
-    const gridStyle = {
-        display: "flex",
-        flexWrap: "wrap",
-        gap: 16,
-        width: "100%",
-    };
+            const totalOrders = eventOrders.length;
+
+            const revenue = eventOrders.reduce((sum, o) => {
+                if (o.status === 1 || o.status === 3) {
+                    return sum + (o.totalPrice || 0);
+                }
+                return sum;
+            }, 0);
+
+            const potentialRevenue = eventOrders.reduce((sum, o) => {
+                if (o.status !== 2) {
+                    return sum + (o.totalPrice || 0);
+                }
+                return sum;
+            }, 0);
+
+            const delivered = eventOrders.filter((o) => o.status === 3).length;
+
+            return {
+                key: event._id,
+                eventId: event._id,
+                name: event.name,
+                status: event.status,
+                totalOrders,
+                revenue,
+                potentialRevenue,
+                deliveredRate: totalOrders
+                    ? (delivered / totalOrders) * 100
+                    : 0,
+                startDate: event.startDate,
+                endDate: event.endDate,
+            };
+        });
+    }, [events, ordersByEvent]);
 
     const nf = useMemo(
         () =>
@@ -78,178 +122,160 @@ const IndexPage = () => {
         [],
     );
 
-    // Summary including potential revenue
     const summary = useMemo(() => {
-        if (!events?.length || !orders?.length) {
-            return {
-                activeEvents: 0,
-                totalOrders: 0,
-                revenue: 0,
-                potentialRevenue: 0,
-                deliveredRate: 0,
-            };
-        }
+        const activeEvents = events.filter((e) => [1, 2].includes(e.status));
+        const activeEventIds = new Set(activeEvents.map((e) => e._id));
 
-        const activeEventIds = new Set(
-            events.filter((e) => [1, 2].includes(e.status)).map((e) => e._id),
-        );
-
-        const filteredOrders = orders.filter((o) =>
+        const relevantOrders = orders.filter((o) =>
             activeEventIds.has(o.event),
         );
-        const totalOrders = filteredOrders.length;
 
-        const revenue = filteredOrders
-            .filter((o) => o.status === 1 || o.status === 3) // Actual revenue
-            .reduce((acc, o) => acc + (o.totalPrice || 0), 0);
+        const totalOrders = relevantOrders.length;
 
-        const potentialRevenue = filteredOrders
-            .filter((o) => o.status !== 2) // exclude canceled
-            .reduce((acc, o) => acc + (o.totalPrice || 0), 0);
+        const revenue = relevantOrders.reduce((sum, o) => {
+            if (o.status === 1 || o.status === 3) {
+                return sum + (o.totalPrice || 0);
+            }
+            return sum;
+        }, 0);
 
-        const delivered = filteredOrders.filter((o) => o.status === 3).length;
-        const deliveredRate = totalOrders ? (delivered / totalOrders) * 100 : 0;
+        const potentialRevenue = relevantOrders.reduce((sum, o) => {
+            if (o.status !== 2) {
+                return sum + (o.totalPrice || 0);
+            }
+            return sum;
+        }, 0);
+
+        const delivered = relevantOrders.filter((o) => o.status === 3).length;
 
         return {
             activeEvents: activeEventIds.size,
             totalOrders,
             revenue,
             potentialRevenue,
-            deliveredRate,
+            deliveredRate: totalOrders ? (delivered / totalOrders) * 100 : 0,
         };
     }, [events, orders]);
 
+    const columns = useMemo(
+        () => [
+            {
+                title: "Event Name",
+                dataIndex: "name",
+                render: (_, record) => (
+                    <Link href={`database/event/view/${record.eventId}`}>
+                        <Button type="link" size="small">
+                            {record.name}
+                        </Button>
+                    </Link>
+                ),
+            },
+            {
+                title: "Status",
+                dataIndex: "status",
+                render: (status) => {
+                    const s = EVENT_STATUS_MAP[status] ?? {
+                        label: "Unknown",
+                        color: "default",
+                    };
+                    return <Tag color={s.color}>{s.label}</Tag>;
+                },
+            },
+            {
+                title: "Orders",
+                dataIndex: "totalOrders",
+                align: "right",
+            },
+            {
+                title: "Revenue",
+                dataIndex: "revenue",
+                align: "right",
+                render: (v) => nf.format(v),
+            },
+            {
+                title: "Potential Revenue",
+                dataIndex: "potentialRevenue",
+                align: "right",
+                render: (v) => (
+                    <span style={{ color: "#7A8AA0" }}>{nf.format(v)}</span>
+                ),
+            },
+            {
+                title: "Delivered",
+                dataIndex: "deliveredRate",
+                align: "right",
+                render: (v) => `${v.toFixed(1)}%`,
+            },
+        ],
+        [nf],
+    );
+
     return (
-        <LoggedIn title={pageTitle}>
+        <LoggedIn title={PAGE_TITLE}>
             <Content>
                 <div style={wrapperStyle}>
-                    {/* Header / Summary */}
-                    <div style={headerCardStyle}>
-                        <div
-                            style={{
-                                display: "flex",
-                                gap: 16,
-                                alignItems: "center",
-                                justifyContent: "space-between",
-                                flexWrap: "wrap",
-                            }}>
-                            <div>
-                                <Typography.Title
-                                    level={3}
-                                    style={{ margin: 0 }}>
-                                    Dashboard
-                                </Typography.Title>
-                                <Typography.Text type="secondary">
-                                    SASO App — quick snapshot
-                                </Typography.Text>
-                            </div>
+                    <div style={{ ...cardStyle, padding: "16px 20px" }}>
+                        <Typography.Title level={3} style={{ margin: 0 }}>
+                            Dashboard
+                        </Typography.Title>
+                        <Typography.Text type="secondary">
+                            SASO App — quick snapshot
+                        </Typography.Text>
+                        <Row gutter={[12, 12]}>
+                            <Col xs={24} sm={12} lg={6}>
+                                <SummaryCard
+                                    title="Active Events"
+                                    value={summary.activeEvents}
+                                />
+                            </Col>
 
-                            <div
-                                style={{
-                                    display: "flex",
-                                    gap: 12,
-                                    flexWrap: "wrap",
-                                    alignItems: "stretch",
-                                }}>
-                                {[
-                                    {
-                                        label: "Active Events",
-                                        value: summary.activeEvents,
-                                    },
-                                    {
-                                        label: "Total Orders",
-                                        value: summary.totalOrders,
-                                    },
-                                    {
-                                        label: "Revenue",
-                                        value: (
-                                            <>
-                                                <span
-                                                    style={{
-                                                        fontWeight: "bold",
-                                                        color: "#3f8600",
-                                                    }}>
-                                                    {nf.format(summary.revenue)}
-                                                </span>
-                                                <Typography.Text
-                                                    type="secondary"
-                                                    style={{
-                                                        fontSize: "0.5em",
-                                                        marginLeft: 4,
-                                                    }}>
-                                                    /
-                                                    {nf.format(
-                                                        summary.potentialRevenue,
-                                                    )}
-                                                </Typography.Text>
-                                            </>
-                                        ),
-                                    },
-                                    {
-                                        label: "Delivered Rate",
-                                        value: `${summary.deliveredRate.toFixed(
-                                            1,
-                                        )}%`,
-                                    },
-                                ].map((it, idx) => (
-                                    <div
-                                        key={idx}
-                                        style={{
-                                            padding: "10px 14px",
-                                            background: "#F6F9FF",
-                                            border: "1px solid #E7EEFF",
-                                            borderRadius: 12,
-                                            minWidth: 140,
-                                            display: "flex",
-                                            flexDirection: "column",
-                                            alignItems: "flex-start",
-                                            gap: 4,
-                                        }}>
-                                        <div
+                            <Col xs={24} sm={12} lg={6}>
+                                <SummaryCard
+                                    title="Total Orders"
+                                    value={summary.totalOrders}
+                                />
+                            </Col>
+
+                            <Col xs={24} sm={12} lg={6}>
+                                <SummaryCard
+                                    title="Revenue"
+                                    value={nf.format(summary.revenue)}
+                                    suffix={
+                                        <span
                                             style={{
-                                                fontSize: 12,
                                                 color: "#7A8AA0",
-                                                fontWeight: 500,
-                                                textTransform: "uppercase",
-                                                letterSpacing: 0.3,
+                                                fontSize: 12,
                                             }}>
-                                            {it.label}
-                                        </div>
-                                        <div
-                                            style={{
-                                                fontSize: 18,
-                                                fontWeight: 700,
-                                                lineHeight: 1.2,
-                                            }}>
-                                            {it.value}
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
+                                            /{" "}
+                                            {nf.format(
+                                                summary.potentialRevenue,
+                                            )}
+                                        </span>
+                                    }
+                                    valueStyle={{ color: "#3f8600" }}
+                                    tooltip="Actual revenue / potential revenue"
+                                />
+                            </Col>
+
+                            <Col xs={24} sm={12} lg={6}>
+                                <SummaryCard
+                                    title="Delivered Rate"
+                                    value={summary.deliveredRate.toFixed(1)}
+                                    suffix="%"
+                                />
+                            </Col>
+                        </Row>
                     </div>
 
-                    {/* Event Cards */}
-                    <Spin spinning={showLoading} tip="Loading...">
-                        <div style={gridStyle}>
-                            {showCard ? (
-                                <DashboardCard />
-                            ) : (
-                                !showLoading && (
-                                    <div
-                                        style={{
-                                            width: "100%",
-                                            textAlign: "center",
-                                            padding: "32px 0",
-                                            color: "#7A8AA0",
-                                            background: "#fff",
-                                            borderRadius: 16,
-                                            border: "1px dashed #CFD8E3",
-                                        }}>
-                                        No data to display yet.
-                                    </div>
-                                )
-                            )}
+                    <Spin spinning={loading}>
+                        <div style={{ ...cardStyle, padding: 16 }}>
+                            <Table
+                                columns={columns}
+                                dataSource={eventTableData}
+                                pagination={{ pageSize: 10 }}
+                                scroll={{ x: "max-content" }}
+                                locale={{ emptyText: "No events to display." }}
+                            />
                         </div>
                     </Spin>
                 </div>

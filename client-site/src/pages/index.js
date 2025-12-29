@@ -1,4 +1,5 @@
 import { useSelector } from "react-redux";
+import { Alert, Empty, Skeleton, Card, Col, Row, Typography } from "antd";
 
 import {
     selectEventStatus,
@@ -6,7 +7,6 @@ import {
     selectEvents,
 } from "../stores/reducers/event";
 import MainLayout from "../components/organismus/MainLayout/MainLayout";
-import { Alert, Empty, Skeleton, Card, Col, Row, Typography } from "antd";
 import EventCards from "../components/molecules/EventCards/EventCards";
 
 const { Title, Paragraph } = Typography;
