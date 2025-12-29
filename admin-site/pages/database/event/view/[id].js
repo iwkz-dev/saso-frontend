@@ -5,14 +5,10 @@ import { Space, Tabs, Typography, message, Alert } from "antd";
 
 import { getDetailEvent } from "../../../../src/store/reducers/eventReducer";
 import LoggedIn from "../../../../src/components/Layout/LoggedIn/LoggedIn";
-import EventDataDisplay from "../../../../src/components/DataDisplay/EventDataDisplay/EventDataDisplay";
-import RelatedMenuTable from "../../../../src/components/Table/Event/RelatedMenuTable/RelatedMenuTable";
-import AddItemButton from "../../../../src/components/common/Button/AddItemButton/AddItemButton";
 import Content from "../../../../src/components/Layout/Content/Content";
-import EventSummary from "../../../../src/components/Card/Event/EventSummary/EventSummary";
-import RelatedOrdersTable from "../../../../src/components/Table/Event/RelatedOrders/RelatedOrdersTable";
-import OrderFilterForm from "../../../../src/components/Form/Order/OrderFilterForm/OrderFilterForm";
-import MenuEventFilterForm from "../../../../src/components/Form/Menu/MenuEventFilterForm/MenuEventFilterForm";
+import EventDetailTab from "../../../../src/components/TabContents/Event/EventDetailTab/EventDetailTab";
+import EventMenusTab from "../../../../src/components/TabContents/Event/EventMenusTab/EventMenusTab";
+import EventOrdersTab from "../../../../src/components/TabContents/Event/EventOrdersTab/EventOrdersTab";
 
 const HEADER_WRAP_STYLE = {
     display: "flex",
@@ -79,57 +75,32 @@ export default function EventViewPage() {
             {
                 key: "1",
                 label: "Event Details",
-                children: (
-                    <>
-                        <EventSummary event={event} />
-                        <EventDataDisplay event={event} />
-                    </>
-                ),
+                children: <EventDetailTab event={event} />,
             },
             {
                 key: "2",
                 label: "Menu",
                 children: (
-                    <Space direction="vertical" style={{ display: "flex" }}>
-                        <Typography.Title level={4}>
-                            Related Menu
-                        </Typography.Title>
-                        <AddItemButton
-                            hrefLink={`/database/menu/add?event=${
-                                event?._id || ""
-                            }`}
-                            text="Add Menu for this Event"
-                        />
-                        <MenuEventFilterForm
-                            setFilterValues={setFilterMenuValues}
-                            menus={menus}
-                        />
-                        <RelatedMenuTable
-                            filterName="event"
-                            itemFilter={event}
-                            filterValues={filterMenuValues}
-                        />
-                    </Space>
+                    <EventMenusTab
+                        event={event}
+                        menus={menus}
+                        setFilterMenuValues={setFilterMenuValues}
+                        filterMenuValues={filterMenuValues}
+                    />
                 ),
             },
             {
                 key: "3",
                 label: "Orders",
                 children: (
-                    <Space direction="vertical" style={{ display: "flex" }}>
-                        <Typography.Title level={4}>
-                            Related Orders
-                        </Typography.Title>
-                        <OrderFilterForm
-                            setFilterValues={setFilterInvoiceOrderValues}
-                            orders={orders}
-                        />
-                        <RelatedOrdersTable
-                            filterName="event"
-                            itemFilter={event}
-                            filterValues={filterInvoiceOrderValues}
-                        />
-                    </Space>
+                    <EventOrdersTab
+                        event={event}
+                        menus={menus}
+                        filterInvoiceOrderValues={filterInvoiceOrderValues}
+                        setFilterInvoiceOrderValues={
+                            setFilterInvoiceOrderValues
+                        }
+                    />
                 ),
             },
         ],
