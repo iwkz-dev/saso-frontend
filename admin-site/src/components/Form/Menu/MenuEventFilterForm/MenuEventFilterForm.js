@@ -46,7 +46,7 @@ const MenuEventFilterForm = ({ setFilterValues, menus }) => {
 
             <Popconfirm
                 title="Export to xlsx file"
-                description="Are you sure you want to export menus to an xlsx file?"
+                description="Are you sure you want to export menus to an .xlsx file?"
                 onConfirm={() =>
                     MenuExportToXlsx(menus, event, vendors, categories)
                 }

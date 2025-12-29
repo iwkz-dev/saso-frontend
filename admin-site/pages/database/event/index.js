@@ -1,5 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Typography, message, Spin } from "antd";
+
 import LoggedIn from "../../../src/components/Layout/LoggedIn/LoggedIn";
 import EventTable from "../../../src/components/Table/Event/EventTable/EventTable";
 import AddItemButton from "../../../src/components/common/Button/AddItemButton/AddItemButton";
@@ -10,122 +12,137 @@ import {
     changeEventStatus,
     changeEventPOClosed,
 } from "../../../src/store/reducers/eventReducer";
-import { Typography, message, Spin } from "antd";
+
+const headerRowStyle = {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    gap: 12,
+    flexWrap: "wrap",
+};
+
+const emptyStateStyle = {
+    width: "100%",
+    textAlign: "center",
+    padding: "24px 0",
+    color: "#7A8AA0",
+    background: "#fff",
+    borderRadius: 12,
+    border: "1px dashed #CFD8E3",
+};
 
 const EventPage = () => {
-    // ---- inside your component ----
     const dispatch = useDispatch();
     const pageTitle = "Saso App | Event";
 
-    const events = useSelector((s) => s.event.events);
-    const eventStatus = useSelector((s) => s.event.status);
-    const eventError = useSelector((s) => s.event.error);
-
+    const { events, status, error } = useSelector((s) => s.event);
     const [opLoading, setOpLoading] = useState(false);
 
+    const initialLoading = status === "loading";
+    const isLoading = initialLoading || opLoading;
+    const showTable = (events?.length || 0) > 0;
+
     useEffect(() => {
-        (async () => {
-            const res = await dispatch(getAllEvents());
+        dispatch(getAllEvents()).then((res) => {
             if (res?.status === "failed") {
                 message.error(res?.message || "Failed to load events");
             }
-        })();
+        });
     }, [dispatch]);
 
-    const initialLoading = eventStatus === "loading";
-    const showTable = (events?.length || 0) > 0;
+    const parseActionValue = useCallback((value) => {
+        if (!value) return {};
 
-    // unchanged helper
-    const parseActionValue = (value) => {
-        if (value && typeof value === "string") {
+        if (typeof value === "string") {
             try {
-                const obj = JSON.parse(value);
-                return { id: obj.id, status: obj.value ?? obj.status };
+                const parsed = JSON.parse(value);
+                return {
+                    id: parsed?.id,
+                    status: parsed?.value ?? parsed?.status,
+                };
             } catch {
-                return { id: undefined, status: undefined };
+                return {};
             }
         }
-        if (value && typeof value === "object") {
-            return { id: value.id, status: value.value ?? value.status };
-        }
-        return { id: undefined, status: undefined };
-    };
 
-    const onChangeStatus = async (raw) => {
-        const { id, status } = parseActionValue(raw);
-        if (!id || typeof status === "undefined") {
-            message.error("Invalid status payload");
-            return;
+        if (typeof value === "object") {
+            return {
+                id: value?.id,
+                status: value?.value ?? value?.status,
+            };
         }
-        setOpLoading(true);
-        try {
-            // wrapper signature: (id, status)
-            const res = await dispatch(changeEventStatus(id, status));
-            if (res?.status !== "failed") {
-                message.success(res?.message || "Event status updated");
-            } else {
-                message.error(res?.message || "Failed to update status");
+
+        return {};
+    }, []);
+
+    const runAction = useCallback(
+        async (action, successMsg, errorMsg) => {
+            setOpLoading(true);
+            try {
+                const res = await dispatch(action);
+                if (res?.status === "failed") {
+                    message.error(res?.message || errorMsg);
+                } else {
+                    message.success(res?.message || successMsg);
+                }
+            } catch (err) {
+                message.error(err?.message || errorMsg);
+            } finally {
+                setOpLoading(false);
             }
-        } catch (err) {
-            message.error(err?.message || "Failed to update status");
-        } finally {
-            setOpLoading(false);
-        }
-    };
+        },
+        [dispatch],
+    );
 
-    const onChangePOClosed = async (raw) => {
-        const { id, status } = parseActionValue(raw);
-        if (!id || typeof status === "undefined") {
-            message.error("Invalid PO Closed payload");
-            return;
-        }
-        setOpLoading(true);
-        try {
-            // wrapper signature: (id, status)
-            const res = await dispatch(changeEventPOClosed(id, status));
-            if (res?.status !== "failed") {
-                message.success(res?.message || "PO status updated");
-            } else {
-                message.error(res?.message || "Failed to update PO status");
+    const onChangeStatus = useCallback(
+        (raw) => {
+            const { id, status } = parseActionValue(raw);
+            if (!id || typeof status === "undefined") {
+                message.error("Invalid status payload");
+                return;
             }
-        } catch (err) {
-            message.error(err?.message || "Failed to update PO status");
-        } finally {
-            setOpLoading(false);
-        }
-    };
+            runAction(
+                changeEventStatus(id, status),
+                "Event status updated",
+                "Failed to update status",
+            );
+        },
+        [parseActionValue, runAction],
+    );
 
-    const onDelete = async (item) => {
-        const ok = window.confirm(
-            `Please confirm if you want to delete "${
-                item?.name ?? "this event"
-            }".`,
-        );
-        if (!ok) return;
-
-        setOpLoading(true);
-        try {
-            const res = await dispatch(deleteEvent(item?._id));
-            if (res?.status !== "failed") {
-                message.success(res?.message || "Event deleted");
-            } else {
-                message.error(res?.message || "Failed to delete event");
+    const onChangePOClosed = useCallback(
+        (raw) => {
+            const { id, status } = parseActionValue(raw);
+            if (!id || typeof status === "undefined") {
+                message.error("Invalid PO Closed payload");
+                return;
             }
-        } catch (err) {
-            message.error(err?.message || "Failed to delete event");
-        } finally {
-            setOpLoading(false);
-        }
-    };
+            runAction(
+                changeEventPOClosed(id, status),
+                "PO status updated",
+                "Failed to update PO status",
+            );
+        },
+        [parseActionValue, runAction],
+    );
 
-    //inline styles
-    const headerRowStyle = {
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        gap: 12,
-        flexWrap: "wrap",
-    };
+    const onDelete = useCallback(
+        (item) => {
+            const ok = window.confirm(
+                `Please confirm if you want to delete "${
+                    item?.name ?? "this event"
+                }".`,
+            );
+            if (!ok) return;
+
+            runAction(
+                deleteEvent(item?._id),
+                "Event deleted",
+                "Failed to delete event",
+            );
+        },
+        [runAction],
+    );
 
     return (
         <LoggedIn title={pageTitle}>
@@ -138,7 +155,7 @@ const EventPage = () => {
                     />
                 </div>
 
-                {eventError && !initialLoading ? (
+                {error && !initialLoading && (
                     <div
                         style={{
                             padding: 12,
@@ -147,31 +164,23 @@ const EventPage = () => {
                             color: "#a8071a",
                             border: "1px solid #ffa39e",
                         }}>
-                        {eventError}
+                        {error}
                     </div>
-                ) : null}
+                )}
 
                 <Spin
-                    spinning={initialLoading || opLoading}
+                    spinning={isLoading}
                     tip={initialLoading ? "Loading..." : "Working..."}>
                     <EventTable
                         onDelete={onDelete}
                         onChangeStatus={onChangeStatus}
                         onChangePOClosed={onChangePOClosed}
-                        isLoading={initialLoading || opLoading}
+                        isLoading={isLoading}
                         showTable={showTable}
                     />
+
                     {!showTable && !initialLoading && (
-                        <div
-                            style={{
-                                width: "100%",
-                                textAlign: "center",
-                                padding: "24px 0",
-                                color: "#7A8AA0",
-                                background: "#fff",
-                                borderRadius: 12,
-                                border: "1px dashed #CFD8E3",
-                            }}>
+                        <div style={emptyStateStyle}>
                             No events to display yet.
                         </div>
                     )}

@@ -109,6 +109,22 @@ export const deleteMenuThunk = createAsyncThunk(
     },
 );
 
+export const bulkCreateMenusThunk = createAsyncThunk(
+    "menu/bulkCreateMenus",
+    async (payload, { rejectWithValue }) => {
+        try {
+            const res = await menuService.bulkCreateMenus(payload);
+            return {
+                status: "success",
+                data: res?.data?.data || [],
+                count: res?.data?.count || 0,
+            };
+        } catch (err) {
+            return rejectWithValue(getErrorPayload(err));
+        }
+    },
+);
+
 // ============== Backward-compatible wrappers ==============
 
 export const getAllMenus = (requestURL) => async (dispatch) => {
@@ -167,6 +183,15 @@ export const deleteMenu = (id) => async (dispatch) => {
         return payload; // { status, message, id }
     } catch (e) {
         return e;
+    }
+};
+
+export const bulkCreateMenus = (payload) => async (dispatch) => {
+    try {
+        const result = await dispatch(bulkCreateMenusThunk(payload)).unwrap();
+        return result; // { status, data, count }
+    } catch (e) {
+        return e; // { status: "failed", message }
     }
 };
 
@@ -321,6 +346,33 @@ export const menuSlice = createSlice({
                 state.status = "failed";
                 state.success = false;
                 const msg = action.payload?.message || "Server Error";
+                state.error = msg;
+                state.message.error = msg;
+            });
+
+        // bulkCreateMenus
+        builder
+            .addCase(bulkCreateMenusThunk.pending, (state) => {
+                state.status = "loading";
+                state.error = null;
+                state.message.error = "";
+                state.message.success = "";
+            })
+            .addCase(bulkCreateMenusThunk.fulfilled, (state, action) => {
+                state.status = "succeeded";
+                state.success = true;
+                const { data, count } = action.payload;
+                state.message.success = `${count} menu(s) created successfully`;
+
+                if (Array.isArray(data) && data.length) {
+                    // Add created menus to the existing list
+                    state.menus = [...data, ...state.menus];
+                }
+            })
+            .addCase(bulkCreateMenusThunk.rejected, (state, action) => {
+                state.status = "failed";
+                state.success = false;
+                const msg = action.payload?.message || "Failed to create menus";
                 state.error = msg;
                 state.message.error = msg;
             });
