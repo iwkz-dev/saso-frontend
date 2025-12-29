@@ -34,8 +34,7 @@ const DashboardCard = () => {
         [],
     );
 
-    // (A) Choose what to display:
-    const filtered = useMemo(
+    const filteredEvents = useMemo(
         () => events.filter((e) => [0, 1, 2].includes(e?.status)),
         [events],
     );
@@ -51,13 +50,16 @@ const DashboardCard = () => {
                 delivered: 0,
                 paid: 0,
                 revenue: 0,
+                potentialRevenue: 0,
             };
             entry.total += 1;
-            if (o?.status === 2) entry.canceled += 1;
-            if (o?.status === 3) entry.delivered += 1;
-            if (o?.status === 1) entry.paid += 1;
-            if (o?.status === 1 || o?.status === 3)
-                entry.revenue += Number(o?.totalPrice || 0);
+            if (o.status === 2) entry.canceled += 1;
+            if (o.status === 3) entry.delivered += 1;
+            if (o.status === 1) entry.paid += 1;
+            if (o.status === 1 || o.status === 3)
+                entry.revenue += Number(o.totalPrice || 0);
+            if (o.status !== 2)
+                entry.potentialRevenue += Number(o.totalPrice || 0);
             map.set(id, entry);
         }
         return map;
@@ -65,7 +67,7 @@ const DashboardCard = () => {
 
     const displayEvents = useMemo(() => {
         const phaseOrder = { 1: 0, 0: 1, 2: 2 };
-        return [...filtered].sort((a, b) => {
+        return [...filteredEvents].sort((a, b) => {
             const pa = phaseOrder[a?.status ?? 3] ?? 3;
             const pb = phaseOrder[b?.status ?? 3] ?? 3;
             if (pa !== pb) return pa - pb;
@@ -73,15 +75,15 @@ const DashboardCard = () => {
                 String(a?.started_at || ""),
             );
         });
-    }, [filtered]);
+    }, [filteredEvents]);
 
-    // ---- Inline styles
     const containerStyle = {
         display: "flex",
         flexWrap: "wrap",
         gap: 16,
         width: "100%",
     };
+
     const cardStyle = {
         flex: "1 1 280px",
         maxWidth: 380,
@@ -91,13 +93,14 @@ const DashboardCard = () => {
             "0 1px 2px rgba(0,0,0,0.04), 0 10px 28px -14px rgba(31,76,135,0.22)",
         transition: "transform 140ms ease, box-shadow 140ms ease",
     };
-    const cardBodyStyle = { padding: 16 };
+
     const titleRowStyle = {
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
         gap: 8,
     };
+
     const badgesRow = { display: "flex", gap: 8, flexWrap: "wrap" };
 
     const mutedPill = (text, color = "#7A8AA0", bg = "#F4F6F9") => (
@@ -157,6 +160,7 @@ const DashboardCard = () => {
                     delivered: 0,
                     paid: 0,
                     revenue: 0,
+                    potentialRevenue: 0,
                 };
                 const pending = Math.max(
                     0,
@@ -171,7 +175,6 @@ const DashboardCard = () => {
                         key={event._id}
                         hoverable
                         style={cardStyle}
-                        styles={cardBodyStyle}
                         onClick={() => handleClick(event._id)}>
                         <Space
                             direction="vertical"
@@ -226,7 +229,7 @@ const DashboardCard = () => {
                                             event?.status === 2
                                                 ? "success"
                                                 : "active"
-                                        } // Done = success
+                                        }
                                         showInfo={false}
                                     />
                                 </Tooltip>
@@ -258,14 +261,33 @@ const DashboardCard = () => {
                                     value={s.delivered}
                                     valueStyle={{ color: "#4169E1" }}
                                 />
+
                                 <Statistic
-                                    title="Total Revenue"
+                                    title="Revenue"
                                     precision={2}
                                     value={s.revenue}
-                                    valueStyle={{ color: "#3f8600" }}
-                                    formatter={(val) =>
-                                        nf.format(Number(val || 0))
-                                    }
+                                    valueStyle={{
+                                        color: "#3f8600",
+                                        fontWeight: "bold",
+                                    }}
+                                    formatter={(val) => (
+                                        <>
+                                            {nf.format(Number(val || 0))}
+                                            <Typography.Text
+                                                type="secondary"
+                                                style={{
+                                                    fontSize: "0.5em",
+                                                    marginLeft: 4,
+                                                }}>
+                                                /
+                                                {nf.format(
+                                                    Number(
+                                                        s.potentialRevenue || 0,
+                                                    ),
+                                                )}
+                                            </Typography.Text>
+                                        </>
+                                    )}
                                 />
                             </Space>
 

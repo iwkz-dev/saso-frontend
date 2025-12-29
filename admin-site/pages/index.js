@@ -14,8 +14,8 @@ const IndexPage = () => {
     const [showLoading, setShowLoading] = useState(false);
     const [showCard, setShowCard] = useState(false);
 
-    const events = useSelector((s) => s.event.events);
-    const orders = useSelector((s) => s.order.orders);
+    const events = useSelector((s) => s.event.events) || [];
+    const orders = useSelector((s) => s.order.orders) || [];
 
     useEffect(() => {
         fetchData();
@@ -45,7 +45,6 @@ const IndexPage = () => {
         isAuth({ status: "failed", message: msg });
     };
 
-    // ---- Inline styles
     const wrapperStyle = {
         minHeight: "calc(100vh - 120px)",
         padding: "24px",
@@ -69,37 +68,6 @@ const IndexPage = () => {
         width: "100%",
     };
 
-    const summary = useMemo(() => {
-        if (!events?.length || !orders?.length) {
-            return {
-                activeEvents: 0,
-                totalOrders: 0,
-                revenue: 0,
-                deliveredRate: 0,
-            };
-        }
-        const activeEventIds = new Set(
-            events
-                .filter((e) => e.status === 1 || e.status === 2)
-                .map((e) => e._id),
-        );
-        const filteredOrders = orders.filter((o) =>
-            activeEventIds.has(o.event),
-        );
-        const totalOrders = filteredOrders.length;
-        const revenue = filteredOrders
-            .filter((o) => o.status === 1 || o.status === 3)
-            .reduce((acc, o) => acc + (o.totalPrice || 0), 0);
-        const delivered = filteredOrders.filter((o) => o.status === 3).length;
-        const deliveredRate = totalOrders ? (delivered / totalOrders) * 100 : 0;
-        return {
-            activeEvents: activeEventIds.size,
-            totalOrders,
-            revenue,
-            deliveredRate,
-        };
-    }, [events, orders]);
-
     const nf = useMemo(
         () =>
             new Intl.NumberFormat(undefined, {
@@ -109,6 +77,47 @@ const IndexPage = () => {
             }),
         [],
     );
+
+    // Summary including potential revenue
+    const summary = useMemo(() => {
+        if (!events?.length || !orders?.length) {
+            return {
+                activeEvents: 0,
+                totalOrders: 0,
+                revenue: 0,
+                potentialRevenue: 0,
+                deliveredRate: 0,
+            };
+        }
+
+        const activeEventIds = new Set(
+            events.filter((e) => [1, 2].includes(e.status)).map((e) => e._id),
+        );
+
+        const filteredOrders = orders.filter((o) =>
+            activeEventIds.has(o.event),
+        );
+        const totalOrders = filteredOrders.length;
+
+        const revenue = filteredOrders
+            .filter((o) => o.status === 1 || o.status === 3) // Actual revenue
+            .reduce((acc, o) => acc + (o.totalPrice || 0), 0);
+
+        const potentialRevenue = filteredOrders
+            .filter((o) => o.status !== 2) // exclude canceled
+            .reduce((acc, o) => acc + (o.totalPrice || 0), 0);
+
+        const delivered = filteredOrders.filter((o) => o.status === 3).length;
+        const deliveredRate = totalOrders ? (delivered / totalOrders) * 100 : 0;
+
+        return {
+            activeEvents: activeEventIds.size,
+            totalOrders,
+            revenue,
+            potentialRevenue,
+            deliveredRate,
+        };
+    }, [events, orders]);
 
     return (
         <LoggedIn title={pageTitle}>
@@ -153,7 +162,28 @@ const IndexPage = () => {
                                     },
                                     {
                                         label: "Revenue",
-                                        value: nf.format(summary.revenue),
+                                        value: (
+                                            <>
+                                                <span
+                                                    style={{
+                                                        fontWeight: "bold",
+                                                        color: "#3f8600",
+                                                    }}>
+                                                    {nf.format(summary.revenue)}
+                                                </span>
+                                                <Typography.Text
+                                                    type="secondary"
+                                                    style={{
+                                                        fontSize: "0.5em",
+                                                        marginLeft: 4,
+                                                    }}>
+                                                    /
+                                                    {nf.format(
+                                                        summary.potentialRevenue,
+                                                    )}
+                                                </Typography.Text>
+                                            </>
+                                        ),
                                     },
                                     {
                                         label: "Delivered Rate",
@@ -170,12 +200,15 @@ const IndexPage = () => {
                                             border: "1px solid #E7EEFF",
                                             borderRadius: 12,
                                             minWidth: 140,
+                                            display: "flex",
+                                            flexDirection: "column",
+                                            alignItems: "flex-start",
+                                            gap: 4,
                                         }}>
                                         <div
                                             style={{
                                                 fontSize: 12,
                                                 color: "#7A8AA0",
-                                                marginBottom: 4,
                                                 fontWeight: 500,
                                                 textTransform: "uppercase",
                                                 letterSpacing: 0.3,
