@@ -42,6 +42,9 @@ const createMenu = (requestedData) =>
 
 const deleteMenu = (id) => request({ method: "DELETE", url: `/menu/${id}` });
 
+const bulkCreateMenus = (payload) =>
+    request({ method: "POST", url: "/menu/bulk", data: payload });
+
 const menuService = {
     getAllMenus,
     getDetailMenu,
@@ -49,6 +52,7 @@ const menuService = {
     deleteMenu,
     createMenu,
     editDetailMenuImages,
+    bulkCreateMenus,
 };
 
 export default menuService;

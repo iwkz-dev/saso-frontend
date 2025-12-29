@@ -1,12 +1,16 @@
-import React, { useCallback, useState } from "react";
+import { useCallback, useState } from "react";
+import { useSelector } from "react-redux";
 import { Button, Input, message, Modal, Space, Popconfirm } from "antd";
 import { QrcodeOutlined, UploadOutlined } from "@ant-design/icons";
 import { QrReader } from "react-qr-reader";
 
-const OrderFilterForm = ({ setFilterValues, exportToXlsx }) => {
+import OrderExportToXlsx from "../../../../helpers/ExportToXlsxFormat/OrderExportToXlsx";
+
+const OrderFilterForm = ({ setFilterValues, orders }) => {
     const { Search } = Input;
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [inputValue, setInputValue] = useState("");
+    const event = useSelector((s) => s.event.detailEvent);
 
     const upsertInvoiceFilter = useCallback(
         (value) => {
@@ -60,7 +64,7 @@ const OrderFilterForm = ({ setFilterValues, exportToXlsx }) => {
     return (
         <Space.Compact block>
             <Search
-                placeholder="input search text"
+                placeholder="Search invoice number"
                 onSearch={handleSearch}
                 onChange={handleChange}
                 allowClear
@@ -88,7 +92,7 @@ const OrderFilterForm = ({ setFilterValues, exportToXlsx }) => {
             <Popconfirm
                 title="Export to xlsx file"
                 description="Are you sure want to export order to xlsx file?"
-                onConfirm={exportToXlsx}
+                onConfirm={() => OrderExportToXlsx(orders, event)}
                 okText="Yes"
                 cancelText="No">
                 <Button icon={<UploadOutlined />} />

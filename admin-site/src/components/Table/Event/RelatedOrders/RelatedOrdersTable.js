@@ -1,15 +1,19 @@
-import React, { useEffect, useMemo, useState, useCallback } from "react";
+import { useEffect, useMemo, useState, useCallback, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import Table from "../../Table";
 import { Typography, message, Tag } from "antd";
+import { CheckCircleOutlined, CloseCircleOutlined } from "@ant-design/icons";
+import dayjs from "dayjs";
+
+import Table from "../../Table";
 import { getAllEvents } from "../../../../store/reducers/eventReducer";
 import {
     changeOrderStatus,
     getAllOrders,
 } from "../../../../store/reducers/orderReducer";
 import { getAllPaymentTypes } from "../../../../store/reducers/paymentTypeReducer";
-import dayjs from "dayjs";
-import { CheckCircleOutlined, CloseCircleOutlined } from "@ant-design/icons";
+import filtersQueryBuilder from "../../../../helpers/filterQueryBuilders";
+
+const DEBOUNCE_MS = 500;
 
 const RelatedOrdersTable = ({
     filterName,
@@ -18,116 +22,123 @@ const RelatedOrdersTable = ({
     filterValues = [],
 }) => {
     const dispatch = useDispatch();
-
-    const DEBOUNCE_MS = 500;
+    const isFirstRender = useRef(true);
 
     const orders = useSelector((s) => s.order.orders) || [];
     const events = useSelector((s) => s.event.events) || [];
     const paymentTypes = useSelector((s) => s.paymentType.paymentTypes) || [];
 
-    const [showTable, setShowTable] = useState(false);
-    const [showLoadingData, setShowLoadingData] = useState(false);
+    const [loading, setLoading] = useState(false);
 
-    // --- helpers
-    const filtersQueryBuilder = useCallback((vals) => {
-        if (!Array.isArray(vals) || vals.length === 0) return "";
-        return vals
-            .map(
-                (f) =>
-                    `${encodeURIComponent(f.name)}=${encodeURIComponent(f.id)}`,
-            )
-            .join("&");
-    }, []);
+    const queryString = useMemo(() => {
+        if (!filterName || !itemFilter?._id) return null;
 
-    const fetchAll = useCallback(async () => {
-        if (!filterName || !itemFilter?._id) {
-            setShowTable(false);
-            setShowLoadingData(false);
-            return;
-        }
+        const filterQuery = filtersQueryBuilder(filterValues);
+        const coreQuery = `${encodeURIComponent(
+            filterName,
+        )}=${encodeURIComponent(itemFilter._id)}`;
 
-        setShowLoadingData(true);
-        try {
-            const filterQuery = filtersQueryBuilder(filterValues);
-            const qsCore = `${encodeURIComponent(
-                filterName,
-            )}=${encodeURIComponent(itemFilter._id)}`;
-            const qs = filterQuery ? `?${filterQuery}&${qsCore}` : `?${qsCore}`;
+        return filterQuery ? `?${filterQuery}&${coreQuery}` : `?${coreQuery}`;
+    }, [filterName, itemFilter?._id, filterValues]);
 
-            const responses = await Promise.all([
-                dispatch(getAllEvents()),
-                dispatch(getAllOrders(qs)),
-                dispatch(getAllPaymentTypes()),
-            ]);
-
-            const failed = responses.find((r) => r?.status === "failed");
-            if (failed) {
-                setShowTable(false);
-                message.error(failed?.message || "Failed to load orders");
-            } else {
-                setShowTable(true);
+    const fetchAll = useCallback(
+        async (query) => {
+            if (!query) return;
+            setLoading(true);
+            try {
+                await Promise.all([
+                    dispatch(getAllEvents()),
+                    dispatch(getAllPaymentTypes()),
+                    dispatch(getAllOrders(query)),
+                ]);
+            } catch (err) {
+                message.error(err?.message || "Failed to load data");
+            } finally {
+                setLoading(false);
             }
-        } catch (err) {
-            setShowTable(false);
-            message.error(err?.message || "Failed to load data");
-        } finally {
-            setShowLoadingData(false);
-        }
-    }, [
-        dispatch,
-        filterName,
-        itemFilter?._id,
-        filterValues,
-        filtersQueryBuilder,
-    ]);
+        },
+        [dispatch],
+    );
 
     useEffect(() => {
-        if (!filterName || !itemFilter?._id) {
-            setShowTable(false);
-            setShowLoadingData(false);
+        if (!queryString) return;
+
+        if (isFirstRender.current) {
+            isFirstRender.current = false;
+            fetchAll(queryString);
             return;
         }
 
-        setShowLoadingData(true);
+        const handler = setTimeout(() => fetchAll(queryString), DEBOUNCE_MS);
+        return () => clearTimeout(handler);
+    }, [queryString, fetchAll]);
 
-        const t = setTimeout(() => {
-            fetchAll();
-        }, DEBOUNCE_MS);
+    const handleStatusChange = async (value) => {
+        const { id, value: statusValue } = JSON.parse(value);
 
-        return () => clearTimeout(t);
-    }, [fetchAll]);
-
-    const onChangeStatus = async (value) => {
-        let parsed;
-        try {
-            parsed = JSON.parse(value);
-        } catch {
-            message.error("Invalid status payload");
+        if (!window.confirm(`Confirm status change to "${statusValue}"?`))
             return;
-        }
 
-        const ok = window.confirm(
-            `Please confirm if you want to change status to "${parsed.value}".`,
-        );
-        if (!ok) return;
-
-        setShowLoadingData(true);
+        setLoading(true);
         try {
-            const res = await dispatch(
-                changeOrderStatus(parsed.id, parsed.value),
-            );
+            const res = await dispatch(changeOrderStatus(id, statusValue));
             if (res?.status !== "failed") {
-                message.success(res?.message || "Order status updated");
-                await fetchAll();
+                message.success("Order status updated");
+                fetchAll(queryString);
             } else {
                 message.error(res?.message || "Failed to update status");
             }
         } catch (err) {
-            message.error(err?.message || "Failed to update status");
+            message.error("An error occurred during update");
         } finally {
-            setShowLoadingData(false);
+            setLoading(false);
         }
     };
+
+    const MenuListItem = ({ item }) => {
+        const isConfirmed = item.status === 1;
+        return (
+            <li
+                style={{
+                    display: "flex",
+                    gap: "12px",
+                    padding: "8px 0",
+                    borderBottom: "1px solid #f0f0f0",
+                }}>
+                {isConfirmed ? (
+                    <CheckCircleOutlined style={{ color: "#52c41a" }} />
+                ) : (
+                    <CloseCircleOutlined style={{ color: "#bfbfbf" }} />
+                )}
+                <div>
+                    <Typography.Text strong>
+                        {item.name} ({item.totalPortion})
+                    </Typography.Text>
+                    {item.note && (
+                        <div style={{ fontSize: "12px", color: "#8c8c8c" }}>
+                            Note: {item.note}
+                        </div>
+                    )}
+                    <Tag
+                        color={isConfirmed ? "green" : "default"}
+                        style={{ marginTop: 4 }}>
+                        {isConfirmed ? "Confirmed" : "Not Confirmed"}
+                    </Tag>
+                </div>
+            </li>
+        );
+    };
+
+    const expandOrderedMenu = (record) => (
+        <div>
+            <Typography.Text strong>Ordered Menu:</Typography.Text>
+            <ul style={{ listStyle: "none", padding: 0, marginTop: 8 }}>
+                {(record.menus || []).map((item, idx) => (
+                    <MenuListItem key={item._id || idx} item={item} />
+                ))}
+            </ul>
+        </div>
+    );
 
     const tableHead = useMemo(
         () => [
@@ -141,16 +152,12 @@ const RelatedOrdersTable = ({
                     value: o.invoiceNumber,
                 })),
                 onFilter: (value, record) =>
-                    record.invoiceNumber?.includes?.(value),
-                coloredText: (record) => {
-                    if (
-                        record.status === 0 &&
-                        dayjs().diff(dayjs(record.created_at), "d") >= 2
-                    ) {
-                        return "danger";
-                    }
-                    return "";
-                },
+                    record.invoiceNumber?.includes(value),
+                coloredText: (record) =>
+                    record.status === 0 &&
+                    dayjs().diff(dayjs(record.created_at), "d") >= 2
+                        ? "danger"
+                        : "",
             },
             {
                 key: "event",
@@ -158,12 +165,8 @@ const RelatedOrdersTable = ({
                 title: "Event",
                 filterSearch: true,
                 filters: events.map((e) => ({ text: e.name, value: e._id })),
-                onFilter: (value, record) => {
-                    const v = record.event;
-                    return Array.isArray(v)
-                        ? v.includes(value)
-                        : String(v) === String(value);
-                },
+                onFilter: (value, record) =>
+                    String(record.event) === String(value),
             },
             {
                 key: "status",
@@ -171,12 +174,11 @@ const RelatedOrdersTable = ({
                 title: "Status",
                 editable: true,
                 type: "select",
-                onChange: onChangeStatus,
-                filterSearch: true,
+                onChange: handleStatusChange,
                 onFilter: (value, record) => record.status === value,
                 disabled: (record, eventsList) => {
                     const ev = eventsList.find((e) => e._id === record.event);
-                    return !ev || ev.status !== 1; // only editable if event is Approved (status=1)
+                    return !ev || ev.status !== 1;
                 },
                 options: [
                     { title: "Wait For Confirmation", value: "wait", code: 0 },
@@ -188,97 +190,30 @@ const RelatedOrdersTable = ({
             {
                 key: "customerFullname",
                 dataIndex: "customerFullname",
-                title: "Customer Fullname",
-            },
-            {
-                key: "customerEmail",
-                dataIndex: "customerEmail",
-                title: "Customer Email",
+                title: "Customer",
             },
             {
                 key: "totalPrice",
                 dataIndex: "totalPrice",
                 title: "Total Price",
             },
-            {
-                key: "paymentType",
-                dataIndex: "paymentType",
-                title: "Payment Type",
-            },
-            { key: "arrived_at", dataIndex: "arrived_at", title: "Arrived At" },
+            { key: "paymentType", dataIndex: "paymentType", title: "Payment" },
             { key: "created_at", dataIndex: "created_at", title: "Created At" },
-            { key: "updated_at", dataIndex: "updated_at", title: "Updated At" },
         ],
-        [events, orders],
-    );
-
-    const listItemElement = (items = []) =>
-        items.map((item, idx) => {
-            const isConfirmed = item.status === 1;
-            const key = item._id || item.key || `${item.name}-${idx}`;
-
-            return (
-                <li
-                    key={key}
-                    style={{
-                        display: "flex",
-                        alignItems: "flex-start",
-                        gap: "8px",
-                        padding: "8px 0",
-                        borderBottom: "1px solid #f0f0f0",
-                    }}>
-                    <div style={{ paddingTop: 4 }}>
-                        {isConfirmed ? (
-                            <CheckCircleOutlined
-                                style={{ color: "#52c41a", fontSize: 18 }}
-                            />
-                        ) : (
-                            <CloseCircleOutlined
-                                style={{ color: "#bfbfbf", fontSize: 18 }}
-                            />
-                        )}
-                    </div>
-                    <div>
-                        <Typography.Text strong>
-                            {item.name} ({item.totalPortion})
-                        </Typography.Text>
-                        {item.note && (
-                            <div style={{ fontSize: "12px", color: "#8c8c8c" }}>
-                                Note: {item.note}
-                            </div>
-                        )}
-                        <div style={{ marginTop: 4 }}>
-                            <Tag color={isConfirmed ? "green" : "default"}>
-                                {isConfirmed ? "Confirmed" : "Not Confirmed"}
-                            </Tag>
-                        </div>
-                    </div>
-                </li>
-            );
-        });
-
-    const expandOrderedMenu = (record) => (
-        <div>
-            <Typography.Text style={{ margin: 0, whiteSpace: "pre-line" }}>
-                Ordered Menu:
-            </Typography.Text>
-            <ol style={{ marginTop: 8 }}>
-                {listItemElement(record.menus || [])}
-            </ol>
-        </div>
+        [events, orders, queryString],
     );
 
     return (
         <Table
             onDelete={onDelete}
-            data={showTable ? orders : []}
+            data={orders}
             events={events}
             dataHead={tableHead}
             emptyMessage="Order is empty"
             linkToView="/database/order/view/"
             paymentTypes={paymentTypes}
-            isLoading={showLoadingData}
-            deleteOff={true}
+            isLoading={loading}
+            deleteOff
             expandable={expandOrderedMenu}
         />
     );
