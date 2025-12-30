@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import LoggedIn from "../../../../src/components/Layout/LoggedIn/LoggedIn";
+import Protected from "../../../../src/components/Layout/Protected/Protected";
 import AddMenuForm from "../../../../src/components/Form/Menu/AddMenuForm/AddMenuForm";
 import Content from "../../../../src/components/Layout/Content/Content";
 import { getAllEvents } from "../../../../src/store/reducers/eventReducer";
@@ -29,7 +29,7 @@ const AddMenuPage = () => {
                     dispatch(getAllVendors()),
                 ]);
 
-                const failed = results.find((r) => r?.status === "failed");
+                const failed = results.find((r) => r?.status !== "success");
                 if (failed) {
                     if (!cancelled) {
                         message.error(
@@ -60,7 +60,7 @@ const AddMenuPage = () => {
     }, [dispatch]);
 
     return (
-        <LoggedIn title={pageTitle}>
+        <Protected title={pageTitle}>
             <Content>
                 <Typography.Title level={3}>Add menu</Typography.Title>
                 <Spin spinning={showLoading} tip="Loading...">
@@ -82,7 +82,7 @@ const AddMenuPage = () => {
                     )}
                 </Spin>
             </Content>
-        </LoggedIn>
+        </Protected>
     );
 };
 

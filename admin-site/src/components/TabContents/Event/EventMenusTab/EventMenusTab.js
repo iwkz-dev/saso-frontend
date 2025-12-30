@@ -28,7 +28,7 @@ const EventMenusTab = ({
         setLoading(true);
         try {
             const res = await dispatch(deleteMenu(item?._id));
-            if (res?.status === "failed") {
+            if (res?.status !== "success") {
                 message.error(res?.message || "Failed to delete category");
             } else {
                 message.success(res?.message || "Category deleted");
@@ -40,7 +40,9 @@ const EventMenusTab = ({
 
     return (
         <Space direction="vertical" style={{ display: "flex" }}>
-            <Typography.Title level={4}>Related Menu</Typography.Title>
+            <Typography.Title level={4} style={{ margin: 0 }}>
+                Related Menu
+            </Typography.Title>
 
             <EventAddMenuModal event={event} />
 

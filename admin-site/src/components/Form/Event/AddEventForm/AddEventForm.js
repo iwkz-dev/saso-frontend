@@ -48,7 +48,7 @@ export default function AddEventForm() {
             });
 
             const res = await dispatch(createEvent(data));
-            if (res?.status === "failed") {
+            if (res?.status !== "success") {
                 message.error(res?.message || "Failed to create event");
             } else {
                 message.success(res?.message || "Event created");

@@ -2,7 +2,7 @@ import { useEffect, useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Typography, message, Spin } from "antd";
 
-import LoggedIn from "../../../src/components/Layout/LoggedIn/LoggedIn";
+import Protected from "../../../src/components/Layout/Protected/Protected";
 import EventTable from "../../../src/components/Table/Event/EventTable/EventTable";
 import AddItemButton from "../../../src/components/common/Button/AddItemButton/AddItemButton";
 import Content from "../../../src/components/Layout/Content/Content";
@@ -21,21 +21,11 @@ const headerRowStyle = {
     flexWrap: "wrap",
 };
 
-const emptyStateStyle = {
-    width: "100%",
-    textAlign: "center",
-    padding: "24px 0",
-    color: "#7A8AA0",
-    background: "#fff",
-    borderRadius: 12,
-    border: "1px dashed #CFD8E3",
-};
-
 const EventPage = () => {
     const dispatch = useDispatch();
     const pageTitle = "Saso App | Event";
 
-    const { events, status, error } = useSelector((s) => s.event);
+    const { events, status } = useSelector((s) => s.event);
     const [opLoading, setOpLoading] = useState(false);
 
     const initialLoading = status === "loading";
@@ -44,7 +34,7 @@ const EventPage = () => {
 
     useEffect(() => {
         dispatch(getAllEvents()).then((res) => {
-            if (res?.status === "failed") {
+            if (res?.status !== "success") {
                 message.error(res?.message || "Failed to load events");
             }
         });
@@ -80,7 +70,7 @@ const EventPage = () => {
             setOpLoading(true);
             try {
                 const res = await dispatch(action);
-                if (res?.status === "failed") {
+                if (res?.status !== "success") {
                     message.error(res?.message || errorMsg);
                 } else {
                     message.success(res?.message || successMsg);
@@ -145,7 +135,7 @@ const EventPage = () => {
     );
 
     return (
-        <LoggedIn title={pageTitle}>
+        <Protected title={pageTitle}>
             <Content>
                 <div style={headerRowStyle}>
                     <Typography.Title level={3}>Event</Typography.Title>
@@ -154,19 +144,6 @@ const EventPage = () => {
                         text="Add Event"
                     />
                 </div>
-
-                {error && !initialLoading && (
-                    <div
-                        style={{
-                            padding: 12,
-                            borderRadius: 8,
-                            background: "#fff1f0",
-                            color: "#a8071a",
-                            border: "1px solid #ffa39e",
-                        }}>
-                        {error}
-                    </div>
-                )}
 
                 <Spin
                     spinning={isLoading}
@@ -178,15 +155,9 @@ const EventPage = () => {
                         isLoading={isLoading}
                         showTable={showTable}
                     />
-
-                    {!showTable && !initialLoading && (
-                        <div style={emptyStateStyle}>
-                            No events to display yet.
-                        </div>
-                    )}
                 </Spin>
             </Content>
-        </LoggedIn>
+        </Protected>
     );
 };
 

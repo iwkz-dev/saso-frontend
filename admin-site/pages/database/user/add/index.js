@@ -1,7 +1,7 @@
 import React from "react";
 import { useDispatch } from "react-redux";
 import { useEffect } from "react";
-import LoggedIn from "../../../../src/components/Layout/LoggedIn/LoggedIn";
+import Protected from "../../../../src/components/Layout/Protected/Protected";
 import AddUserForm from "../../../../src/components/Form/User/AddUserForm/AddUserForm";
 import { getDetailUser } from "../../../../src/store/reducers/userReducer";
 import { useSelector } from "react-redux";
@@ -27,7 +27,7 @@ const index = () => {
     }, []);
 
     return (
-        <LoggedIn
+        <Protected
             title={pageTitle}
             pageData={pageData}
             isNotAllowed={currUser?.role !== 1}>
@@ -35,7 +35,7 @@ const index = () => {
                 <Typography.Title level={3}>Add User</Typography.Title>
                 <AddUserForm />
             </Content>
-        </LoggedIn>
+        </Protected>
     );
 };
 

@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import { useRouter } from "next/router";
 import { getDetailUser } from "../../../../src/store/reducers/userReducer";
 import EditUserForm from "../../../../src/components/Form/User/EditUserForm/EditUserForm";
-import LoggedIn from "../../../../src/components/Layout/LoggedIn/LoggedIn";
+import Protected from "../../../../src/components/Layout/Protected/Protected";
 import Content from "../../../../src/components/Layout/Content/Content";
 import { Spin, Typography, message } from "antd";
 import { isAuth } from "../../../../src/helpers/authHelper";
@@ -36,14 +36,14 @@ const id = () => {
     }, [id]);
 
     return (
-        <LoggedIn title={pageTitle}>
+        <Protected title={pageTitle}>
             <Content>
                 <Spin spinning={showLoading} tip="Loading...">
                     <Typography.Title level={3}>Edit User</Typography.Title>
                     {showForm ? <EditUserForm id={id} /> : ""}
                 </Spin>
             </Content>
-        </LoggedIn>
+        </Protected>
     );
 };
 

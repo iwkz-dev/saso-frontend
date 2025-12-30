@@ -7,7 +7,7 @@ import {
 import { getAllCategories } from "../../../src/store/reducers/categoryReducer";
 import { getAllEvents } from "../../../src/store/reducers/eventReducer";
 import { getAllVendors } from "../../../src/store/reducers/vendorReducer";
-import LoggedIn from "../../../src/components/Layout/LoggedIn/LoggedIn";
+import Protected from "../../../src/components/Layout/Protected/Protected";
 import MenuTable from "../../../src/components/Table/Menu/MenuTable/MenuTable";
 import AddItemButton from "../../../src/components/common/Button/AddItemButton/AddItemButton";
 import Content from "../../../src/components/Layout/Content/Content";
@@ -43,7 +43,7 @@ const Index = () => {
             ]);
 
             const failed = [evRes, catRes, menRes, venRes].find(
-                (r) => r?.status === "failed",
+                (r) => r?.status !== "success",
             );
 
             if (failed) {
@@ -95,7 +95,7 @@ const Index = () => {
     };
 
     return (
-        <LoggedIn title={pageTitle}>
+        <Protected title={pageTitle}>
             <Content>
                 <Typography.Title level={3}>Menu</Typography.Title>
 
@@ -120,7 +120,7 @@ const Index = () => {
                     />
                 </Space>
             </Content>
-        </LoggedIn>
+        </Protected>
     );
 };
 

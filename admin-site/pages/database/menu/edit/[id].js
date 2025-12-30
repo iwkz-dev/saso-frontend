@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import LoggedIn from "../../../../src/components/Layout/LoggedIn/LoggedIn";
+import Protected from "../../../../src/components/Layout/Protected/Protected";
 import EditMenuForm from "../../../../src/components/Form/Menu/EditMenuForm/EditMenuForm";
 import Content from "../../../../src/components/Layout/Content/Content";
 import { useRouter } from "next/router";
@@ -38,7 +38,7 @@ const EditMenuPage = () => {
                     dispatch(getDetailMenu(id)),
                 ]);
 
-                const failed = results.find((r) => r?.status === "failed");
+                const failed = results.find((r) => r?.status !== "success");
                 if (failed) {
                     if (!cancelled) {
                         message.error(failed?.message || "Failed to load data");
@@ -67,14 +67,14 @@ const EditMenuPage = () => {
     }, [router.isReady, id, dispatch]);
 
     return (
-        <LoggedIn title={pageTitle}>
+        <Protected title={pageTitle}>
             <Content>
                 <Typography.Title level={3}>Edit menu</Typography.Title>
                 <Spin spinning={showLoading} tip="Loading...">
                     {showForm && <EditMenuForm id={id} />}
                 </Spin>
             </Content>
-        </LoggedIn>
+        </Protected>
     );
 };
 

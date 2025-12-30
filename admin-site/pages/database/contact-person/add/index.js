@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import AddContactPersonForm from "../../../../src/components/Form/ContactPerson/AddContactPersonForm/AddContactPersonForm";
 import Content from "../../../../src/components/Layout/Content/Content";
-import LoggedIn from "../../../../src/components/Layout/LoggedIn/LoggedIn";
+import Protected from "../../../../src/components/Layout/Protected/Protected";
 import { Spin, Typography, message } from "antd";
 import { getAllEvents } from "../../../../src/store/reducers/eventReducer";
 import { useDispatch } from "react-redux";
@@ -45,7 +45,7 @@ const AddContactPersonPage = () => {
     }, [dispatch]);
 
     return (
-        <LoggedIn title={pageTitle}>
+        <Protected title={pageTitle}>
             <Content>
                 <Typography.Title level={3}>
                     Add contact person
@@ -54,7 +54,7 @@ const AddContactPersonPage = () => {
                     {showForm ? <AddContactPersonForm /> : null}
                 </Spin>
             </Content>
-        </LoggedIn>
+        </Protected>
     );
 };
 

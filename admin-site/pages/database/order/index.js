@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import { useDispatch } from "react-redux";
-import LoggedIn from "../../../src/components/Layout/LoggedIn/LoggedIn";
+import Protected from "../../../src/components/Layout/Protected/Protected";
 import {
     changeOrderStatus,
     deleteOrder,
@@ -42,7 +42,7 @@ const OrderIndexPage = () => {
                 dispatch(getAllOrders(filters)),
             ]);
 
-            const failed = results.find((r) => r?.status === "failed");
+            const failed = results.find((r) => r?.status !== "success");
             if (failed) {
                 setShowTable(false);
                 message.error(failed?.message || "Failed to load orders");
@@ -117,7 +117,7 @@ const OrderIndexPage = () => {
     };
 
     return (
-        <LoggedIn title={pageTitle}>
+        <Protected title={pageTitle}>
             <Content>
                 <Typography.Title level={3}>Order</Typography.Title>
                 <Space direction="vertical" style={{ display: "flex" }}>
@@ -134,7 +134,7 @@ const OrderIndexPage = () => {
                     />
                 </Space>
             </Content>
-        </LoggedIn>
+        </Protected>
     );
 };
 

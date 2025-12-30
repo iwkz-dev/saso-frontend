@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import LoggedIn from "../../../src/components/Layout/LoggedIn/LoggedIn";
+import Protected from "../../../src/components/Layout/Protected/Protected";
 import AddItemButton from "../../../src/components/common/Button/AddItemButton/AddItemButton";
 import UserTable from "../../../src/components/Table/User/UserTable/UserTable";
 import {
@@ -32,7 +32,7 @@ const UserIndexPage = () => {
                 dispatch(getAllUsers()),
             ]);
 
-            const failed = results.find((r) => r?.status === "failed");
+            const failed = results.find((r) => r?.status !== "success");
             if (failed) {
                 setShowTable(false);
                 message.error(failed?.message || "Failed to load users");
@@ -77,7 +77,7 @@ const UserIndexPage = () => {
     const isAdmin = currUser?.role === 1;
 
     return (
-        <LoggedIn title={pageTitle}>
+        <Protected title={pageTitle}>
             <Content>
                 <Typography.Title level={3}>User</Typography.Title>
                 <Space direction="vertical" style={{ display: "flex" }}>
@@ -96,7 +96,7 @@ const UserIndexPage = () => {
                     />
                 </Space>
             </Content>
-        </LoggedIn>
+        </Protected>
     );
 };
 

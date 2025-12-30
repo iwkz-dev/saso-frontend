@@ -24,7 +24,7 @@ const AddContactPersonForm = () => {
         try {
             const response = await dispatch(createContactPerson(values));
 
-            if (response?.status === "failed") {
+            if (response?.status !== "success") {
                 message.error(
                     response?.message || "Failed to add contact person.",
                 );

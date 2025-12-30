@@ -5,7 +5,7 @@ import {
     deleteVendor,
     getAllVendors,
 } from "../../../src/store/reducers/vendorReducer";
-import LoggedIn from "../../../src/components/Layout/LoggedIn/LoggedIn";
+import Protected from "../../../src/components/Layout/Protected/Protected";
 import VendorTable from "../../../src/components/Table/Vendor/VendorTable/VendorTable";
 import AddItemButton from "../../../src/components/common/Button/AddItemButton/AddItemButton";
 import { Space, message, Typography } from "antd";
@@ -72,7 +72,7 @@ const VendorIndexPage = () => {
     };
 
     return (
-        <LoggedIn title={pageTitle}>
+        <Protected title={pageTitle}>
             <Content>
                 <Typography.Title level={3}>Vendor</Typography.Title>
                 <Space direction="vertical" style={{ display: "flex" }}>
@@ -87,7 +87,7 @@ const VendorIndexPage = () => {
                     />
                 </Space>
             </Content>
-        </LoggedIn>
+        </Protected>
     );
 };
 

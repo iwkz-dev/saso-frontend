@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import { Space, Tabs, Typography, message, Alert } from "antd";
 
 import { getDetailEvent } from "../../../../src/store/reducers/eventReducer";
-import LoggedIn from "../../../../src/components/Layout/LoggedIn/LoggedIn";
+import Protected from "../../../../src/components/Layout/Protected/Protected";
 import Content from "../../../../src/components/Layout/Content/Content";
 import EventDetailTab from "../../../../src/components/TabContents/Event/EventDetailTab/EventDetailTab";
 import EventMenusTab from "../../../../src/components/TabContents/Event/EventMenusTab/EventMenusTab";
@@ -53,10 +53,9 @@ export default function EventViewPage() {
         if (!router.isReady || !id) return;
 
         const fetchEvent = async () => {
-            try {
-                await dispatch(getDetailEvent(id));
-            } catch (err) {
-                message.error(err?.message || "Failed to load event");
+            const result = await dispatch(getDetailEvent(id));
+            if (result.status !== "success") {
+                message.error(result.message || "Failed to load event");
             }
         };
 
@@ -106,7 +105,7 @@ export default function EventViewPage() {
     );
 
     return (
-        <LoggedIn title="Saso App | Event">
+        <Protected title="Saso App | Event">
             <Content>
                 {eventError && (
                     <Alert
@@ -140,6 +139,6 @@ export default function EventViewPage() {
                     )
                 )}
             </Content>
-        </LoggedIn>
+        </Protected>
     );
 }

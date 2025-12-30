@@ -5,7 +5,7 @@ import {
     deleteContactPerson,
     getAllContactPerson,
 } from "../../../src/store/reducers/contactPersonReducer";
-import LoggedIn from "../../../src/components/Layout/LoggedIn/LoggedIn";
+import Protected from "../../../src/components/Layout/Protected/Protected";
 import ContactPersonTable from "../../../src/components/Table/ContactPerson/ContactPersonTable/ContactPersonTable";
 import AddItemButton from "../../../src/components/common/Button/AddItemButton/AddItemButton";
 import { Space, message, Typography } from "antd";
@@ -34,7 +34,7 @@ const index = () => {
             // Check for failed responses
             if (
                 [eventsResponse, categoriesResponse, menusResponse].some(
-                    (r) => r?.status === "failed",
+                    (r) => r?.status !== "success",
                 )
             ) {
                 throw new Error("One or more requests failed");
@@ -85,7 +85,7 @@ const index = () => {
     };
 
     return (
-        <LoggedIn title={pageTitle}>
+        <Protected title={pageTitle}>
             <Content>
                 <Typography.Title level={3}>Contact Person</Typography.Title>
                 <Space direction="vertical" style={{ display: "flex" }}>
@@ -100,7 +100,7 @@ const index = () => {
                     />
                 </Space>
             </Content>
-        </LoggedIn>
+        </Protected>
     );
 };
 

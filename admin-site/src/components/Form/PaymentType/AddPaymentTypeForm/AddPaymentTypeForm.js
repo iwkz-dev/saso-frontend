@@ -21,7 +21,7 @@ const AddPaymentTypeForm = () => {
             setShowUploading(true);
             try {
                 const response = await dispatch(createPaymentType(values));
-                if (response?.status === "failed") {
+                if (response?.status !== "success") {
                     message.error(
                         response?.message || "Failed to add payment type.",
                     );

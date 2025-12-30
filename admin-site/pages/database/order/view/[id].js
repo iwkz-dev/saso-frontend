@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllOrders } from "../../../../src/store/reducers/orderReducer";
 import { useRouter } from "next/router";
-import LoggedIn from "../../../../src/components/Layout/LoggedIn/LoggedIn";
+import Protected from "../../../../src/components/Layout/Protected/Protected";
 import OrderDataDisplay from "../../../../src/components/DataDisplay/OrderDataDisplay/OrderDataDisplay";
 import RelatedMenuOrder from "../../../../src/components/Table/Order/RelatedMenuOrderList/RelatedMenuOrder";
 import Content from "../../../../src/components/Layout/Content/Content";
@@ -51,7 +51,7 @@ const id = () => {
     }, [id, orders]);
 
     return (
-        <LoggedIn title={pageTitle}>
+        <Protected title={pageTitle}>
             <Content>
                 <Spin spinning={showLoading} tip="Loading...">
                     <Typography.Title level={3}>View Order</Typography.Title>
@@ -68,7 +68,7 @@ const id = () => {
                     )}
                 </Spin>
             </Content>
-        </LoggedIn>
+        </Protected>
     );
 };
 

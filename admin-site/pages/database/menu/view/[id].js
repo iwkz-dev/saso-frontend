@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/router";
 import { getDetailMenu } from "../../../../src/store/reducers/menuReducer";
-import LoggedIn from "../../../../src/components/Layout/LoggedIn/LoggedIn";
+import Protected from "../../../../src/components/Layout/Protected/Protected";
 import MenuDataDisplay from "../../../../src/components/DataDisplay/MenuDataDisplay/MenuDataDisplay";
 import Content from "../../../../src/components/Layout/Content/Content";
 import { Spin, Typography, message } from "antd";
@@ -54,7 +54,7 @@ const MenuViewPage = () => {
     }, [router.isReady, id, dispatch]);
 
     return (
-        <LoggedIn title={pageTitle}>
+        <Protected title={pageTitle}>
             <Content>
                 <Typography.Title level={3}>
                     View Menu &quot;{menu?.name || ""}&quot;
@@ -78,7 +78,7 @@ const MenuViewPage = () => {
                     )}
                 </Spin>
             </Content>
-        </LoggedIn>
+        </Protected>
     );
 };
 

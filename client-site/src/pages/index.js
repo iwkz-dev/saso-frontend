@@ -21,6 +21,7 @@ export default function Home() {
             <div
                 style={{
                     width: "100%",
+                    maxWidth: "1024px",
                     margin: "0 auto",
                     padding: "24px 16px",
                 }}>

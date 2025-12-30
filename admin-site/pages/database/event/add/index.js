@@ -1,5 +1,5 @@
 import React from "react";
-import LoggedIn from "../../../../src/components/Layout/LoggedIn/LoggedIn";
+import Protected from "../../../../src/components/Layout/Protected/Protected";
 import AddEventForm from "../../../../src/components/Form/Event/AddEventForm/AddEventForm";
 import Content from "../../../../src/components/Layout/Content/Content";
 import { Typography } from "antd";
@@ -16,7 +16,7 @@ export default function AddEventPage() {
     };
 
     return (
-        <LoggedIn title={pageTitle}>
+        <Protected title={pageTitle}>
             <Content>
                 <div style={{ display: "grid", gap: 16 }}>
                     <div style={headerStyle}>
@@ -25,6 +25,6 @@ export default function AddEventPage() {
                     <AddEventForm />
                 </div>
             </Content>
-        </LoggedIn>
+        </Protected>
     );
 }

@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/router";
 import { getDetailVendor } from "../../../../src/store/reducers/vendorReducer";
-import LoggedIn from "../../../../src/components/Layout/LoggedIn/LoggedIn";
+import Protected from "../../../../src/components/Layout/Protected/Protected";
 import VendorDataDisplay from "../../../../src/components/DataDisplay/VendorDataDisplay/VendorDataDisplay";
 import RelatedMenuTable from "../../../../src/components/Table/Event/RelatedMenuTable/RelatedMenuTable";
 import AddItemButton from "../../../../src/components/common/Button/AddItemButton/AddItemButton";
@@ -46,7 +46,7 @@ const VendorViewPage = () => {
     }, [fetchData]);
 
     return (
-        <LoggedIn title={pageTitle}>
+        <Protected title={pageTitle}>
             <Content>
                 <Typography.Title level={3}>
                     View Vendor&nbsp;
@@ -76,7 +76,7 @@ const VendorViewPage = () => {
                     ) : null}
                 </Spin>
             </Content>
-        </LoggedIn>
+        </Protected>
     );
 };
 
