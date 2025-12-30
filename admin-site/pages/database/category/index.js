@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import LoggedIn from "../../../src/components/Layout/LoggedIn/LoggedIn";
+import Protected from "../../../src/components/Layout/Protected/Protected";
 import Content from "../../../src/components/Layout/Content/Content";
 import CategoryTable from "../../../src/components/Table/Category/CategoryTable/CategoryTable";
 import AddItemButton from "../../../src/components/common/Button/AddItemButton/AddItemButton";
@@ -53,7 +53,7 @@ export default function CategoryIndexPage() {
     };
 
     return (
-        <LoggedIn title={pageTitle}>
+        <Protected title={pageTitle}>
             <Content>
                 <div
                     style={{
@@ -105,6 +105,6 @@ export default function CategoryIndexPage() {
                     )}
                 </Space>
             </Content>
-        </LoggedIn>
+        </Protected>
     );
 }

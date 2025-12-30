@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Button, message, Spin, Table, Tag, Typography, Row, Col } from "antd";
 import Link from "next/link";
 
-import LoggedIn from "../src/components/Layout/LoggedIn/LoggedIn";
+import Protected from "../src/components/Layout/Protected/Protected";
 import Content from "../src/components/Layout/Content/Content";
 import { getAllEvents } from "../src/store/reducers/eventReducer";
 import { getAllOrders } from "../src/store/reducers/orderReducer";
@@ -211,7 +211,7 @@ const IndexPage = () => {
     );
 
     return (
-        <LoggedIn title={PAGE_TITLE}>
+        <Protected title={PAGE_TITLE}>
             <Content>
                 <div style={wrapperStyle}>
                     <div style={{ ...cardStyle, padding: "16px 20px" }}>
@@ -280,7 +280,7 @@ const IndexPage = () => {
                     </Spin>
                 </div>
             </Content>
-        </LoggedIn>
+        </Protected>
     );
 };
 

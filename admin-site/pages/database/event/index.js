@@ -2,7 +2,7 @@ import { useEffect, useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Typography, message, Spin } from "antd";
 
-import LoggedIn from "../../../src/components/Layout/LoggedIn/LoggedIn";
+import Protected from "../../../src/components/Layout/Protected/Protected";
 import EventTable from "../../../src/components/Table/Event/EventTable/EventTable";
 import AddItemButton from "../../../src/components/common/Button/AddItemButton/AddItemButton";
 import Content from "../../../src/components/Layout/Content/Content";
@@ -145,7 +145,7 @@ const EventPage = () => {
     );
 
     return (
-        <LoggedIn title={pageTitle}>
+        <Protected title={pageTitle}>
             <Content>
                 <div style={headerRowStyle}>
                     <Typography.Title level={3}>Event</Typography.Title>
@@ -186,7 +186,7 @@ const EventPage = () => {
                     )}
                 </Spin>
             </Content>
-        </LoggedIn>
+        </Protected>
     );
 };
 

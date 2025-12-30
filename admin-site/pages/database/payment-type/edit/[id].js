@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { useDispatch } from "react-redux";
 import { useRouter } from "next/router";
-import LoggedIn from "../../../../src/components/Layout/LoggedIn/LoggedIn";
+import Protected from "../../../../src/components/Layout/Protected/Protected";
 import Content from "../../../../src/components/Layout/Content/Content";
 import { Spin, Typography, message } from "antd";
 import { isAuth } from "../../../../src/helpers/authHelper";
@@ -44,14 +44,14 @@ const PaymentTypeEditPage = () => {
     }, [fetchDetail]);
 
     return (
-        <LoggedIn title={pageTitle}>
+        <Protected title={pageTitle}>
             <Content>
                 <Typography.Title level={3}>Edit payment type</Typography.Title>
                 <Spin spinning={showLoading} tip="Loading...">
                     {showForm ? <EditPaymentTypeForm id={id} /> : null}
                 </Spin>
             </Content>
-        </LoggedIn>
+        </Protected>
     );
 };
 

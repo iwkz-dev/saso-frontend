@@ -1,4 +1,4 @@
-import LoggedIn from "../../../../src/components/Layout/LoggedIn/LoggedIn";
+import Protected from "../../../../src/components/Layout/Protected/Protected";
 import React from "react";
 import Content from "../../../../src/components/Layout/Content/Content";
 import { Typography } from "antd";
@@ -13,11 +13,11 @@ const index = () => {
 
     //TODO add form
     return (
-        <LoggedIn title={pageTitle} pageData={pageData}>
+        <Protected title={pageTitle} pageData={pageData}>
             <Content>
                 <Typography.Title level={3}>Add Order</Typography.Title>
             </Content>
-        </LoggedIn>
+        </Protected>
     );
 };
 

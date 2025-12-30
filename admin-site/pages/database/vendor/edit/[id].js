@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import { useRouter } from "next/router";
 import { getDetailVendor } from "../../../../src/store/reducers/vendorReducer";
 import EditVendorForm from "../../../../src/components/Form/Vendor/EditVendorForm/EditVendorForm";
-import LoggedIn from "../../../../src/components/Layout/LoggedIn/LoggedIn";
+import Protected from "../../../../src/components/Layout/Protected/Protected";
 import Content from "../../../../src/components/Layout/Content/Content";
 import { Spin, Typography, message } from "antd";
 import { isAuth } from "../../../../src/helpers/authHelper";
@@ -42,14 +42,14 @@ const VendorEditPage = () => {
     }, [fetchData]);
 
     return (
-        <LoggedIn title={pageTitle}>
+        <Protected title={pageTitle}>
             <Content>
                 <Typography.Title level={3}>Edit vendor</Typography.Title>
                 <Spin spinning={showLoading} tip="Loading...">
                     {showForm ? <EditVendorForm /> : null}
                 </Spin>
             </Content>
-        </LoggedIn>
+        </Protected>
     );
 };
 

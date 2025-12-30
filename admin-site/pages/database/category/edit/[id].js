@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/router";
 import { getDetailCategory } from "../../../../src/store/reducers/categoryReducer";
 import EditCategoryForm from "../../../../src/components/Form/Category/EditCategoryForm/EditCategoryForm";
-import LoggedIn from "../../../../src/components/Layout/LoggedIn/LoggedIn";
+import Protected from "../../../../src/components/Layout/Protected/Protected";
 import Content from "../../../../src/components/Layout/Content/Content";
 import { Spin, Typography, message } from "antd";
 
@@ -46,7 +46,7 @@ export default function EditCategoryPage() {
     };
 
     return (
-        <LoggedIn title={pageTitle}>
+        <Protected title={pageTitle}>
             <Content>
                 <Typography.Title level={3}>
                     Edit Category{hasCategory ? ` — ${category.name}` : ""}
@@ -65,6 +65,6 @@ export default function EditCategoryPage() {
                     ) : null}
                 </Spin>
             </Content>
-        </LoggedIn>
+        </Protected>
     );
 }

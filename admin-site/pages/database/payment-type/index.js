@@ -6,7 +6,7 @@ import {
 } from "../../../src/store/reducers/paymentTypeReducer";
 import { Space, Typography, message } from "antd";
 import { isAuth } from "../../../src/helpers/authHelper";
-import LoggedIn from "../../../src/components/Layout/LoggedIn/LoggedIn";
+import Protected from "../../../src/components/Layout/Protected/Protected";
 import PaymentTypeTable from "../../../src/components/Table/PaymentType/PaymentTypeTable/PaymentTypeTable";
 import Content from "../../../src/components/Layout/Content/Content";
 import AddItemButton from "../../../src/components/common/Button/AddItemButton/AddItemButton";
@@ -70,7 +70,7 @@ const Index = () => {
     };
 
     return (
-        <LoggedIn title={pageTitle}>
+        <Protected title={pageTitle}>
             <Content>
                 <Typography.Title level={3}>Payment Type</Typography.Title>
                 <Space direction="vertical" style={{ display: "flex" }}>
@@ -85,7 +85,7 @@ const Index = () => {
                     />
                 </Space>
             </Content>
-        </LoggedIn>
+        </Protected>
     );
 };
 

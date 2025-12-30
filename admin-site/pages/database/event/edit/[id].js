@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/router";
 import { getDetailEvent } from "../../../../src/store/reducers/eventReducer";
 import EditEventForm from "../../../../src/components/Form/Event/EditEventForm/EditEventForm";
-import LoggedIn from "../../../../src/components/Layout/LoggedIn/LoggedIn";
+import Protected from "../../../../src/components/Layout/Protected/Protected";
 import Content from "../../../../src/components/Layout/Content/Content";
 import { Spin, Typography, message } from "antd";
 
@@ -51,7 +51,7 @@ export default function EditEventPage() {
     };
 
     return (
-        <LoggedIn title={pageTitle}>
+        <Protected title={pageTitle}>
             <Content>
                 <Typography.Title level={3}>Edit Event</Typography.Title>
 
@@ -69,6 +69,6 @@ export default function EditEventPage() {
                     ) : null}
                 </Spin>
             </Content>
-        </LoggedIn>
+        </Protected>
     );
 }

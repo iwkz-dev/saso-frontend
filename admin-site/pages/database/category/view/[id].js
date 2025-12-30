@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/router";
 import { getDetailCategory } from "../../../../src/store/reducers/categoryReducer";
-import LoggedIn from "../../../../src/components/Layout/LoggedIn/LoggedIn";
+import Protected from "../../../../src/components/Layout/Protected/Protected";
 import CategoryDataDisplay from "../../../../src/components/DataDisplay/CategoryDataDisplay/CategoryDataDisplay";
 import RelatedMenuTable from "../../../../src/components/Table/Event/RelatedMenuTable/RelatedMenuTable";
 import AddItemButton from "../../../../src/components/common/Button/AddItemButton/AddItemButton";
@@ -51,7 +51,7 @@ export default function CategoryViewPage() {
     };
 
     return (
-        <LoggedIn title={pageTitle}>
+        <Protected title={pageTitle}>
             <Content>
                 <Space direction="vertical" style={{ display: "flex" }}>
                     <Typography.Title level={3}>
@@ -106,6 +106,6 @@ export default function CategoryViewPage() {
                     </Spin>
                 </Space>
             </Content>
-        </LoggedIn>
+        </Protected>
     );
 }

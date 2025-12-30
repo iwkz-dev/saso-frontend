@@ -16,7 +16,7 @@ import {
 import { QrReader } from "react-qr-reader";
 import { CameraOutlined, CheckCircleOutlined } from "@ant-design/icons";
 import Content from "../../src/components/Layout/Content/Content";
-import LoggedIn from "../../src/components/Layout/LoggedIn/LoggedIn";
+import Protected from "../../src/components/Layout/Protected/Protected";
 import {
     getOrderByInvoiceNumber,
     confirmOrderedMenu,
@@ -167,7 +167,7 @@ const Index = () => {
     );
 
     return (
-        <LoggedIn title={pageTitle}>
+        <Protected title={pageTitle}>
             <Content>
                 <Spin spinning={loading} tip="Loading...">
                     <div
@@ -279,7 +279,7 @@ const Index = () => {
                     </div>
                 </Spin>
             </Content>
-        </LoggedIn>
+        </Protected>
     );
 };
 

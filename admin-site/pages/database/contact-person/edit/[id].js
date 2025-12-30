@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import { useRouter } from "next/router";
 import { getDetailContactPerson } from "../../../../src/store/reducers/contactPersonReducer";
 import EditContactPersonForm from "../../../../src/components/Form/ContactPerson/EditContactPersonForm/EditContactPersonForm";
-import LoggedIn from "../../../../src/components/Layout/LoggedIn/LoggedIn";
+import Protected from "../../../../src/components/Layout/Protected/Protected";
 import Content from "../../../../src/components/Layout/Content/Content";
 import { Spin, Typography, message } from "antd";
 import { isAuth } from "../../../../src/helpers/authHelper";
@@ -54,7 +54,7 @@ const EditContactPersonPage = () => {
     }, [dispatch, id]);
 
     return (
-        <LoggedIn title={pageTitle}>
+        <Protected title={pageTitle}>
             <Content>
                 <Spin spinning={showLoading} tip="Loading...">
                     <Typography.Title level={3} style={{ margin: 0 }}>
@@ -63,7 +63,7 @@ const EditContactPersonPage = () => {
                     {showForm ? <EditContactPersonForm /> : null}
                 </Spin>
             </Content>
-        </LoggedIn>
+        </Protected>
     );
 };
 
