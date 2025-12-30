@@ -46,7 +46,7 @@ const AddMenuForm = () => {
 
                 const r = await dispatch(createMenu(data));
 
-                if (r?.status === "failed") {
+                if (r?.status !== "success") {
                     message.error(r?.message || "Failed to add menu.");
                 } else {
                     message.success(r?.message || "Menu added.");

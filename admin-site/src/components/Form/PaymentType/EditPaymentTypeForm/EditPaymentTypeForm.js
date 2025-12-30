@@ -46,7 +46,7 @@ const EditPaymentTypeForm = () => {
                     editDetailPaymentType(paymentType._id, values),
                 );
 
-                if (response?.status === "failed") {
+                if (response?.status !== "success") {
                     message.error(
                         response?.message || "Failed to save changes.",
                     );

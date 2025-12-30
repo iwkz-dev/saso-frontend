@@ -42,7 +42,7 @@ const OrderIndexPage = () => {
                 dispatch(getAllOrders(filters)),
             ]);
 
-            const failed = results.find((r) => r?.status === "failed");
+            const failed = results.find((r) => r?.status !== "success");
             if (failed) {
                 setShowTable(false);
                 message.error(failed?.message || "Failed to load orders");

@@ -34,7 +34,7 @@ const index = () => {
             // Check for failed responses
             if (
                 [eventsResponse, categoriesResponse, menusResponse].some(
-                    (r) => r?.status === "failed",
+                    (r) => r?.status !== "success",
                 )
             ) {
                 throw new Error("One or more requests failed");

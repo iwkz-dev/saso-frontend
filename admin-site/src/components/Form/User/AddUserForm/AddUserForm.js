@@ -18,7 +18,7 @@ const AddUserForm = () => {
         setShowUploading(true);
         try {
             const response = await dispatch(createUser(values));
-            if (response?.status === "failed") {
+            if (response?.status !== "success") {
                 message.error(response?.message || "Failed to add user.");
             } else {
                 message.success(

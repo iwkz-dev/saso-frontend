@@ -26,7 +26,7 @@ export default function EditEventPage() {
 
         (async () => {
             const res = await dispatch(getDetailEvent(id)); // wrapper returns {status, ...}
-            if (res?.status === "failed") {
+            if (res?.status !== "success") {
                 message.error(res?.message || "Failed to load event");
             }
         })();

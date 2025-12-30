@@ -38,7 +38,7 @@ const EditMenuPage = () => {
                     dispatch(getDetailMenu(id)),
                 ]);
 
-                const failed = results.find((r) => r?.status === "failed");
+                const failed = results.find((r) => r?.status !== "success");
                 if (failed) {
                     if (!cancelled) {
                         message.error(failed?.message || "Failed to load data");

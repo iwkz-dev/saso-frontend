@@ -43,7 +43,7 @@ const Index = () => {
             ]);
 
             const failed = [evRes, catRes, menRes, venRes].find(
-                (r) => r?.status === "failed",
+                (r) => r?.status !== "success",
             );
 
             if (failed) {

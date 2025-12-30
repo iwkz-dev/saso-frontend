@@ -29,7 +29,7 @@ const AddMenuPage = () => {
                     dispatch(getAllVendors()),
                 ]);
 
-                const failed = results.find((r) => r?.status === "failed");
+                const failed = results.find((r) => r?.status !== "success");
                 if (failed) {
                     if (!cancelled) {
                         message.error(

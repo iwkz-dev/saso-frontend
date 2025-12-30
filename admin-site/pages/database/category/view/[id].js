@@ -27,7 +27,7 @@ export default function CategoryViewPage() {
         if (!router.isReady || !id || Array.isArray(id)) return;
 
         dispatch(getDetailCategory(id)).then((res) => {
-            if (res?.status === "failed") {
+            if (res?.status !== "success") {
                 message.error(res?.message || "Failed to load category");
             }
         });

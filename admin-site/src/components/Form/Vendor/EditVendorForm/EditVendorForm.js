@@ -42,7 +42,7 @@ const EditVendorForm = () => {
                 editDetailVendor(vendor._id, values),
             );
 
-            if (response?.status === "failed") {
+            if (response?.status !== "success") {
                 message.error(response?.message || "Failed to save changes.");
             } else {
                 message.success(response?.message || "Changes saved.");

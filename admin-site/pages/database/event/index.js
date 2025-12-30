@@ -21,21 +21,11 @@ const headerRowStyle = {
     flexWrap: "wrap",
 };
 
-const emptyStateStyle = {
-    width: "100%",
-    textAlign: "center",
-    padding: "24px 0",
-    color: "#7A8AA0",
-    background: "#fff",
-    borderRadius: 12,
-    border: "1px dashed #CFD8E3",
-};
-
 const EventPage = () => {
     const dispatch = useDispatch();
     const pageTitle = "Saso App | Event";
 
-    const { events, status, error } = useSelector((s) => s.event);
+    const { events, status } = useSelector((s) => s.event);
     const [opLoading, setOpLoading] = useState(false);
 
     const initialLoading = status === "loading";
@@ -44,7 +34,7 @@ const EventPage = () => {
 
     useEffect(() => {
         dispatch(getAllEvents()).then((res) => {
-            if (res?.status === "failed") {
+            if (res?.status !== "success") {
                 message.error(res?.message || "Failed to load events");
             }
         });
@@ -80,7 +70,7 @@ const EventPage = () => {
             setOpLoading(true);
             try {
                 const res = await dispatch(action);
-                if (res?.status === "failed") {
+                if (res?.status !== "success") {
                     message.error(res?.message || errorMsg);
                 } else {
                     message.success(res?.message || successMsg);
@@ -155,19 +145,6 @@ const EventPage = () => {
                     />
                 </div>
 
-                {error && !initialLoading && (
-                    <div
-                        style={{
-                            padding: 12,
-                            borderRadius: 8,
-                            background: "#fff1f0",
-                            color: "#a8071a",
-                            border: "1px solid #ffa39e",
-                        }}>
-                        {error}
-                    </div>
-                )}
-
                 <Spin
                     spinning={isLoading}
                     tip={initialLoading ? "Loading..." : "Working..."}>
@@ -178,12 +155,6 @@ const EventPage = () => {
                         isLoading={isLoading}
                         showTable={showTable}
                     />
-
-                    {!showTable && !initialLoading && (
-                        <div style={emptyStateStyle}>
-                            No events to display yet.
-                        </div>
-                    )}
                 </Spin>
             </Content>
         </Protected>

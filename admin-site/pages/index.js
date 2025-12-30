@@ -48,16 +48,19 @@ const IndexPage = () => {
 
     const fetchData = useCallback(async () => {
         setLoading(true);
-        try {
-            await Promise.all([
-                dispatch(getAllEvents()),
-                dispatch(getAllOrders()),
-            ]);
-        } catch (err) {
-            handleFailedRequest(err);
-        } finally {
-            setLoading(false);
+        const [eventsResult, ordersResult] = await Promise.all([
+            dispatch(getAllEvents()),
+            dispatch(getAllOrders()),
+        ]);
+
+        if (eventsResult.status !== "success") {
+            handleFailedRequest(eventsResult);
         }
+        if (ordersResult.status !== "success") {
+            handleFailedRequest(ordersResult);
+        }
+
+        setLoading(false);
     }, [dispatch, handleFailedRequest]);
 
     useEffect(() => {

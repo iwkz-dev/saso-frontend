@@ -81,7 +81,7 @@ const EditMenuForm = () => {
                     editDetailMenu(menu?._id, data),
                 );
 
-                if (response?.status === "failed") {
+                if (response?.status !== "success") {
                     message.error(
                         response?.message || "Failed to save changes.",
                     );

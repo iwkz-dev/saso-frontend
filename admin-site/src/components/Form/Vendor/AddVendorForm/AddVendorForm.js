@@ -18,7 +18,7 @@ const AddVendorForm = () => {
         try {
             const response = await dispatch(createVendor(values));
 
-            if (response?.status === "failed") {
+            if (response?.status !== "success") {
                 message.error(response?.message || "Failed to add vendor.");
             } else {
                 message.success(response?.message || "Vendor added.");

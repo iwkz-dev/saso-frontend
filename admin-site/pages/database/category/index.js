@@ -25,7 +25,7 @@ export default function CategoryIndexPage() {
 
     useEffect(() => {
         dispatch(getAllCategories()).then((res) => {
-            if (res?.status === "failed") {
+            if (res?.status !== "success") {
                 message.error(res?.message || "Failed to load categories");
             }
         });
@@ -42,7 +42,7 @@ export default function CategoryIndexPage() {
         setOpLoading(true);
         try {
             const res = await dispatch(deleteCategory(item?._id));
-            if (res?.status === "failed") {
+            if (res?.status !== "success") {
                 message.error(res?.message || "Failed to delete category");
             } else {
                 message.success(res?.message || "Category deleted");

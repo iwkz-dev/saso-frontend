@@ -53,10 +53,9 @@ export default function EventViewPage() {
         if (!router.isReady || !id) return;
 
         const fetchEvent = async () => {
-            try {
-                await dispatch(getDetailEvent(id));
-            } catch (err) {
-                message.error(err?.message || "Failed to load event");
+            const result = await dispatch(getDetailEvent(id));
+            if (result.status !== "success") {
+                message.error(result.message || "Failed to load event");
             }
         };
 

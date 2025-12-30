@@ -111,7 +111,7 @@ const Index = () => {
                     vendorId: selectedVendor,
                 }),
             );
-            if (res?.status === "failed") {
+            if (res?.status !== "success") {
                 message.error(res?.message || "Failed to confirm order.");
             } else {
                 message.success(res?.message || "Order confirmed!");
