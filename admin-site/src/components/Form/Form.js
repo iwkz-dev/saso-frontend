@@ -1,4 +1,3 @@
-import React from "react";
 import { Form, Button, Space } from "antd";
 import FormItem from "../common/FormItem/FormItem";
 

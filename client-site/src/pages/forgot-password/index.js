@@ -33,7 +33,7 @@ const index = () => {
                 }
             })
             .catch((err) => {
-                console.log(err);
+                console.error(err);
                 message.error(err.response.data.message);
                 setIsLoading(false);
             });

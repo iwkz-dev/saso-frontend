@@ -1,7 +1,8 @@
-import React, { useEffect, useMemo, useState, useCallback } from "react";
+import { useEffect, useMemo, useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Form, message } from "antd";
 import { useRouter } from "next/router";
+
 import FormComponent from "../../Form";
 import { editDetailPaymentType } from "../../../../store/reducers/paymentTypeReducer";
 
@@ -10,6 +11,7 @@ const EditPaymentTypeForm = () => {
     const router = useRouter();
     const [form] = Form.useForm();
     const [showUploading, setShowUploading] = useState(false);
+    const events = useSelector((state) => state?.event?.events) ?? [];
 
     const paymentType = useSelector(
         (state) => state?.paymentType?.detailPaymentType,
@@ -17,9 +19,12 @@ const EditPaymentTypeForm = () => {
 
     const initialValues = useMemo(
         () => ({
+            name: paymentType?.name ?? "",
             type: paymentType?.type ?? "",
+            note: paymentType?.note ?? "",
+            events: paymentType?.events.map((item) => item._id) ?? [],
         }),
-        [paymentType],
+        [paymentType.type, paymentType.note, paymentType.events],
     );
 
     useEffect(() => {
@@ -71,11 +76,36 @@ const EditPaymentTypeForm = () => {
         () => [
             { name: "General Information", type: "divider" },
             {
+                name: "name",
+                label: "Name",
+                type: "text",
+                placeholder: "Name of Payment Type",
+                required: true,
+            },
+            {
                 name: "type",
                 label: "Type",
                 type: "text",
                 placeholder: "Type of Payment",
                 required: true,
+            },
+            {
+                name: "note",
+                label: "Note",
+                type: "description",
+                placeholder: "Note of Payment Type",
+                required: false,
+            },
+            {
+                name: "events",
+                label: "Events",
+                type: "select-multiple",
+                options: events.map((item) => ({
+                    value: item._id,
+                    label: item.name,
+                })),
+                placeholder: "Select Events",
+                required: false,
             },
         ],
         [],

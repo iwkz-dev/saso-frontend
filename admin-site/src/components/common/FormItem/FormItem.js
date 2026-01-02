@@ -156,6 +156,24 @@ const FormItem = ({ item, setImages, images, form }) => {
                         />
                     </Form.Item>
                 );
+            case "select-multiple":
+                return (
+                    <Form.Item
+                        label={item.label}
+                        name={item.name}
+                        rules={[
+                            {
+                                required: item.required,
+                            },
+                        ]}>
+                        <Select
+                            mode="multiple"
+                            options={item.options}
+                            placeholder={item.placeholder}
+                            optionFilterProp="label"
+                        />
+                    </Form.Item>
+                );
             case "number":
                 return (
                     <Form.Item

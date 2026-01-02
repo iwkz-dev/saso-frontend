@@ -14,3 +14,10 @@ a {
 * {
   box-sizing: border-box;
 }
+
+// QR Code Scanner Styles
+.react-qr-reader video {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover;
+}

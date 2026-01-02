@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { QrReader } from "react-qr-reader";
+import { CheckCircleOutlined, ScanOutlined } from "@ant-design/icons";
 import {
     Spin,
     Card,
@@ -12,9 +14,10 @@ import {
     Space,
     Empty,
     Modal,
+    List,
+    Tag,
 } from "antd";
-import { QrReader } from "react-qr-reader";
-import { CameraOutlined, CheckCircleOutlined } from "@ant-design/icons";
+
 import Content from "../../src/components/Layout/Content/Content";
 import Protected from "../../src/components/Layout/Protected/Protected";
 import {
@@ -23,7 +26,7 @@ import {
 } from "../../src/store/reducers/orderReducer";
 import { getAllVendors } from "../../src/store/reducers/vendorReducer";
 
-const { Title } = Typography;
+const { Title, Text } = Typography;
 const { Option } = Select;
 
 const Index = () => {
@@ -38,70 +41,44 @@ const Index = () => {
 
     const vendors = useSelector((s) => s?.vendor?.vendors) ?? [];
 
-    const hasVendors = vendors.length > 0;
-
-    const handleVendorChange = (value) => {
-        setSelectedVendor(value ?? null);
-        setScanned(false);
-        setOrder(null);
-    };
-
     useEffect(() => {
-        (async () => {
-            const res = await dispatch(getAllVendors());
+        dispatch(getAllVendors()).then((res) => {
             if (res?.status !== "success") {
                 message.error(res?.message || "Failed to load vendors.");
             }
-        })();
+        });
     }, [dispatch]);
 
     const handleScan = useCallback(
-        async (result, error) => {
-            if (error) {
-                console.error(error);
-            }
+        async (result) => {
+            if (!selectedVendor || scanned || !result?.text) return;
 
-            if (!selectedVendor) return;
+            setScanned(true);
+            setCameraOn(false);
+            setLoading(true);
 
-            if (result && !scanned) {
-                setScanned(true);
-                setCameraOn(false);
-                setLoading(true);
-
-                const invoiceNumber = result?.text?.trim();
-                if (!invoiceNumber) {
-                    message.error("Invalid QR content.");
+            try {
+                const res = await dispatch(
+                    getOrderByInvoiceNumber(result.text.trim()),
+                );
+                if (res?.status === "success") {
+                    setOrder(res?.data ?? res);
+                } else {
+                    message.error(res?.message || "Order not found.");
                     setScanned(false);
-                    setLoading(false);
-                    return;
                 }
-
-                try {
-                    const res = await dispatch(
-                        getOrderByInvoiceNumber(invoiceNumber),
-                    );
-                    if (res?.status === "success") {
-                        const data = res?.data ?? res?.order ?? res;
-                        setOrder(data);
-                    } else {
-                        message.error(res?.message || "Order not found.");
-                        setScanned(false);
-                    }
-                } catch (err) {
-                    message.error(
-                        err?.message || "Failed to fetch order details.",
-                    );
-                    setScanned(false);
-                } finally {
-                    setLoading(false);
-                }
+            } catch {
+                message.error("Failed to fetch order.");
+                setScanned(false);
+            } finally {
+                setLoading(false);
             }
         },
         [dispatch, scanned, selectedVendor],
     );
 
     const handleConfirm = async () => {
-        if (!order?._id || !selectedVendor) return;
+        if (!order?._id) return;
 
         setLoading(true);
         try {
@@ -111,171 +88,200 @@ const Index = () => {
                     vendorId: selectedVendor,
                 }),
             );
-            if (res?.status !== "success") {
-                message.error(res?.message || "Failed to confirm order.");
-            } else {
-                message.success(res?.message || "Order confirmed!");
+            if (res?.status === "success") {
+                message.success("Order confirmed");
                 setOrder(null);
                 setScanned(false);
-                setCameraOn(false);
+            } else {
+                message.error(res?.message);
             }
-        } catch (err) {
-            message.error(err?.message || "Failed to confirm order.");
         } finally {
             setLoading(false);
         }
     };
 
-    const handleGoBack = () => {
-        setOrder(null);
-        setScanned(false);
-    };
-
-    const toggleCamera = () => {
-        setCameraOn((prev) => !prev);
-        setScanned(false);
-    };
-
     const itemsList = useMemo(
-        () =>
-            (order?.menus ?? []).map((item, idx) => {
-                const isConfirmed = Number(item?.status) === 1;
-                return (
-                    <div
-                        key={item?.key ?? `${item?.name}-${idx}`}
-                        style={{
-                            backgroundColor: isConfirmed
-                                ? "#f6ffed"
-                                : "transparent",
-                            border: `1px solid ${
-                                isConfirmed ? "#b7eb8f" : "#f0f0f0"
-                            }`,
-                            borderRadius: 4,
-                            padding: "4px 8px",
-                            marginBottom: 4,
-                        }}>
-                        {item?.name} x {item?.totalPortion}
-                        {isConfirmed && (
-                            <span style={{ color: "#52c41a", marginLeft: 8 }}>
-                                <CheckCircleOutlined /> Confirmed
-                            </span>
-                        )}
-                    </div>
-                );
-            }),
+        () => (
+            <List
+                size="small"
+                dataSource={order?.menus ?? []}
+                renderItem={(item) => (
+                    <List.Item>
+                        <Space>
+                            <Text>
+                                {item.name} × {item.totalPortion}
+                            </Text>
+                            {Number(item.status) === 1 && (
+                                <Tag
+                                    color="green"
+                                    icon={<CheckCircleOutlined />}>
+                                    Confirmed
+                                </Tag>
+                            )}
+                        </Space>
+                    </List.Item>
+                )}
+            />
+        ),
         [order],
     );
 
     return (
         <Protected title={pageTitle}>
             <Content>
-                <Spin spinning={loading} tip="Loading...">
+                <Spin spinning={loading}>
                     <div
                         style={{
-                            maxWidth: 600,
+                            maxWidth: 560,
                             margin: "0 auto",
                             padding: 24,
                         }}>
-                        <Title level={3}>QR Code Scanner</Title>
+                        <Title level={3}>Scan Order QR</Title>
 
-                        <Space
-                            direction="vertical"
-                            size="middle"
-                            style={{ width: "100%" }}>
-                            {hasVendors ? (
-                                <Form layout="vertical">
-                                    <Form.Item label="Select Vendor" required>
-                                        <Select
-                                            placeholder="Select Vendor"
-                                            value={selectedVendor}
-                                            onChange={handleVendorChange}
-                                            allowClear>
-                                            {vendors.map((vendor) => (
-                                                <Option
-                                                    key={vendor._id}
-                                                    value={vendor._id}>
-                                                    {vendor.name}
-                                                </Option>
-                                            ))}
-                                        </Select>
-                                    </Form.Item>
-                                </Form>
-                            ) : (
-                                ""
-                            )}
+                        {/* Vendor Selection */}
+                        <Card size="small" style={{ marginBottom: 16 }}>
+                            <Form layout="vertical">
+                                <Form.Item
+                                    label="Vendor"
+                                    required
+                                    style={{ marginBottom: 0 }}>
+                                    <Select
+                                        placeholder="Select vendor"
+                                        value={selectedVendor}
+                                        onChange={setSelectedVendor}
+                                        allowClear>
+                                        {vendors.map((v) => (
+                                            <Option key={v._id} value={v._id}>
+                                                {v.name}
+                                            </Option>
+                                        ))}
+                                    </Select>
+                                </Form.Item>
+                            </Form>
+                        </Card>
 
-                            {selectedVendor && !scanned && (
-                                <Button
-                                    type="primary"
-                                    icon={<CameraOutlined />}
-                                    block
-                                    onClick={toggleCamera}>
-                                    Open Camera
-                                </Button>
-                            )}
+                        {/* Scan Action */}
+                        {!order && (
+                            <Card
+                                hoverable
+                                onClick={() =>
+                                    selectedVendor && setCameraOn(true)
+                                }
+                                style={{
+                                    textAlign: "center",
+                                    borderStyle: "dashed",
+                                    opacity: selectedVendor ? 1 : 0.5,
+                                    cursor: selectedVendor
+                                        ? "pointer"
+                                        : "not-allowed",
+                                }}>
+                                <Space direction="vertical">
+                                    <ScanOutlined
+                                        style={{
+                                            fontSize: 32,
+                                            color: "#1890ff",
+                                        }}
+                                    />
+                                    <Text strong>Tap to scan QR code</Text>
+                                    <Text type="secondary">
+                                        Camera will open automatically
+                                    </Text>
+                                </Space>
+                            </Card>
+                        )}
 
-                            {!selectedVendor && (
-                                <Empty description="Please select a vendor to start scanning." />
-                            )}
+                        {!selectedVendor && (
+                            <Empty
+                                style={{ marginTop: 24 }}
+                                description="Select a vendor to start"
+                            />
+                        )}
 
-                            {order && (
-                                <Card
-                                    title={`Order Overview - ${order.invoiceNumber}`}
-                                    actions={[
-                                        <Button
-                                            key="confirm"
-                                            type="primary"
-                                            onClick={handleConfirm}
-                                            disabled={!selectedVendor}>
-                                            Confirm Order
-                                        </Button>,
-                                        <Button
-                                            key="back"
-                                            onClick={handleGoBack}>
-                                            Scan Again
-                                        </Button>,
-                                    ]}>
-                                    <Descriptions
-                                        column={1}
-                                        bordered
-                                        size="small">
-                                        <Descriptions.Item label="Customer">
-                                            {order.customerFullname}
-                                        </Descriptions.Item>
-                                        <Descriptions.Item label="Items">
-                                            {itemsList}
-                                        </Descriptions.Item>
-                                    </Descriptions>
-                                </Card>
-                            )}
+                        {/* Order Summary */}
+                        {order && (
+                            <Card
+                                title={`Order #${order.invoiceNumber}`}
+                                style={{ marginTop: 16 }}
+                                actions={[
+                                    <Button
+                                        key="confirm"
+                                        type="primary"
+                                        onClick={handleConfirm}>
+                                        Confirm Order
+                                    </Button>,
+                                    <Button
+                                        key="scan-again"
+                                        onClick={() => {
+                                            setOrder(null);
+                                            setScanned(false);
+                                        }}>
+                                        Scan Again
+                                    </Button>,
+                                ]}>
+                                <Descriptions column={1} size="small">
+                                    <Descriptions.Item label="Customer">
+                                        {order.customerFullname}
+                                    </Descriptions.Item>
+                                    <Descriptions.Item label="Items">
+                                        {itemsList}
+                                    </Descriptions.Item>
+                                </Descriptions>
+                            </Card>
+                        )}
 
-                            <Modal
-                                open={cameraOn}
-                                onCancel={() => setCameraOn(false)}
-                                footer={null}
-                                destroyOnClose
-                                title="Scan QR Code">
+                        {/* Camera Modal */}
+                        <Modal
+                            open={cameraOn}
+                            footer={null}
+                            onCancel={() => setCameraOn(false)}
+                            destroyOnClose
+                            title="Scan QR Code">
+                            <div
+                                style={{
+                                    position: "relative",
+                                    width: "100%",
+                                    borderRadius: 8,
+                                    overflow: "hidden",
+                                }}>
+                                <QrReader
+                                    className="react-qr-reader"
+                                    constraints={{ facingMode: "environment" }}
+                                    onResult={handleScan}
+                                    style={{ width: "100%" }}
+                                />
+
                                 <div
                                     style={{
-                                        border: "2px dashed #1890ff",
-                                        borderRadius: 8,
-                                        overflow: "hidden",
-                                        padding: 16,
-                                        textAlign: "center",
+                                        position: "absolute",
+                                        inset: 0,
+                                        display: "flex",
+                                        alignItems: "center",
+                                        justifyContent: "center",
+                                        pointerEvents: "none",
                                     }}>
-                                    <QrReader
-                                        constraints={{
-                                            facingMode: "environment",
+                                    <div
+                                        style={{
+                                            width: "50vw",
+                                            maxWidth: 250,
+                                            aspectRatio: "1 / 1",
+                                            border: "1.5px dashed #1890ff",
+                                            borderRadius: 12,
+                                            boxShadow:
+                                                "0 0 0 9999px rgba(0,0,0,0.45)",
                                         }}
-                                        onResult={handleScan}
-                                        style={{ width: "100%" }}
                                     />
-                                    <p style={{ marginTop: 12 }}>
-                                        Align the QR code within the frame
-                                    </p>
                                 </div>
-                            </Modal>
-                        </Space>
+                            </div>
+                            <Text
+                                type="secondary"
+                                style={{
+                                    display: "block",
+                                    textAlign: "center",
+                                    marginTop: 12,
+                                }}>
+                                Place the QR code inside the frame
+                            </Text>
+                        </Modal>
                     </div>
                 </Spin>
             </Content>

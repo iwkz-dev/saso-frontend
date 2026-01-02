@@ -16,6 +16,7 @@ import {
 } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import { Button, Layout, Menu, Spin } from "antd";
+
 import { isAuth, logout } from "../../../helpers/authHelper";
 
 const { Header, Footer, Content } = Layout;
@@ -25,9 +26,9 @@ const SIDEBAR_WIDTH = 220;
 const MENU_ITEMS = [
     { key: "/", icon: <PieChartOutlined />, label: "Dashboard" },
     { key: "/scan", icon: <ScanOutlined />, label: "Scan Order" },
-    { type: "divider" },
     {
-        type: "group",
+        key: "database",
+        icon: null,
         label: "Database",
         children: [
             {
@@ -73,16 +74,8 @@ function Protected({ children, title, isNotAllowed }) {
     const [current, setCurrent] = useState("/");
 
     useEffect(() => {
-        if (!isAuth()) {
-            router.replace("/login");
-            return;
-        }
-
-        if (isNotAllowed) {
-            router.replace("/");
-            return;
-        }
-
+        if (!isAuth()) router.replace("/login");
+        if (isNotAllowed) router.replace("/");
         setLoading(false);
     }, [router, isNotAllowed]);
 
@@ -98,6 +91,12 @@ function Protected({ children, title, isNotAllowed }) {
             router.push(key);
         }
     };
+
+    const defaultOpenKeys = MENU_ITEMS.filter(
+        (item) =>
+            item.children &&
+            item.children.some((child) => child.key === current),
+    ).map((item) => item.key);
 
     if (loading) {
         return (
@@ -152,35 +151,10 @@ function Protected({ children, title, isNotAllowed }) {
                     mode="inline"
                     theme="dark"
                     selectedKeys={[current]}
-                    defaultOpenKeys={["database"]} // optional: keep Database open by default
-                    onClick={handleMenuClick}>
-                    {MENU_ITEMS.map((item) => {
-                        if (item.children) {
-                            return (
-                                <Menu.SubMenu
-                                    key={item.key}
-                                    title={item.label}
-                                    icon={item.icon}>
-                                    {item.children.map((child) => (
-                                        <Menu.Item
-                                            key={child.key}
-                                            icon={child.icon}>
-                                            {child.label}
-                                        </Menu.Item>
-                                    ))}
-                                </Menu.SubMenu>
-                            );
-                        }
-
-                        if (item.type === "divider")
-                            return <Menu.Divider key={Math.random()} />;
-                        return (
-                            <Menu.Item key={item.key} icon={item.icon}>
-                                {item.label}
-                            </Menu.Item>
-                        );
-                    })}
-                </Menu>
+                    defaultOpenKeys={defaultOpenKeys}
+                    onClick={handleMenuClick}
+                    items={MENU_ITEMS}
+                />
             </aside>
 
             {/* Backdrop (mobile UX) */}
