@@ -1,8 +1,12 @@
-import React, { useMemo, useState, useCallback } from "react";
+import { useMemo, useState, useCallback, useEffect } from "react";
 import { Form, message } from "antd";
 import { useDispatch } from "react-redux";
 import { useRouter } from "next/router";
-import { createPaymentType } from "../../../../store/reducers/paymentTypeReducer";
+
+import {
+    createPaymentType,
+    getAllPaymentTypes,
+} from "../../../../store/reducers/paymentTypeReducer";
 import FormComponent from "../../Form";
 
 const AddPaymentTypeForm = () => {
@@ -10,6 +14,10 @@ const AddPaymentTypeForm = () => {
     const router = useRouter();
     const [form] = Form.useForm();
     const [showUploading, setShowUploading] = useState(false);
+
+    useEffect(() => {
+        dispatch(getAllPaymentTypes());
+    }, [dispatch]);
 
     const submitForm = useCallback(
         async (values) => {
@@ -46,11 +54,25 @@ const AddPaymentTypeForm = () => {
         () => [
             { name: "General Information", type: "divider" },
             {
+                name: "name",
+                label: "Name",
+                type: "text",
+                placeholder: "Name of Payment Type",
+                required: true,
+            },
+            {
                 name: "type",
                 label: "Type",
                 type: "text",
                 placeholder: "Type of Payment",
                 required: true,
+            },
+            {
+                name: "note",
+                label: "Note",
+                type: "description",
+                placeholder: "Note of Payment Type",
+                required: false,
             },
         ],
         [],

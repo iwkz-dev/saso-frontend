@@ -1,6 +1,13 @@
-import { Carousel, Typography } from "antd";
+import { Carousel, Typography, Modal } from "antd";
+import { useState } from "react";
 
-const MainCarousel = ({ eventName = "Our Event", images = [] }) => {
+const MainCarousel = ({
+    eventName = "Our Event",
+    images = [],
+    eventDescription = "",
+}) => {
+    const [isModalVisible, setIsModalVisible] = useState(false);
+
     const ASPECT = "16 / 9";
 
     const wrapperStyle = {
@@ -93,59 +100,103 @@ const MainCarousel = ({ eventName = "Our Event", images = [] }) => {
     const hasImages = Array.isArray(images) && images.length > 0;
 
     return (
-        <div style={wrapperStyle}>
-            <div style={frameStyle}>
-                <Carousel
-                    autoplay
-                    autoplaySpeed={4200}
-                    pauseOnHover
-                    draggable
-                    arrows
-                    dotPosition="bottom"
-                    style={{ width: "100%" }}>
-                    <div>
-                        <div style={welcomeBgStyle}>
-                            <div style={contentLayerStyle}>
-                                <div
-                                    style={{ maxWidth: 900, margin: "0 auto" }}>
-                                    <Typography.Title
-                                        level={1}
-                                        style={titleStyle}>
-                                        Welcome to {eventName}
-                                    </Typography.Title>
-                                    <div style={ctaWrapStyle}>
-                                        <a
-                                            href="#menus"
-                                            style={ctaBtnStyle}
-                                            aria-label="Shop now">
-                                            Shop now
-                                        </a>
+        <>
+            <div style={wrapperStyle}>
+                <div style={frameStyle}>
+                    <Carousel
+                        autoplay
+                        autoplaySpeed={4200}
+                        pauseOnHover
+                        draggable
+                        arrows
+                        dotPosition="bottom"
+                        style={{ width: "100%" }}>
+                        <div>
+                            <div style={welcomeBgStyle}>
+                                <div style={contentLayerStyle}>
+                                    <div
+                                        style={{
+                                            maxWidth: 900,
+                                            margin: "0 auto",
+                                        }}>
+                                        <div
+                                            style={{
+                                                display: "flex",
+                                                alignItems: "center",
+                                                justifyContent: "center",
+                                                gap: 8,
+                                            }}>
+                                            <Typography.Title
+                                                level={1}
+                                                style={titleStyle}>
+                                                Welcome to {eventName}
+                                            </Typography.Title>
+                                            <button
+                                                onClick={() =>
+                                                    setIsModalVisible(true)
+                                                }
+                                                style={{
+                                                    background:
+                                                        "rgba(0,0,0,0.5)",
+                                                    color: "#fff",
+                                                    border: "none",
+                                                    borderRadius: "50%",
+                                                    width: 24,
+                                                    height: 24,
+                                                    display: "flex",
+                                                    alignItems: "center",
+                                                    justifyContent: "center",
+                                                    cursor: "pointer",
+                                                    fontSize: 14,
+                                                    fontWeight: "bold",
+                                                }}
+                                                aria-label="Show event description">
+                                                !
+                                            </button>
+                                        </div>
+                                        <div style={ctaWrapStyle}>
+                                            <a
+                                                href="#menus"
+                                                style={ctaBtnStyle}
+                                                aria-label="Shop now">
+                                                Shop now
+                                            </a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    {hasImages &&
-                        images.map((img, i) => (
-                            <div key={img?.imageUrl || i}>
-                                <div style={slideBoxStyle}>
-                                    <img
-                                        src={img?.imageUrl}
-                                        alt={
-                                            img?.alt ||
-                                            `${eventName} slide ${i + 1}`
-                                        }
-                                        loading="lazy"
-                                        style={mediaFillStyle}
-                                    />
-                                    <div style={captionStyle}>{eventName}</div>
+                        {hasImages &&
+                            images.map((img, i) => (
+                                <div key={img?.imageUrl || i}>
+                                    <div style={slideBoxStyle}>
+                                        <img
+                                            src={img?.imageUrl}
+                                            alt={
+                                                img?.alt ||
+                                                `${eventName} slide ${i + 1}`
+                                            }
+                                            loading="lazy"
+                                            style={mediaFillStyle}
+                                        />
+                                        <div style={captionStyle}>
+                                            {eventName}
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                        ))}
-                </Carousel>
+                            ))}
+                    </Carousel>
+                </div>
             </div>
-        </div>
+            <Modal
+                title="Event Description"
+                open={isModalVisible}
+                onOk={() => setIsModalVisible(false)}
+                onCancel={() => setIsModalVisible(false)}>
+                <Typography.Text>{eventDescription}</Typography.Text>
+            </Modal>
+        </>
     );
 };
 

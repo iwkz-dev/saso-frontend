@@ -1,6 +1,8 @@
-import React, { useEffect, useState } from "react";
-import Content from "../../../src/components/Layout/Content/Content";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
+import { Space, message, Typography } from "antd";
+
+import Content from "../../../src/components/Layout/Content/Content";
 import {
     deleteContactPerson,
     getAllContactPerson,
@@ -8,7 +10,6 @@ import {
 import Protected from "../../../src/components/Layout/Protected/Protected";
 import ContactPersonTable from "../../../src/components/Table/ContactPerson/ContactPersonTable/ContactPersonTable";
 import AddItemButton from "../../../src/components/common/Button/AddItemButton/AddItemButton";
-import { Space, message, Typography } from "antd";
 import { isAuth } from "../../../src/helpers/authHelper";
 import { getAllEvents } from "../../../src/store/reducers/eventReducer";
 
@@ -25,22 +26,19 @@ const index = () => {
     const fetchContactPerson = async () => {
         try {
             setShowLoadingData(true);
-            const [eventsResponse, categoriesResponse, menusResponse] =
-                await Promise.all([
-                    dispatch(getAllEvents()),
-                    dispatch(getAllContactPerson()),
-                ]);
+            const [eventsResponse, categoriesResponse] = await Promise.all([
+                dispatch(getAllEvents()),
+                dispatch(getAllContactPerson()),
+            ]);
 
-            // Check for failed responses
             if (
-                [eventsResponse, categoriesResponse, menusResponse].some(
+                [eventsResponse, categoriesResponse].some(
                     (r) => r?.status !== "success",
                 )
             ) {
                 throw new Error("One or more requests failed");
             }
 
-            // If all responses are successful
             setShowTable(true);
         } catch (error) {
             handleFetchError(error);

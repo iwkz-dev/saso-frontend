@@ -1,5 +1,5 @@
-import React, { useState, useCallback } from "react";
-import { useDispatch } from "react-redux";
+import { useState, useCallback } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { createEvent } from "../../../../store/reducers/eventReducer";
 import { Form, message } from "antd";
 import Router from "next/router";
@@ -11,6 +11,7 @@ export default function AddEventForm() {
     const [showUploading, setShowUploading] = useState(false);
     const [images, setImages] = useState([]);
     const [monthYear, setMonthYear] = useState("");
+    const paymentTypes = useSelector((s) => s.paymentType.paymentTypes);
 
     const onChangeMonthYear = useCallback((date, dateString) => {
         setMonthYear(dateString || "");
@@ -93,6 +94,20 @@ export default function AddEventForm() {
         },
 
         { name: "Payment Information", type: "divider" },
+        {
+            name: "paymentTypes",
+            label: "Payment Types",
+            type: "select-multiple",
+            placeholder: "Select Payment Types",
+            options: (paymentTypes || []).map((pt) => ({
+                value: pt._id,
+                label: pt.name,
+                type: pt.type,
+                note: pt.note,
+            })),
+            showDetail: true,
+            required: false,
+        },
         {
             name: "bankName",
             label: "Bank Name",

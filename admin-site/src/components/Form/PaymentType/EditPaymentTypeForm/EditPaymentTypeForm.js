@@ -1,7 +1,8 @@
-import React, { useEffect, useMemo, useState, useCallback } from "react";
+import { useEffect, useMemo, useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Form, message } from "antd";
 import { useRouter } from "next/router";
+
 import FormComponent from "../../Form";
 import { editDetailPaymentType } from "../../../../store/reducers/paymentTypeReducer";
 
@@ -17,9 +18,11 @@ const EditPaymentTypeForm = () => {
 
     const initialValues = useMemo(
         () => ({
+            name: paymentType?.name ?? "",
             type: paymentType?.type ?? "",
+            note: paymentType?.note ?? "",
         }),
-        [paymentType],
+        [paymentType.type, paymentType.note],
     );
 
     useEffect(() => {
@@ -71,11 +74,25 @@ const EditPaymentTypeForm = () => {
         () => [
             { name: "General Information", type: "divider" },
             {
+                name: "name",
+                label: "Name",
+                type: "text",
+                placeholder: "Name of Payment Type",
+                required: true,
+            },
+            {
                 name: "type",
                 label: "Type",
                 type: "text",
                 placeholder: "Type of Payment",
                 required: true,
+            },
+            {
+                name: "note",
+                label: "Note",
+                type: "description",
+                placeholder: "Note of Payment Type",
+                required: false,
             },
         ],
         [],

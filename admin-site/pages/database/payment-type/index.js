@@ -1,10 +1,11 @@
-import React, { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Space, Typography, message } from "antd";
+
 import {
     deletePaymentType,
     getAllPaymentTypes,
 } from "../../../src/store/reducers/paymentTypeReducer";
-import { Space, Typography, message } from "antd";
 import { isAuth } from "../../../src/helpers/authHelper";
 import Protected from "../../../src/components/Layout/Protected/Protected";
 import PaymentTypeTable from "../../../src/components/Table/PaymentType/PaymentTypeTable/PaymentTypeTable";
@@ -18,26 +19,33 @@ const Index = () => {
     const paymentTypes = useSelector((s) => s.paymentType.paymentTypes);
 
     const [showTable, setShowTable] = useState(false);
-    const [showLoadingData, setShowLoadingData] = useState(false);
+    const [showLoading, setShowLoading] = useState(false);
 
     const fetchPaymentTypes = useCallback(async () => {
-        setShowLoadingData(true);
+        setShowLoading(true);
+
+        let cancelled = false;
         try {
-            const res = await dispatch(getAllPaymentTypes());
-            if (res?.status === "success") {
-                setShowTable(true);
-            } else {
-                setShowTable(false);
-                message.error(res?.message || "Failed to load payment types");
-                isAuth(res);
+            const result = await dispatch(getAllPaymentTypes());
+
+            if (result?.status !== "success") {
+                if (!cancelled) {
+                    message.error(
+                        result?.message || "Failed to load prerequisites",
+                    );
+                    isAuth(result);
+                }
+                return;
             }
+
+            if (!cancelled) setShowTable(true);
         } catch (err) {
-            // unexpected throw
-            setShowTable(false);
-            message.error(err?.message || "Failed to load payment types");
-            isAuth(err);
+            if (!cancelled) {
+                message.error(err?.message || "Failed to load prerequisites");
+                isAuth(err);
+            }
         } finally {
-            setShowLoadingData(false);
+            if (!cancelled) setShowLoading(false);
         }
     }, [dispatch]);
 
@@ -51,7 +59,7 @@ const Index = () => {
         );
         if (!ok) return;
 
-        setShowLoadingData(true);
+        setShowLoading(true);
         try {
             const res = await dispatch(deletePaymentType(item["_id"]));
             if (res?.status !== "failed") {
@@ -65,7 +73,7 @@ const Index = () => {
             message.error(e?.message || "Delete failed");
             isAuth(e);
         } finally {
-            setShowLoadingData(false);
+            setShowLoading(false);
         }
     };
 
@@ -79,7 +87,7 @@ const Index = () => {
                         text="Add Payment Type"
                     />
                     <PaymentTypeTable
-                        isLoading={showLoadingData}
+                        isLoading={showLoading}
                         showTable={showTable && (paymentTypes?.length ?? 0) > 0}
                         onDelete={onDelete}
                     />

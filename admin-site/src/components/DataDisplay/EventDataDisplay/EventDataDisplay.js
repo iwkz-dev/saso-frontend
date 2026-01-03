@@ -1,4 +1,3 @@
-import React from "react";
 import DataDisplay from "../DataDisplay";
 
 const EventDataDisplay = ({ event }) => {
@@ -15,6 +14,7 @@ const EventDataDisplay = ({ event }) => {
         usageNote: "VZW",
         paypal: "Paypal",
         images: "Images",
+        paymentTypes: "Payment Types",
         created_at: "Created At",
         updated_at: "Updated At",
     };

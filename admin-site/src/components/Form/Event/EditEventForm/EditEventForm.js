@@ -21,6 +21,7 @@ export default function EditEventForm() {
     const [form] = Form.useForm();
 
     const event = useSelector((s) => s.event.detailEvent);
+    const paymentTypes = useSelector((s) => s.paymentType.paymentTypes);
 
     const [showUploading, setShowUploading] = useState(false);
     const [images, setImages] = useState(() => safeFileList(event?.images));
@@ -113,13 +114,27 @@ export default function EditEventForm() {
                 label: "Month",
                 type: "datePicker",
                 placeholder: "Select month",
-                picker: "month", // Month/Year only
+                picker: "month",
                 format: "YYYY-MM",
                 onChange: onChangeMonth,
                 required: true,
             },
 
             { name: "Payment Information", type: "divider" },
+            {
+                name: "paymentTypes",
+                label: "Payment Types",
+                type: "select-multiple",
+                placeholder: "Select Payment Types",
+                options: (paymentTypes || []).map((pt) => ({
+                    value: pt._id,
+                    label: pt.name,
+                    type: pt.type,
+                    note: pt.note,
+                })),
+                showDetail: true,
+                required: false,
+            },
             {
                 name: "bankName",
                 label: "Bank Name",
@@ -180,6 +195,7 @@ export default function EditEventForm() {
                 usageNote: event?.usageNote || "",
                 paypal: event?.paypal || "",
                 description: event?.description || "",
+                paymentTypes: event?.paymentTypes.map((pt) => pt._id) || [],
             }}
         />
     );

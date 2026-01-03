@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+
 import authService from "../../services/authService";
 import { setToken, removeToken } from "../../helpers/authHelper";
 
@@ -47,7 +48,7 @@ export const logout = createAsyncThunk("login/logout", async () => {
         if (typeof removeToken === "function") removeToken();
         else setToken(null);
     } catch (_) {
-        console.log("Logout failed");
+        console.error("Logout failed");
     }
     return true;
 });
