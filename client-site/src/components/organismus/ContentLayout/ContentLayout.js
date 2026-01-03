@@ -26,6 +26,7 @@ const ContentLayout = ({ children, hasCarousel = true, className }) => {
         () => ({
             eventName: event?.name || "Our Event",
             images: event?.images || [],
+            eventDescription: event?.description || "",
         }),
         [event],
     );

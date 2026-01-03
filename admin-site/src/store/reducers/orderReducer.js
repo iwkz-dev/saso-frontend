@@ -41,6 +41,18 @@ export const getOrderByInvoiceNumberThunk = createAsyncThunk(
     },
 );
 
+export const getOrderByIdThunk = createAsyncThunk(
+    "order/getOrderById",
+    async (id, { rejectWithValue }) => {
+        try {
+            const res = await orderService.getOrderById(id);
+            return { status: "success", data: res?.data };
+        } catch (err) {
+            return rejectWithValue(getErrorPayload(err));
+        }
+    },
+);
+
 export const deleteOrderThunk = createAsyncThunk(
     "order/deleteOrder",
     async (id, { rejectWithValue }) => {
@@ -109,6 +121,15 @@ export const getOrderByInvoiceNumber = (invoiceNumber) => async (dispatch) => {
         const payload = await dispatch(
             getOrderByInvoiceNumberThunk(invoiceNumber),
         ).unwrap();
+        return payload;
+    } catch (e) {
+        return e;
+    }
+};
+
+export const getOrderById = (id) => async (dispatch) => {
+    try {
+        const payload = await dispatch(getOrderByIdThunk(id)).unwrap();
         return payload;
     } catch (e) {
         return e;
@@ -206,6 +227,28 @@ export const orderSlice = createSlice({
                 },
             )
             .addCase(getOrderByInvoiceNumberThunk.rejected, (state, action) => {
+                state.status = "failed";
+                state.loading = false;
+                state.success = false;
+                const msg = action.payload?.message || "Server Error";
+                state.error = msg;
+                state.message.error = msg;
+            });
+
+        // ---- getOrderById
+        builder
+            .addCase(getOrderByIdThunk.pending, (state) => {
+                state.status = "loading";
+                state.loading = true;
+            })
+            .addCase(getOrderByIdThunk.fulfilled, (state, action) => {
+                state.status = "succeeded";
+                state.loading = false;
+                state.success = true;
+                state.detailOrder = action.payload.data || {};
+                state.message.success = "Loaded";
+            })
+            .addCase(getOrderByIdThunk.rejected, (state, action) => {
                 state.status = "failed";
                 state.loading = false;
                 state.success = false;

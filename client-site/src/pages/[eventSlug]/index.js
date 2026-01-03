@@ -4,18 +4,7 @@ import { Button, Spin } from "antd";
 import { WhatsAppOutlined } from "@ant-design/icons";
 
 import SasoContent from "../../components/organismus/SasoContent/SasoContent";
-import TokoContent from "../../components/organismus/TokoContent/TokoContent";
-import ZakatContent from "../../components/organismus/ZakatContent/ZakatContent";
 import MainLayout from "../../components/organismus/MainLayout/MainLayout";
-
-function ContentByType({ event }) {
-    if (!event) return null;
-    if (process.env.EVENT_TYPE === "toko") return <TokoContent event={event} />;
-    if (process.env.EVENT_TYPE === "saso") return <SasoContent event={event} />;
-    if (process.env.EVENT_TYPE === "zakat")
-        return <ZakatContent event={event} />;
-    return null;
-}
 
 export default function EventDetail() {
     const router = useRouter();
@@ -40,7 +29,7 @@ export default function EventDetail() {
 
     return (
         <MainLayout>
-            <ContentByType event={selectedEvent} />
+            <SasoContent event={selectedEvent} />
 
             {waHref && (
                 <Button

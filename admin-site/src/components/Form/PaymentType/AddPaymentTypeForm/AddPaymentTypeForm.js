@@ -1,17 +1,23 @@
-import { useMemo, useState, useCallback } from "react";
+import { useMemo, useState, useCallback, useEffect } from "react";
 import { Form, message } from "antd";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useRouter } from "next/router";
 
-import { createPaymentType } from "../../../../store/reducers/paymentTypeReducer";
+import {
+    createPaymentType,
+    getAllPaymentTypes,
+} from "../../../../store/reducers/paymentTypeReducer";
 import FormComponent from "../../Form";
 
 const AddPaymentTypeForm = () => {
     const dispatch = useDispatch();
-    const events = useSelector((state) => state?.event?.events) ?? [];
     const router = useRouter();
     const [form] = Form.useForm();
     const [showUploading, setShowUploading] = useState(false);
+
+    useEffect(() => {
+        dispatch(getAllPaymentTypes());
+    }, [dispatch]);
 
     const submitForm = useCallback(
         async (values) => {
@@ -66,17 +72,6 @@ const AddPaymentTypeForm = () => {
                 label: "Note",
                 type: "description",
                 placeholder: "Note of Payment Type",
-                required: false,
-            },
-            {
-                name: "events",
-                label: "Events",
-                type: "select-multiple",
-                options: events.map((item) => ({
-                    value: item._id,
-                    label: item.name,
-                })),
-                placeholder: "Select Events",
                 required: false,
             },
         ],

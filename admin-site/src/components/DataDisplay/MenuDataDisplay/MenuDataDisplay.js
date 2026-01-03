@@ -1,11 +1,6 @@
-import React from "react";
-import { useSelector } from "react-redux";
 import DataDisplay from "../DataDisplay";
 
 const MenuDataDisplay = ({ menu }) => {
-    const events = useSelector((state) => state.event.events);
-    const categories = useSelector((state) => state.category.categories);
-
     const dataForm = {
         _id: "ID",
         name: "Name",
@@ -25,8 +20,6 @@ const MenuDataDisplay = ({ menu }) => {
         <DataDisplay
             item={menu}
             dataForm={dataForm}
-            events={events}
-            categories={categories}
             linkToEdit={`/admin/database/menu/edit/${menu._id}`}
         />
     );

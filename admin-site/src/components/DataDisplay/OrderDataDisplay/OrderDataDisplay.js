@@ -1,9 +1,6 @@
-import React from "react";
-import { useSelector } from "react-redux";
 import DataDisplay from "../DataDisplay";
 
 const OrderDataDisplay = ({ order }) => {
-    const events = useSelector((state) => state.event.events);
     const dataForm = {
         _id: "ID",
         invoiceNumber: "Invoice Number",
@@ -19,7 +16,7 @@ const OrderDataDisplay = ({ order }) => {
         updated_at: "Updated At",
     };
 
-    return <DataDisplay item={order} dataForm={dataForm} events={events} />;
+    return <DataDisplay item={order} dataForm={dataForm} />;
 };
 
 export default OrderDataDisplay;

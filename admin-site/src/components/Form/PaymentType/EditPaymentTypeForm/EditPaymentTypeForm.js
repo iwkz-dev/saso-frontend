@@ -11,7 +11,6 @@ const EditPaymentTypeForm = () => {
     const router = useRouter();
     const [form] = Form.useForm();
     const [showUploading, setShowUploading] = useState(false);
-    const events = useSelector((state) => state?.event?.events) ?? [];
 
     const paymentType = useSelector(
         (state) => state?.paymentType?.detailPaymentType,
@@ -22,9 +21,8 @@ const EditPaymentTypeForm = () => {
             name: paymentType?.name ?? "",
             type: paymentType?.type ?? "",
             note: paymentType?.note ?? "",
-            events: paymentType?.events.map((item) => item._id) ?? [],
         }),
-        [paymentType.type, paymentType.note, paymentType.events],
+        [paymentType.type, paymentType.note],
     );
 
     useEffect(() => {
@@ -94,17 +92,6 @@ const EditPaymentTypeForm = () => {
                 label: "Note",
                 type: "description",
                 placeholder: "Note of Payment Type",
-                required: false,
-            },
-            {
-                name: "events",
-                label: "Events",
-                type: "select-multiple",
-                options: events.map((item) => ({
-                    value: item._id,
-                    label: item.name,
-                })),
-                placeholder: "Select Events",
                 required: false,
             },
         ],

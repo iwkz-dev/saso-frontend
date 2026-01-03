@@ -44,8 +44,11 @@ const changeOrderStatus = (id, status) =>
         url: `/order/${id}/${encodeURIComponent(status)}`,
     });
 
+const getOrderById = (id) => request({ method: "GET", url: `/order/${id}` });
+
 const orderService = {
     getAllOrders,
+    getOrderById,
     getOrderByInvoiceNumber,
     deleteOrder,
     changeOrderStatus,

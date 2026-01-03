@@ -8,7 +8,6 @@ import Content from "../../../../src/components/Layout/Content/Content";
 import { isAuth } from "../../../../src/helpers/authHelper";
 import { getDetailPaymentType } from "../../../../src/store/reducers/paymentTypeReducer";
 import EditPaymentTypeForm from "../../../../src/components/Form/PaymentType/EditPaymentTypeForm/EditPaymentTypeForm";
-import { getAllEvents } from "../../../../src/store/reducers/eventReducer";
 
 const PaymentTypeEditPage = () => {
     const dispatch = useDispatch();
@@ -25,15 +24,11 @@ const PaymentTypeEditPage = () => {
         setShowLoading(true);
 
         try {
-            const results = await Promise.all([
-                dispatch(getAllEvents()),
-                dispatch(getDetailPaymentType(id)),
-            ]);
+            const result = await dispatch(getDetailPaymentType(id));
 
-            const failed = results.find((r) => r?.status !== "success");
-            if (failed) {
-                message.error(failed?.message || "Failed to load data");
-                isAuth(failed);
+            if (result?.status !== "success") {
+                message.error(result?.message || "Failed to load data");
+                isAuth(result);
                 setShowForm(false);
                 return;
             }

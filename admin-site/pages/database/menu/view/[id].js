@@ -28,6 +28,7 @@ const MenuViewPage = () => {
             setShowLoading(true);
             try {
                 const res = await dispatch(getDetailMenu(id));
+                console.log(res);
                 if (cancelled) return;
 
                 if (res?.status === "success") {

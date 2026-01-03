@@ -11,7 +11,6 @@ import Protected from "../../../src/components/Layout/Protected/Protected";
 import PaymentTypeTable from "../../../src/components/Table/PaymentType/PaymentTypeTable/PaymentTypeTable";
 import Content from "../../../src/components/Layout/Content/Content";
 import AddItemButton from "../../../src/components/common/Button/AddItemButton/AddItemButton";
-import { getAllEvents } from "../../../src/store/reducers/eventReducer";
 
 const Index = () => {
     const dispatch = useDispatch();
@@ -27,18 +26,14 @@ const Index = () => {
 
         let cancelled = false;
         try {
-            const results = await Promise.all([
-                dispatch(getAllEvents()),
-                dispatch(getAllPaymentTypes()),
-            ]);
+            const result = await dispatch(getAllPaymentTypes());
 
-            const failed = results.find((r) => r?.status !== "success");
-            if (failed) {
+            if (result?.status !== "success") {
                 if (!cancelled) {
                     message.error(
-                        failed?.message || "Failed to load prerequisites",
+                        result?.message || "Failed to load prerequisites",
                     );
-                    isAuth(failed);
+                    isAuth(result);
                 }
                 return;
             }

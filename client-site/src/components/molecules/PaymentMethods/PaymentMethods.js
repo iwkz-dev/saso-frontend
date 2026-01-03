@@ -1,15 +1,19 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { SmileOutlined } from "@ant-design/icons";
+import {
+    SmileOutlined,
+    BankOutlined,
+    MoneyCollectOutlined,
+} from "@ant-design/icons";
 import Router from "next/router";
 import {
     Space,
     Button,
     notification,
     message,
-    Typography,
     Spin,
     Modal,
+    Collapse,
 } from "antd";
 
 import { isAuth } from "../../../helpers/authHelper";
@@ -24,8 +28,27 @@ const PaymentMethods = ({ cart, userData }) => {
     const { confirm } = Modal;
 
     const eventId = event?._id || null;
+    const paymentTypes = event?.paymentTypes || [];
 
-    const createOrderData = (paymentType) => {
+    const groupedPaymentTypes = paymentTypes.reduce((acc, paymentType) => {
+        const type = paymentType.type;
+        if (!acc[type]) acc[type] = [];
+        acc[type].push(paymentType);
+        return acc;
+    }, {});
+
+    const getPaymentIcon = (type) => {
+        switch (type) {
+            case "transfer":
+                return <BankOutlined />;
+            case "cash":
+                return <MoneyCollectOutlined />;
+            default:
+                return null;
+        }
+    };
+
+    const createOrderData = (paymentTypeId) => {
         const menus = cart.items.map((item) => ({
             _id: item.menu._id,
             totalPortion: item.amount,
@@ -35,7 +58,7 @@ const PaymentMethods = ({ cart, userData }) => {
             event: eventId,
             note: "",
             arrivedAt: "",
-            paymentType,
+            paymentTypeId,
             menus,
         };
 
@@ -74,7 +97,7 @@ const PaymentMethods = ({ cart, userData }) => {
         });
     };
 
-    const submitTransferForm = async () => {
+    const submitOrderForm = async (paymentType) => {
         if (!eventId) {
             message.error(
                 "Event is not ready yet. Please try again in a moment.",
@@ -86,16 +109,17 @@ const PaymentMethods = ({ cart, userData }) => {
             return;
         }
 
+        const isTransfer = paymentType.type === "transfer";
+
         confirm({
-            title: "Confirm Payment Later",
-            content:
-                "Please confirm if you plan to pay later. Ensure payment is made within 2x24 hours and send the proof to the designated contact person.",
+            title: isTransfer ? "Confirm Payment Later" : "Confirm Payment",
+            content: paymentType.note,
             okText: "Confirm",
             cancelText: "Cancel",
             async onOk() {
                 setIsSpinning(true);
                 try {
-                    const orderData = createOrderData("transfer");
+                    const orderData = createOrderData(paymentType._id);
 
                     const payload = await dispatch(
                         submitOrder({
@@ -112,7 +136,7 @@ const PaymentMethods = ({ cart, userData }) => {
                         userData?.name ||
                         "there";
 
-                    openNotification(customerName, order, true);
+                    openNotification(customerName, order, isTransfer);
 
                     dispatch(resetCart(event._id));
                     Router.push(`/${event.slug}`);
@@ -133,32 +157,46 @@ const PaymentMethods = ({ cart, userData }) => {
         });
     };
 
+    const collapseItems = Object.entries(groupedPaymentTypes).map(
+        ([type, types]) => ({
+            key: type,
+            label: type.charAt(0).toUpperCase() + type.slice(1),
+            children: (
+                <div>
+                    {types.map((paymentType) => (
+                        <Space
+                            key={paymentType._id}
+                            direction="vertical"
+                            align="center"
+                            className={style.bookOrPayButton}
+                            style={{ width: "100%", marginBottom: 16 }}>
+                            <Button
+                                onClick={() => submitOrderForm(paymentType)}
+                                style={{
+                                    width: "100%",
+                                    borderRadius: 999,
+                                    fontWeight: 700,
+                                }}
+                                type="primary"
+                                size="large"
+                                icon={getPaymentIcon(paymentType.type)}>
+                                {paymentType.name}
+                            </Button>
+                        </Space>
+                    ))}
+                </div>
+            ),
+        }),
+    );
+
     return (
         <Spin spinning={isSpinning}>
-            <Space
-                direction="vertical"
-                align="center"
-                className={style.bookOrPayButton}
-                style={{ width: "100%" }}>
-                <Button
-                    onClick={submitTransferForm}
-                    style={{
-                        width: "100%",
-                        borderRadius: 999,
-                        fontWeight: 700,
-                    }}
-                    type="primary"
-                    size="large">
-                    Pay Later
-                </Button>
-                <Typography.Text
-                    type="secondary"
-                    italic
-                    style={{ textAlign: "center" }}>
-                    Choose “Pay Later” to complete payment within 2×24 hours and
-                    send proof to the contact person.
-                </Typography.Text>
-            </Space>
+            <Collapse
+                items={collapseItems}
+                accordion
+                size="large"
+                bordered={false}
+            />
         </Spin>
     );
 };

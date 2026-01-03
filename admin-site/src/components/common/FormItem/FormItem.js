@@ -12,7 +12,11 @@ import {
     Button,
     Divider,
 } from "antd";
-import { PlusOutlined, CameraOutlined } from "@ant-design/icons";
+import {
+    PlusOutlined,
+    CameraOutlined,
+    InfoCircleOutlined,
+} from "@ant-design/icons";
 import BarcodeScanner from "../BarcodeScanner/BarcodeScanner";
 import style from "./FormItem.module.scss";
 
@@ -21,6 +25,8 @@ const FormItem = ({ item, setImages, images, form }) => {
     const [previewImage, setPreviewImage] = useState("");
     const [previewTitle, setPreviewTitle] = useState("");
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [infoModalOpen, setInfoModalOpen] = useState(false);
+    const [selectedOption, setSelectedOption] = useState(null);
 
     const getBase64 = (file) =>
         new Promise((resolve, reject) => {
@@ -117,7 +123,7 @@ const FormItem = ({ item, setImages, images, form }) => {
                         </Form.Item>
                         <Modal
                             className={style.scannerModal}
-                            destroyOnClose={true}
+                            destroyOnHidden
                             title="Scan barcode"
                             open={isModalOpen}
                             onOk={handleOk}
@@ -158,21 +164,81 @@ const FormItem = ({ item, setImages, images, form }) => {
                 );
             case "select-multiple":
                 return (
-                    <Form.Item
-                        label={item.label}
-                        name={item.name}
-                        rules={[
-                            {
-                                required: item.required,
-                            },
-                        ]}>
-                        <Select
-                            mode="multiple"
-                            options={item.options}
-                            placeholder={item.placeholder}
-                            optionFilterProp="label"
-                        />
-                    </Form.Item>
+                    <>
+                        <Form.Item
+                            label={item.label}
+                            name={item.name}
+                            rules={[
+                                {
+                                    required: item.required,
+                                },
+                            ]}>
+                            <Select
+                                mode="multiple"
+                                options={item.options}
+                                placeholder={item.placeholder}
+                                optionFilterProp="label"
+                                optionRender={
+                                    item.showDetail
+                                        ? (option) => {
+                                              return (
+                                                  <div
+                                                      style={{
+                                                          display: "flex",
+                                                          justifyContent:
+                                                              "space-between",
+                                                          alignItems: "center",
+                                                      }}>
+                                                      <span>
+                                                          {option.data.label}
+                                                      </span>
+                                                      <InfoCircleOutlined
+                                                          onClick={(e) => {
+                                                              e.stopPropagation();
+                                                              setSelectedOption(
+                                                                  option.data,
+                                                              );
+                                                              setInfoModalOpen(
+                                                                  true,
+                                                              );
+                                                          }}
+                                                          style={{
+                                                              cursor: "pointer",
+                                                              marginRight: 8,
+                                                          }}
+                                                      />
+                                                  </div>
+                                              );
+                                          }
+                                        : undefined
+                                }
+                            />
+                        </Form.Item>
+                        {item.showDetail && (
+                            <Modal
+                                title={`Details for ${
+                                    selectedOption?.label || "Option"
+                                }`}
+                                open={infoModalOpen}
+                                onCancel={() => setInfoModalOpen(false)}
+                                footer={null}>
+                                {selectedOption ? (
+                                    <div>
+                                        {Object.entries(selectedOption).map(
+                                            ([key, value]) => (
+                                                <p key={key}>
+                                                    <strong>{key}:</strong>{" "}
+                                                    {String(value)}
+                                                </p>
+                                            ),
+                                        )}
+                                    </div>
+                                ) : (
+                                    <p>No option selected.</p>
+                                )}
+                            </Modal>
+                        )}
+                    </>
                 );
             case "number":
                 return (
