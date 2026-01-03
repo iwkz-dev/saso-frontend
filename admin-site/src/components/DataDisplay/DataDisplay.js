@@ -1,4 +1,12 @@
-import { Button, Descriptions, Image, Space, Typography, Modal } from "antd";
+import {
+    Button,
+    Descriptions,
+    Image,
+    Space,
+    Typography,
+    Modal,
+    Divider,
+} from "antd";
 import { formatDate } from "../../helpers/dateHelper";
 import { useState } from "react";
 
@@ -58,7 +66,7 @@ const DataDisplay = ({ item, dataForm, linkToEdit }) => {
             item[key][0].name
         ) {
             value = (
-                <Space>
+                <Space split={<Divider type="vertical" />} wrap>
                     {item[key].map((obj) => (
                         <Button
                             key={obj._id}
