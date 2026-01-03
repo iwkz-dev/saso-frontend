@@ -195,7 +195,7 @@ export default function EditEventForm() {
                 usageNote: event?.usageNote || "",
                 paypal: event?.paypal || "",
                 description: event?.description || "",
-                paymentTypes: event?.paymentTypes || [],
+                paymentTypes: event?.paymentTypes.map((pt) => pt._id) || [],
             }}
         />
     );
