@@ -14,7 +14,6 @@ import {
 import {
     CopyOutlined,
     WhatsAppOutlined,
-    FilePdfOutlined,
     CreditCardOutlined,
     InfoCircleOutlined,
 } from "@ant-design/icons";
@@ -43,12 +42,7 @@ const tagForStatus = (status) => {
 const currency = (n) =>
     typeof n === "number" ? `${n.toFixed(2)} €` : n || "-";
 
-const MyOrderDetailContent = ({
-    detailOrder,
-    withoutBackButton,
-    event,
-    onDownloadPdf,
-}) => {
+const MyOrderDetailContent = ({ detailOrder, withoutBackButton, event }) => {
     const screens = useBreakpoint();
     const isMobile = !screens.md;
 
