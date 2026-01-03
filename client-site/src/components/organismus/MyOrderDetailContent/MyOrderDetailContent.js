@@ -8,17 +8,16 @@ import {
     Button,
     Divider,
     List,
-    Collapse,
     Descriptions,
-    Tooltip,
     message,
 } from "antd";
 import {
     CopyOutlined,
     WhatsAppOutlined,
-    FilePdfOutlined,
     CreditCardOutlined,
+    InfoCircleOutlined,
 } from "@ant-design/icons";
+
 import BackToButton from "../../atoms/BackToButton/BackToButton";
 import { formatDate } from "../../../helpers/dateHelper";
 import style from "./MyOrderDetailContent.module.scss";
@@ -26,7 +25,6 @@ import style from "./MyOrderDetailContent.module.scss";
 const { Content } = Layout;
 const { useBreakpoint } = Grid;
 const { Title, Text, Paragraph } = Typography;
-const { Panel } = Collapse;
 
 const tagForStatus = (status) => {
     switch (status) {
@@ -41,21 +39,15 @@ const tagForStatus = (status) => {
     }
 };
 
-const currency = (n) => (typeof n === "number" ? `${n} €` : n || "-");
+const currency = (n) =>
+    typeof n === "number" ? `${n.toFixed(2)} €` : n || "-";
 
-const MyOrderDetailContent = ({
-    detailOrder,
-    withoutBackButton,
-    event,
-    onDownloadPdf,
-}) => {
+const MyOrderDetailContent = ({ detailOrder, withoutBackButton, event }) => {
     const screens = useBreakpoint();
     const isMobile = !screens.md;
 
     const cp = event?.contactPersons?.[0];
     const paypal = event?.paypal || "";
-    const iban = event?.iban || "-";
-    const bic = event?.bic || "-";
 
     const handleCopy = async (text, label = "Copied") => {
         try {
@@ -71,12 +63,14 @@ const MyOrderDetailContent = ({
         : null;
 
     const items = Array.isArray(detailOrder?.menus) ? detailOrder.menus : [];
+
     const itemsWithSubtotal = items.map((m) => ({
         ...m,
         _subtotal: (Number(m.price) || 0) * (Number(m.totalPortion) || 0),
     }));
+
     const computedTotal =
-        itemsWithSubtotal.reduce((s, it) => s + (it._subtotal || 0), 0) ||
+        itemsWithSubtotal.reduce((s, it) => s + it._subtotal, 0) ||
         detailOrder?.totalPrice;
 
     return (
@@ -84,13 +78,10 @@ const MyOrderDetailContent = ({
             <div
                 style={{
                     maxWidth: 960,
-                    padding: isMobile ? "12px" : "16px",
+                    padding: isMobile ? 12 : 16,
                     margin: "0 auto",
                 }}>
-                <Space
-                    direction="vertical"
-                    size={isMobile ? 12 : 16}
-                    style={{ width: "100%" }}>
+                <Space direction="vertical" size={16} style={{ width: "100%" }}>
                     {!withoutBackButton && (
                         <BackToButton
                             buttonText="Back to My Orders"
@@ -98,35 +89,37 @@ const MyOrderDetailContent = ({
                         />
                     )}
 
-                    {/* Header */}
                     <Title
                         level={isMobile ? 4 : 3}
-                        style={{ textAlign: "center", margin: "8px 0 0" }}>
+                        style={{ textAlign: "center", marginBottom: 0 }}>
                         {detailOrder.invoiceNumber}
                     </Title>
 
-                    {/* Summary Card */}
+                    {/* Summary */}
                     <Card
                         size="small"
-                        styles={{ padding: isMobile ? 12 : 16 }}
+                        bodyStyle={{ padding: isMobile ? 12 : 16 }}
                         style={{ borderRadius: 12 }}>
                         <Space
                             direction={isMobile ? "vertical" : "horizontal"}
                             style={{
                                 width: "100%",
                                 justifyContent: "space-between",
-                                alignItems: isMobile ? "flex-start" : "center",
-                            }}
-                            size={isMobile ? 10 : 16}>
-                            {/* Left: customer + meta */}
-                            <Space direction="vertical" size={6}>
-                                <Space size={8} wrap align="center">
+                            }}>
+                            <Space direction="vertical" size={2}>
+                                <Space align="center">
                                     <Text strong>
                                         {detailOrder.customerFullname}
                                     </Text>
                                     {tagForStatus(detailOrder.status)}
                                 </Space>
-                                <Text type="secondary">
+
+                                <Text
+                                    type="secondary"
+                                    style={{
+                                        fontSize: isMobile ? 10 : 12,
+                                        color: "rgba(0,0,0,0.35)",
+                                    }}>
                                     Updated •{" "}
                                     {formatDate(
                                         detailOrder.updated_at,
@@ -134,7 +127,12 @@ const MyOrderDetailContent = ({
                                         true,
                                     )}
                                 </Text>
-                                <Text type="secondary">
+                                <Text
+                                    type="secondary"
+                                    style={{
+                                        fontSize: isMobile ? 10 : 12,
+                                        color: "rgba(0,0,0,0.35)",
+                                    }}>
                                     Created •{" "}
                                     {formatDate(
                                         detailOrder.created_at,
@@ -157,161 +155,122 @@ const MyOrderDetailContent = ({
                                 </Title>
 
                                 <Space wrap>
-                                    <Tooltip title="Copy invoice number">
-                                        <Button
-                                            size="small"
-                                            onClick={() =>
-                                                handleCopy(
-                                                    detailOrder.invoiceNumber,
-                                                    "Invoice copied",
-                                                )
-                                            }
-                                            icon={<CopyOutlined />}>
-                                            Invoice
-                                        </Button>
-                                    </Tooltip>
+                                    <Button
+                                        size="small"
+                                        icon={<CopyOutlined />}
+                                        onClick={() =>
+                                            handleCopy(
+                                                detailOrder.invoiceNumber,
+                                                "Invoice copied",
+                                            )
+                                        }>
+                                        Invoice
+                                    </Button>
 
                                     {whatsappHref && (
-                                        <Tooltip title="Contact via WhatsApp">
-                                            <Button
-                                                size="small"
-                                                icon={<WhatsAppOutlined />}
-                                                href={whatsappHref}
-                                                target="_blank"
-                                                rel="noopener noreferrer">
-                                                Contact
-                                            </Button>
-                                        </Tooltip>
+                                        <Button
+                                            size="small"
+                                            icon={<WhatsAppOutlined />}
+                                            href={whatsappHref}
+                                            target="_blank">
+                                            Contact
+                                        </Button>
                                     )}
 
                                     {!!paypal && (
-                                        <Tooltip title="Open PayPal">
-                                            <Button
-                                                size="small"
-                                                icon={<CreditCardOutlined />}
-                                                href={
-                                                    paypal.startsWith("http")
-                                                        ? paypal
-                                                        : `https://paypal.me/${paypal}`
-                                                }
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                type="primary">
-                                                Pay
-                                            </Button>
-                                        </Tooltip>
-                                    )}
-
-                                    {/* Optional PDF action if a handler is provided */}
-                                    {typeof onDownloadPdf === "function" && (
-                                        <Tooltip title="Download PDF">
-                                            <Button
-                                                size="small"
-                                                icon={<FilePdfOutlined />}
-                                                onClick={() =>
-                                                    onDownloadPdf(
-                                                        detailOrder._id,
-                                                    )
-                                                }>
-                                                PDF
-                                            </Button>
-                                        </Tooltip>
+                                        <Button
+                                            size="small"
+                                            type="primary"
+                                            icon={<CreditCardOutlined />}
+                                            href={
+                                                paypal.startsWith("http")
+                                                    ? paypal
+                                                    : `https://paypal.me/${paypal}`
+                                            }
+                                            target="_blank">
+                                            Pay
+                                        </Button>
                                     )}
                                 </Space>
                             </Space>
                         </Space>
 
-                        <Divider
-                            style={{ margin: isMobile ? "12px 0" : "16px 0" }}
-                        />
+                        <Divider />
 
-                        {/* Quick facts row */}
-                        <Space
-                            direction={isMobile ? "vertical" : "horizontal"}
-                            size={isMobile ? 8 : 24}
-                            style={{ width: "100%", flexWrap: "wrap" }}>
-                            <Space size={6}>
-                                <Text type="secondary">Payment:</Text>
-                                <Text strong>
-                                    {detailOrder.paymentType?.name ||
-                                        detailOrder.paymentType ||
-                                        "-"}
-                                </Text>
-                            </Space>
-                            <Space size={6}>
-                                <Text type="secondary">Arrived at:</Text>
-                                <Text>{detailOrder.arrived_at || "-"}</Text>
-                            </Space>
-                            <Space size={6}>
-                                <Text type="secondary">Email:</Text>
-                                <Text>{detailOrder.customerEmail}</Text>
-                            </Space>
-                            <Space size={6}>
-                                <Text type="secondary">Phone:</Text>
-                                <Text>{detailOrder.customerPhone}</Text>
-                            </Space>
+                        {/* Details */}
+                        <Descriptions
+                            size="small"
+                            column={{ xs: 1, md: 2, lg: 3 }}>
+                            <Descriptions.Item label="Payment">
+                                <Space direction="vertical" size={2}>
+                                    <Text strong>
+                                        {detailOrder.paymentType?.name ||
+                                            detailOrder.paymentType ||
+                                            "-"}
+                                    </Text>
+                                    <Text type="secondary">
+                                        <InfoCircleOutlined /> See payment
+                                        information in invoice
+                                    </Text>
+                                </Space>
+                            </Descriptions.Item>
+
+                            <Descriptions.Item label="Arrived At">
+                                {detailOrder.arrived_at || "-"}
+                            </Descriptions.Item>
+
+                            <Descriptions.Item label="Email">
+                                {detailOrder.customerEmail || "-"}
+                            </Descriptions.Item>
+
+                            <Descriptions.Item label="Phone">
+                                {detailOrder.customerPhone || "-"}
+                            </Descriptions.Item>
+
                             {detailOrder.note && (
-                                <Space size={6}>
-                                    <Text type="secondary">Note:</Text>
-                                    <Text>{detailOrder.note}</Text>
-                                </Space>
+                                <Descriptions.Item label="Customer Note">
+                                    <Paragraph
+                                        ellipsis={{
+                                            rows: 3,
+                                            expandable: true,
+                                        }}>
+                                        {detailOrder.note}
+                                    </Paragraph>
+                                </Descriptions.Item>
                             )}
-                        </Space>
+                        </Descriptions>
                     </Card>
 
                     {/* Items */}
                     <Card
                         size="small"
-                        title={<Text strong>Ordered Items</Text>}
-                        styles={{ padding: isMobile ? 8 : 12 }}
-                        headstyles={{
-                            padding: isMobile ? "8px 12px" : "12px 16px",
-                        }}
+                        title="Ordered Items"
+                        bodyStyle={{ padding: isMobile ? 8 : 12 }}
                         style={{ borderRadius: 12 }}>
                         <List
-                            itemLayout="horizontal"
                             dataSource={itemsWithSubtotal}
                             renderItem={(item) => (
-                                <List.Item
-                                    style={{
-                                        padding: isMobile
-                                            ? "8px 4px"
-                                            : "10px 6px",
-                                    }}>
+                                <List.Item>
                                     <Space
-                                        direction="vertical"
-                                        size={2}
-                                        style={{ width: "100%" }}>
-                                        <Space
-                                            style={{
-                                                justifyContent: "space-between",
-                                                width: "100%",
-                                            }}>
-                                            <Text
-                                                strong
-                                                style={{
-                                                    maxWidth: "70%",
-                                                    whiteSpace: "nowrap",
-                                                    overflow: "hidden",
-                                                    textOverflow: "ellipsis",
-                                                }}>
-                                                {item.name}
-                                            </Text>
-                                            <Text>
-                                                {currency(item._subtotal)}
+                                        style={{
+                                            width: "100%",
+                                            justifyContent: "space-between",
+                                        }}>
+                                        <Space direction="vertical" size={0}>
+                                            <Text strong>{item.name}</Text>
+                                            <Text type="secondary">
+                                                {item.totalPortion} ×{" "}
+                                                {currency(item.price)}
                                             </Text>
                                         </Space>
-                                        <Text type="secondary">
-                                            {item.totalPortion} ×{" "}
-                                            {currency(item.price)}
-                                        </Text>
+                                        <Text>{currency(item._subtotal)}</Text>
                                     </Space>
                                 </List.Item>
                             )}
                         />
-                        <Divider
-                            style={{ margin: isMobile ? "8px 0" : "12px 0" }}
-                        />
+
+                        <Divider />
+
                         <Space
                             style={{
                                 width: "100%",
@@ -321,70 +280,6 @@ const MyOrderDetailContent = ({
                             <Text strong>{currency(computedTotal)}</Text>
                         </Space>
                     </Card>
-
-                    {/* Payment Instructions (collapsible) */}
-                    <Collapse
-                        bordered
-                        style={{ borderRadius: 12, overflow: "hidden" }}
-                        defaultActiveKey={isMobile ? [] : ["payment"]}>
-                        <Panel header="Payment Instructions" key="payment">
-                            <Space
-                                direction="vertical"
-                                size={10}
-                                style={{ width: "100%" }}>
-                                <Paragraph
-                                    type="secondary"
-                                    style={{ marginBottom: 0 }}>
-                                    Please transfer your payment if you haven’t
-                                    already, then send the proof to the contact
-                                    below.
-                                </Paragraph>
-                                <Descriptions size="small" column={1} bordered>
-                                    <Descriptions.Item label="Contact Person">
-                                        <Paragraph
-                                            copyable
-                                            style={{ margin: 0 }}>
-                                            {cp?.name || "-"}
-                                        </Paragraph>
-                                    </Descriptions.Item>
-                                    <Descriptions.Item label="WhatsApp">
-                                        <Paragraph
-                                            copyable
-                                            style={{ margin: 0 }}>
-                                            {cp?.phoneNumber || "-"}
-                                        </Paragraph>
-                                    </Descriptions.Item>
-                                    <Descriptions.Item label="PayPal">
-                                        <Paragraph
-                                            copyable
-                                            style={{ margin: 0 }}>
-                                            {paypal || "-"}
-                                        </Paragraph>
-                                    </Descriptions.Item>
-                                    <Descriptions.Item label="Account Name">
-                                        <Text>IWKZ e.V.</Text>
-                                    </Descriptions.Item>
-                                    <Descriptions.Item label="IBAN">
-                                        <Paragraph
-                                            copyable
-                                            style={{ margin: 0 }}>
-                                            {iban}
-                                        </Paragraph>
-                                    </Descriptions.Item>
-                                    <Descriptions.Item label="BIC">
-                                        <Text>{bic}</Text>
-                                    </Descriptions.Item>
-                                    <Descriptions.Item label="Invoice Number">
-                                        <Paragraph
-                                            copyable
-                                            style={{ margin: 0 }}>
-                                            {detailOrder?.invoiceNumber}
-                                        </Paragraph>
-                                    </Descriptions.Item>
-                                </Descriptions>
-                            </Space>
-                        </Panel>
-                    </Collapse>
                 </Space>
             </div>
         </Content>

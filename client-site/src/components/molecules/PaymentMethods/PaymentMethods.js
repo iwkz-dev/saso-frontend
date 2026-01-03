@@ -157,46 +157,37 @@ const PaymentMethods = ({ cart, userData }) => {
         });
     };
 
-    const collapseItems = Object.entries(groupedPaymentTypes).map(
-        ([type, types]) => ({
-            key: type,
-            label: type.charAt(0).toUpperCase() + type.slice(1),
-            children: (
-                <div>
-                    {types.map((paymentType) => (
-                        <Space
-                            key={paymentType._id}
-                            direction="vertical"
-                            align="center"
-                            className={style.bookOrPayButton}
-                            style={{ width: "100%", marginBottom: 16 }}>
-                            <Button
-                                onClick={() => submitOrderForm(paymentType)}
-                                style={{
-                                    width: "100%",
-                                    borderRadius: 999,
-                                    fontWeight: 700,
-                                }}
-                                type="primary"
-                                size="large"
-                                icon={getPaymentIcon(paymentType.type)}>
-                                {paymentType.name}
-                            </Button>
-                        </Space>
-                    ))}
-                </div>
-            ),
-        }),
-    );
-
     return (
         <Spin spinning={isSpinning}>
-            <Collapse
-                items={collapseItems}
-                accordion
-                size="large"
-                bordered={false}
-            />
+            <Collapse accordion size="large" bordered={false}>
+                {Object.entries(groupedPaymentTypes).map(([type, types]) => (
+                    <Collapse.Panel
+                        key={type}
+                        header={type.charAt(0).toUpperCase() + type.slice(1)}>
+                        {types.map((paymentType) => (
+                            <Space
+                                key={paymentType._id}
+                                direction="vertical"
+                                align="center"
+                                className={style.bookOrPayButton}
+                                style={{ width: "100%", marginBottom: 16 }}>
+                                <Button
+                                    onClick={() => submitOrderForm(paymentType)}
+                                    style={{
+                                        width: "100%",
+                                        borderRadius: 999,
+                                        fontWeight: 700,
+                                    }}
+                                    type="primary"
+                                    size="large"
+                                    icon={getPaymentIcon(paymentType.type)}>
+                                    {paymentType.name}
+                                </Button>
+                            </Space>
+                        ))}
+                    </Collapse.Panel>
+                ))}
+            </Collapse>
         </Spin>
     );
 };
