@@ -29,7 +29,11 @@ export const submitRegister = createAsyncThunk(
                 );
             }
 
-            return { message: payload?.message || "Registration successful" };
+            return {
+                user: res?.data,
+                message: res?.message || "Login successful",
+                status: res?.status,
+            };
         } catch (err) {
             return rejectWithValue(
                 err?.response?.data?.message || err?.message || "Network error",
@@ -69,14 +73,14 @@ export const loginUser = createAsyncThunk(
     async (credentials, { rejectWithValue }) => {
         try {
             const res = await authService.login(credentials);
-            const payload = res.data;
+            const payload = res;
 
             if ((payload?.status || res?.status) !== "success") {
                 return rejectWithValue(payload?.message || "Login failed");
             }
 
             return {
-                user: payload?.user,
+                user: payload?.data,
                 message: payload?.message || "Login successful",
             };
         } catch (err) {
@@ -114,7 +118,30 @@ export const checkAuth = createAsyncThunk(
                 return rejectWithValue(payload?.message || "Not authenticated");
             }
 
-            return { user: payload?.user };
+            return { user: payload?.data };
+        } catch (err) {
+            return rejectWithValue(
+                err?.response?.data?.message || err?.message || "Network error",
+            );
+        }
+    },
+);
+
+// Request new verification email
+export const requestVerifyEmail = createAsyncThunk(
+    "auth/requestVerifyEmail",
+    async (_, { rejectWithValue }) => {
+        try {
+            const res = await authService.requestVerifyEmail();
+            const payload = res.data;
+
+            if ((payload?.status || res?.status) !== "success") {
+                return rejectWithValue(
+                    payload?.message || "Failed to send verification email",
+                );
+            }
+
+            return { message: payload?.message || "Verification email sent" };
         } catch (err) {
             return rejectWithValue(
                 err?.response?.data?.message || err?.message || "Network error",
@@ -149,6 +176,7 @@ const authSlice = createSlice({
                 state.isLoading = false;
                 state.status = "succeeded";
                 state.message = action.payload.message;
+                state.user = action.payload.user;
                 state.isAuthenticated = true;
             })
             .addCase(submitRegister.rejected, (state, action) => {
@@ -219,6 +247,21 @@ const authSlice = createSlice({
                 state.isCheckingAuth = false;
                 state.isAuthenticated = false;
                 state.user = null;
+            });
+
+        // Request verify email
+        builder
+            .addCase(requestVerifyEmail.pending, (state) => {
+                state.verifyStatus = "loading";
+                state.error = null;
+            })
+            .addCase(requestVerifyEmail.fulfilled, (state, action) => {
+                state.verifyStatus = "succeeded";
+                state.message = action.payload.message;
+            })
+            .addCase(requestVerifyEmail.rejected, (state, action) => {
+                state.verifyStatus = "failed";
+                state.error = action.payload;
             });
     },
 });

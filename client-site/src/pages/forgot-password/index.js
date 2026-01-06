@@ -1,16 +1,14 @@
 import { useEffect, useState } from "react";
 import { Button, Form, Input, Layout, Space, Typography, message } from "antd";
-import axios from "axios";
 import { useRouter } from "next/router";
 import { useSelector } from "react-redux";
 
 import MainLayout from "../../components/organismus/MainLayout/MainLayout";
-import { BASE_URL_HOST } from "../../config/config";
+import authService from "../../services/authService"; // <-- import the service
 
 const ForgotPassword = () => {
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
-
     const { isAuthenticated } = useSelector((state) => state.auth);
 
     useEffect(() => {
@@ -22,16 +20,13 @@ const ForgotPassword = () => {
     const onFinish = async (values) => {
         setIsLoading(true);
         try {
-            const response = await axios.patch(
-                `${BASE_URL_HOST}/auth/forget-password`,
-                {
-                    email: values.email,
-                },
-            );
+            const response = await authService.forgotPassword({
+                email: values.email,
+            });
 
-            if (response.status === 200) {
+            if (response.status === "success") {
                 message.success(
-                    "Link change password has been sent. Please check your email!",
+                    "Link to change password has been sent. Please check your email!",
                 );
             }
         } catch (err) {

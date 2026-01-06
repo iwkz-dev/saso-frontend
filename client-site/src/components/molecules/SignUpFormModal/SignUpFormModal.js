@@ -1,39 +1,33 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Form, Input, Alert, Space, message } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { submitRegister, resetAuthState } from "../../../stores/reducers/auth";
 
 const SignUpFormModal = ({ onSuccess }) => {
     const dispatch = useDispatch();
-    const {
-        error,
-        message: storeMessage,
-        status,
-    } = useSelector((state) => state.auth);
+    const { error } = useSelector((state) => state.auth);
     const [form] = Form.useForm();
     const [localError, setLocalError] = useState(null);
-
-    // Clear local and store errors when component mounts/unmounts
-    useEffect(() => {
-        return () => dispatch(resetAuthState());
-    }, [dispatch]);
-
-    // Automatically show success message and call onSuccess when registration succeeds
-    useEffect(() => {
-        if (status === "succeeded" && storeMessage) {
-            message.success(storeMessage);
-            form.resetFields();
-            if (typeof onSuccess === "function") onSuccess();
-            dispatch(resetAuthState()); // Reset after handling
-        }
-    }, [status, storeMessage, form, onSuccess, dispatch]);
 
     const onFinish = async (values) => {
         setLocalError(null);
         try {
-            await dispatch(submitRegister(values)).unwrap();
+            const res = await dispatch(submitRegister(values)).unwrap();
+            if (res.status === "success") {
+                message.success(
+                    "Registration successful! A verification email has been sent to your inbox.",
+                );
+                form.resetFields();
+                if (onSuccess) onSuccess();
+            } else {
+                setLocalError(res.message || "Registration failed");
+            }
         } catch (err) {
+            console.error("Registration error:", err);
             setLocalError(err || "Registration failed");
+        } finally {
+            // Optionally reset auth state after registration attempt
+            dispatch(resetAuthState());
         }
     };
 

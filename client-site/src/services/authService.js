@@ -9,13 +9,7 @@ const register = (data) => {
 };
 
 const verifyEmail = (token) => {
-    return sasoApi.postData(
-        `/customer/user/verify-email/${token}`,
-        {},
-        "",
-        "",
-        true,
-    );
+    return sasoApi.postData(`/customer/user/verify-email/${token}`, {}, true);
 };
 
 const checkAuth = () => {
@@ -26,11 +20,29 @@ const logout = () => {
     return sasoApi.postData("/customer/user/logout");
 };
 
+const forgotPassword = (data) => {
+    return sasoApi.postData("/customer/user/forgot-password", data);
+};
+
+const resetPassword = (data, email, token) => {
+    return sasoApi.postData(
+        `/customer/user/reset-password?token=${token}&email=${email}`,
+        data,
+    );
+};
+
+const requestVerifyEmail = () => {
+    return sasoApi.postData("/customer/user/request-verify-email", {}, true);
+};
+
 const authService = {
     login,
     register,
     verifyEmail,
     checkAuth,
     logout,
+    forgotPassword,
+    resetPassword,
+    requestVerifyEmail,
 };
 export default authService;

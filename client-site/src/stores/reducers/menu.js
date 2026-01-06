@@ -12,28 +12,6 @@ const initialState = {
 
 // ============== Thunks ==============
 
-export const fetchMenu = createAsyncThunk(
-    "menu/fetchMenu",
-    async (filter, { rejectWithValue }) => {
-        try {
-            const res = await menuService.getMenu(filter);
-            if (res.data?.status !== "success") {
-                return rejectWithValue(
-                    res.data?.message || "Failed to fetch menu",
-                );
-            }
-            return {
-                items: res.data?.data?.data ?? [],
-                message: res.data?.message ?? null,
-            };
-        } catch (err) {
-            return rejectWithValue(
-                err?.response?.data?.message || err?.message || "Network error",
-            );
-        }
-    },
-);
-
 export const fetchMenuById = createAsyncThunk(
     "menu/fetchMenuById",
     async (id, { rejectWithValue }) => {
@@ -88,22 +66,6 @@ const menuSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
-            // --- list ---
-            .addCase(fetchMenu.pending, (state) => {
-                state.status = "loading";
-                state.error = null;
-                state.successMessage = null;
-            })
-            .addCase(fetchMenu.fulfilled, (state, action) => {
-                state.status = "succeeded";
-                state.data = action.payload.items;
-                state.successMessage = action.payload.message;
-            })
-            .addCase(fetchMenu.rejected, (state, action) => {
-                state.status = "failed";
-                state.error = action.payload || "Unknown error";
-            })
-
             // --- detail by id ---
             .addCase(fetchMenuById.pending, (state) => {
                 state.detailStatus = "loading";

@@ -1,6 +1,6 @@
 "use client";
 
-import { Layout, Result, Spin } from "antd";
+import { Layout, Result, Spin, Alert, Button, message } from "antd";
 import { useRouter } from "next/router";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import Navbar from "../../molecules/Navbar/Navbar";
 import FooterComponent from "../../atoms/Footer/Footer";
 import { fetchEventBySlug, fetchEvents } from "../../../stores/reducers/event";
-import { checkAuth } from "../../../stores/reducers/auth";
+import { checkAuth, requestVerifyEmail } from "../../../stores/reducers/auth";
 
 const { Content } = Layout;
 
@@ -17,8 +17,10 @@ const MainLayout = ({ children, isAuthRequired }) => {
     const dispatch = useDispatch();
     const { eventSlug } = router.query;
 
-    const { isAuthenticated } = useSelector((state) => state.auth);
+    const { isAuthenticated, user } = useSelector((state) => state.auth);
     const [authChecked, setAuthChecked] = useState(false);
+    const [loadingEmail, setLoadingEmail] = useState(false);
+    const [alertVisible, setAlertVisible] = useState(false);
 
     // Fetch events
     useEffect(() => {
@@ -37,14 +39,41 @@ const MainLayout = ({ children, isAuthRequired }) => {
             try {
                 await dispatch(checkAuth()).unwrap();
             } catch {
-                // Ignore error, isAuthenticated will be false
+                // Ignore error
             } finally {
                 setAuthChecked(true);
             }
         };
 
         verifyAuth();
-    }, [dispatch, isAuthRequired]);
+    }, [dispatch]);
+
+    // Show alert only if user is unverified
+    useEffect(() => {
+        if (authChecked && isAuthenticated && user && !user.isVerified) {
+            setAlertVisible(true);
+        } else {
+            setAlertVisible(false);
+        }
+    }, [authChecked, isAuthenticated, user]);
+
+    const handleResendEmail = async () => {
+        setLoadingEmail(true);
+        try {
+            await dispatch(requestVerifyEmail()).unwrap();
+            message.success(
+                "Verification email resent! Please check your inbox.",
+            );
+            setAlertVisible(false); // close modal after successful resend
+        } catch (err) {
+            console.error("Failed to resend verification email:", err);
+            message.error(
+                "Failed to resend verification email. Please try again.",
+            );
+        } finally {
+            setLoadingEmail(false);
+        }
+    };
 
     // If auth is being checked, show a spinner
     if (isAuthRequired && !authChecked) {
@@ -83,10 +112,39 @@ const MainLayout = ({ children, isAuthRequired }) => {
             }}>
             <Navbar />
 
-            {/* Main content grows and pushes footer down */}
-            <Content style={{ flex: 1 }}>
+            <Content style={{ flex: 1, padding: "16px" }}>
                 {authorized ? (
-                    children
+                    <>
+                        {alertVisible && (
+                            <Alert
+                                type="warning"
+                                message={
+                                    <div
+                                        style={{
+                                            display: "flex",
+                                            justifyContent: "space-between",
+                                            alignItems: "center",
+                                        }}>
+                                        <span>
+                                            Your email is not verified. Please
+                                            check your inbox.
+                                        </span>
+                                        <Button
+                                            type="primary"
+                                            size="small"
+                                            loading={loadingEmail}
+                                            onClick={handleResendEmail}>
+                                            Resend Email
+                                        </Button>
+                                    </div>
+                                }
+                                closable
+                                onClose={() => setAlertVisible(false)}
+                                style={{ marginBottom: "16px" }}
+                            />
+                        )}
+                        {children}
+                    </>
                 ) : (
                     <Result
                         status="403"
