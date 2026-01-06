@@ -10,17 +10,20 @@ import {
     UserAddOutlined,
 } from "@ant-design/icons";
 import Link from "next/link";
-import { isAuth } from "../../../helpers/authHelper";
+import { useSelector } from "react-redux";
 import { useRouter } from "next/router";
 
 const NavbarDropDown = ({ onClick, cart }) => {
     const router = useRouter();
     const { eventSlug } = router.query;
 
+    // Get auth state from Redux
+    const { isAuthenticated } = useSelector((state) => state.auth);
+
     const getItems = () => {
         const showEventItems = !!eventSlug;
 
-        if (isAuth()) {
+        if (isAuthenticated) {
             const items = [];
 
             if (showEventItems) {
@@ -29,7 +32,9 @@ const NavbarDropDown = ({ onClick, cart }) => {
                         label: <Link href={`/${eventSlug}/cart`}>Cart</Link>,
                         key: "0",
                         icon: (
-                            <Badge count={cart.items.length} size="small">
+                            <Badge
+                                count={cart?.items?.length || 0}
+                                size="small">
                                 <ShoppingCartOutlined />
                             </Badge>
                         ),
@@ -74,7 +79,7 @@ const NavbarDropDown = ({ onClick, cart }) => {
                     label: <Link href={`/${eventSlug}/cart`}>Cart</Link>,
                     key: "0",
                     icon: (
-                        <Badge count={cart.items.length} size="small">
+                        <Badge count={cart?.items?.length || 0} size="small">
                             <ShoppingCartOutlined />
                         </Badge>
                     ),
@@ -127,10 +132,10 @@ const NavbarDropDown = ({ onClick, cart }) => {
             style={{ cursor: "pointer" }}
             menu={{ items: getItems(), onClick }}
             trigger={["click"]}>
-            <Badge count={cart.items.length}>
+            <Badge count={cart?.items?.length || 0}>
                 <Button
                     shape="circle"
-                    icon={isAuth() ? <UserOutlined /> : <MenuOutlined />}
+                    icon={isAuthenticated ? <UserOutlined /> : <MenuOutlined />}
                 />
             </Badge>
         </Dropdown>

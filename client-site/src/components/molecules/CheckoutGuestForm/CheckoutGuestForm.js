@@ -2,15 +2,16 @@ import { useState } from "react";
 import { Button, Modal, Space, Steps } from "antd";
 import { LeftOutlined } from "@ant-design/icons";
 import { useDispatch } from "react-redux";
+
 import SignInFormModal from "../SignInFormModal/SignInFormModal";
 import SignUpFormModal from "../SignUpFormModal/SignUpFormModal";
-import { resetLoginMessage } from "../../../stores/reducers/login";
-import { resetRegisterMessage } from "../../../stores/reducers/register";
 import PaymentMethods from "../PaymentMethods/PaymentMethods";
 import FormStepContent from "./StepsContent/FormStepContent";
+import { resetAuthState } from "../../../stores/reducers/auth";
 
 const CheckoutGuestForm = ({ cart }) => {
     const dispatch = useDispatch();
+
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isSignIn, setIsSignIn] = useState(false);
     const [current, setCurrent] = useState(0);
@@ -25,16 +26,8 @@ const CheckoutGuestForm = ({ cart }) => {
         setIsSignIn(state);
     };
 
-    const ModalContent = () =>
-        isSignIn ? (
-            <SignInFormModal setShowModal={setIsModalOpen} />
-        ) : (
-            <SignUpFormModal />
-        );
-
     const handleCancel = () => {
-        dispatch(resetLoginMessage());
-        dispatch(resetRegisterMessage());
+        dispatch(resetAuthState());
         setIsModalOpen(false);
     };
 
@@ -77,16 +70,20 @@ const CheckoutGuestForm = ({ cart }) => {
 
             <Modal
                 title={isSignIn ? "Sign in" : "Sign up"}
+                open={isModalOpen}
+                okText={isSignIn ? "Sign in" : "Sign up"}
                 okButtonProps={{
                     form: isSignIn ? "sign-in" : "sign-up",
                     htmlType: "submit",
                 }}
-                open={isModalOpen}
-                okText={isSignIn ? "Sign in" : "Sign up"}
                 onCancel={handleCancel}
                 closable={false}
-                destroyOnClose>
-                {ModalContent()}
+                destroyOnHidden>
+                {isSignIn ? (
+                    <SignInFormModal setShowModal={setIsModalOpen} />
+                ) : (
+                    <SignUpFormModal onSuccess={() => setIsModalOpen(false)} />
+                )}
             </Modal>
         </div>
     );

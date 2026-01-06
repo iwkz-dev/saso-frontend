@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { Form, Input, Alert, Space, message } from "antd";
 import { useDispatch, useSelector } from "react-redux";
-import { submitRegister } from "../../../stores/reducers/register";
+import { submitRegister, resetAuthState } from "../../../stores/reducers/auth";
 
 const SignUpFormModal = ({ onSuccess }) => {
     const dispatch = useDispatch();
-    const storeError = useSelector((state) => state.register.error);
+    const { error } = useSelector((state) => state.auth);
     const [form] = Form.useForm();
     const [localError, setLocalError] = useState(null);
 
@@ -13,11 +13,21 @@ const SignUpFormModal = ({ onSuccess }) => {
         setLocalError(null);
         try {
             const res = await dispatch(submitRegister(values)).unwrap();
-            message.success(res?.message || "Registration success");
-            form.resetFields();
-            if (typeof onSuccess === "function") onSuccess(res);
+            if (res.status === "success") {
+                message.success(
+                    "Registration successful! A verification email has been sent to your inbox.",
+                );
+                form.resetFields();
+                if (onSuccess) onSuccess();
+            } else {
+                setLocalError(res.message || "Registration failed");
+            }
         } catch (err) {
+            console.error("Registration error:", err);
             setLocalError(err || "Registration failed");
+        } finally {
+            // Optionally reset auth state after registration attempt
+            dispatch(resetAuthState());
         }
     };
 
@@ -29,11 +39,11 @@ const SignUpFormModal = ({ onSuccess }) => {
             onFinish={onFinish}
             style={{ width: "100%" }}>
             <Space direction="vertical" size={12} style={{ width: "100%" }}>
-                {(localError || storeError) && (
+                {(localError || error) && (
                     <Alert
                         type="error"
                         showIcon
-                        message={localError || storeError}
+                        message={localError || error}
                     />
                 )}
 

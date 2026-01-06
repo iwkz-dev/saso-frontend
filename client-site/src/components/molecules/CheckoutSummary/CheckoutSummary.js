@@ -1,8 +1,8 @@
 import { Divider, Space, Typography } from "antd";
 import { PictureOutlined } from "@ant-design/icons";
+import { useSelector } from "react-redux";
 
 import ImagesPreview from "../../atoms/ImagesPreview/ImagesPreview";
-import { isAuth } from "../../../helpers/authHelper";
 import CheckoutGuestForm from "../CheckoutGuestForm/CheckoutGuestForm";
 import PaymentMethods from "../PaymentMethods/PaymentMethods";
 
@@ -15,6 +15,8 @@ const currency = (v) =>
     }).format(Number(v) || 0);
 
 const CheckoutSummary = ({ cart }) => {
+    const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+
     return (
         <div className={style.checkoutSummary}>
             <Space size="large" direction="vertical" style={{ width: "100%" }}>
@@ -49,7 +51,7 @@ const CheckoutSummary = ({ cart }) => {
                         <div
                             key={i}
                             className={`${style.gridRow} ${style.gridItem}`}>
-                            {/* Left: image + name + unit price */}
+                            {/* Item info */}
                             <div className={style.itemInfo}>
                                 <div className={style.image}>
                                     {cartItem.menu.images?.length > 0 ? (
@@ -115,7 +117,7 @@ const CheckoutSummary = ({ cart }) => {
                     </div>
                 </div>
 
-                {!isAuth() ? (
+                {!isAuthenticated ? (
                     <CheckoutGuestForm cart={cart} />
                 ) : (
                     <PaymentMethods cart={cart} />

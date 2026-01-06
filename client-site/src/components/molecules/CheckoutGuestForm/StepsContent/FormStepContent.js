@@ -12,16 +12,8 @@ const FormStepContent = ({ userData, onFinish, showModalForSignIn }) => {
     };
 
     return (
-        <Space
-            direction="vertical"
-            style={{
-                width: "100%",
-            }}>
-            <div
-                style={{
-                    maxWidth: 480,
-                    margin: "auto",
-                }}>
+        <Space direction="vertical" style={{ width: "100%" }}>
+            <div style={{ maxWidth: 480, margin: "auto" }}>
                 <Form
                     initialValues={userData}
                     id="guest-information"
@@ -38,6 +30,7 @@ const FormStepContent = ({ userData, onFinish, showModalForSignIn }) => {
                         ]}>
                         <Input id="fullname" placeholder="Full Name" />
                     </Form.Item>
+
                     <Form.Item
                         label="Email"
                         name="email"
@@ -48,10 +41,39 @@ const FormStepContent = ({ userData, onFinish, showModalForSignIn }) => {
                             },
                             {
                                 type: "email",
+                                message: "Please enter a valid email!",
                             },
                         ]}>
                         <Input id="email" placeholder="Email" />
                     </Form.Item>
+
+                    <Form.Item
+                        label="Confirm Email"
+                        name="confirmEmail"
+                        dependencies={["email"]}
+                        hasFeedback
+                        rules={[
+                            {
+                                required: true,
+                                message: "Please confirm your email!",
+                            },
+                            ({ getFieldValue }) => ({
+                                validator(_, value) {
+                                    if (
+                                        !value ||
+                                        getFieldValue("email") === value
+                                    ) {
+                                        return Promise.resolve();
+                                    }
+                                    return Promise.reject(
+                                        new Error("Emails do not match!"),
+                                    );
+                                },
+                            }),
+                        ]}>
+                        <Input id="confirmEmail" placeholder="Confirm Email" />
+                    </Form.Item>
+
                     <Form.Item
                         label="Phone Nr. (WA)"
                         name="phone"
@@ -67,12 +89,14 @@ const FormStepContent = ({ userData, onFinish, showModalForSignIn }) => {
                             placeholder="Phone Number (WhatsApp)"
                         />
                     </Form.Item>
+
                     <Form.Item>
                         <Button type="primary" htmlType="submit">
                             Continue Payment
                         </Button>
                     </Form.Item>
                 </Form>
+
                 <Space direction="vertical">
                     <Space>
                         <Typography.Text>
