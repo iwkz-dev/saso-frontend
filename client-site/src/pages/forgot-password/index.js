@@ -1,43 +1,49 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button, Form, Input, Layout, Space, Typography, message } from "antd";
 import axios from "axios";
+import { useRouter } from "next/router";
+import { useSelector } from "react-redux";
 
 import MainLayout from "../../components/organismus/MainLayout/MainLayout";
 import { BASE_URL_HOST } from "../../config/config";
-import { isAuth } from "../../helpers/authHelper";
-import { useRouter } from "next/router";
 
-const index = () => {
+const ForgotPassword = () => {
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
 
-    if (isAuth()) {
-        router.push("/");
-    }
+    const { isAuthenticated } = useSelector((state) => state.auth);
 
-    const onFinish = (values) => {
+    useEffect(() => {
+        if (isAuthenticated) {
+            router.replace("/");
+        }
+    }, [isAuthenticated, router]);
+
+    const onFinish = async (values) => {
         setIsLoading(true);
-        axios({
-            url: `${BASE_URL_HOST}/auth/forget-password`,
-            method: "patch",
-            data: {
-                email: values.email,
-            },
-        })
-            .then((response) => {
-                if (response.status === 200) {
-                    message.success(
-                        "Link change password has been sent. Please check your email!",
-                    );
-                    setIsLoading(false);
-                }
-            })
-            .catch((err) => {
-                console.error(err);
-                message.error(err.response.data.message);
-                setIsLoading(false);
-            });
+        try {
+            const response = await axios.patch(
+                `${BASE_URL_HOST}/auth/forget-password`,
+                {
+                    email: values.email,
+                },
+            );
+
+            if (response.status === 200) {
+                message.success(
+                    "Link change password has been sent. Please check your email!",
+                );
+            }
+        } catch (err) {
+            message.error(
+                err?.response?.data?.message ||
+                    "Failed to send reset password email",
+            );
+        } finally {
+            setIsLoading(false);
+        }
     };
+
     return (
         <MainLayout>
             <Layout.Content>
@@ -59,11 +65,10 @@ const index = () => {
                             Enter your email address below and we will send you
                             a link to reset your password.
                         </Typography.Text>
+
                         <Form
                             name="forgot-password"
-                            labelCol={{
-                                span: 6,
-                            }}
+                            labelCol={{ span: 6 }}
                             onFinish={onFinish}
                             style={{
                                 padding: "24px",
@@ -72,35 +77,34 @@ const index = () => {
                                 maxWidth: "500px",
                             }}
                             autoComplete="off">
-                            <div
-                                style={{ maxWidth: "500px", margin: "0 auto" }}>
-                                <Form.Item
-                                    label="Email"
-                                    name="email"
-                                    rules={[
-                                        {
-                                            required: true,
-                                            message: "Please input your email!",
-                                        },
-                                        {
-                                            type: "email",
-                                        },
-                                    ]}>
-                                    <Input placeholder="Input email" />
-                                </Form.Item>
-                                <Form.Item
-                                    style={{
-                                        width: "fit-content",
-                                        margin: "auto",
-                                    }}>
-                                    <Button
-                                        type="primary"
-                                        htmlType="submit"
-                                        loading={isLoading}>
-                                        Send Email
-                                    </Button>
-                                </Form.Item>
-                            </div>
+                            <Form.Item
+                                label="Email"
+                                name="email"
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: "Please input your email!",
+                                    },
+                                    {
+                                        type: "email",
+                                        message: "Please enter a valid email!",
+                                    },
+                                ]}>
+                                <Input placeholder="Input email" />
+                            </Form.Item>
+
+                            <Form.Item
+                                style={{
+                                    width: "fit-content",
+                                    margin: "auto",
+                                }}>
+                                <Button
+                                    type="primary"
+                                    htmlType="submit"
+                                    loading={isLoading}>
+                                    Send Email
+                                </Button>
+                            </Form.Item>
                         </Form>
                     </Space>
                 </div>
@@ -109,4 +113,4 @@ const index = () => {
     );
 };
 
-export default index;
+export default ForgotPassword;

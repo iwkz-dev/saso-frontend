@@ -9,7 +9,6 @@ import {
 } from "../../../../stores/reducers/order";
 import MainLayout from "../../../../components/organismus/MainLayout/MainLayout";
 import MyOrderDetailContent from "../../../../components/organismus/MyOrderDetailContent/MyOrderDetailContent";
-import { isAuth } from "../../../../helpers/authHelper";
 
 const MyOrderDetailPage = () => {
     const dispatch = useDispatch();
@@ -20,15 +19,18 @@ const MyOrderDetailPage = () => {
     const event = useSelector((state) => state.event.data);
     const detailStatus = useSelector((state) => state.order.detailStatus);
 
+    // ✅ auth state from Redux
+    const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+
     useEffect(() => {
         if (!router.isReady) return;
-        if (!isAuth()) return;
+        if (!isAuthenticated) return;
 
         const orderId = Array.isArray(id) ? id[0] : id;
         if (orderId) {
             dispatch(getOrderDetail(orderId));
         }
-    }, [router.isReady, id, dispatch]);
+    }, [router.isReady, id, isAuthenticated, dispatch]);
 
     useEffect(() => {
         return () => {

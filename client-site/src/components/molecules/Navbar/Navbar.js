@@ -3,13 +3,11 @@ import { Layout, Modal } from "antd";
 import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
 
-import { isAuth, logout } from "../../../helpers/authHelper";
+import { logoutUser, resetAuthState } from "../../../stores/reducers/auth";
 import { resetCart, selectCartData } from "../../../stores/reducers/cart";
 import NavbarDropDown from "../../atoms/NavbarDropDown/NavbarDropDown";
 import SignUpFormModal from "../SignUpFormModal/SignUpFormModal";
 import SignInFormModal from "../SignInFormModal/SignInFormModal";
-import { clearLoginMessage } from "../../../stores/reducers/login";
-import { clearRegisterMessage } from "../../../stores/reducers/register";
 
 const Navbar = () => {
     const dispatch = useDispatch();
@@ -23,8 +21,10 @@ const Navbar = () => {
     const [signInMode, setSignInMode] = useState(true);
     const [scrolled, setScrolled] = useState(false);
 
-    const authenticated = useMemo(() => isAuth(), []);
+    // Use auth state from Redux
+    const { isAuthenticated } = useSelector((state) => state.auth);
 
+    // Scroll listener
     useEffect(() => {
         const onScroll = () => setScrolled(window.scrollY > 8);
         window.addEventListener("scroll", onScroll, { passive: true });
@@ -32,6 +32,7 @@ const Navbar = () => {
         return () => window.removeEventListener("scroll", onScroll);
     }, []);
 
+    // Navbar height observer
     useEffect(() => {
         if (!headerRef.current) return;
 
@@ -54,7 +55,7 @@ const Navbar = () => {
             switch (key) {
                 case "logout":
                     dispatch(resetCart());
-                    logout();
+                    dispatch(logoutUser());
                     break;
 
                 case "signIn":
@@ -75,8 +76,7 @@ const Navbar = () => {
     );
 
     const closeModal = useCallback(() => {
-        dispatch(clearLoginMessage());
-        dispatch(clearRegisterMessage());
+        dispatch(resetAuthState());
         setModalOpen(false);
     }, [dispatch]);
 
@@ -131,7 +131,7 @@ const Navbar = () => {
                 <NavbarDropDown onClick={handleMenuClick} cart={cart} />
             </div>
 
-            {!authenticated && (
+            {!isAuthenticated && (
                 <Modal
                     title={signInMode ? "Sign in" : "Sign up"}
                     open={modalOpen}
@@ -143,7 +143,7 @@ const Navbar = () => {
                     }}
                     maskClosable={false}
                     closable={false}
-                    destroyOnClose
+                    destroyOnHidden
                     centered
                     width={420}>
                     {signInMode ? (

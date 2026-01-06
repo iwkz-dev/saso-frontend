@@ -1,6 +1,5 @@
-import Axios from "axios";
+import axios from "axios";
 import { BASE_URL_HOST } from "../config/config";
-import { getContentType, getToken } from "../helpers/authHelper";
 
 class SasoApi {
     constructor() {
@@ -8,74 +7,52 @@ class SasoApi {
             return SasoApi.instance;
         }
 
-        Axios.defaults.baseURL = BASE_URL_HOST;
-        Axios.defaults.headers.post["Content-Type"] =
-            "application/json;charset=utf-8";
-        Axios.defaults.headers.post["Access-Control-Allow-Methods"] =
-            "GET,POST,DELETE,PUT";
+        this.api = axios.create({
+            baseURL: BASE_URL_HOST,
+            headers: {
+                "Content-Type": "application/json;charset=utf-8",
+            },
+            withCredentials: true, // ✅ IMPORTANT: cookie-based auth
+        });
+
+        this.api.interceptors.response.use(
+            (response) => response,
+            (error) => {
+                console.error("API error:", error?.response || error);
+                return Promise.reject(error?.response?.data || error);
+            },
+        );
 
         SasoApi.instance = this;
     }
 
-    async getData(url, withAuth = false) {
-        try {
-            const headers = {
-                "Content-Type": "application/json",
-            };
-            if (withAuth) {
-                headers.Authorization = `Bearer ${getToken()}`;
-            }
-            const res = await Axios.get(url, { headers });
-            return res;
-        } catch (err) {
-            console.error("GET request error:", err);
-            throw (err && err.response && err.response.data) || err;
-        }
+    // -------------------- GET --------------------
+    async getData(url, params = {}, useCredentials = true) {
+        const res = await this.api.get(url, {
+            params,
+            withCredentials: useCredentials,
+        });
+        return res;
     }
 
-    async postData(url, data = null, contentType = "", responseType = "") {
-        try {
-            const res = await Axios.post(url, data, {
-                headers: {
-                    "Content-Type": getContentType(contentType),
-                    Authorization: `Bearer ${getToken()}`,
-                },
-                responseType,
-            });
-            return res.data;
-        } catch (err) {
-            console.error("POST request error:", err);
-            throw (err && err.response && err.response.data) || err;
-        }
+    // -------------------- POST --------------------
+    async postData(url, data = {}, useCredentials = true) {
+        const res = await this.api.post(url, data, {
+            withCredentials: useCredentials,
+        });
+        return res.data;
     }
 
-    async putData(url, data = null) {
-        try {
-            const res = await Axios.put(url, data, {
-                headers: {
-                    Authorization: `Bearer ${getToken()}`,
-                },
-            });
-            return res.data;
-        } catch (err) {
-            console.error("PUT request error:", err);
-            throw (err && err.response && err.response.data) || err;
-        }
+    // -------------------- PUT --------------------
+    async putData(url, data = {}) {
+        const res = await this.api.put(url, data);
+        return res.data;
     }
 
-    async deleteData(url, contentType = "") {
-        try {
-            const res = await Axios.delete(url, {
-                headers: {
-                    "Content-Type": getContentType(contentType),
-                    Authorization: `Bearer ${getToken()}`,
-                },
-            });
-            return res.data;
-        } catch (err) {
-            console.error("DELETE request error:", err);
-            throw (err && err.response && err.response.data) || err;
-        }
+    // -------------------- DELETE --------------------
+    async deleteData(url) {
+        const res = await this.api.delete(url);
+        return res.data;
     }
 }
 

@@ -23,7 +23,6 @@ const UserTable = ({ onDelete, isLoading, showTable }) => {
             data={showTable ? users : []}
             onDelete={onDelete}
             dataHead={tableHead}
-            actionsOff={true}
             isLoading={isLoading}
         />
     );

@@ -13,7 +13,7 @@ const getOrderList = (eventId) => {
 };
 
 const getOrderDetail = (orderId) => {
-    return sasoApi.getData(`/customer/order/${orderId}/detail`, true);
+    return sasoApi.getData(`/customer/order/${orderId}/detail`);
 };
 
 const getOrderDetailByInvoiceNumber = (data) => {
