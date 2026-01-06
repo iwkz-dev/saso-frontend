@@ -1,21 +1,37 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Form, Input, Alert, Space, message } from "antd";
 import { useDispatch, useSelector } from "react-redux";
-import { submitRegister } from "../../../stores/reducers/register";
+import { submitRegister, resetAuthState } from "../../../stores/reducers/auth";
 
 const SignUpFormModal = ({ onSuccess }) => {
     const dispatch = useDispatch();
-    const storeError = useSelector((state) => state.register.error);
+    const {
+        error,
+        message: storeMessage,
+        status,
+    } = useSelector((state) => state.auth);
     const [form] = Form.useForm();
     const [localError, setLocalError] = useState(null);
+
+    // Clear local and store errors when component mounts/unmounts
+    useEffect(() => {
+        return () => dispatch(resetAuthState());
+    }, [dispatch]);
+
+    // Automatically show success message and call onSuccess when registration succeeds
+    useEffect(() => {
+        if (status === "succeeded" && storeMessage) {
+            message.success(storeMessage);
+            form.resetFields();
+            if (typeof onSuccess === "function") onSuccess();
+            dispatch(resetAuthState()); // Reset after handling
+        }
+    }, [status, storeMessage, form, onSuccess, dispatch]);
 
     const onFinish = async (values) => {
         setLocalError(null);
         try {
-            const res = await dispatch(submitRegister(values)).unwrap();
-            message.success(res?.message || "Registration success");
-            form.resetFields();
-            if (typeof onSuccess === "function") onSuccess(res);
+            await dispatch(submitRegister(values)).unwrap();
         } catch (err) {
             setLocalError(err || "Registration failed");
         }
@@ -29,11 +45,11 @@ const SignUpFormModal = ({ onSuccess }) => {
             onFinish={onFinish}
             style={{ width: "100%" }}>
             <Space direction="vertical" size={12} style={{ width: "100%" }}>
-                {(localError || storeError) && (
+                {(localError || error) && (
                     <Alert
                         type="error"
                         showIcon
-                        message={localError || storeError}
+                        message={localError || error}
                     />
                 )}
 

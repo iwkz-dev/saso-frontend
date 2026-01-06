@@ -16,7 +16,6 @@ import {
     Collapse,
 } from "antd";
 
-import { isAuth } from "../../../helpers/authHelper";
 import { submitOrder } from "../../../stores/reducers/order";
 import { resetCart } from "../../../stores/reducers/cart";
 import style from "./PaymentMethods.module.scss";
@@ -24,6 +23,8 @@ import style from "./PaymentMethods.module.scss";
 const PaymentMethods = ({ cart, userData }) => {
     const dispatch = useDispatch();
     const event = useSelector((state) => state.event.data);
+    const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+
     const [isSpinning, setIsSpinning] = useState(false);
     const { confirm } = Modal;
 
@@ -62,16 +63,19 @@ const PaymentMethods = ({ cart, userData }) => {
             menus,
         };
 
-        if (!isAuth()) {
+        // guest checkout
+        if (!isAuthenticated) {
             orderData.userData = userData;
         }
+
         return orderData;
     };
 
     const openNotification = (name, currOrder, isTransfer = false) => {
         const key = `open${Date.now()}`;
+
         const btn =
-            isAuth() && currOrder?._id ? (
+            isAuthenticated && currOrder?._id ? (
                 <Button
                     type="primary"
                     size="small"
@@ -104,6 +108,7 @@ const PaymentMethods = ({ cart, userData }) => {
             );
             return;
         }
+
         if (!cart?.items?.length) {
             message.warning("Your cart is empty.");
             return;
@@ -124,7 +129,7 @@ const PaymentMethods = ({ cart, userData }) => {
                     const payload = await dispatch(
                         submitOrder({
                             data: orderData,
-                            isAuthRequired: isAuth(),
+                            isAuthRequired: isAuthenticated,
                         }),
                     ).unwrap();
 
@@ -150,9 +155,6 @@ const PaymentMethods = ({ cart, userData }) => {
                 } finally {
                     setIsSpinning(false);
                 }
-            },
-            onCancel() {
-                // just close, do nothing (same as returning if false in window.confirm)
             },
         });
     };

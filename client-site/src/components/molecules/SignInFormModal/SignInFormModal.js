@@ -1,24 +1,32 @@
 import { useState } from "react";
 import { Button, Form, Input, Alert, Space, message } from "antd";
 import { useDispatch, useSelector } from "react-redux";
-import { submitLogin } from "../../../stores/reducers/login";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import Router from "next/router";
 
+import { loginUser, resetAuthState } from "../../../stores/reducers/auth";
+
 const SignInFormModal = ({ setShowModal }) => {
     const dispatch = useDispatch();
-    const storeError = useSelector((state) => state.login.error);
+    const { error } = useSelector((state) => state.auth);
+
     const [form] = Form.useForm();
     const [localError, setLocalError] = useState(null);
 
     const onFinish = async (values) => {
         setLocalError(null);
+        dispatch(resetAuthState());
+
         try {
-            const payload = { ...values, type: "client" };
-            await dispatch(submitLogin(payload)).unwrap();
+            const payload = {
+                ...values,
+            };
+
+            await dispatch(loginUser(payload)).unwrap();
+
             message.success("Welcome back!");
             if (typeof setShowModal === "function") setShowModal(false);
-            Router.push("/"); // or Router.reload() if you must
+            Router.push("/");
         } catch (err) {
             setLocalError(err || "Login failed");
             if (typeof setShowModal === "function") setShowModal(true);
@@ -37,11 +45,11 @@ const SignInFormModal = ({ setShowModal }) => {
             onFinish={onFinish}
             style={{ width: "100%" }}>
             <Space direction="vertical" size={12} style={{ width: "100%" }}>
-                {(localError || storeError) && (
+                {(localError || error) && (
                     <Alert
                         type="error"
                         showIcon
-                        message={localError || storeError}
+                        message={localError || error}
                     />
                 )}
 
@@ -57,7 +65,6 @@ const SignInFormModal = ({ setShowModal }) => {
                     ]}>
                     <Input
                         size="large"
-                        id="email"
                         autoComplete="email"
                         prefix={<UserOutlined />}
                         placeholder="you@example.com"
@@ -75,7 +82,6 @@ const SignInFormModal = ({ setShowModal }) => {
                     ]}>
                     <Input.Password
                         size="large"
-                        id="password"
                         autoComplete="current-password"
                         prefix={<LockOutlined />}
                         placeholder="••••••••"
