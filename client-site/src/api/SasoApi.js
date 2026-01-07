@@ -15,11 +15,17 @@ class SasoApi {
             withCredentials: true, // ✅ IMPORTANT: cookie-based auth
         });
 
-        this.api.interceptors.response.use(
-            (response) => response,
+        this.api.interceptors.request.use(
+            (config) => {
+                const token = localStorage.getItem("accessToken");
+
+                if (token) {
+                    config.headers.Authorization = `Bearer ${token}`;
+                }
+                return config;
+            },
             (error) => {
-                console.error("API error:", error?.response || error);
-                return Promise.reject(error?.response?.data || error);
+                return Promise.reject(error);
             },
         );
 
