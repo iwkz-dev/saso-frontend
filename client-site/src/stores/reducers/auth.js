@@ -29,8 +29,12 @@ export const submitRegister = createAsyncThunk(
                 );
             }
 
+            if (payload.token) {
+                localStorage.setItem("accessToken", payload.token);
+            }
+
             return {
-                user: res?.data,
+                user: payload,
                 message: res?.message || "Login successful",
                 status: res?.status,
             };
@@ -79,6 +83,10 @@ export const loginUser = createAsyncThunk(
                 return rejectWithValue(payload?.message || "Login failed");
             }
 
+            if (payload.data.token) {
+                localStorage.setItem("accessToken", payload.data.token);
+            }
+
             return {
                 user: payload?.data,
                 message: payload?.message || "Login successful",
@@ -102,6 +110,8 @@ export const logoutUser = createAsyncThunk(
             return rejectWithValue(
                 err?.response?.data?.message || err?.message || "Network error",
             );
+        } finally {
+            localStorage.removeItem("accessToken");
         }
     },
 );
