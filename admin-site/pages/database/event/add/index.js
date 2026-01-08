@@ -1,11 +1,19 @@
-import React from "react";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { Typography } from "antd";
+
 import Protected from "../../../../src/components/Layout/Protected/Protected";
 import AddEventForm from "../../../../src/components/Form/Event/AddEventForm/AddEventForm";
 import Content from "../../../../src/components/Layout/Content/Content";
-import { Typography } from "antd";
+import { getAllPaymentTypes } from "../../../../src/store/reducers/paymentTypeReducer";
 
 export default function AddEventPage() {
+    const dispatch = useDispatch();
     const pageTitle = "Saso App | Event";
+
+    useEffect(() => {
+        dispatch(getAllPaymentTypes());
+    });
 
     const headerStyle = {
         display: "flex",
