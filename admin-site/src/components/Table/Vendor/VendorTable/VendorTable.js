@@ -1,6 +1,7 @@
-import React, { useMemo } from "react";
-import Table from "../../Table";
+import { useMemo } from "react";
 import { useSelector } from "react-redux";
+
+import Table from "../../Table";
 
 const VendorTable = ({ onDelete }) => {
     const vendors = useSelector((state) => state?.vendor?.vendors) ?? [];

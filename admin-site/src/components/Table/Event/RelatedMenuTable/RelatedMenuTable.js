@@ -23,6 +23,16 @@ const RelatedMenuTable = ({ onDelete, filterValues = [] }) => {
     const detailEvent = useSelector((s) => s.event.detailEvent);
     const vendors = useSelector((s) => s.vendor.vendors) || [];
 
+    const refMap = useMemo(
+        () =>
+            new Map([
+                ["events", detailEvent ? [detailEvent] : []],
+                ["vendors", vendors],
+                ["categories", categories],
+            ]),
+        [detailEvent, vendors, categories],
+    );
+
     const [loading, setLoading] = useState(true);
 
     const filtersQuery = useMemo(() => {
@@ -116,9 +126,7 @@ const RelatedMenuTable = ({ onDelete, filterValues = [] }) => {
         <Table
             onDelete={onDelete}
             data={menus}
-            events={[detailEvent]}
-            vendors={vendors}
-            categories={categories}
+            refMap={refMap}
             dataHead={tableHead}
             emptyMessage="Menu is empty"
             linkToEdit="/database/menu/edit/"
