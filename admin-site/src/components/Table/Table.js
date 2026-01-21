@@ -23,9 +23,9 @@ import {
     getList as getRefList,
     resolveId,
     resolveLabel,
-    serializeSelectValue,
-    getDefaultValue,
     getHasActions,
+    getDefaultValue,
+    serializeSelectValue,
 } from "../../helpers/tableHelper";
 
 const { Column } = Table;
