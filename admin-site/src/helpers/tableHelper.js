@@ -30,12 +30,6 @@ export const resolveLabel = (val, list, labelFields = ["name"]) => {
 export const buildRefRender = (refMap, refKey, labelFields) => (val) =>
     resolveLabel(val, getList(refMap, refKey), labelFields);
 
-export const getDisabledByEvents = (record, eventsList) => {
-    const eventId = record?.event?._id ?? record?.event;
-    const e = eventsList.find((ev) => ev?._id === eventId);
-    return e ? e.status !== 1 : true;
-};
-
 // ---- Select helpers
 export const serializeSelectValue = (id, value) =>
     JSON.stringify({ id, value });
