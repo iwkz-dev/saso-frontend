@@ -23,10 +23,18 @@ const RelatedOrdersTable = ({
 }) => {
     const dispatch = useDispatch();
     const isFirstRender = useRef(true);
-
     const orders = useSelector((s) => s.order.orders) || [];
     const events = useSelector((s) => s.event.events) || [];
     const paymentTypes = useSelector((s) => s.paymentType.paymentTypes) || [];
+
+    const refMap = useMemo(
+        () =>
+            new Map([
+                ["events", events],
+                ["paymentTypes", paymentTypes],
+            ]),
+        [events, paymentTypes],
+    );
 
     const [loading, setLoading] = useState(false);
 
@@ -207,11 +215,10 @@ const RelatedOrdersTable = ({
         <Table
             onDelete={onDelete}
             data={orders}
-            events={events}
+            refMap={refMap}
             dataHead={tableHead}
             emptyMessage="Order is empty"
             linkToView="/database/order/view/"
-            paymentTypes={paymentTypes}
             isLoading={loading}
             deleteOff
             expandable={expandOrderedMenu}

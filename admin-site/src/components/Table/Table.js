@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback } from "react";
+import { useMemo, useCallback } from "react";
 import { useRouter } from "next/router";
 import {
     Table,
@@ -9,13 +9,24 @@ import {
     Typography,
     message,
 } from "antd";
-import { formatDate } from "../../helpers/dateHelper";
 import {
     DeleteTwoTone,
     EditTwoTone,
     SearchOutlined,
     EllipsisOutlined,
 } from "@ant-design/icons";
+
+import { formatDate } from "../../helpers/dateHelper";
+import {
+    defaultRefKeyMap,
+    buildRefRender,
+    getList as getRefList,
+    resolveId,
+    resolveLabel,
+    serializeSelectValue,
+    getDefaultValue,
+    getHasActions,
+} from "../../helpers/tableHelper";
 
 const { Column } = Table;
 
@@ -32,15 +43,12 @@ const TableComponent = ({
     data = [],
     dataHead = [],
     linkToEdit,
-    categories = [],
-    vendors = [],
-    events = [],
-    paymentTypes = [],
     linkToView,
     actionsOff,
     deleteOff,
     isLoading,
     expandable,
+    refMap,
 }) => {
     const router = useRouter();
 
@@ -123,20 +131,6 @@ const TableComponent = ({
         />
     );
 
-    const renderPaymentTypeColumn = (title, dataIndex, key) => (
-        <Column
-            title={title}
-            dataIndex={dataIndex}
-            key={`col-${key}`}
-            render={(record) => {
-                const p =
-                    paymentTypes.find((e) => e.type === record) ||
-                    paymentTypes.find((e) => e._id === record);
-                return <>{p?.name || ""}</>;
-            }}
-        />
-    );
-
     const renderColoredTextColumn = (title, dataIndex, key, tH) => (
         <Column
             title={title}
@@ -169,17 +163,6 @@ const TableComponent = ({
             }}
         />
     );
-
-    const serializeSelectValue = (id, value) => JSON.stringify({ id, value });
-
-    const getDefaultValue = (options = [], currentCode, id) => {
-        const matched = Array.isArray(options)
-            ? options.find((o) => o.code === currentCode)
-            : undefined;
-
-        const value = matched?.value ?? options?.[0]?.value ?? "";
-        return serializeSelectValue(id, value);
-    };
 
     const editableSelectColumn = (tH) => {
         if (tH.type !== "select") return null;
@@ -220,14 +203,17 @@ const TableComponent = ({
                     <Select
                         key={record._id}
                         style={{ width: "95%" }}
-                        // keep uncontrolled Select + JSON value (backward compatible)
                         defaultValue={getDefaultValue(
                             options,
                             currentCode,
                             record._id,
                         )}
                         onChange={onChange}
-                        disabled={disabled ? disabled(record, events) : false}>
+                        disabled={
+                            disabled
+                                ? disabled(record, getRefList(refMap, "events"))
+                                : false
+                        }>
                         {(options || []).map((opt) => (
                             <Select.Option
                                 key={`${record._id}-${String(opt.code)}`}
@@ -244,17 +230,53 @@ const TableComponent = ({
         );
     };
 
-    const hasActions = !(
-        actionsOff ||
-        (!linkToEdit && deleteOff && !linkToView)
-    );
+    const renderRefColumn = (
+        title,
+        dataIndex,
+        key,
+        tH,
+        refKey,
+        labelFields = ["name"],
+    ) => {
+        const list = getRefList(refMap, refKey);
+        const defaultFilters = list.map((item) => ({
+            text: resolveLabel(item, list, labelFields),
+            value: item?._id,
+        }));
+        const defaultOnFilter = (value, record) =>
+            String(resolveId(record?.[dataIndex]) ?? "").includes(
+                String(value),
+            );
+
+        const tHCombined = {
+            ...tH,
+            filterSearch: tH.filterSearch ?? true,
+            filters: tH.filters ?? defaultFilters,
+            onFilter: tH.onFilter ?? defaultOnFilter,
+        };
+
+        return renderFilterableColumn(
+            title,
+            dataIndex,
+            key,
+            tHCombined,
+            (val) => <>{buildRefRender(refMap, refKey, labelFields)(val)}</>,
+        );
+    };
+
+    const hasActions = getHasActions({
+        actionsOff,
+        linkToEdit,
+        deleteOff,
+        linkToView,
+    });
 
     return (
         <Table
             rowKey="_id"
             loading={isLoading}
             dataSource={data}
-            scroll={{ x: (dataHead?.length || 0) * 150, y: 800 }}
+            scroll={{ x: (dataHead?.length || 0) * 150 }}
             size="small"
             expandable={
                 expandable ? { expandedRowRender: expandable } : undefined
@@ -276,49 +298,18 @@ const TableComponent = ({
                         formatDate(d, false, true),
                     );
 
-                if (key === "category")
-                    return renderFilterableColumn(
-                        title,
-                        dataIndex,
-                        key,
-                        tH,
-                        (categoryId) => {
-                            const c = categories.find(
-                                (x) => x._id === categoryId,
-                            );
-                            return <>{c?.name}</>;
-                        },
-                    );
-
-                if (key === "vendor")
-                    return renderFilterableColumn(
-                        title,
-                        dataIndex,
-                        key,
-                        tH,
-                        (vendorId) => {
-                            const v = vendors.find((x) => x._id === vendorId);
-                            return <>{v?.name}</>;
-                        },
-                    );
-
-                if (key === "event")
-                    return renderFilterableColumn(
-                        title,
-                        dataIndex,
-                        key,
-                        tH,
-                        (eventId) => {
-                            const ev = events.find((x) => x._id === eventId);
-                            return <>{ev?.name}</>;
-                        },
-                    );
-
                 if (key === "description")
                     return renderDescriptionColumn(title, dataIndex, key);
 
-                if (key === "paymentType")
-                    return renderPaymentTypeColumn(title, dataIndex, key);
+                if (defaultRefKeyMap[key])
+                    return renderRefColumn(
+                        title,
+                        dataIndex,
+                        key,
+                        tH,
+                        defaultRefKeyMap[key],
+                        tH.labelFields,
+                    );
 
                 return renderColoredTextColumn(title, dataIndex, key, tH);
             })}

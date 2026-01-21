@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 import Table from "../../Table";
 import { useSelector } from "react-redux";
 
@@ -6,6 +6,8 @@ const ContactPersonTable = ({ onDelete, isLoading, showTable }) => {
     const contactPerson =
         useSelector((state) => state?.contactPerson?.contactPerson) ?? [];
     const events = useSelector((state) => state?.event?.events) ?? [];
+
+    const refMap = useMemo(() => new Map([["events", events]]), [events]);
 
     const tableHead = useMemo(
         () => [
@@ -44,7 +46,7 @@ const ContactPersonTable = ({ onDelete, isLoading, showTable }) => {
             onDelete={onDelete}
             data={showTable ? contactPerson : []}
             dataHead={tableHead}
-            events={events}
+            refMap={refMap}
             emptyMessage="Contact Person is empty"
             linkToEdit="/database/contact-person/edit/"
             isLoading={isLoading}
