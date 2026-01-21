@@ -132,7 +132,7 @@ const TableComponent = ({
                 const p =
                     paymentTypes.find((e) => e.type === record) ||
                     paymentTypes.find((e) => e._id === record);
-                return <>{p?.type}</>;
+                return <>{p?.name || ""}</>;
             }}
         />
     );

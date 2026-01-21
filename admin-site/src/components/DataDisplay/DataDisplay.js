@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
     Button,
     Descriptions,
@@ -7,8 +8,8 @@ import {
     Modal,
     Divider,
 } from "antd";
+
 import { formatDate } from "../../helpers/dateHelper";
-import { useState } from "react";
 
 const DataDisplay = ({ item, dataForm, linkToEdit }) => {
     const [modalVisible, setModalVisible] = useState(false);
