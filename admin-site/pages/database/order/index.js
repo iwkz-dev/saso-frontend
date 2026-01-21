@@ -1,5 +1,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { useDispatch } from "react-redux";
+import { Space, Typography, message } from "antd";
+
 import Protected from "../../../src/components/Layout/Protected/Protected";
 import {
     changeOrderStatus,
@@ -10,7 +12,6 @@ import OrderTable from "../../../src/components/Table/Order/OrderTable/OrderTabl
 import { getAllEvents } from "../../../src/store/reducers/eventReducer";
 import OrderFilterForm from "../../../src/components/Form/Order/OrderFilterForm/OrderFilterForm";
 import Content from "../../../src/components/Layout/Content/Content";
-import { Space, Typography, message } from "antd";
 import { getAllPaymentTypes } from "../../../src/store/reducers/paymentTypeReducer";
 
 const OrderIndexPage = () => {
