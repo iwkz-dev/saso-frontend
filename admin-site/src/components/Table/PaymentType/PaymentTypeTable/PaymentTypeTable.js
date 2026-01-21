@@ -23,7 +23,7 @@ const PaymentTypeTable = ({ onDelete }) => {
 
     return (
         <Table
-            data={paymentTypes ?? []}
+            data={paymentTypes}
             refMap={refMap}
             dataHead={tableHead}
             emptyMessage="Payment type is empty"
