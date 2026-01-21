@@ -8,6 +8,8 @@ const PaymentTypeTable = ({ onDelete }) => {
         useSelector((state) => state?.paymentType?.paymentTypes) ?? [];
     const events = useSelector((s) => s?.event?.events) ?? [];
 
+    const refMap = useMemo(() => new Map([["events", events]]), [events]);
+
     const tableHead = useMemo(
         () => [
             { key: "name", dataIndex: "name", title: "Name" },
@@ -21,8 +23,8 @@ const PaymentTypeTable = ({ onDelete }) => {
 
     return (
         <Table
-            events={events}
             data={paymentTypes}
+            refMap={refMap}
             dataHead={tableHead}
             emptyMessage="Payment type is empty"
             linkToEdit="/database/payment-type/edit/"

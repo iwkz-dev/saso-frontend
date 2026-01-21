@@ -1,14 +1,25 @@
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 import { useSelector } from "react-redux";
-import Table from "../../Table";
-import { Typography, Tag, Divider } from "antd";
 import dayjs from "dayjs";
+import { Typography, Tag, Divider } from "antd";
 import { CheckCircleOutlined, CloseCircleOutlined } from "@ant-design/icons";
+
+import Table from "../../Table";
 
 function OrderTable({ onDelete, onChangeStatus, isLoading, showTable }) {
     const orders = useSelector((s) => s?.order?.orders) ?? [];
     const events = useSelector((s) => s?.event?.events) ?? [];
     const paymentTypes = useSelector((s) => s?.paymentType?.paymentTypes) ?? [];
+
+    const refMap = useMemo(
+        () =>
+            new Map([
+                ["events", events],
+                ["paymentTypes", paymentTypes],
+            ]),
+        [events, paymentTypes],
+    );
+
     const { Text } = Typography;
 
     const tableHead = useMemo(
@@ -45,7 +56,8 @@ function OrderTable({ onDelete, onChangeStatus, isLoading, showTable }) {
                 onFilter: (value, record) =>
                     String(record?.status) === String(value),
                 disabled: (record, evs) => {
-                    const e = evs.find((event) => event?._id === record?.event);
+                    const eventId = record?.event?._id ?? record?.event;
+                    const e = evs.find((event) => event?._id === eventId);
                     return e ? e.status !== 1 : true;
                 },
                 options: [
@@ -62,7 +74,9 @@ function OrderTable({ onDelete, onChangeStatus, isLoading, showTable }) {
                 filterSearch: true,
                 filters: events.map((e) => ({ text: e.name, value: e._id })),
                 onFilter: (value, record) =>
-                    String(record?.event ?? "").includes(String(value)),
+                    String(record?.event?._id ?? record?.event ?? "").includes(
+                        String(value),
+                    ),
                 defaultFilteredValue: events
                     .filter((f) => f?.status === 1)
                     .map((e) => e?._id),
@@ -165,11 +179,10 @@ function OrderTable({ onDelete, onChangeStatus, isLoading, showTable }) {
         <Table
             onDelete={onDelete}
             data={showTable ? orders : []}
-            events={events}
+            refMap={refMap}
             dataHead={tableHead}
             emptyMessage="Order is empty"
             linkToView="/database/order/view/"
-            paymentTypes={paymentTypes}
             isLoading={isLoading}
             deleteOff={true}
             expandable={expandOrderedMenu}

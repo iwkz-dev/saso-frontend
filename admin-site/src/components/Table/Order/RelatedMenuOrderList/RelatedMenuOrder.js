@@ -1,15 +1,25 @@
-import React, { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { message } from "antd";
+
 import { getAllEvents } from "../../../../store/reducers/eventReducer";
 import { getAllCategories } from "../../../../store/reducers/categoryReducer";
 import Table from "../../Table";
-import { message } from "antd";
 
 const RelatedMenuOrder = ({ menus }) => {
     const dispatch = useDispatch();
 
     const categories = useSelector((s) => s?.category?.categories) ?? [];
     const events = useSelector((s) => s?.event?.events) ?? [];
+
+    const refMap = useMemo(
+        () =>
+            new Map([
+                ["events", events],
+                ["categories", categories],
+            ]),
+        [events, categories],
+    );
 
     const [showTable, setShowTable] = useState(false);
 
@@ -101,8 +111,7 @@ const RelatedMenuOrder = ({ menus }) => {
         <Table
             data={showTable ? menus : []}
             dataHead={tableHead}
-            events={events}
-            categories={categories}
+            refMap={refMap}
             emptyMessage="Menu is empty"
             actionsOff={true}
             isLoading={!showTable}

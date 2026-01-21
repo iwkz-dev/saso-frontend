@@ -1,5 +1,6 @@
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 import { useSelector } from "react-redux";
+
 import Table from "../../Table";
 
 function MenuTable({ onDelete, isLoading, showTable }) {
@@ -8,6 +9,16 @@ function MenuTable({ onDelete, isLoading, showTable }) {
     const categories =
         useSelector((state) => state?.category?.categories) ?? [];
     const vendors = useSelector((state) => state?.vendor?.vendors) ?? [];
+
+    const refMap = useMemo(
+        () =>
+            new Map([
+                ["events", events],
+                ["categories", categories],
+                ["vendors", vendors],
+            ]),
+        [events, categories, vendors],
+    );
 
     const tableHead = useMemo(
         () => [
@@ -75,9 +86,7 @@ function MenuTable({ onDelete, isLoading, showTable }) {
         <Table
             onDelete={onDelete}
             data={showTable ? menus : []}
-            events={events}
-            categories={categories}
-            vendors={vendors}
+            refMap={refMap}
             dataHead={tableHead}
             emptyMessage="Menu is empty"
             linkToEdit="/database/menu/edit/"
