@@ -1,5 +1,6 @@
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 import { useSelector } from "react-redux";
+
 import Table from "../../Table";
 
 const CategoryTable = ({ onDelete, isLoading = false, showTable = true }) => {
